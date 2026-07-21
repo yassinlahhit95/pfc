@@ -450,7 +450,7 @@ function _nav_active_admin($check) {
               $mensajeSuspension = FeatureGuard::getSuspensionMessage() ?: 'Esta instancia ha sido suspendida por la plataforma SaaS. Contacta con el proveedor.';
               echo '<div style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.92);display:flex;align-items:center;justify-content:center;padding:24px;">';
               echo '<div style="max-width:520px;width:100%;background:var(--surface);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">';
-              echo '<div style="font-size:3rem;margin-bottom:12px;">🔒</div>';
+              echo '<div style="font-size:3rem;margin-bottom:12px;color:var(--rojo);"><i class="fas fa-lock"></i></div>';
               echo '<h2 style="margin:0 0 12px;color:var(--rojo);font-size:1.4rem;">Acceso Suspendido</h2>';
               echo '<p style="color:var(--text);font-size:.95rem;line-height:1.6;margin:0 0 24px;">' . htmlspecialchars($mensajeSuspension, ENT_QUOTES) . '</p>';
               echo '<a href="/vistas/admin/saas/estado.php" style="display:inline-block;padding:10px 22px;background:var(--accent);color:var(--accent-ink);text-decoration:none;border-radius:8px;font-weight:600;font-size:.9rem;">Ver estado de la plataforma</a>';
@@ -459,16 +459,21 @@ function _nav_active_admin($check) {
           $saasMensaje = FeatureGuard::getMessage();
           $saasTipo    = FeatureGuard::getMessageType();
           if ($saasMensaje) {
+              // Los 5 tipos ya tienen su pareja semántica en dashboard.css
+              // (--azul/-suave, --rojo/-suave, etc.) — antes se repetían aquí
+              // como hex sueltos, así que un retoque de paleta en dashboard.css
+              // no se enteraba de este banner. El borde se deriva con
+              // color-mix() del mismo tono en vez de un 3er valor hardcodeado.
               $coloresSaas = [
-                  'info'         => ['#3b82f6','#eff6ff','#dbeafe','ℹ️'],
-                  'warning'      => ['#d97706','#fffbeb','#fde68a','⚠️'],
-                  'error'        => ['#dc2626','#fef2f2','#fecaca','🚨'],
-                  'subscription' => ['#7c3aed','#f5f3ff','#ddd6fe','💳'],
-                  'activation'   => ['#0369a1','#f0f9ff','#bae6fd','🔑'],
+                  'info'         => ['var(--azul)','var(--azul-suave)','color-mix(in srgb, var(--azul) 35%, transparent)','fa-circle-info'],
+                  'warning'      => ['var(--naranja)','var(--naranja-suave)','color-mix(in srgb, var(--naranja) 35%, transparent)','fa-triangle-exclamation'],
+                  'error'        => ['var(--rojo)','var(--rojo-suave)','color-mix(in srgb, var(--rojo) 35%, transparent)','fa-circle-exclamation'],
+                  'subscription' => ['var(--violeta)','var(--violeta-suave)','color-mix(in srgb, var(--violeta) 35%, transparent)','fa-credit-card'],
+                  'activation'   => ['var(--amarillo)','var(--amarillo-suave)','color-mix(in srgb, var(--amarillo) 35%, transparent)','fa-key'],
               ];
               [$colorSaas,$bgSaas,$bordeSaas,$iconoSaas] = $coloresSaas[$saasTipo] ?? $coloresSaas['info'];
               echo '<div style="margin-bottom:16px;padding:12px 18px;border-radius:10px;background:'.$bgSaas.';border:1px solid '.$bordeSaas.';display:flex;align-items:center;gap:12px;">';
-              echo '<span style="font-size:1.25rem;line-height:1;">'.$iconoSaas.'</span>';
+              echo '<span style="font-size:1.25rem;line-height:1;color:'.$colorSaas.';"><i class="fas '.$iconoSaas.'"></i></span>';
               echo '<div style="flex:1;"><span style="font-weight:700;color:'.$colorSaas.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:var(--text);">'.htmlspecialchars($saasMensaje, ENT_QUOTES).'</span></div>';
               echo '<a href="../saas/estado.php" style="font-size:.8rem;color:'.$colorSaas.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
               echo '</div>';

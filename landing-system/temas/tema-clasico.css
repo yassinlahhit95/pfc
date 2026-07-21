@@ -13,6 +13,12 @@
   --lp-sombra: 0 4px 12px rgba(13, 71, 50, 0.05);
   --lp-sombra-hover: 0 12px 24px rgba(13, 71, 50, 0.1);
   --lp-footer-fondo: #0a291d;
+  /* Pareja de acento propia: sin esto, --lp-acento-2 caía al valor por
+     defecto de base.css (mezcla con #4f46e5, un índigo), lo que convertía
+     cualquier verde botella en un gris azulado apagado en el botón primario
+     y en la banda CTA del pie. Verde + dorado es además la pareja clásica
+     de heráldica académica ("Modern Heritage"), no un accidente de fórmula. */
+  --lp-acento-2: color-mix(in srgb, var(--lp-acento) 55%, #b45309);
 }
 
 /* Paleta clara "papel crema" propia del tema. En modo oscuro NO se aplica,
@@ -37,13 +43,16 @@ html:not([data-theme="dark"]) .tema-clasico {
 .tema-clasico h1, .tema-clasico h2, .tema-clasico h3 { font-family: var(--lp-fuente-titulos); font-weight: 600; letter-spacing: -0.01em; color: var(--lp-acento); }
 .tema-clasico .lp-eyebrow { letter-spacing: 0.18em; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; text-transform: uppercase; border-radius: 2px; }
 
-/* Tarjetas y contenedores con borde refinado */
-.tema-clasico .lp-tarjeta, .tema-clasico .lp-contacto-grid {
+/* Tarjetas y contenedores con borde refinado. Incluye testimonios y FAQ:
+   son clases propias (.lp-testimonio-card / .lp-faq-item), no ".lp-tarjeta",
+   así que sin esto se quedaban con el aspecto genérico de base.css sin
+   importar el tema elegido — se ve en los 4 temas por igual, no solo aquí. */
+.tema-clasico .lp-tarjeta, .tema-clasico .lp-contacto-grid, .tema-clasico .lp-testimonio-card, .tema-clasico .lp-faq-item {
   border: 1px solid var(--lp-borde);
   box-shadow: var(--lp-sombra);
   position: relative;
 }
-.tema-clasico .lp-tarjeta::after {
+.tema-clasico .lp-tarjeta::after, .tema-clasico .lp-testimonio-card::after {
   content: ''; position: absolute; inset: 4px; border: 1px solid rgba(222, 216, 205, 0.4); pointer-events: none; border-radius: calc(var(--lp-radio) - 4px);
 }
 
@@ -55,10 +64,12 @@ html:not([data-theme="dark"]) .tema-clasico {
   box-shadow: 0 4px 0 -1px var(--lp-acento);
 }
 
-/* Hero minimal sobrio sobre crema */
+/* Hero minimal sobrio sobre crema, con un filete doble al pie que repite
+   el mismo motivo de "borde doble" de las tarjetas — sin esto el hero no
+   tenía ningún rasgo propio de "heritage" más allá de quitar los blobs. */
 .tema-clasico .lp-hero-minimal {
   background: linear-gradient(180deg, var(--lp-fondo-alt), var(--lp-fondo));
-  border-bottom: 1px solid var(--lp-borde);
+  border-bottom: 4px double var(--lp-borde);
 }
 .tema-clasico .lp-hero::before { display: none; } /* Quitar blobs modernos */
 .tema-clasico .lp-hero::after { display: none; }
@@ -69,6 +80,16 @@ html:not([data-theme="dark"]) .tema-clasico {
   box-shadow: 0 2px 8px rgba(13, 71, 50, 0.2);
 }
 .tema-clasico .lp-boton-primario:hover { background: var(--lp-acento-2); box-shadow: 0 4px 16px rgba(13, 71, 50, 0.3); }
+
+/* En modo oscuro, base.css pone --lp-fondo en un azul casi negro (#0f172a).
+   Un acento tan oscuro como el verde botella por defecto (#0d4732) se funde
+   con ese fondo y el botón deja de "verse" como botón — el texto blanco
+   sigue siendo legible, el problema es que el propio botón no se distingue
+   de la página. Un borde claro sutil lo separa sin tocar el color de acento
+   (que sigue siendo el que configure el centro). */
+[data-theme="dark"] .tema-clasico .lp-boton-primario {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .18);
+}
 
 /* Cifras sobre verde oscuro con textura */
 .tema-clasico .lp-cifras {

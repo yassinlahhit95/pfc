@@ -32,28 +32,30 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idAnuncio" value="<?= (int)$anuncio['idAnuncio'] ?>">
 
-        <div class="campo<?= fieldClass($errores, 'titulo') ?>">
-            <label for="titulo">Título <span style="color:var(--rojo)">*</span></label>
-            <input type="text" name="titulo" id="titulo" maxlength="255"
-                   value="<?= $valorCampo('titulo') ?>">
-            <?= fieldError($errores, 'titulo') ?>
-        </div>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'titulo') ?>">
+                <label for="titulo">Título <span style="color:var(--rojo)">*</span></label>
+                <input type="text" name="titulo" id="titulo" maxlength="255"
+                       value="<?= $valorCampo('titulo') ?>">
+                <?= fieldError($errores, 'titulo') ?>
+            </div>
 
-        <div class="campo">
-            <label for="dirigidoA">Dirigido a</label>
-            <select name="dirigidoA" id="dirigidoA">
-                <?php
-                $selDir = $datos['dirigidoA'] ?? $anuncio['dirigidoA'] ?? 'todos';
-                foreach (['todos' => 'Todos', 'estudiantes' => 'Estudiantes', 'profesores' => 'Profesores', 'tutores' => 'Familias'] as $val => $lbl): ?>
-                <option value="<?= $val ?>" <?= ($selDir === $val) ? 'selected' : '' ?>><?= $lbl ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+            <div class="campo">
+                <label for="dirigidoA">Dirigido a</label>
+                <select name="dirigidoA" id="dirigidoA">
+                    <?php
+                    $selDir = $datos['dirigidoA'] ?? $anuncio['dirigidoA'] ?? 'todos';
+                    foreach (['todos' => 'Todos', 'estudiantes' => 'Estudiantes', 'profesores' => 'Profesores', 'tutores' => 'Familias'] as $val => $lbl): ?>
+                    <option value="<?= $val ?>" <?= ($selDir === $val) ? 'selected' : '' ?>><?= $lbl ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-        <div class="campo">
-            <label for="fechaExpiracion">Fecha de expiración</label>
-            <input type="date" name="fechaExpiracion" id="fechaExpiracion"
-                   value="<?= $valorCampo('fechaExpiracion') ?>">
+            <div class="campo">
+                <label for="fechaExpiracion">Fecha de expiración</label>
+                <input type="date" name="fechaExpiracion" id="fechaExpiracion"
+                       value="<?= $valorCampo('fechaExpiracion') ?>">
+            </div>
         </div>
 
         <div class="campo campo-ancho-total<?= fieldClass($errores, 'mensaje') ?>">

@@ -116,31 +116,33 @@ include __DIR__ . '/../comunes/nav.php';
         <input type="hidden" name="fechaPago"     value="<?= $hoy ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'tipoPago') ?>">
-                <label for="tipoPago">Tipo de Pago</label>
-                <select name="tipoPago" id="tipoPago">
-                    <option value="">— Elegir —</option>
-                    <option value="mensual">Mensual (10% del total)</option>
-                    <option value="trimestral">Trimestral (25% del total)</option>
-                    <option value="semestral">Semestral (50% del total)</option>
-                    <option value="unico">Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>
-                </select>
-                <?= fieldError($errores, 'tipoPago') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'tipoPago') ?>">
+                    <label for="tipoPago">Tipo de Pago</label>
+                    <select name="tipoPago" id="tipoPago">
+                        <option value="">— Elegir —</option>
+                        <option value="mensual">Mensual (10% del total)</option>
+                        <option value="trimestral">Trimestral (25% del total)</option>
+                        <option value="semestral">Semestral (50% del total)</option>
+                        <option value="unico">Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>
+                    </select>
+                    <?= fieldError($errores, 'tipoPago') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'monto') ?>">
-                <label for="montoInput">Cantidad a Cobrar (€)</label>
-                <input type="number" name="monto" id="montoInput" step="0.01"
-                       max="<?= $infoFinanciera['restante'] ?>" readonly
-                       placeholder="Se calculará al elegir el tipo">
-                <small class="texto-suave">Máximo: <?= number_format($infoFinanciera['restante'], 2) ?> €</small>
-                <?= fieldError($errores, 'monto') ?>
-            </div>
+                <div class="campo<?= fieldClass($errores, 'monto') ?>">
+                    <label for="montoInput">Cantidad a Cobrar (€)</label>
+                    <input type="number" name="monto" id="montoInput" step="0.01"
+                           max="<?= $infoFinanciera['restante'] ?>" readonly
+                           placeholder="Se calculará al elegir el tipo">
+                    <small class="texto-suave">Máximo: <?= number_format($infoFinanciera['restante'], 2) ?> €</small>
+                    <?= fieldError($errores, 'monto') ?>
+                </div>
 
-            <div class="campo">
-                <label for="comprobante">Comprobante de Pago (Opcional)</label>
-                <input type="file" name="comprobante" id="comprobante" accept=".pdf,.jpg,.jpeg,.png">
-                <small class="texto-suave">PDF o imagen. Adjuntar si hay transferencia/recibo.</small>
+                <div class="campo">
+                    <label for="comprobante">Comprobante de Pago (Opcional)</label>
+                    <input type="file" name="comprobante" id="comprobante" accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="texto-suave">PDF o imagen. Adjuntar si hay transferencia/recibo.</small>
+                </div>
             </div>
 
             <div class="campo ancho-total" style="display:flex;gap:10px;justify-content:flex-end;">

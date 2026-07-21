@@ -36,16 +36,18 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idArticulo" value="<?= Security::escapeHtml($articulo['idArticulo']) ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreArticulo') ?>">
-                <label for="nombreArticulo">Nombre del Artículo</label>
-                <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= Security::escapeHtml($datos['nombreArticulo'] ?? $articulo['nombreArticulo']) ?>">
-                <?= fieldError($errores, 'nombreArticulo') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreArticulo') ?>">
+                    <label for="nombreArticulo">Nombre del Artículo</label>
+                    <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= Security::escapeHtml($datos['nombreArticulo'] ?? $articulo['nombreArticulo']) ?>">
+                    <?= fieldError($errores, 'nombreArticulo') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'numeroSerie') ?>">
-                <label for="numeroSerie">Número de Serie</label>
-                <input type="text" name="numeroSerie" id="numeroSerie" value="<?= Security::escapeHtml($datos['numeroSerie'] ?? $articulo['numeroSerie']) ?>">
-                <?= fieldError($errores, 'numeroSerie') ?>
+                <div class="campo<?= fieldClass($errores, 'numeroSerie') ?>">
+                    <label for="numeroSerie">Número de Serie</label>
+                    <input type="text" name="numeroSerie" id="numeroSerie" value="<?= Security::escapeHtml($datos['numeroSerie'] ?? $articulo['numeroSerie']) ?>">
+                    <?= fieldError($errores, 'numeroSerie') ?>
+                </div>
             </div>
         </div>
 

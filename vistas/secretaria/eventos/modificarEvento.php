@@ -32,31 +32,35 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idEvento" value="<?= (int)$evento['idEvento'] ?>">
 
-        <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
-            <label for="tituloEvento">Título <span style="color:var(--rojo)">*</span></label>
-            <input type="text" name="tituloEvento" id="tituloEvento" maxlength="255"
-                   value="<?= $valorCampo('tituloEvento') ?>">
-            <?= fieldError($errores, 'tituloEvento') ?>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
+                <label for="tituloEvento">Título <span style="color:var(--rojo)">*</span></label>
+                <input type="text" name="tituloEvento" id="tituloEvento" maxlength="255"
+                       value="<?= $valorCampo('tituloEvento') ?>">
+                <?= fieldError($errores, 'tituloEvento') ?>
+            </div>
+
+            <div class="campo">
+                <label for="ubicacionEvento">Ubicación</label>
+                <input type="text" name="ubicacionEvento" id="ubicacionEvento" maxlength="255"
+                       value="<?= $valorCampo('ubicacionEvento') ?>">
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
-            <label for="fechaEvento">Fecha <span style="color:var(--rojo)">*</span></label>
-            <input type="date" name="fechaEvento" id="fechaEvento"
-                   value="<?= $valorCampo('fechaEvento') ?>">
-            <?= fieldError($errores, 'fechaEvento') ?>
-        </div>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
+                <label for="fechaEvento">Fecha <span style="color:var(--rojo)">*</span></label>
+                <input type="date" name="fechaEvento" id="fechaEvento"
+                       value="<?= $valorCampo('fechaEvento') ?>">
+                <?= fieldError($errores, 'fechaEvento') ?>
+            </div>
 
-        <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
-            <label for="horaEvento">Hora <span style="color:var(--rojo)">*</span></label>
-            <input type="time" name="horaEvento" id="horaEvento"
-                   value="<?= $valorCampo('horaEvento') ?>">
-            <?= fieldError($errores, 'horaEvento') ?>
-        </div>
-
-        <div class="campo">
-            <label for="ubicacionEvento">Ubicación</label>
-            <input type="text" name="ubicacionEvento" id="ubicacionEvento" maxlength="255"
-                   value="<?= $valorCampo('ubicacionEvento') ?>">
+            <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
+                <label for="horaEvento">Hora <span style="color:var(--rojo)">*</span></label>
+                <input type="time" name="horaEvento" id="horaEvento"
+                       value="<?= $valorCampo('horaEvento') ?>">
+                <?= fieldError($errores, 'horaEvento') ?>
+            </div>
         </div>
 
         <div class="campo campo-ancho-total">

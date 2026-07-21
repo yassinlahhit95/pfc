@@ -95,6 +95,11 @@ agregarColumna($con, 'configuracion_centro', 'feature_gastos',         "TINYINT(
 agregarColumna($con, 'configuracion_centro', 'feature_informes',       "TINYINT(1) DEFAULT 1");
 agregarColumna($con, 'configuracion_centro', 'feature_geoblock_admin', "TINYINT(1) NOT NULL DEFAULT 1");
 
+// prematricula_filtrar_niveles nunca se había registrado aquí — sin esta línea, una
+// instancia nueva no tiene la columna y el toggle del panel de configuración falla
+// al hacer UPDATE, y vistas/admisiones/pre-matricula.php siempre lee 0 en silencio.
+agregarColumna($con, 'configuracion_centro', 'prematricula_filtrar_niveles', "TINYINT(1) NOT NULL DEFAULT 0");
+
 // ══════════════════════════════════════════════════════════════════════
 // 2. Módulos transversales
 // ══════════════════════════════════════════════════════════════════════
@@ -716,6 +721,79 @@ if (mysqli_query($con, "ALTER TABLE grading_policies MODIFY decimales TINYINT NO
 }
 mysqli_query($con, "UPDATE grading_policies SET decimales = 0 WHERE decimales = 2");
 echo "[OK]         grading_policies: " . mysqli_affected_rows($con) . " fila(s) sin personalizar reseteadas a 0 decimales\n";
+
+// ══════════════════════════════════════════════════════════════════════
+// 15. MFA (2FA) — extendido a los 5 roles.
+//     directores ya usaba estas columnas en el código (obtenerMfaDirector,
+//     activarMfaDirector) pero nunca se habían registrado aquí — una
+//     instancia nueva creada solo desde migrate_db.php no las tenía y el
+//     2FA de admin habría fallado silenciosamente al activarse.
+// ══════════════════════════════════════════════════════════════════════
+foreach (['directores', 'profesores', 'secretarias', 'estudiantes', 'tutores'] as $tablaMfa) {
+    agregarColumna($con, $tablaMfa, 'mfa_enabled',      "TINYINT(1) NOT NULL DEFAULT 0");
+    agregarColumna($con, $tablaMfa, 'mfa_secret',       "VARCHAR(64) NULL DEFAULT NULL");
+    agregarColumna($con, $tablaMfa, 'mfa_backup_codes', "TEXT NULL DEFAULT NULL");
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 16. RGPD — rgpd_eliminaciones (Art. 17) ya se usaba en modelos/rgpd.php
+//     pero, igual que las columnas MFA de la sección 15, nunca se había
+//     registrado aquí. Se añade también rgpd_solicitudes: autoservicio
+//     de "solicitar eliminación de mis datos" para los 5 roles — el propio
+//     usuario pide la baja, el admin la revisa y la resuelve manualmente
+//     (nunca hay auto-borrado real, ver vistas/admin/rgpd/index.php).
+// ══════════════════════════════════════════════════════════════════════
+crearTabla($con, 'rgpd_eliminaciones', "CREATE TABLE IF NOT EXISTS rgpd_eliminaciones (
+    idRgpdEliminacion INT AUTO_INCREMENT PRIMARY KEY,
+    idAdmin INT NOT NULL,
+    entidad VARCHAR(60) NOT NULL,
+    idRegistro INT NOT NULL,
+    descripcion VARCHAR(255) NOT NULL DEFAULT '',
+    motivo TEXT NOT NULL,
+    datos_backup LONGTEXT NULL,
+    ip VARCHAR(64) NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_entidad (entidad, idRegistro)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'rgpd_solicitudes', "CREATE TABLE IF NOT EXISTS rgpd_solicitudes (
+    idSolicitud INT AUTO_INCREMENT PRIMARY KEY,
+    rolSesion VARCHAR(20) NOT NULL,
+    idUsuario INT NOT NULL,
+    nombreUsuario VARCHAR(255) NOT NULL DEFAULT '',
+    emailUsuario VARCHAR(255) NOT NULL DEFAULT '',
+    motivo TEXT NOT NULL,
+    estado ENUM('pendiente','resuelta') NOT NULL DEFAULT 'pendiente',
+    resueltaPorAdmin INT NULL,
+    fechaSolicitud TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fechaResolucion TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_estado (estado)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// ══════════════════════════════════════════════════════════════════════
+// 17. Justificación de faltas — el estudiante sube un justificante para una
+//     falta ya registrada, el profesor del módulo lo aprueba o rechaza.
+//     asistencias.estado ya admitía 'justificado' como valor (usado hasta
+//     ahora solo manualmente por el profesor al pasar lista) — al aprobar
+//     una justificación se actualiza esa misma fila a 'justificado'.
+//     Sin FK a asistencias: la tabla base no está gestionada por este
+//     migrador (viene del dump inicial) y no se puede asumir su motor.
+// ══════════════════════════════════════════════════════════════════════
+crearTabla($con, 'justificaciones_falta', "CREATE TABLE IF NOT EXISTS justificaciones_falta (
+    idJustificacion INT AUTO_INCREMENT PRIMARY KEY,
+    idAsistencia INT NOT NULL,
+    idEstudiante INT NOT NULL,
+    motivo TEXT NOT NULL,
+    archivo VARCHAR(255) NULL,
+    estado ENUM('pendiente','aprobada','rechazada') NOT NULL DEFAULT 'pendiente',
+    idProfesorResuelve INT NULL,
+    motivoRechazo VARCHAR(500) NULL,
+    fechaSolicitud TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fechaResolucion TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_asistencia (idAsistencia),
+    INDEX idx_estudiante (idEstudiante),
+    INDEX idx_estado (estado)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 // ══════════════════════════════════════════════════════════════════════
 // FIN — invalidar caché de feature flags para ver los cambios al momento

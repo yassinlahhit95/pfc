@@ -11,6 +11,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $eliminaciones = listarEliminacionesRGPD(20);
+$solicitudesPendientes = listarSolicitudesRGPD('pendiente', 50);
 $csrfToken     = Security::generateCSRFToken();
 
 $todosEstudiantes = listarEstudiantes();
@@ -73,30 +74,32 @@ require_once __DIR__ . "/../comunes/nav.php";
     </p>
     <form id="form-rgpd-borrar" method="POST" action="../../../controladores/admin/rgpd/borrar.php" class="formulario">
       <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-      <div class="campo">
-        <label for="borrar-select">Estudiante</label>
-        <select id="borrar-select" name="idEstudiante" required onchange="filtrarRGPD('borrar')">
-          <option value="">— Seleccionar estudiante —</option>
-          <?php foreach ($todosEstudiantes as $estudiante): ?>
-          <option value="<?= (int)$estudiante['idEstudiante'] ?>">
-            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
-            <?= !empty($estudiante['dniEstudiante']) ? '(' . Security::escapeHtml($estudiante['dniEstudiante']) . ')' : '' ?>
-          </option>
-          <?php endforeach; ?>
-        </select>
-        <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')"
-               autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-               data-lpignore="true" data-1p-ignore="true" data-form-type="other"
-               style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
+      <div class="form-fila">
+        <div class="campo">
+          <label for="borrar-select">Estudiante</label>
+          <select id="borrar-select" name="idEstudiante" required onchange="filtrarRGPD('borrar')">
+            <option value="">— Seleccionar estudiante —</option>
+            <?php foreach ($todosEstudiantes as $estudiante): ?>
+            <option value="<?= (int)$estudiante['idEstudiante'] ?>">
+              <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
+              <?= !empty($estudiante['dniEstudiante']) ? '(' . Security::escapeHtml($estudiante['dniEstudiante']) . ')' : '' ?>
+            </option>
+            <?php endforeach; ?>
+          </select>
+          <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')"
+                 autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                 data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                 style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
+        </div>
+        <div class="campo">
+          <label for="borrar-pass">Tu contraseña de administrador</label>
+          <input type="password" id="borrar-pass" name="adminPassword" autocomplete="current-password" required>
+        </div>
       </div>
       <div class="campo ancho-total">
         <label for="borrar-motivo">Motivo (obligatorio)</label>
         <textarea id="borrar-motivo" name="motivo" rows="3" required
           placeholder="Ej: Solicitud del interesado vía email de fecha 20/06/2026, referencia RT-0042."></textarea>
-      </div>
-      <div class="campo">
-        <label for="borrar-pass">Tu contraseña de administrador</label>
-        <input type="password" id="borrar-pass" name="adminPassword" autocomplete="current-password" required>
       </div>
       <div class="campo ancho-total">
         <button type="submit" class="boton-peligro">
@@ -106,6 +109,62 @@ require_once __DIR__ . "/../comunes/nav.php";
     </form>
   </div>
 
+</div>
+
+<!-- ── Solicitudes de baja de usuarios (autoservicio) ── -->
+<div class="panel margen-abajo">
+  <div class="panel-titulo-seccion">
+    <i class="fas fa-inbox"></i> Solicitudes de eliminación pendientes
+  </div>
+  <p style="font-size:.875rem;color:var(--dim);margin-bottom:1rem;">
+    Cada usuario puede pedir la baja de sus datos desde su perfil. Aquí no se borra nada automáticamente:
+    revisa la solicitud, contacta con el interesado si hace falta, y si procede usa la herramienta de
+    Supresión (Art.&nbsp;17) de arriba para estudiantes, o gestiona la baja del rol correspondiente.
+  </p>
+  <?php if (empty($solicitudesPendientes)): ?>
+  <div class="panel-vacio">
+    <div class="panel-vacio-icono"><i class="fas fa-inbox"></i></div>
+    <div class="panel-vacio-titulo">Sin solicitudes pendientes</div>
+  </div>
+  <?php else: ?>
+  <div class="contenedor-tabla">
+    <table class="tabla-datos" id="tablaSolicitudesRGPD">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Rol</th>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Motivo</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $etiquetasRol = ['idAdmin' => 'Admin', 'idProfesor' => 'Profesor', 'idSecretaria' => 'Secretaría',
+                          'idEstudiante' => 'Estudiante', 'idTutor' => 'Tutor'];
+        foreach ($solicitudesPendientes as $sol): ?>
+        <tr>
+          <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sol['fechaSolicitud']))) ?></td>
+          <td><span class="texto-estado azul"><?= Security::escapeHtml($etiquetasRol[$sol['rolSesion']] ?? $sol['rolSesion']) ?></span></td>
+          <td><?= Security::escapeHtml($sol['nombreUsuario']) ?></td>
+          <td><?= Security::escapeHtml($sol['emailUsuario']) ?></td>
+          <td style="max-width:300px;white-space:normal;"><?= Security::escapeHtml($sol['motivo']) ?></td>
+          <td>
+            <form method="POST" action="../../../controladores/admin/rgpd/resolver_solicitud.php" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+              <input type="hidden" name="idSolicitud" value="<?= (int)$sol['idSolicitud'] ?>">
+              <button type="submit" class="boton-secundario" style="font-size:.78rem;padding:5px 10px;">
+                <i class="fas fa-check"></i> Marcar resuelta
+              </button>
+            </form>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif; ?>
 </div>
 
 <!-- ── Retención de logs ── -->
@@ -121,10 +180,10 @@ require_once __DIR__ . "/../comunes/nav.php";
   <form id="form-purgar" method="POST" action="../../../controladores/admin/rgpd/purgar_logs.php"
         style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-    <label style="font-size:.875rem;">Eliminar logs con más de</label>
-    <input type="number" name="years" value="3" min="3" max="20"
+    <label for="purgar-years" style="font-size:.875rem;">Eliminar logs con más de</label>
+    <input type="number" name="years" id="purgar-years" value="3" min="3" max="20"
            style="width:80px;" class="campo-input">
-    <label style="font-size:.875rem;">años de antigüedad</label>
+    <label for="purgar-years" style="font-size:.875rem;">años de antigüedad</label>
     <button type="submit" class="boton-secundario" id="btn-purgar">
       <i class="fas fa-database"></i> Purgar registros
     </button>
@@ -226,5 +285,6 @@ require_once __DIR__ . "/../comunes/nav.php";
     });
 
     iniciarPaginacion('tablaRGPD', 15);
+    if (document.getElementById('tablaSolicitudesRGPD')) iniciarPaginacion('tablaSolicitudesRGPD', 15);
 }());
 </script>

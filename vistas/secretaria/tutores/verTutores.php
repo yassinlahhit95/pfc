@@ -24,7 +24,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-abajo">
     <div class="formulario">
-        <div class="campo">
+        <div class="campo ancho-total">
             <label for="filtroTutores">BUSCAR</label>
             <input type="text" id="filtroTutores" placeholder="Buscar por nombre, DNI, email o estudiante..."
                    autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"

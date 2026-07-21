@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `academic_config`;
 CREATE TABLE `academic_config` (
   `idConfig` int NOT NULL AUTO_INCREMENT,
   `idCentro` int DEFAULT NULL,
-  `nombre` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Configuraci├│n acad├®mica',
+  `nombre` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Configuración académica',
   `anioAcademico` varchar(9) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tipoEducacion` enum('grado_medio','grado_superior','otro') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
   `activo` tinyint(1) NOT NULL DEFAULT '1',
@@ -33,7 +33,7 @@ CREATE TABLE `academic_config` (
   `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idConfig`),
   KEY `idx_ac_centro_activo` (`idCentro`,`activo`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `academic_periods` (
   KEY `idx_periodo_config_orden` (`idConfig`,`orden`),
   CONSTRAINT `academic_periods_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE,
   CONSTRAINT `academic_periods_ibfk_2` FOREIGN KEY (`idPeriodoRecuperaDe`) REFERENCES `academic_periods` (`idPeriodo`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `academic_templates` (
   `editable` tinyint(1) NOT NULL DEFAULT '1',
   `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idPlantilla`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `anuncios` (
   `dirigidoA` enum('todos','estudiantes','profesores','tutores') COLLATE utf8mb4_unicode_ci DEFAULT 'todos',
   PRIMARY KEY (`idAnuncio`),
   KEY `idx_anuncio_fecha` (`fechaAnuncio`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +134,6 @@ CREATE TABLE `asistencias` (
   `fechaRegistro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idAsistencia`),
   UNIQUE KEY `idx_asistencia_unica` (`idEstudiante`,`idModulo`,`fecha`),
-  KEY `idEstudiante` (`idEstudiante`),
   KEY `idModulo` (`idModulo`),
   KEY `idProfesor` (`idProfesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -165,7 +164,7 @@ CREATE TABLE `assessment_types` (
   PRIMARY KEY (`idTipo`),
   KEY `idx_tipo_config` (`idConfig`),
   CONSTRAINT `assessment_types_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -405,7 +404,7 @@ CREATE TABLE `aula_entregas` (
   KEY `idx_aula_entr_est` (`idEstudiante`),
   CONSTRAINT `fk_aulaentr_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulaentr_tar` FOREIGN KEY (`idTarea`) REFERENCES `aula_tareas` (`idTarea`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -519,7 +518,7 @@ CREATE TABLE `aula_tareas` (
   KEY `fk_aulatar_prof` (`idProfesor`),
   CONSTRAINT `fk_aulatar_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulatar_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -564,7 +563,7 @@ CREATE TABLE `aulas` (
   PRIMARY KEY (`idAula`),
   UNIQUE KEY `uk_aula_planta_numero` (`planta`,`numero`),
   UNIQUE KEY `uk_aula_codigo` (`codigoAula`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,7 +590,7 @@ CREATE TABLE `blog_posts` (
   PRIMARY KEY (`idPost`),
   UNIQUE KEY `slug` (`slug`),
   KEY `idx_publicado` (`publicado`,`fechaPublicacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -633,7 +632,7 @@ CREATE TABLE `calificaciones_ce` (
   KEY `idCE` (`idCE`),
   CONSTRAINT `calificaciones_ce_ibfk_1` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `calificaciones_ce_ibfk_2` FOREIGN KEY (`idCE`) REFERENCES `criterios_evaluacion` (`idCE`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -658,11 +657,10 @@ CREATE TABLE `calificaciones_modulos` (
   `estado_2final` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`idCalificacion`),
   UNIQUE KEY `uk_est_mod` (`idEstudiante`,`idModulo`),
-  KEY `idx_cm_est` (`idEstudiante`),
   KEY `idx_cm_mod` (`idModulo`),
   CONSTRAINT `fk_cm_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_cm_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -691,7 +689,7 @@ CREATE TABLE `calificaciones_periodo` (
   CONSTRAINT `calificaciones_periodo_ibfk_2` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
   CONSTRAINT `calificaciones_periodo_ibfk_4` FOREIGN KEY (`idTipo`) REFERENCES `assessment_types` (`idTipo`) ON DELETE CASCADE,
   CONSTRAINT `calificaciones_periodo_ibfk_5` FOREIGN KEY (`idPeriodo`) REFERENCES `academic_periods` (`idPeriodo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -711,7 +709,7 @@ CREATE TABLE `calificaciones_retos` (
   KEY `idx_cal_reto_reto` (`idReto`),
   CONSTRAINT `fk_cr_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_cr_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -730,30 +728,6 @@ CREATE TABLE `calificaciones_tfg` (
   PRIMARY KEY (`idCalificacion`),
   UNIQUE KEY `uk_est_tfg` (`idEstudiante`,`convocatoria`),
   CONSTRAINT `fk_ctfg_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `carpetas_ejercicios`
---
-
-DROP TABLE IF EXISTS `carpetas_ejercicios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `carpetas_ejercicios` (
-  `idCarpeta` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `color` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#0ea5e9',
-  `icono` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'fa-folder',
-  `idProfesor` int NOT NULL,
-  `idCiclo` int NOT NULL,
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idCarpeta`),
-  KEY `fk_carp_prof_ej` (`idProfesor`),
-  KEY `fk_carp_ciclo_ej` (`idCiclo`),
-  CONSTRAINT `fk_carp_ciclo_ej` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_carp_prof_ej` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -771,7 +745,7 @@ CREATE TABLE `categorias_gasto` (
   `color` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '#6c757d',
   `activo` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`idCategoria`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -792,7 +766,7 @@ CREATE TABLE `challenge_config` (
   PRIMARY KEY (`idConfigReto`),
   UNIQUE KEY `uk_cc_config` (`idConfig`),
   CONSTRAINT `challenge_config_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -811,10 +785,9 @@ CREATE TABLE `chat_conversaciones` (
   `last_message_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_conv_pair` (`user_a_rol`,`user_a_id`,`user_b_rol`,`user_b_id`),
-  KEY `idx_conv_a` (`user_a_rol`,`user_a_id`),
   KEY `idx_conv_b` (`user_b_rol`,`user_b_id`),
   KEY `idx_conv_last` (`last_message_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -838,7 +811,7 @@ CREATE TABLE `chat_mensajes` (
   KEY `idx_msg_leido` (`leido`),
   KEY `idx_msg_conv_leido` (`conversacion_id`,`leido`),
   CONSTRAINT `fk_msg_conv` FOREIGN KEY (`conversacion_id`) REFERENCES `chat_conversaciones` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -876,7 +849,7 @@ CREATE TABLE `ciclos` (
   PRIMARY KEY (`idCiclo`),
   KEY `idx_ciclo_nivel` (`idNivel`),
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -970,7 +943,7 @@ CREATE TABLE `criterios_evaluacion` (
   PRIMARY KEY (`idCE`),
   KEY `idRA` (`idRA`),
   CONSTRAINT `criterios_evaluacion_ibfk_1` FOREIGN KEY (`idRA`) REFERENCES `resultados_aprendizaje` (`idRA`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -988,7 +961,7 @@ CREATE TABLE `cursos_academicos` (
   PRIMARY KEY (`idCurso`),
   UNIQUE KEY `uk_curso_ciclo_orden` (`idCiclo`,`orden`),
   CONSTRAINT `cursos_academicos_ibfk_1` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1015,7 +988,7 @@ CREATE TABLE `directores` (
   PRIMARY KEY (`idDirector`),
   UNIQUE KEY `uk_email_dir` (`emailDirector`),
   UNIQUE KEY `uk_dni_dir` (`dniDirector`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1032,59 +1005,6 @@ CREATE TABLE `dispositivos` (
   `estadoDispositivo` enum('disponible','prestado') COLLATE utf8mb4_unicode_ci DEFAULT 'disponible',
   PRIMARY KEY (`idDispositivo`),
   UNIQUE KEY `uk_serie` (`numeroSerie`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `ejercicios`
---
-
-DROP TABLE IF EXISTS `ejercicios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ejercicios` (
-  `idEjercicio` int NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_unicode_ci,
-  `idCarpeta` int DEFAULT NULL,
-  `idProfesor` int NOT NULL,
-  `idCiclo` int NOT NULL,
-  `fechaLimite` datetime DEFAULT NULL,
-  `archivoAdjunto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `publicado` tinyint(1) NOT NULL DEFAULT '1',
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idEjercicio`),
-  KEY `fk_ej_carp_ej` (`idCarpeta`),
-  KEY `fk_ej_prof_ej` (`idProfesor`),
-  KEY `fk_ej_ciclo_ej` (`idCiclo`),
-  CONSTRAINT `fk_ej_carp_ej` FOREIGN KEY (`idCarpeta`) REFERENCES `carpetas_ejercicios` (`idCarpeta`) ON DELETE SET NULL,
-  CONSTRAINT `fk_ej_ciclo_ej` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_ej_prof_ej` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `entregas_ejercicios`
---
-
-DROP TABLE IF EXISTS `entregas_ejercicios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `entregas_ejercicios` (
-  `idEntrega` int NOT NULL AUTO_INCREMENT,
-  `idEjercicio` int NOT NULL,
-  `idEstudiante` int NOT NULL,
-  `respuesta` text COLLATE utf8mb4_unicode_ci,
-  `archivoEntrega` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `fechaEntrega` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `nota` decimal(4,2) DEFAULT NULL,
-  `comentarioProfesor` text COLLATE utf8mb4_unicode_ci,
-  `estado` enum('entregado','calificado') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'entregado',
-  PRIMARY KEY (`idEntrega`),
-  UNIQUE KEY `uk_entrega_unica_ej` (`idEjercicio`,`idEstudiante`),
-  KEY `fk_entr_est_ej` (`idEstudiante`),
-  CONSTRAINT `fk_entr_ej_ej` FOREIGN KEY (`idEjercicio`) REFERENCES `ejercicios` (`idEjercicio`) ON DELETE CASCADE,
-  CONSTRAINT `fk_entr_est_ej` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1142,7 +1062,7 @@ CREATE TABLE `estudiantes` (
   KEY `idx_est_ciclo` (`idCiclo`),
   KEY `idx_est_curso` (`idCurso`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1199,7 +1119,7 @@ CREATE TABLE `fct` (
   CONSTRAINT `fk_fct_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
   CONSTRAINT `fk_fct_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_fct_prof` FOREIGN KEY (`idProfesorTutor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1270,7 +1190,7 @@ CREATE TABLE `gastos` (
   KEY `idx_gasto_fecha` (`fecha`),
   CONSTRAINT `fk_gasto_cat` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_gasto` (`idCategoria`) ON DELETE RESTRICT,
   CONSTRAINT `fk_gasto_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1291,7 +1211,7 @@ CREATE TABLE `grading_policies` (
   PRIMARY KEY (`idPolitica`),
   UNIQUE KEY `uk_gp_config` (`idConfig`),
   CONSTRAINT `grading_policies_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1330,7 +1250,7 @@ CREATE TABLE `horario_franjas` (
   PRIMARY KEY (`idFranja`),
   UNIQUE KEY `uq_ciclo_inicio` (`idCiclo`,`horaInicio`),
   CONSTRAINT `horario_franjas_ibfk_1` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1354,14 +1274,12 @@ CREATE TABLE `horarios` (
   UNIQUE KEY `uk_horario_celda` (`idCiclo`,`diaSemana`,`horaInicio`),
   UNIQUE KEY `uk_horario_aula` (`idAula`,`diaSemana`,`horaInicio`),
   UNIQUE KEY `uk_horario_profesor` (`idProfesor`,`diaSemana`,`horaInicio`),
-  KEY `indice_horario_ciclo` (`idCiclo`),
   KEY `indice_horario_modulo` (`idModulo`),
-  KEY `indice_horario_aula` (`idAula`),
   CONSTRAINT `fk_horario_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`idAula`) ON DELETE SET NULL,
   CONSTRAINT `fk_horario_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
   CONSTRAINT `fk_horario_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE SET NULL,
   CONSTRAINT `fk_horario_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1382,23 +1300,7 @@ CREATE TABLE `internship_config` (
   PRIMARY KEY (`idConfigFCT`),
   UNIQUE KEY `uk_ic_config` (`idConfig`),
   CONSTRAINT `internship_config_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inventario`
---
-
-DROP TABLE IF EXISTS `inventario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inventario` (
-  `idInventario` int NOT NULL AUTO_INCREMENT,
-  `nombreArticulo` varchar(150) NOT NULL,
-  `descripcion` text,
-  `cantidad` int DEFAULT '0',
-  PRIMARY KEY (`idInventario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1436,22 +1338,6 @@ CREATE TABLE `landing_secciones` (
   `contenido` json DEFAULT NULL,
   PRIMARY KEY (`idSeccion`),
   KEY `idx_landing_version_orden` (`version`,`orden`)
-) ENGINE=InnoDB AUTO_INCREMENT=296 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `login_attempts`
---
-
-DROP TABLE IF EXISTS `login_attempts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `login_attempts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempt_time` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_ip_time` (`ip_address`,`attempt_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1470,7 +1356,7 @@ CREATE TABLE `login_intentos` (
   `ultimo_intento` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_ip` (`ip`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1530,7 +1416,7 @@ CREATE TABLE `modulos` (
   KEY `idx_modulo_ciclo` (`idCiclo`),
   KEY `idx_modulo_curso` (`idCurso`),
   CONSTRAINT `fk_modulos_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1544,7 +1430,7 @@ CREATE TABLE `niveles` (
   `idNivel` int NOT NULL AUTO_INCREMENT,
   `nombreNivel` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`idNivel`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1567,7 +1453,7 @@ CREATE TABLE `pagos` (
   PRIMARY KEY (`idPago`),
   KEY `idx_pago_est` (`idEstudiante`),
   CONSTRAINT `fk_pag_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1691,7 +1577,7 @@ CREATE TABLE `profesores` (
   PRIMARY KEY (`idProfesor`),
   UNIQUE KEY `uk_email_prof` (`emailProfesor`),
   KEY `idx_prof_dni` (`dniProfesor`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1710,7 +1596,7 @@ CREATE TABLE `promotion_rules` (
   PRIMARY KEY (`idRegla`),
   UNIQUE KEY `uk_pr_config` (`idConfig`),
   CONSTRAINT `promotion_rules_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1729,7 +1615,7 @@ CREATE TABLE `rate_limits` (
   `blocked_until` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_scope_ip` (`scope`,`ip`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1779,7 +1665,7 @@ CREATE TABLE `resultados_aprendizaje` (
   KEY `idModulo` (`idModulo`),
   KEY `idx_ra_tipo` (`idTipo`),
   CONSTRAINT `resultados_aprendizaje_ibfk_1` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1798,7 +1684,7 @@ CREATE TABLE `reto_archivos` (
   `fechaSubida` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idArchivo`),
   KEY `idReto` (`idReto`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1815,7 +1701,7 @@ CREATE TABLE `retos` (
   `fechaFin` date NOT NULL,
   `horasReto` int NOT NULL,
   PRIMARY KEY (`idReto`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1894,7 +1780,7 @@ CREATE TABLE `secretarias` (
   `fechaAltaSecretaria` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idSecretaria`),
   UNIQUE KEY `uq_email_sec` (`emailSecretaria`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1916,7 +1802,7 @@ CREATE TABLE `tfg_config` (
   PRIMARY KEY (`idConfigTFG`),
   UNIQUE KEY `uk_tc_config` (`idConfig`),
   CONSTRAINT `tfg_config_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1939,7 +1825,7 @@ CREATE TABLE `tutores` (
   `idEstudiante` int DEFAULT NULL,
   `fechaAltaTutor` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idTutor`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1957,7 +1843,7 @@ CREATE TABLE `verificaciones_log` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_verif_ip_fecha` (`ip`,`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

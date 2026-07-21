@@ -39,15 +39,15 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idModulo" value="<?= (int)$modulo['idModulo'] ?>">
         <div class="formulario">
             <div class="campo ancho-total">
-                <label>Ciclo</label>
-                <input type="text" value="<?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?>" disabled>
+                <label for="cicloModuloDisabled">Ciclo</label>
+                <input type="text" id="cicloModuloDisabled" value="<?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?>" disabled>
             </div>
             <div class="campo ancho-total">
                 <label for="nombreModulo">Nombre del Módulo</label>
                 <input type="text" id="nombreModulo" name="nombreModulo"
                        value="<?= Security::escapeHtml($modulo['nombreModulo']) ?>" required>
             </div>
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="horasMaximas">Horas Máximas</label>
                 <input type="number" id="horasMaximas" name="horasMaximas" min="1" max="2000"
                        value="<?= (int)$modulo['horasMaximas'] ?>" required>

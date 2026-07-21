@@ -197,7 +197,10 @@ cabecera (h1 + action buttons)
 ```
 
 ### Empty states
-Use `.panel-vacio` with `.panel-vacio-icono`, `.panel-vacio-titulo`, `.panel-vacio-desc`.
+Three deliberate patterns exist for three different contexts — pick the one that matches the shape of what's empty, don't force everything into one:
+- **`.panel-vacio`** (with `.panel-vacio-icono`, `.panel-vacio-titulo`, `.panel-vacio-desc`) — replaces an entire panel/section when there's nothing to show at all (no table, no headers). Use when the list itself is the whole panel.
+- **`.vacio`** — a single `<td colspan="N" class="vacio">Mensaje</td>` inside `<tbody>`, used when the table structure (headers, filters) should stay visible even with zero rows. This is actually the more common pattern across the app (list pages under a persistent table/filter bar) — don't treat it as a deviation from `.panel-vacio`, it's the right choice whenever a table shell already exists above it.
+- **`.inbox-empty`** (with `.inbox-empty-ico`) — mensajería-specific, used identically across all 4 role variants of `mensajes/lista.php`. Don't reuse outside that feature; it's styled in `public/css/features/mensajes.css`, not `estilo.css`.
 
 ### Status chips
 Use `<span class="texto-estado azul|verde|rojo|gris|naranja">text</span>`

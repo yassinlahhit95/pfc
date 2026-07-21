@@ -19,8 +19,19 @@ return [
         ['tipo' => 'oferta_formativa', 'contenido' => [
             'titulo' => 'Elige tu ciclo', 'botonTexto' => 'Quiero este ciclo',
         ]],
+        ['tipo' => 'becas_financiacion', 'contenido' => [
+            'titulo' => '¿Y si no puedo pagarlo todo de golpe?',
+            'subtitulo' => 'Fracciona tu matrícula o infórmate de las becas disponibles — no dejes que el precio te frene.',
+            'items' => [
+                ['icono' => 'fa-piggy-bank', 'titulo' => 'Fracciona en cuotas', 'texto' => 'Sin intereses, adaptado a tu bolsillo. Empieza ya y paga mes a mes.'],
+                ['icono' => 'fa-money-bill-wave', 'titulo' => 'Becas al momento', 'texto' => 'Te decimos en la primera visita si tu perfil encaja con alguna beca disponible.'],
+                ['icono' => 'fa-star', 'titulo' => 'Descuento por matrícula anticipada', 'texto' => 'Reserva tu plaza ya y ahorra en el importe total del ciclo.'],
+            ],
+            'botonTexto' => 'Quiero que me llamen',
+        ]],
         ['tipo' => 'empresas', 'contenido' => ['variante' => 'marquee']],
         ['tipo' => 'testimonios', 'contenido' => ['variante' => 'tarjetas']],
+        ['tipo' => 'equipo_docente', 'contenido' => ['variante' => 'carrusel']],
         ['tipo' => 'cifras', 'contenido' => ['variante' => 'minimalista']],
         ['tipo' => 'faq', 'contenido' => ['variante' => 'acordeon']],
         ['tipo' => 'contacto', 'contenido' => ['modoVisualizacion' => 'separado']],

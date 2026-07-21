@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
-require_once __DIR__ . '/../../modelos/directores.php';
+require_once __DIR__ . '/../../include/MfaService.php';
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Endroid\QrCode\Builder\Builder;
@@ -9,10 +10,12 @@ use Endroid\QrCode\Writer\SvgWriter;
 
 Security::initSession();
 
-if (empty($_SESSION['idAdmin'])) {
+$actor = MfaService::sesionActual();
+if (!$actor) {
     header('Location: ../login.php');
     exit;
 }
+require_once __DIR__ . '/../../modelos/' . $actor['modelo'];
 
 // Secreto de alta: se mantiene en sesión hasta que se confirma con un código
 if (empty($_SESSION['mfa_setup_secret'])) {
@@ -20,9 +23,9 @@ if (empty($_SESSION['mfa_setup_secret'])) {
 }
 $secret = $_SESSION['mfa_setup_secret'];
 
-$director = obtenerDirectorPorId((int)$_SESSION['idAdmin']);
-$label = $director['emailDirector'] ?? ('admin#' . (int)$_SESSION['idAdmin']);
-$uri   = Totp::provisioningUri($secret, $label, 'AulaPro');
+$usuario = ($actor['getFn'])($actor['id']);
+$label   = $usuario[$actor['emailField']] ?? ($actor['sessionKey'] . '#' . $actor['id']);
+$uri     = Totp::provisioningUri($secret, $label, 'AulaPro');
 
 $qrDataUri = (new Builder())
     ->build(writer: new SvgWriter(), data: $uri, size: 220, margin: 6)
@@ -31,6 +34,7 @@ $qrDataUri = (new Builder())
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['errores']);
 $csrf = Security::generateCSRFToken();
+$esObligatorio = !empty($_SESSION['mfa_setup_required']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -70,8 +74,8 @@ $csrf = Security::generateCSRFToken();
 <body>
   <form class="card" method="POST" action="../../controladores/auth/mfa_activar.php" autocomplete="off">
     <div class="brand">Aula<b>Pro</b></div>
-    <h1>Protege tu cuenta de administrador</h1>
-    <p class="sub">La verificación en dos pasos es obligatoria para administradores.</p>
+    <h1>Protege tu cuenta</h1>
+    <p class="sub"><?= $esObligatorio ? 'La verificación en dos pasos es obligatoria para continuar.' : 'Añade una segunda capa de seguridad a tu cuenta.' ?></p>
 
     <div class="banner">Escanea el código con Google Authenticator, Microsoft Authenticator o Authy.</div>
 

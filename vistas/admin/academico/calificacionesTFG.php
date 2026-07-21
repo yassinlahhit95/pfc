@@ -24,6 +24,11 @@ if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_c
 
 $listaEvaluacion = listarEvaluacionTFG($idCicloElegido ?: null);
 
+// Años realmente presentes en los resultados — el sistema de cursos es configurable
+// por centro (puede haber 1º-4º o nombres personalizados), no siempre "1º"/"2º".
+$aniosDisponibles = array_values(array_unique(array_filter(array_column($listaEvaluacion, 'anioEstudio'))));
+sort($aniosDisponibles, SORT_NATURAL);
+
 $titulo_pagina = "AULAPRO | GESTIÓN TFG";
 $seccion = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -60,13 +65,19 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </form>
 
-    <div class="campo relleno" style="margin-top:12px;">
-        <label>Filtrar por Año:</label>
-        <select id="filtroAnioTFG" onchange="filtrarTFGPorAnio()">
-            <option value="">-- Todos los Años --</option>
-            <option value="1º">1º Año</option>
-            <option value="2º">2º Año</option>
-        </select>
+    <div class="campo relleno" style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;">
+        <div style="flex:1;">
+            <label>Filtrar por Año:</label>
+            <select id="filtroAnioTFG" onchange="filtrarTFGPorAnio()">
+                <option value="">-- Todos los Años --</option>
+                <?php foreach ($aniosDisponibles as $anio): ?>
+                <option value="<?= Security::escapeHtml($anio) ?>"><?= Security::escapeHtml($anio) ?> Año</option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <?php if ($idNivelFiltro || $idCicloElegido): ?>
+        <a href="calificacionesTFG.php" class="boton-secundario">Limpiar filtros</a>
+        <?php endif; ?>
     </div>
 </div>
 

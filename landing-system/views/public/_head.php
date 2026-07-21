@@ -15,6 +15,49 @@ if (!empty($cfg['logoCentro'])) {
         $logoUrl = '/public/uploads/configuracion/' . $logoFichero;
     }
 }
+
+// Plus Jakarta Sans es la fuente de cuerpo en todos los temas (base.css --lp-fuente)
+// y también la de titulares en "institucional" y "universidad", así que se
+// carga siempre. Sora/Lora solo se piden para los temas que realmente los
+// usan como --lp-fuente-titulos, para no bloquear el render con familias de
+// letra que la plantilla no consume.
+$fuentesTitularesPorTema = [
+    'institucional' => '', // reutiliza Plus Jakarta Sans, ya cargada
+    'clasico'       => 'family=Lora:wght@500;600;700',
+    'vocacional'    => 'family=Sora:wght@400;600;700;800',
+    'universidad'   => '', // reutiliza Plus Jakarta Sans, ya cargada
+];
+$fuenteTitulares = $fuentesTitularesPorTema[$tema] ?? 'family=Sora:wght@400;600;700;800';
+$googleFontsUrl = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800'
+    . ($fuenteTitulares !== '' ? '&' . $fuenteTitulares : '')
+    . '&display=swap';
+
+// Datos estructurados EducationalOrganization — Google recomienda incluir
+// esta marca en todas las páginas del sitio, no solo en la home.
+$_esquemaSitio = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$_urlSitio     = $_esquemaSitio . ($_SERVER['HTTP_HOST'] ?? '');
+$orgSchema = [
+    '@context'    => 'https://schema.org',
+    '@type'       => 'EducationalOrganization',
+    'name'        => $cfg['nombreCentro'] ?? '',
+    'url'         => $_urlSitio,
+    'description' => $descSeo,
+];
+if ($logoUrl) {
+    $orgSchema['logo']  = $_urlSitio . $logoUrl;
+    $orgSchema['image'] = $_urlSitio . $logoUrl;
+}
+if (!empty($cfg['telefonoCentro'])) $orgSchema['telephone'] = $cfg['telefonoCentro'];
+if (!empty($cfg['emailCentro']))    $orgSchema['email']     = $cfg['emailCentro'];
+if (!empty($cfg['direccionCentro']) || !empty($cfg['ciudadCentro'])) {
+    $orgSchema['address'] = array_filter([
+        '@type'           => 'PostalAddress',
+        'streetAddress'   => $cfg['direccionCentro'] ?? '',
+        'postalCode'      => $cfg['cpCentro'] ?? '',
+        'addressLocality' => $cfg['ciudadCentro'] ?? '',
+        'addressCountry'  => 'ES',
+    ]);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,10 +75,11 @@ if (!empty($cfg['logoCentro'])) {
 <meta property="og:title" content="<?= Security::escapeHtml($tituloSeo) ?>">
 <meta property="og:description" content="<?= Security::escapeHtml($descSeo) ?>">
 <meta property="og:locale" content="es_ES">
+<script type="application/ld+json"><?= json_encode($orgSchema, JSON_UNESCAPED_UNICODE) ?></script>
 <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="<?= Security::escapeHtml($googleFontsUrl) ?>" rel="stylesheet">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="/landing-system/temas/base.css">

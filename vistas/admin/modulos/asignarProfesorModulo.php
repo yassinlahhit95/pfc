@@ -36,9 +36,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
 
-        <div class="campo">
-            <label>Profesor Asignado:</label>
-            <select name="idProfesor">
+        <div class="campo ancho-total">
+            <label for="idProfesor">Profesor Asignado:</label>
+            <select name="idProfesor" id="idProfesor">
                 <option value="">-- Sin Profesor Asignado --</option>
                 <?php foreach ($todosLosProfesores as $prof) { ?>
                     <option value="<?= (int)$prof['idProfesor'] ?>" <?= ($prof['idProfesor'] == $idProfesorActual ? 'selected' : '') ?>>

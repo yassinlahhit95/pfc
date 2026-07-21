@@ -7,6 +7,7 @@
   <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Roboto',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0e1f;overflow:hidden;}
@@ -17,7 +18,7 @@
     .grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:32px 32px;}
     .tarjeta{position:relative;z-index:1;background:rgba(255,255,255,.07);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:56px 48px;text-align:center;max-width:480px;width:90%;animation:aparecer .6s ease forwards;}
     @keyframes aparecer{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .icono{font-size:4rem;margin-bottom:16px;line-height:1;}
+    .icono{font-size:4rem;margin-bottom:16px;line-height:1;color:#ef4444;}
     .titulo{font-size:1.5rem;font-weight:700;color:#ffffff;margin-bottom:12px;}
     .subtitulo{font-size:.95rem;color:#94a3b8;line-height:1.7;margin-bottom:12px;}
     .mensaje-admin{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:14px 18px;font-size:.9rem;color:#fca5a5;margin:20px 0;line-height:1.6;text-align:left;}
@@ -37,7 +38,7 @@
 </div>
 
 <div class="tarjeta">
-  <div class="icono">🔒</div>
+  <div class="icono"><i class="fas fa-lock"></i></div>
   <h1 class="titulo">Acceso Suspendido</h1>
   <p class="subtitulo">
     Tu acceso a <strong>AulaPro</strong> ha sido suspendido temporalmente.<br>

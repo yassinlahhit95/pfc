@@ -11,6 +11,12 @@
   --lp-radio: 32px; /* Radios súper grandes estilo app móvil */
   --lp-radio-boton: 999px;
   --lp-footer-fondo: #0a0a0b;
+  /* Pareja de acento propia: el valor por defecto de base.css mezcla con
+     #4f46e5 (índigo), lo que convertía el naranja de campaña en un malva
+     apagado en la banda CTA del pie (se ve en todas las páginas). Naranja
+     → rojo/rosa vivo es la pareja clásica de urgencia/campaña, mucho más
+     coherente con un tema pensado para captar matrícula. */
+  --lp-acento-2: color-mix(in srgb, var(--lp-acento) 60%, #e11d48);
 }
 
 /* Paleta clara + neumorfismo (solo modo claro; en oscuro manda base.css) */
@@ -35,7 +41,12 @@ html:not([data-theme="dark"]) .tema-vocacional {
   padding: 160px 0 140px;
   background: linear-gradient(-45deg, #0a0a0b, color-mix(in srgb, var(--lp-acento) 12%, #0a0a0b), color-mix(in srgb, var(--lp-acento) 26%, #0a0a0b), #0a0a0b);
   background-size: 400% 400%;
-  animation: meshGradient 15s ease infinite;
+}
+/* El degradado se ve igual en reposo sin "prefers-reduced-motion" — solo se
+   condiciona el movimiento continuo, que antes corría siempre sin ninguna
+   forma de pararlo. */
+@media (prefers-reduced-motion: no-preference) {
+  .tema-vocacional .lp-hero { animation: meshGradient 15s ease infinite; }
 }
 .tema-vocacional .lp-hero-velo {
   background: linear-gradient(100deg, rgba(10, 10, 11, .9) 25%, rgba(10, 10, 11, .5));
@@ -45,14 +56,32 @@ html:not([data-theme="dark"]) .tema-vocacional {
   color: #fff; border: none; box-shadow: 0 8px 20px color-mix(in srgb, var(--lp-acento) 40%, transparent);
 }
 
-/* Tarjetas estilo neumorfismo suave */
-.tema-vocacional .lp-tarjeta, .tema-vocacional .lp-contacto-grid {
+/* Tarjetas estilo neumorfismo suave. Incluye testimonios y FAQ: son clases
+   propias (.lp-testimonio-card / .lp-faq-item), no ".lp-tarjeta", así que
+   sin esto se veían genéricas sea cual sea el tema — se repite en los 4
+   temas, no solo aquí. El neumorfismo (fondo blanco + sombra doble
+   clara/oscura) solo tiene sentido en modo claro: estaba puesto sin
+   condición, así que en modo oscuro las tarjetas quedaban blancas y
+   flotando sobre una página oscura — se corrige de paso. */
+.tema-vocacional .lp-tarjeta, .tema-vocacional .lp-contacto-grid,
+.tema-vocacional .lp-testimonio-card, .tema-vocacional .lp-faq-item {
   border: none;
-  background: #ffffff;
   box-shadow: var(--lp-sombra);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.tema-vocacional .lp-tarjeta:hover {
+html:not([data-theme="dark"]) .tema-vocacional .lp-tarjeta,
+html:not([data-theme="dark"]) .tema-vocacional .lp-contacto-grid,
+html:not([data-theme="dark"]) .tema-vocacional .lp-testimonio-card,
+html:not([data-theme="dark"]) .tema-vocacional .lp-faq-item {
+  background: #ffffff;
+}
+[data-theme="dark"] .tema-vocacional .lp-tarjeta,
+[data-theme="dark"] .tema-vocacional .lp-contacto-grid,
+[data-theme="dark"] .tema-vocacional .lp-testimonio-card,
+[data-theme="dark"] .tema-vocacional .lp-faq-item {
+  border: 1px solid var(--lp-borde);
+}
+.tema-vocacional .lp-tarjeta:hover, .tema-vocacional .lp-testimonio-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--lp-sombra-hover);
 }

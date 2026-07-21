@@ -95,9 +95,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
 
         <div class="campo">
-            <label>Seleccione el archivo de su TFG (PDF o Word)</label>
+            <label for="archivoTFG">Seleccione el archivo de su TFG (PDF o Word)</label>
             <p class="texto-suave" style="margin-bottom: 10px;">Formatos aceptados: .pdf, .doc, .docx. Tamaño máximo: 20 MB.</p>
-            <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx">
+            <input type="file" name="archivoTFG" id="archivoTFG" accept=".pdf,.doc,.docx">
         </div>
 
         <div class="acciones">

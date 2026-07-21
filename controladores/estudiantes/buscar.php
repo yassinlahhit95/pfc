@@ -2,7 +2,8 @@
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/../../include/Security.php';
+Security::initSession();
 if (empty($_SESSION['idEstudiante'])) {
     http_response_code(403);
     echo json_encode([]);

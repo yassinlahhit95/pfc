@@ -152,6 +152,12 @@ function _nav_active_est($check) {
         <?php if (_nav_active_est('horario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../asistencias/lista.php" class="nav-item<?= _nav_active_est('asistencias') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+        <span class="nav-label">Mis Faltas</span>
+        <?php if (_nav_active_est('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
       <!-- AULA DIGITAL -->
       <span class="nav-section-title">AULA DIGITAL</span>
 

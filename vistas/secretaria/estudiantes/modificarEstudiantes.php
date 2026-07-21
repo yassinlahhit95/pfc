@@ -48,66 +48,72 @@ include __DIR__ . '/../comunes/nav.php';
         <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
         <input type="hidden" name="fechaAltaEstudiante" value="<?= Security::escapeHtml($estudiante['fechaAltaEstudiante'] ?? '') ?>">
 
-        <!-- Nombre -->
-        <div class="campo<?= fieldClass($errores, 'nombre') ?>">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" name="nombre" id="nombre" value="<?= $valorCampo('nombreEstudiante') ?>">
-            <?= fieldError($errores, 'nombre') ?>
+        <div class="form-fila">
+            <!-- Nombre -->
+            <div class="campo<?= fieldClass($errores, 'nombre') ?>">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" name="nombre" id="nombre" value="<?= $valorCampo('nombreEstudiante') ?>">
+                <?= fieldError($errores, 'nombre') ?>
+            </div>
+
+            <!-- Email -->
+            <div class="campo<?= fieldClass($errores, 'email') ?>">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" value="<?= $valorCampo('emailEstudiante') ?>">
+                <?= fieldError($errores, 'email') ?>
+            </div>
         </div>
 
-        <!-- Email -->
-        <div class="campo<?= fieldClass($errores, 'email') ?>">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="<?= $valorCampo('emailEstudiante') ?>">
-            <?= fieldError($errores, 'email') ?>
+        <div class="form-fila">
+            <!-- DNI -->
+            <div class="campo<?= fieldClass($errores, 'dni') ?>">
+                <label for="dni">DNI</label>
+                <input type="text" name="dni" id="dni" value="<?= $valorCampo('dniEstudiante') ?>">
+                <?= fieldError($errores, 'dni') ?>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="campo<?= fieldClass($errores, 'telefono') ?>">
+                <label for="telefono">Teléfono</label>
+                <input type="text" name="telefono" id="telefono" value="<?= $valorCampo('telefonoEstudiante') ?>">
+                <?= fieldError($errores, 'telefono') ?>
+            </div>
+
+            <!-- Fecha Nacimiento -->
+            <div class="campo<?= fieldClass($errores, 'fechaNacimiento') ?>">
+                <label for="fechaNacimiento">Fecha de nacimiento</label>
+                <input type="date" name="fechaNacimiento" id="fechaNacimiento" value="<?= $valorCampo('fechaNacimientoEstudiante') ?>">
+                <?= fieldError($errores, 'fechaNacimiento') ?>
+            </div>
         </div>
 
-        <!-- DNI -->
-        <div class="campo<?= fieldClass($errores, 'dni') ?>">
-            <label for="dni">DNI</label>
-            <input type="text" name="dni" id="dni" value="<?= $valorCampo('dniEstudiante') ?>">
-            <?= fieldError($errores, 'dni') ?>
-        </div>
+        <div class="form-fila">
+            <!-- Nivel / Curso -->
+            <div class="campo<?= fieldClass($errores, 'curso') ?>">
+                <label for="curso">Nivel</label>
+                <select name="curso" id="curso" onchange="filtrarCiclos()">
+                    <option value="Grado Medio" <?= (($datos['curso'] ?? $estudiante['curso'] ?? '') === 'Grado Medio') ? 'selected' : '' ?>>Grado Medio</option>
+                    <option value="Grado Superior" <?= (($datos['curso'] ?? $estudiante['curso'] ?? '') === 'Grado Superior') ? 'selected' : '' ?>>Grado Superior</option>
+                </select>
+                <?= fieldError($errores, 'curso') ?>
+            </div>
 
-        <!-- Teléfono -->
-        <div class="campo<?= fieldClass($errores, 'telefono') ?>">
-            <label for="telefono">Teléfono</label>
-            <input type="text" name="telefono" id="telefono" value="<?= $valorCampo('telefonoEstudiante') ?>">
-            <?= fieldError($errores, 'telefono') ?>
-        </div>
+            <!-- Ciclo formativo -->
+            <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
+                <label for="idCiclo">Ciclo formativo</label>
+                <select name="idCiclo" id="idCiclo">
+                    <option value="">— Seleccionar —</option>
+                </select>
+                <?= fieldError($errores, 'idCiclo') ?>
+            </div>
 
-        <!-- Fecha Nacimiento -->
-        <div class="campo<?= fieldClass($errores, 'fechaNacimiento') ?>">
-            <label for="fechaNacimiento">Fecha de nacimiento</label>
-            <input type="date" name="fechaNacimiento" id="fechaNacimiento" value="<?= $valorCampo('fechaNacimientoEstudiante') ?>">
-            <?= fieldError($errores, 'fechaNacimiento') ?>
-        </div>
-
-        <!-- Nivel / Curso -->
-        <div class="campo<?= fieldClass($errores, 'curso') ?>">
-            <label for="curso">Nivel</label>
-            <select name="curso" id="curso" onchange="filtrarCiclos()">
-                <option value="Grado Medio" <?= (($datos['curso'] ?? $estudiante['curso'] ?? '') === 'Grado Medio') ? 'selected' : '' ?>>Grado Medio</option>
-                <option value="Grado Superior" <?= (($datos['curso'] ?? $estudiante['curso'] ?? '') === 'Grado Superior') ? 'selected' : '' ?>>Grado Superior</option>
-            </select>
-            <?= fieldError($errores, 'curso') ?>
-        </div>
-
-        <!-- Año de estudio -->
-        <div class="campo">
-            <label for="anioEstudio">Año de estudio</label>
-            <select name="anioEstudio" id="anioEstudio">
-                <option value="">— Sin especificar —</option>
-            </select>
-        </div>
-
-        <!-- Ciclo formativo -->
-        <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
-            <label for="idCiclo">Ciclo formativo</label>
-            <select name="idCiclo" id="idCiclo">
-                <option value="">— Seleccionar —</option>
-            </select>
-            <?= fieldError($errores, 'idCiclo') ?>
+            <!-- Año de estudio -->
+            <div class="campo">
+                <label for="anioEstudio">Año de estudio</label>
+                <select name="anioEstudio" id="anioEstudio">
+                    <option value="">— Sin especificar —</option>
+                </select>
+            </div>
         </div>
 
         <!-- Dirección -->
@@ -117,18 +123,20 @@ include __DIR__ . '/../comunes/nav.php';
             <?= fieldError($errores, 'direccion') ?>
         </div>
 
-        <!-- Ciudad -->
-        <div class="campo<?= fieldClass($errores, 'ciudad') ?>">
-            <label for="ciudad">Ciudad</label>
-            <input type="text" name="ciudad" id="ciudad" value="<?= $valorCampo('ciudadEstudiante') ?>">
-            <?= fieldError($errores, 'ciudad') ?>
-        </div>
+        <div class="form-fila">
+            <!-- Ciudad -->
+            <div class="campo<?= fieldClass($errores, 'ciudad') ?>">
+                <label for="ciudad">Ciudad</label>
+                <input type="text" name="ciudad" id="ciudad" value="<?= $valorCampo('ciudadEstudiante') ?>">
+                <?= fieldError($errores, 'ciudad') ?>
+            </div>
 
-        <!-- Código Postal -->
-        <div class="campo<?= fieldClass($errores, 'codigoPostal') ?>">
-            <label for="codigoPostal">Código Postal</label>
-            <input type="text" name="codigoPostal" id="codigoPostal" value="<?= $valorCampo('codigoPostalEstudiante') ?>">
-            <?= fieldError($errores, 'codigoPostal') ?>
+            <!-- Código Postal -->
+            <div class="campo<?= fieldClass($errores, 'codigoPostal') ?>">
+                <label for="codigoPostal">Código Postal</label>
+                <input type="text" name="codigoPostal" id="codigoPostal" value="<?= $valorCampo('codigoPostalEstudiante') ?>">
+                <?= fieldError($errores, 'codigoPostal') ?>
+            </div>
         </div>
 
         <!-- Observaciones -->

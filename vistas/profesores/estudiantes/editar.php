@@ -40,55 +40,53 @@ $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
         <div class="formulario">
-            <div class="campo">
-                <label for="nombreEstudiante">Nombre Completo</label>
-                <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? '') ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="nombreEstudiante">Nombre Completo</label>
+                    <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? '') ?>">
+                </div>
 
+                <div class="campo">
+                    <label for="emailEstudiante">Email</label>
+                    <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? '') ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="emailEstudiante">Email</label>
-                <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? '') ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="dniEstudiante">DNI</label>
+                    <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= Security::escapeHtml($datos['dniEstudiante'] ?? '') ?>">
+                </div>
 
+                <div class="campo">
+                    <label for="telefonoEstudiante">Teléfono</label>
+                    <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? '') ?>">
+                </div>
+
+                <div class="campo">
+                    <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
+                    <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($datos['fechaNacimientoEstudiante'] ?? '') ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="dniEstudiante">DNI</label>
-                <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= Security::escapeHtml($datos['dniEstudiante'] ?? '') ?>">
-
-            </div>
-
-            <div class="campo">
-                <label for="telefonoEstudiante">Teléfono</label>
-                <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? '') ?>">
-
-            </div>
-
-            <div class="campo">
-                <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
-                <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($datos['fechaNacimientoEstudiante'] ?? '') ?>">
-
-            </div>
-
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= Security::escapeHtml($datos['direccionEstudiante'] ?? '') ?>">
-
             </div>
 
-            <div class="campo">
-                <label for="ciudadEstudiante">Ciudad</label>
-                <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= Security::escapeHtml($datos['ciudadEstudiante'] ?? '') ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="ciudadEstudiante">Ciudad</label>
+                    <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= Security::escapeHtml($datos['ciudadEstudiante'] ?? '') ?>">
+                </div>
 
+                <div class="campo">
+                    <label for="codigoPostalEstudiante">Código Postal</label>
+                    <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="codigoPostalEstudiante">Código Postal</label>
-                <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
-
-            </div>
-
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="idCiclo">Ciclo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona un ciclo --</option>
@@ -98,7 +96,6 @@ $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
                         </option>
                     <?php } ?>
                 </select>
-
             </div>
         </div>
 

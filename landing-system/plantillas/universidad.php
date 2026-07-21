@@ -40,6 +40,10 @@ return [
             'titulo'    => 'Nuestros campus',
             'subtitulo' => 'Entornos de aprendizaje equipados con la última tecnología.',
         ]],
+        ['tipo' => 'equipo_docente', 'contenido' => [
+            'titulo'    => 'Nuestro claustro',
+            'subtitulo' => 'Profesionales en activo al frente de cada módulo.',
+        ]],
         ['tipo' => 'testimonios', 'contenido' => [
             'variante' => 'carrusel',
             'titulo'   => 'Alumnos destacados',
@@ -48,9 +52,28 @@ return [
             'variante' => 'acordeon',
             'titulo'   => 'Preguntas frecuentes',
         ]],
+        // Nota: no se duplica el tipo "empresas" para separar "socios de FCT"
+        // de "acreditaciones oficiales" — secciones/empresas.php usa un id
+        // HTML fijo (id="empresas"), así que una segunda instancia del mismo
+        // tipo generaría un id duplicado (HTML inválido y el ancla del menú
+        // solo llegaría a la primera). Se combina el mensaje en una sola
+        // sección en su lugar.
         ['tipo' => 'empresas', 'contenido' => [
             'titulo' => 'Conectados con el mundo empresarial',
-            'texto'  => 'Trabajamos con líderes del sector para asegurar tu inserción laboral.',
+            'texto'  => 'Trabajamos con líderes del sector para asegurar tu inserción laboral — con titulaciones oficiales reconocidas por la administración educativa, con validez en toda España y la Unión Europea.',
+        ]],
+        // Copy con tono de prestigio corporativo, no de "academia económica"
+        // (ver el texto por defecto de esta sección en engine/secciones.php).
+        ['tipo' => 'becas_financiacion', 'contenido' => [
+            'titulo'    => 'Invierte en tu futuro con flexibilidad',
+            'subtitulo' => 'Estudiar aquí es una decisión seria — por eso ofrecemos condiciones de pago igual de serias.',
+            'items' => [
+                ['icono' => 'fa-piggy-bank', 'titulo' => 'Financiación a medida', 'texto' => 'Planes de pago flexibles adaptados a tu situación, sin sorpresas.'],
+                ['icono' => 'fa-shield-halved', 'titulo' => 'Becas de excelencia', 'texto' => 'Reconocemos el talento y el esfuerzo con becas propias del centro.'],
+                ['icono' => 'fa-money-bill-wave', 'titulo' => 'Becas y ayudas oficiales', 'texto' => 'Te asesoramos sobre las convocatorias públicas a las que puedas optar.'],
+            ],
+            'botonTexto' => 'Solicitar información',
+            'notaLegal' => 'Las condiciones de becas y financiación están sujetas a estudio previo y a la normativa de cada convocatoria. Consulta con admisiones.',
         ]],
         ['tipo' => 'prematricula_cta', 'contenido' => [
             'variante'   => 'banner',

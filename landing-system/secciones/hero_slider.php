@@ -55,6 +55,9 @@ $sliderId = 'hero-slider-' . uniqid();
         <?php endforeach; ?>
       </div>
       <button class="lp-slider-next" aria-label="Siguiente slide"><i class="fas fa-arrow-right"></i></button>
+      <?php if ($autoplay): ?>
+      <button class="lp-slider-playpause" type="button" aria-label="Pausar reproducción automática" aria-pressed="false"><i class="fas fa-pause"></i></button>
+      <?php endif; ?>
     </div>
     <?php endif; ?>
     
@@ -66,54 +69,84 @@ $sliderId = 'hero-slider-' . uniqid();
 (function() {
     const container = document.getElementById('<?= $sliderId ?>');
     if (!container) return;
-    
-    const slides = container.querySelectorAll('.lp-slide');
-    const dots = container.querySelectorAll('.lp-slider-dot');
+
+    const slides  = container.querySelectorAll('.lp-slide');
+    const dots    = container.querySelectorAll('.lp-slider-dot');
     const prevBtn = container.querySelector('.lp-slider-prev');
     const nextBtn = container.querySelector('.lp-slider-next');
-    
+    const playBtn = container.querySelector('.lp-slider-playpause');
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     let currentIndex = 0;
     const totalSlides = slides.length;
     let autoplayTimer = null;
-    const autoplayEnabled = <?= $autoplay ? 'true' : 'false' ?>;
-    
+    // El autoplay respeta "reduce motion" del sistema: si el usuario lo pide,
+    // el carrusel arranca en pausa y solo avanza si el propio usuario le da a play.
+    let running = (<?= $autoplay ? 'true' : 'false' ?>) && !reduceMotion;
+
     function goToSlide(index) {
         if (index < 0) index = totalSlides - 1;
         if (index >= totalSlides) index = 0;
-        
+
         // Remove active class from previous
         slides[currentIndex].classList.remove('active');
         dots[currentIndex].classList.remove('active');
-        
+
         currentIndex = index;
-        
+
         // Add active class to new
         slides[currentIndex].classList.add('active');
         dots[currentIndex].classList.add('active');
-        
-        resetAutoplay();
+
+        if (running) startAutoplay();
     }
-    
+
     function nextSlide() { goToSlide(currentIndex + 1); }
     function prevSlide() { goToSlide(currentIndex - 1); }
-    
-    function resetAutoplay() {
-        if (autoplayTimer) clearInterval(autoplayTimer);
-        if (autoplayEnabled) {
-            autoplayTimer = setInterval(nextSlide, 6000);
-        }
+
+    function startAutoplay() {
+        stopAutoplay();
+        autoplayTimer = setInterval(nextSlide, 6000);
     }
-    
+    function stopAutoplay() {
+        if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+    }
+
+    function pintarPlayBtn() {
+        if (!playBtn) return;
+        playBtn.innerHTML = running ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        playBtn.setAttribute('aria-label', running ? 'Pausar reproducción automática' : 'Reanudar reproducción automática');
+        playBtn.setAttribute('aria-pressed', running ? 'false' : 'true');
+    }
+
     if (prevBtn) prevBtn.addEventListener('click', prevSlide);
     if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
+
     dots.forEach(dot => {
         dot.addEventListener('click', () => {
             goToSlide(parseInt(dot.getAttribute('data-index')));
         });
     });
-    
-    resetAutoplay();
+
+    // Control manual: pausa/reanuda de forma explícita (WCAG 2.2.2).
+    if (playBtn) {
+        playBtn.addEventListener('click', function () {
+            running = !running;
+            if (running) startAutoplay(); else stopAutoplay();
+            pintarPlayBtn();
+        });
+        pintarPlayBtn();
+    }
+
+    // Pausa temporal al pasar el ratón o el foco por encima, sin alterar
+    // la preferencia manual del usuario (solo reanuda si seguía "running").
+    container.addEventListener('mouseenter', stopAutoplay);
+    container.addEventListener('mouseleave', function () { if (running) startAutoplay(); });
+    container.addEventListener('focusin', stopAutoplay);
+    container.addEventListener('focusout', function () { if (running) startAutoplay(); });
+
+    if (running) startAutoplay();
 })();
 </script>
 <?php endif; ?>

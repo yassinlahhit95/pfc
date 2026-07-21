@@ -103,31 +103,7 @@ function validarLoginDirector($email, $password) {
     return null;
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// MFA / DOBLE FACTOR (TOTP)
-// ══════════════════════════════════════════════════════════════════════
-
-function obtenerMfaDirector($idDirector) {
-    $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT mfa_enabled, mfa_secret, mfa_backup_codes FROM directores WHERE idDirector = ?");
-    mysqli_stmt_bind_param($stmt, "i", $idDirector);
-    mysqli_stmt_execute($stmt);
-    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
-}
-
-function activarMfaDirector($idDirector, $secret, $backupCodesJson) {
-    $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE directores SET mfa_enabled = 1, mfa_secret = ?, mfa_backup_codes = ? WHERE idDirector = ?");
-    mysqli_stmt_bind_param($stmt, "ssi", $secret, $backupCodesJson, $idDirector);
-    return mysqli_stmt_execute($stmt);
-}
-
-function actualizarBackupCodesDirector($idDirector, $backupCodesJson) {
-    $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE directores SET mfa_backup_codes = ? WHERE idDirector = ?");
-    mysqli_stmt_bind_param($stmt, "si", $backupCodesJson, $idDirector);
-    return mysqli_stmt_execute($stmt);
-}
+// MFA / doble factor: generalizado a los 5 roles en include/MfaService.php.
 
 // ══════════════════════════════════════════════════════════════════════
 // UTILIDADES

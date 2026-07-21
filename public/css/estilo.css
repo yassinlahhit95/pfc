@@ -452,6 +452,7 @@ ul { list-style-position: inside; }
 .formulario > h4,
 .formulario > .cuadricula-secundaria,
 .formulario > .titulo-tarjeta,
+.formulario > .campo-checkbox-grupo,
 .formulario > p { grid-column: 1 / -1; }
 
 /* Dissolve legacy .row wrappers so their campo children become direct grid items */
@@ -780,6 +781,30 @@ ul { list-style-position: inside; }
 .badge-error    { background: var(--rojo-suave);     color: var(--rojo-ink); }
 .badge-alerta   { background: var(--amarillo-suave); color: var(--amarillo-ink); }
 .badge-ambar    { background: var(--naranja-suave);  color: var(--naranja-ink); }
+
+/* Avisos de atención — banda de alertas accionables (p. ej. portal de familias) */
+.aviso-atencion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.aviso-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter .15s ease, transform .15s ease;
+}
+a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
+.aviso-chip--rojo    { background: var(--rojo-suave);    color: var(--rojo-ink); }
+.aviso-chip--naranja { background: var(--naranja-suave); color: var(--naranja-ink); }
+.aviso-chip--azul    { background: var(--azul-suave);    color: var(--azul-ink); }
+.aviso-chip--verde   { background: var(--verde-suave);   color: var(--verde-ink); }
 
 
 

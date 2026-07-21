@@ -40,31 +40,35 @@ $ciclosParaSelector = array_map(function ($ciclo) use ($cursosPorCiclo) {
     <h3 style="margin-top:0;">Basar en un ciclo académico existente (opcional)</h3>
     <p class="texto-suave" style="margin-top:-8px;">Autorrellena título, etiqueta y precio a partir de un ciclo ya dado de alta en Académico. Podrás editar cualquier campo antes de guardar.</p>
     <div class="formulario">
-        <div class="campo">
-            <label for="ocFiltroNivel">Tipo de grado</label>
-            <select id="ocFiltroNivel" onchange="ocFiltrarCiclos()">
-                <option value="">-- Todos --</option>
-                <?php foreach ($listaNivelesOferta as $nivelOferta): ?>
-                <option value="<?= Security::escapeHtml($nivelOferta['nombreNivel']) ?>"><?= Security::escapeHtml($nivelOferta['nombreNivel']) ?></option>
-                <?php endforeach; ?>
-            </select>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="ocFiltroNivel">Tipo de grado</label>
+                <select id="ocFiltroNivel" onchange="ocFiltrarCiclos()">
+                    <option value="">-- Todos --</option>
+                    <?php foreach ($listaNivelesOferta as $nivelOferta): ?>
+                    <option value="<?= Security::escapeHtml($nivelOferta['nombreNivel']) ?>"><?= Security::escapeHtml($nivelOferta['nombreNivel']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="campo">
+                <label for="ocFiltroDuracion">Duración</label>
+                <select id="ocFiltroDuracion" onchange="ocFiltrarCiclos()">
+                    <option value="">-- Todas --</option>
+                    <option value="1">1 año</option>
+                    <option value="2">2 años</option>
+                </select>
+            </div>
         </div>
-        <div class="campo">
-            <label for="ocFiltroDuracion">Duración</label>
-            <select id="ocFiltroDuracion" onchange="ocFiltrarCiclos()">
-                <option value="">-- Todas --</option>
-                <option value="1">1 año</option>
-                <option value="2">2 años</option>
-            </select>
-        </div>
-        <div class="campo">
-            <label for="ocCicloExistente">Ciclo académico</label>
-            <select id="ocCicloExistente">
-                <option value="">-- Selecciona un ciclo --</option>
-            </select>
-        </div>
-        <div class="campo" style="display:flex;align-items:flex-end;">
-            <button type="button" class="boton-secundario" id="ocUsarCiclo"><i class="fas fa-arrow-down"></i> Usar estos datos</button>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="ocCicloExistente">Ciclo académico</label>
+                <select id="ocCicloExistente">
+                    <option value="">-- Selecciona un ciclo --</option>
+                </select>
+            </div>
+            <div class="campo" style="display:flex;align-items:flex-end;">
+                <button type="button" class="boton-secundario" id="ocUsarCiclo"><i class="fas fa-arrow-down"></i> Usar estos datos</button>
+            </div>
         </div>
     </div>
 </div>
@@ -82,49 +86,55 @@ $ciclosParaSelector = array_map(function ($ciclo) use ($cursosPorCiclo) {
                 <?= fieldError($errores, 'titulo') ?>
             </div>
 
-            <div class="campo">
-                <label for="etiqueta">Etiqueta</label>
-                <input type="text" id="etiqueta" name="etiqueta" maxlength="60"
-                       placeholder="Ej: Grado Superior"
-                       value="<?= Security::escapeHtml($datos['etiqueta'] ?? '') ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="etiqueta">Etiqueta</label>
+                    <input type="text" id="etiqueta" name="etiqueta" maxlength="60"
+                           placeholder="Ej: Grado Superior"
+                           value="<?= Security::escapeHtml($datos['etiqueta'] ?? '') ?>">
+                </div>
+
+                <div class="campo">
+                    <label for="precio">Precio</label>
+                    <input type="text" id="precio" name="precio" maxlength="60"
+                           placeholder="Ej: 1.200 € /curso"
+                           value="<?= Security::escapeHtml($datos['precio'] ?? '') ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="precio">Precio</label>
-                <input type="text" id="precio" name="precio" maxlength="60"
-                       placeholder="Ej: 1.200 € /curso"
-                       value="<?= Security::escapeHtml($datos['precio'] ?? '') ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="duracion">Duración</label>
+                    <input type="text" id="duracion" name="duracion" maxlength="60"
+                           placeholder="Ej: 2.000 horas / 2 cursos"
+                           value="<?= Security::escapeHtml($datos['duracion'] ?? '') ?>">
+                </div>
+
+                <div class="campo">
+                    <label for="modalidad">Modalidad</label>
+                    <input type="text" id="modalidad" name="modalidad" maxlength="60"
+                           placeholder="Ej: Presencial"
+                           value="<?= Security::escapeHtml($datos['modalidad'] ?? '') ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="duracion">Duración</label>
-                <input type="text" id="duracion" name="duracion" maxlength="60"
-                       placeholder="Ej: 2.000 horas / 2 cursos"
-                       value="<?= Security::escapeHtml($datos['duracion'] ?? '') ?>">
-            </div>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="orden">Orden en el catálogo</label>
+                    <input type="number" id="orden" name="orden" min="0" step="1"
+                           value="<?= Security::escapeHtml($datos['orden'] ?? '0') ?>">
+                </div>
 
-            <div class="campo">
-                <label for="modalidad">Modalidad</label>
-                <input type="text" id="modalidad" name="modalidad" maxlength="60"
-                       placeholder="Ej: Presencial"
-                       value="<?= Security::escapeHtml($datos['modalidad'] ?? '') ?>">
-            </div>
-
-            <div class="campo">
-                <label for="orden">Orden en el catálogo</label>
-                <input type="number" id="orden" name="orden" min="0" step="1"
-                       value="<?= Security::escapeHtml($datos['orden'] ?? '0') ?>">
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'imagen') ?>">
-                <label>Imagen de portada</label>
-                <label class="zona-subida" for="imagen">
-                    <i class="fas fa-image"></i>
-                    <span>Elige una imagen de portada</span>
-                    <small>JPG, PNG o WebP</small>
-                    <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
-                </label>
-                <?= fieldError($errores, 'imagen') ?>
+                <div class="campo<?= fieldClass($errores, 'imagen') ?>">
+                    <label for="imagen">Imagen de portada</label>
+                    <label class="zona-subida" for="imagen">
+                        <i class="fas fa-image"></i>
+                        <span>Elige una imagen de portada</span>
+                        <small>JPG, PNG o WebP</small>
+                        <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
+                    </label>
+                    <?= fieldError($errores, 'imagen') ?>
+                </div>
             </div>
 
             <div class="campo ancho-total">

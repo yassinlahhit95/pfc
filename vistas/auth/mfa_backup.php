@@ -1,14 +1,16 @@
 <?php
 require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . '/../../include/MfaService.php';
 Security::initSession();
 
-if (empty($_SESSION['idAdmin'])) {
+$actor = MfaService::sesionActual();
+if (!$actor) {
     header('Location: ../login.php');
     exit;
 }
 $codes = $_SESSION['mfa_backup_plain'] ?? null;
 if (!$codes || !is_array($codes)) {
-    header('Location: ../admin/inicio/dashboard.php');
+    header('Location: ' . $actor['home']);
     exit;
 }
 unset($_SESSION['mfa_backup_plain']); // se muestran una sola vez
@@ -19,6 +21,7 @@ unset($_SESSION['mfa_backup_plain']); // se muestran una sola vez
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Códigos de respaldo — AulaPro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root { --primary:#4f46e5; --primary-strong:#3730a3; }
   * { box-sizing:border-box; }
@@ -45,13 +48,13 @@ unset($_SESSION['mfa_backup_plain']); // se muestran una sola vez
     <div class="brand">Aula<b>Pro</b></div>
     <h1>Guarda tus códigos de respaldo</h1>
     <p class="sub">Te permiten acceder si pierdes el teléfono. Cada uno sirve una sola vez.</p>
-    <div class="warn">⚠️ No se volverán a mostrar. Guárdalos en un lugar seguro <b>ahora</b>.</div>
+    <div class="warn"><i class="fas fa-triangle-exclamation"></i> No se volverán a mostrar. Guárdalos en un lugar seguro <b>ahora</b>.</div>
     <div class="codes">
       <?php foreach ($codes as $codigo): ?>
         <span><?= Security::escapeHtml($codigo) ?></span>
       <?php endforeach; ?>
     </div>
-    <a class="btn" href="../admin/inicio/dashboard.php">Ya los he guardado, continuar</a>
+    <a class="btn" href="<?= Security::escapeHtml($actor['home']) ?>">Ya los he guardado, continuar</a>
   </div>
 </body>
 </html>

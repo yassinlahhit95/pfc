@@ -64,32 +64,34 @@ $seccion = 'calificaciones';
 
 <div class="panel margen-abajo">
     <form method="GET" class="formulario">
-        <div class="campo">
-            <label for="idCiclo">Ciclo</label>
-            <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
-                <option value="">— Selecciona ciclo —</option>
-                <?php foreach ($listaCiclos as $ciclo): ?>
-                <option value="<?= (int)$ciclo['idCiclo'] ?>"
-                    <?= ($ciclo['idCiclo'] == $idCicloElegido) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($ciclo['nombreCiclo']) ?> (<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>)
-                </option>
-                <?php endforeach; ?>
-            </select>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="idCiclo">Ciclo</label>
+                <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
+                    <option value="">— Selecciona ciclo —</option>
+                    <?php foreach ($listaCiclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>"
+                        <?= ($ciclo['idCiclo'] == $idCicloElegido) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($ciclo['nombreCiclo']) ?> (<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>)
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php if (!empty($listaModulos)): ?>
+            <div class="campo">
+                <label for="idModulo">Módulo</label>
+                <select name="idModulo" id="idModulo" onchange="this.form.submit()">
+                    <option value="">— Selecciona módulo —</option>
+                    <?php foreach ($listaModulos as $modulo): ?>
+                    <option value="<?= (int)$modulo['idModulo'] ?>"
+                        <?= ($modulo['idModulo'] == $idModuloElegido) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php if (!empty($listaModulos)): ?>
-        <div class="campo">
-            <label for="idModulo">Módulo</label>
-            <select name="idModulo" id="idModulo" onchange="this.form.submit()">
-                <option value="">— Selecciona módulo —</option>
-                <?php foreach ($listaModulos as $modulo): ?>
-                <option value="<?= (int)$modulo['idModulo'] ?>"
-                    <?= ($modulo['idModulo'] == $idModuloElegido) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($modulo['nombreModulo']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <?php endif; ?>
     </form>
 </div>
 

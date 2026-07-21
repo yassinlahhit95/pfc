@@ -82,7 +82,9 @@ include_once __DIR__ . '/../comunes/nav.php';
           <label for="awc-anioAcademico">Año académico</label>
           <input type="text" id="awc-anioAcademico" name="anioAcademico" maxlength="9" placeholder="2026-2027">
         </div>
-        <button type="submit" class="boton-primario">Crear configuración</button>
+        <div class="acciones">
+          <button type="submit" class="boton-primario">Crear configuración</button>
+        </div>
       </form>
       <?php else: ?>
       <form class="formulario" id="aw-form-general">
@@ -102,7 +104,9 @@ include_once __DIR__ . '/../comunes/nav.php';
           <label for="awg-anioAcademico">Año académico</label>
           <input type="text" id="awg-anioAcademico" name="anioAcademico" maxlength="9" value="<?= Security::escapeHtml($configActiva['anioAcademico'] ?? '') ?>">
         </div>
-        <button type="submit" class="boton-primario">Guardar</button>
+        <div class="acciones">
+          <button type="submit" class="boton-primario">Guardar</button>
+        </div>
       </form>
       <?php if (!$motorActivo): ?>
       <div class="aw-activar-caja">
@@ -117,26 +121,33 @@ include_once __DIR__ . '/../comunes/nav.php';
     <section class="aw-paso oculto" data-paso="cursos">
       <h2>Cursos por ciclo</h2>
       <p class="aw-ayuda">Sustituye el 1º/2º fijo: define los cursos de cada ciclo formativo (puedes añadir más de 2, o nombrarlos como quieras).</p>
-      <div class="campo">
-        <label for="aw-curso-ciclo">Ciclo</label>
-        <select id="aw-curso-ciclo">
-          <?php foreach ($ciclos as $ciclo): ?>
-          <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= (int)$ciclo['idCiclo'] === $idCicloSeleccionado ? 'selected' : '' ?>><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
-          <?php endforeach; ?>
-        </select>
+      <div class="formulario">
+        <div class="campo">
+          <label for="aw-curso-ciclo">Ciclo</label>
+          <select id="aw-curso-ciclo">
+            <?php foreach ($ciclos as $ciclo): ?>
+            <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= (int)$ciclo['idCiclo'] === $idCicloSeleccionado ? 'selected' : '' ?>><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
       </div>
+      <div class="contenedor-tabla">
       <table class="tabla-datos" id="tabla-cursos">
         <thead><tr><th>Nombre</th><th>Orden</th><th></th></tr></thead>
         <tbody>
+          <?php if (!$cursosDelCiclo): ?>
+          <tr><td colspan="3" class="vacio">Este ciclo todavía no tiene cursos definidos.</td></tr>
+          <?php endif; ?>
           <?php foreach ($cursosDelCiclo as $curso): ?>
           <tr data-id="<?= (int)$curso['idCurso'] ?>">
             <td><?= Security::escapeHtml($curso['nombre']) ?></td>
             <td><?= (int)$curso['orden'] ?></td>
-            <td><button type="button" class="boton-peligro aw-eliminar-curso" data-id="<?= (int)$curso['idCurso'] ?>">Eliminar</button></td>
+            <td><button type="button" class="btn-accion btn-eliminar aw-eliminar-curso" data-id="<?= (int)$curso['idCurso'] ?>" title="Eliminar"><i class="fas fa-trash"></i></button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
       <form class="formulario" id="aw-form-curso">
         <input type="hidden" name="idCiclo" value="<?= $idCicloSeleccionado ?>">
         <div class="campo">
@@ -151,7 +162,9 @@ include_once __DIR__ . '/../comunes/nav.php';
           <input type="text" name="nombre" id="aw-curso-nombre" maxlength="40" required placeholder="Nombre personalizado" value="1º" style="display:none;margin-top:6px;">
         </div>
         <div class="campo"><label for="awcur-orden">Orden</label><input type="number" id="awcur-orden" name="orden" value="1" min="1"></div>
-        <button type="submit" class="boton-secundario">Añadir curso</button>
+        <div class="acciones">
+          <button type="submit" class="boton-secundario">Añadir curso</button>
+        </div>
       </form>
     </section>
 
@@ -159,9 +172,13 @@ include_once __DIR__ . '/../comunes/nav.php';
     <section class="aw-paso oculto" data-paso="periodos">
       <h2>Períodos académicos</h2>
       <p class="aw-ayuda">Sustituye las 2 evaluaciones fijas: crea los períodos que uses (evaluaciones, recuperaciones, extraordinaria...). Una recuperación puede enlazarse a su período ordinario para que solo cuente si mejora la nota.</p>
+      <div class="contenedor-tabla">
       <table class="tabla-datos" id="tabla-periodos">
         <thead><tr><th>Nombre</th><th>Tipo</th><th>Orden</th><th>Recupera a</th><th>Visible</th><th></th></tr></thead>
         <tbody>
+          <?php if (!$periodos): ?>
+          <tr><td colspan="6" class="vacio">Todavía no hay períodos académicos definidos.</td></tr>
+          <?php endif; ?>
           <?php foreach ($periodos as $periodo): ?>
           <tr data-id="<?= (int)$periodo['idPeriodo'] ?>">
             <td><?= Security::escapeHtml($periodo['nombre']) ?></td>
@@ -169,11 +186,12 @@ include_once __DIR__ . '/../comunes/nav.php';
             <td><?= (int)$periodo['orden'] ?></td>
             <td><?= $periodo['idPeriodoRecuperaDe'] ? '#'.(int)$periodo['idPeriodoRecuperaDe'] : '—' ?></td>
             <td><?= $periodo['visible'] ? 'Sí' : 'No' ?></td>
-            <td><button type="button" class="boton-peligro aw-eliminar-periodo" data-id="<?= (int)$periodo['idPeriodo'] ?>">Eliminar</button></td>
+            <td><button type="button" class="btn-accion btn-eliminar aw-eliminar-periodo" data-id="<?= (int)$periodo['idPeriodo'] ?>" title="Eliminar"><i class="fas fa-trash"></i></button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
       <form class="formulario" id="aw-form-periodo">
         <div class="campo"><label for="awp-nombre">Nombre</label><input type="text" id="awp-nombre" name="nombre" maxlength="80" required placeholder="p.ej. 3ª Evaluación"></div>
         <div class="campo">
@@ -200,8 +218,12 @@ include_once __DIR__ . '/../comunes/nav.php';
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="visible" checked> Visible</label></div>
-        <button type="submit" class="boton-secundario">Añadir período</button>
+        <div class="campo-checkbox-grupo">
+          <label class="campo-checkbox"><input type="checkbox" name="visible" checked> Visible</label>
+        </div>
+        <div class="acciones">
+          <button type="submit" class="boton-secundario">Añadir período</button>
+        </div>
       </form>
     </section>
 
@@ -209,9 +231,13 @@ include_once __DIR__ . '/../comunes/nav.php';
     <section class="aw-paso oculto" data-paso="tipos">
       <h2>Tipos de evaluación</h2>
       <p class="aw-ayuda">Sustituye el peso fijo 75%/25% examen/reto: cada tipo tiene un peso relativo (p.ej. Examen=3, Reto=1 reproduce 75%/25%). El "origen" indica de dónde saca la nota el motor.</p>
+      <div class="contenedor-tabla">
       <table class="tabla-datos" id="tabla-tipos">
         <thead><tr><th>Nombre</th><th>Peso</th><th>Origen</th><th>Obligatorio</th><th>En media</th><th></th></tr></thead>
         <tbody>
+          <?php if (!$tipos): ?>
+          <tr><td colspan="6" class="vacio">Todavía no hay tipos de evaluación definidos.</td></tr>
+          <?php endif; ?>
           <?php foreach ($tipos as $tipo): ?>
           <tr data-id="<?= (int)$tipo['idTipo'] ?>">
             <td><?= Security::escapeHtml($tipo['nombre']) ?></td>
@@ -219,14 +245,14 @@ include_once __DIR__ . '/../comunes/nav.php';
             <td><?= Security::escapeHtml($tipo['origen']) ?></td>
             <td><?= $tipo['obligatorio'] ? 'Sí' : 'No' ?></td>
             <td><?= $tipo['incluirEnMedia'] ? 'Sí' : 'No' ?></td>
-            <td><button type="button" class="boton-peligro aw-eliminar-tipo" data-id="<?= (int)$tipo['idTipo'] ?>">Eliminar</button></td>
+            <td><button type="button" class="btn-accion btn-eliminar aw-eliminar-tipo" data-id="<?= (int)$tipo['idTipo'] ?>" title="Eliminar"><i class="fas fa-trash"></i></button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
       <form class="formulario" id="aw-form-tipo">
         <div class="campo"><label for="awt-nombre">Nombre</label><input type="text" id="awt-nombre" name="nombre" maxlength="80" required placeholder="p.ej. Portafolio"></div>
-        <div class="campo"><label for="awt-notaMaxima">Nota máxima</label><input type="number" id="awt-notaMaxima" name="notaMaxima" value="10" step="0.01" min="0"></div>
         <div class="campo"><label for="awt-peso">Peso relativo</label><input type="number" id="awt-peso" name="peso" value="1" step="0.01" min="0" required></div>
         <div class="campo">
           <label for="awt-origen">Origen (de dónde saca la nota)</label>
@@ -238,10 +264,13 @@ include_once __DIR__ . '/../comunes/nav.php';
           </select>
         </div>
         <div class="campo"><label for="awt-orden">Orden</label><input type="number" id="awt-orden" name="orden" value="1" min="1"></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="obligatorio"> Obligatorio (sin nota = módulo Pendiente)</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="recuperable" checked> Recuperable</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="incluirEnMedia" checked> Incluir en la media del módulo</label></div>
-        <button type="submit" class="boton-secundario">Añadir tipo</button>
+        <div class="campo-checkbox-grupo">
+          <label class="campo-checkbox"><input type="checkbox" name="obligatorio"> Obligatorio (sin nota = módulo Pendiente)</label>
+          <label class="campo-checkbox"><input type="checkbox" name="incluirEnMedia" checked> Incluir en la media del módulo</label>
+        </div>
+        <div class="acciones">
+          <button type="submit" class="boton-secundario">Añadir tipo</button>
+        </div>
       </form>
     </section>
 
@@ -251,10 +280,14 @@ include_once __DIR__ . '/../comunes/nav.php';
       <p class="aw-ayuda">La escala (0-10), el aprobado (5) y que la nota final del módulo sea un número entero los fija la normativa de FP española — no son configurables aquí. Lo que sí decide cada centro es cómo pesa el TFG y qué hace falta para promocionar de curso.</p>
       <form class="formulario" id="aw-form-calificacion">
         <div class="campo"><label for="awcal-pesoTfg">Peso del TFG en la media global</label><input type="number" id="awcal-pesoTfg" name="pesoTfgEnMedia" step="0.01" value="<?= Security::escapeHtml($politica['pesoTfgEnMedia'] ?? 1) ?>"></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="requiereTodosModulos" <?= empty($promocion) || $promocion['requiereTodosModulos'] ? 'checked' : '' ?>> Requiere todos los módulos calificados para aprobar el curso</label></div>
         <div class="campo"><label for="awcal-notaMinGlobal">Nota mínima global</label><input type="number" id="awcal-notaMinGlobal" name="notaMinimaGlobal" step="0.01" value="<?= Security::escapeHtml($promocion['notaMinimaGlobal'] ?? 5) ?>"></div>
         <div class="campo"><label for="awcal-modPendientes">Módulos pendientes permitidos para promocionar</label><input type="number" id="awcal-modPendientes" name="permiteModulosPendientes" min="0" value="<?= Security::escapeHtml($promocion['permiteModulosPendientes'] ?? 0) ?>"></div>
-        <button type="submit" class="boton-primario">Guardar reglas</button>
+        <div class="campo-checkbox-grupo">
+          <label class="campo-checkbox"><input type="checkbox" name="requiereTodosModulos" <?= empty($promocion) || $promocion['requiereTodosModulos'] ? 'checked' : '' ?>> Requiere todos los módulos calificados para aprobar el curso</label>
+        </div>
+        <div class="acciones">
+          <button type="submit" class="boton-primario">Guardar reglas</button>
+        </div>
       </form>
     </section>
 
@@ -262,7 +295,9 @@ include_once __DIR__ . '/../comunes/nav.php';
     <section class="aw-paso oculto" data-paso="fct">
       <h2>FCT (Formación en Centros de Trabajo)</h2>
       <form class="formulario" id="aw-form-fct">
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="habilitado" <?= !empty($configFCT['habilitado']) ? 'checked' : '' ?>> Habilitada</label></div>
+        <div class="campo-checkbox-grupo">
+          <label class="campo-checkbox"><input type="checkbox" name="habilitado" <?= !empty($configFCT['habilitado']) ? 'checked' : '' ?>> Habilitada</label>
+        </div>
         <div class="campo"><label for="awfct-horas">Horas requeridas por defecto</label><input type="number" id="awfct-horas" name="horasRequeridasDefecto" min="0" value="<?= Security::escapeHtml($configFCT['horasRequeridasDefecto'] ?? 0) ?>"></div>
         <div class="campo">
           <label for="awfct-metodo">Método de evaluación</label>
@@ -273,8 +308,12 @@ include_once __DIR__ . '/../comunes/nav.php';
           </select>
         </div>
         <div class="campo"><label for="awfct-peso">Peso en la media global</label><input type="number" id="awfct-peso" name="pesoEnMedia" step="0.01" min="0" value="<?= Security::escapeHtml($configFCT['pesoEnMedia'] ?? 0) ?>"></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="requiereAprobarParaTitular" <?= !empty($configFCT['requiereAprobarParaTitular']) ? 'checked' : '' ?>> Requiere aprobar la FCT para titular</label></div>
-        <button type="submit" class="boton-primario">Guardar FCT</button>
+        <div class="campo-checkbox-grupo">
+          <label class="campo-checkbox"><input type="checkbox" name="requiereAprobarParaTitular" <?= !empty($configFCT['requiereAprobarParaTitular']) ? 'checked' : '' ?>> Requiere aprobar la FCT para titular</label>
+        </div>
+        <div class="acciones">
+          <button type="submit" class="boton-primario">Guardar FCT</button>
+        </div>
       </form>
     </section>
 
@@ -282,27 +321,26 @@ include_once __DIR__ . '/../comunes/nav.php';
     <section class="aw-paso oculto" data-paso="tfg">
       <h2>TFG / Proyecto Final</h2>
       <form class="formulario" id="aw-form-tfg">
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="habilitado" <?= !empty($configTFG['habilitado']) ? 'checked' : '' ?>> Habilitado</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="requiereComite" <?= !empty($configTFG['requiereComite']) ? 'checked' : '' ?>> Requiere comité evaluador</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="requiereDefensa" <?= !empty($configTFG['requiereDefensa']) ? 'checked' : '' ?>> Requiere defensa</label></div>
+        <div class="campo-checkbox-grupo">
+          <label class="campo-checkbox"><input type="checkbox" name="habilitado" <?= !empty($configTFG['habilitado']) ? 'checked' : '' ?>> Habilitado</label>
+        </div>
         <div class="campo"><label for="awtfg-notaMinima">Nota mínima</label><input type="number" id="awtfg-notaMinima" name="notaMinima" step="0.01" value="<?= Security::escapeHtml($configTFG['notaMinima'] ?? 5) ?>"></div>
         <div class="campo"><label for="awtfg-peso">Peso en la media global</label><input type="number" id="awtfg-peso" name="pesoEnMedia" step="0.01" value="<?= Security::escapeHtml($configTFG['pesoEnMedia'] ?? 1) ?>"></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="permiteRecuperacion" <?= !empty($configTFG['permiteRecuperacion']) ? 'checked' : '' ?>> Permite convocatoria extraordinaria</label></div>
-        <button type="submit" class="boton-primario">Guardar TFG</button>
+        <div class="acciones">
+          <button type="submit" class="boton-primario">Guardar TFG</button>
+        </div>
       </form>
     </section>
 
     <!-- PASO 8: RETOS -->
     <section class="aw-paso oculto" data-paso="retos">
       <h2>Retos (Challenge-Based Learning)</h2>
-      <p class="aw-ayuda">El sistema de retos existente sigue funcionando igual; esto son ajustes adicionales para cuando se usen grupos, fases o rúbricas.</p>
+      <p class="aw-ayuda">El sistema de retos existente sigue funcionando igual; este peso solo afecta a cómo cuenta un reto nuevo en la media del módulo.</p>
       <form class="formulario" id="aw-form-retos">
         <div class="campo"><label for="awretos-peso">Peso por defecto de un reto nuevo</label><input type="number" id="awretos-peso" name="pesoDefecto" step="0.01" value="<?= Security::escapeHtml($configRetos['pesoDefecto'] ?? 1) ?>"></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="permiteGrupal" <?= !empty($configRetos['permiteGrupal']) ? 'checked' : '' ?>> Permite retos grupales</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="permiteFases" <?= !empty($configRetos['permiteFases']) ? 'checked' : '' ?>> Permite retos con varias fases</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="requiereRubrica" <?= !empty($configRetos['requiereRubrica']) ? 'checked' : '' ?>> Requiere rúbrica de evaluación</label></div>
-        <div class="campo"><label class="campo-checkbox"><input type="checkbox" name="evaluacionPares" <?= !empty($configRetos['evaluacionPares']) ? 'checked' : '' ?>> Permite evaluación entre compañeros</label></div>
-        <button type="submit" class="boton-primario">Guardar retos</button>
+        <div class="acciones">
+          <button type="submit" class="boton-primario">Guardar retos</button>
+        </div>
       </form>
     </section>
 
@@ -310,9 +348,13 @@ include_once __DIR__ . '/../comunes/nav.php';
     <section class="aw-paso oculto" data-paso="plantillas">
       <h2>Plantillas</h2>
       <p class="aw-ayuda">Aplica una plantilla para arrancar rápido (crea una configuración nueva, no toca la activa), o guarda la configuración actual como plantilla reutilizable.</p>
+      <div class="contenedor-tabla">
       <table class="tabla-datos">
         <thead><tr><th>Nombre</th><th>Descripción</th><th></th></tr></thead>
         <tbody>
+          <?php if (!$plantillas): ?>
+          <tr><td colspan="3" class="vacio">No hay plantillas guardadas todavía.</td></tr>
+          <?php endif; ?>
           <?php foreach ($plantillas as $plantilla): ?>
           <tr>
             <td><?= Security::escapeHtml($plantilla['nombre']) ?></td>
@@ -322,11 +364,14 @@ include_once __DIR__ . '/../comunes/nav.php';
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
       <?php if ($idConfig): ?>
       <form class="formulario" id="aw-form-guardar-plantilla">
-        <div class="campo"><label for="awplant-nombre">Nombre de la nueva plantilla</label><input type="text" id="awplant-nombre" name="nombre" maxlength="150" required></div>
+        <div class="campo campo-ancho-total"><label for="awplant-nombre">Nombre de la nueva plantilla</label><input type="text" id="awplant-nombre" name="nombre" maxlength="150" required></div>
         <div class="campo campo-ancho-total"><label for="awplant-descripcion">Descripción</label><textarea id="awplant-descripcion" name="descripcion" maxlength="500"></textarea></div>
-        <button type="submit" class="boton-secundario">Guardar configuración actual como plantilla</button>
+        <div class="acciones">
+          <button type="submit" class="boton-secundario">Guardar configuración actual como plantilla</button>
+        </div>
       </form>
       <?php endif; ?>
     </section>

@@ -70,7 +70,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0; height: 4px;
-        background: linear-gradient(90deg, var(--accent), #8b5cf6);
+        background: linear-gradient(90deg, var(--accent), var(--violeta));
         opacity: 0;
         transition: var(--transition);
     }
@@ -148,7 +148,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- Panel Izquierdo: Info del alumno -->
     <div class="glass-panel">
         <div style="display:flex; align-items:center; gap:20px; margin-bottom: 25px;">
-            <div class="cw-ava cw-ava-alumno avatar-glow" style="width:70px;height:70px;font-size:1.8rem;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg, var(--accent), #8b5cf6);color:#fff;">
+            <div class="cw-ava cw-ava-alumno avatar-glow" style="width:70px;height:70px;font-size:1.8rem;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg, var(--accent), var(--violeta));color:#fff;">
                 <?= substr(Security::escapeHtml($estudiante['nombreEstudiante']), 0, 2) ?>
             </div>
             <div>
@@ -194,7 +194,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idReto"       value="<?= (int)$idReto ?>">
             <input type="hidden" name="idCiclo"      value="<?= (int)$idCiclo ?>">
 
-            <div class="campo" style="margin-bottom: 30px;">
+            <div class="campo ancho-total" style="margin-bottom: 30px;">
                 <label for="nota" style="font-weight:600; font-size: 0.95rem; margin-bottom:8px; display:block;">Nota Definitiva (0 - 10)</label>
                 <div style="position:relative;">
                     <input type="number" step="0.01" min="0" max="10" id="nota" name="nota" value="<?= Security::escapeHtml((string)$notaActual) ?>" placeholder="Ej: 7.5" class="modern-input" style="font-size:1.6rem; font-weight:bold; color:var(--accent); width:100%; text-align:center; letter-spacing:1px;">
@@ -204,7 +204,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div style="display:flex; justify-content:flex-end;">
-                <button type="submit" name="guardarNota" class="boton-primario btn-animado" style="padding:14px 30px; font-size:1.1rem; width:100%; display:flex; justify-content:center; align-items:center; gap:10px; background: linear-gradient(135deg, var(--accent), #8b5cf6); border:none;">
+                <button type="submit" name="guardarNota" class="boton-primario btn-animado" style="padding:14px 30px; font-size:1.1rem; width:100%; display:flex; justify-content:center; align-items:center; gap:10px; background: linear-gradient(135deg, var(--accent), var(--violeta)); border:none;">
                     <i class="fas fa-save"></i> Guardar Calificación
                 </button>
             </div>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../include/TutorGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/asistencias.php";
@@ -48,7 +49,19 @@ $estadoColor = match($resultados['estado_global']) {
     <h1><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></h1>
     <p class="subtitulo-encabezado"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?><?php if (!empty($estudiante['curso'])): ?> &mdash; <?= Security::escapeHtml($estudiante['curso']) ?><?php endif; ?></p>
   </div>
-  <a href="../inicio/dashboard.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <?php if (FeatureGuard::check('feature_horario')): ?>
+    <a href="../horario/horario.php?id=<?= (int)$idEstudiante ?>" class="boton-secundario"><i class="fas fa-calendar-days"></i> Horario</a>
+    <?php endif; ?>
+    <?php if (FeatureGuard::check('feature_informes') && !empty($resultados['detalles_modulos'])): ?>
+    <form method="POST" action="../../../controladores/tutores/informes/generarBoletin.php" target="_blank" style="display:inline">
+      <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+      <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+      <button type="submit" class="boton-secundario"><i class="fas fa-file-pdf"></i> Descargar Boletín</button>
+    </form>
+    <?php endif; ?>
+    <a href="../inicio/dashboard.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
+  </div>
 </div>
 
 <!-- Stat tiles -->
@@ -66,6 +79,24 @@ $estadoColor = match($resultados['estado_global']) {
   <div class="panel" style="padding:18px 20px">
     <div style="font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Asistencia</div>
     <div style="font-size:1.9rem;font-weight:700;color:var(--accent)"><?= $pctPresente ?>%</div>
+    <?php
+    // Barra proporcional: un vistazo dice más que el "85%" solo, sobre todo
+    // para distinguir "ausencias ya justificadas" de "ausencias sin más".
+    $segmentosAsist = [
+        'presente'    => ['color' => 'var(--verde)',   'valor' => $asist['presente']],
+        'justificado' => ['color' => 'var(--azul)',    'valor' => $asist['justificado']],
+        'retraso'     => ['color' => 'var(--naranja)', 'valor' => $asist['retraso']],
+        'ausente'     => ['color' => 'var(--rojo)',    'valor' => $asist['ausente']],
+    ];
+    ?>
+    <div style="display:flex;height:6px;border-radius:999px;overflow:hidden;margin:8px 0;background:var(--surface-2)">
+      <?php foreach ($segmentosAsist as $clave => $seg):
+        if ($seg['valor'] <= 0) continue;
+        $anchoSeg = round($seg['valor'] / $totalDias * 100, 2);
+      ?>
+      <span style="width:<?= $anchoSeg ?>%;background:<?= $seg['color'] ?>" title="<?= (int)$seg['valor'] ?> día(s) — <?= Security::escapeHtml($clave) ?>"></span>
+      <?php endforeach; ?>
+    </div>
     <div style="font-size:.75rem;color:var(--dim);margin-top:2px"><?= $asist['presente'] ?> presentes &middot; <?= $asist['ausente'] ?> ausencias<?php if ($asist['justificado']): ?> &middot; <?= $asist['justificado'] ?> justif.<?php endif; ?></div>
   </div>
   <?php endif; ?>
@@ -120,7 +151,12 @@ $estadoColor = match($resultados['estado_global']) {
 <!-- Asistencia detallada -->
 <?php if ($totalDias > 0): ?>
 <div class="panel" style="margin-top:16px">
-  <div class="panel-titulo-seccion">Resumen de Asistencia</div>
+  <div class="panel-titulo-seccion" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+    <span>Resumen de Asistencia</span>
+    <a href="../asistencias/lista.php?id=<?= (int)$idEstudiante ?>" class="boton-secundario" style="font-size:.8rem;padding:6px 12px">
+      <i class="fas fa-file-upload"></i> Ver detalle y justificar faltas
+    </a>
+  </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:4px 0 8px">
     <?php
     $chips = [

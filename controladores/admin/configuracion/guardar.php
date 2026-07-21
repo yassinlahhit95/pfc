@@ -5,11 +5,6 @@ require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../include/ImageOptimizer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
-    if (isset($_POST['onboarding'])) {
-        header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
-        exit;
-    }
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: ../../../vistas/admin/configuracion/configuracion.php");
     exit;
@@ -36,11 +31,6 @@ if (!empty($datos['telefonoCentro']) && !Security::validatePhone($datos['telefon
 }
 
 if (!empty($errores)) {
-    if (isset($_POST['onboarding'])) {
-        header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'msg' => implode(', ', $errores)]);
-        exit;
-    }
     $_SESSION['errores']             = $errores;
     $_SESSION['datos_configuracion'] = $_POST;
     header("Location: ../../../vistas/admin/configuracion/configuracion.php");
@@ -59,7 +49,7 @@ foreach ($logoFields as $field) {
     if (!empty($_POST['borrar_' . $field])) {
         if (!empty($cfgActual[$field])) {
             $ruta = $uploadDir . basename($cfgActual[$field]);
-            if (is_file($ruta)) unlink($ruta);
+            if (is_file($ruta)) @unlink($ruta);
         }
         actualizarLogoCentro($field, '');
         continue;
@@ -81,18 +71,13 @@ foreach ($logoFields as $field) {
         // El logo anterior deja de usarse: se elimina del disco
         if (!empty($cfgActual[$field])) {
             $rutaAnterior = $uploadDir . basename($cfgActual[$field]);
-            if (is_file($rutaAnterior)) unlink($rutaAnterior);
+            if (is_file($rutaAnterior)) @unlink($rutaAnterior);
         }
         actualizarLogoCentro($field, $filename);
     }
 }
 
 registrarAccion('actualizar', 'configuracion', null, 'Configuración del centro guardada');
-if (isset($_POST['onboarding'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['ok' => true, 'msg' => 'Configuración guardada correctamente.']);
-    exit;
-}
 $_SESSION['exito'] = "Configuración guardada correctamente.";
 header("Location: ../../../vistas/admin/configuracion/configuracion.php");
 exit;

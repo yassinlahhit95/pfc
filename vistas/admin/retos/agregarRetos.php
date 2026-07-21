@@ -30,7 +30,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/admin/retos/insertar.php" method="POST" class="formulario" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
                 <label for="nombreReto">Nombre del Reto</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>">
                 <?= fieldError($errores, 'nombreReto') ?>
@@ -41,22 +42,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
                 <?= fieldError($errores, 'horasReto') ?>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="campo<?= fieldClass($errores, 'fechaInicioReto') ?>">
-                    <label for="fechaInicioReto">Fecha de Inicio</label>
-                    <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaInicioReto'] ?? '') ?>">
-                    <?= fieldError($errores, 'fechaInicioReto') ?>
-                </div>
-
-                <div class="campo<?= fieldClass($errores, 'fechaFinReto') ?>">
-                    <label for="fechaFinReto">Fecha de Fin</label>
-                    <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaFinReto'] ?? '') ?>">
-                    <?= fieldError($errores, 'fechaFinReto') ?>
-                </div>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'fechaInicioReto') ?>">
+                <label for="fechaInicioReto">Fecha de Inicio</label>
+                <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaInicioReto'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaInicioReto') ?>
             </div>
 
-        <div class="row">
+            <div class="campo<?= fieldClass($errores, 'fechaFinReto') ?>">
+                <label for="fechaFinReto">Fecha de Fin</label>
+                <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaFinReto'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaFinReto') ?>
+            </div>
+        </div>
+
+        <div class="form-fila">
             <div class="campo">
                 <label for="filtroCicloReto">Filtrar por Ciclo</label>
                 <select id="filtroCicloReto" onchange="filtrarModulosReto()">
@@ -76,7 +78,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'modulosReto') ?>">
+        <div class="campo ancho-total<?= fieldClass($errores, 'modulosReto') ?>">
             <label for="modulosReto">Módulo Asociado</label>
             <select name="modulosReto" id="modulosReto">
                 <option value="">-- Selecciona un módulo --</option>

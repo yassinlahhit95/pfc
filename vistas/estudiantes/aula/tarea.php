@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="titulo-tarjeta"><h3>Calificación</h3></div>
   <div class="caja alinear-centro espacio-grande">
     <div style="text-align:center;">
-      <div style="font-size:2.5rem;font-weight:700;color:<?= Security::escapeHtml($entrega['nota']>=5?'#15803d':'#dc2626') ?>;"><?= Security::escapeHtml($entrega['nota']) ?></div>
+      <div style="font-size:2.5rem;font-weight:700;color:<?= $entrega['nota']>=5?'var(--verde-ink)':'var(--rojo-ink)' ?>;"><?= Security::escapeHtml($entrega['nota']) ?></div>
       <div style="font-size:0.75rem;color:var(--mut);font-weight:600;">SOBRE 10</div>
     </div>
   </div>
@@ -176,9 +176,9 @@ include_once __DIR__ . "/../comunes/nav.php";
   <form action="../../../controladores/estudiantes/aula/enviarEntrega.php" method="POST" enctype="multipart/form-data" class="formulario">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
     <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea) ?>">
-    <div class="campo">
-      <label><?= Security::escapeHtml($entrega ? 'Actualizar respuesta' : 'Tu respuesta') ?></label>
-      <textarea name="respuesta" rows="5" placeholder="Escribe tu respuesta, explicación o código..."><?= Security::escapeHtml($entrega ? ($entrega['respuesta'] ?? '') : '') ?></textarea>
+    <div class="campo ancho-total">
+      <label for="respuesta"><?= Security::escapeHtml($entrega ? 'Actualizar respuesta' : 'Tu respuesta') ?></label>
+      <textarea name="respuesta" id="respuesta" rows="5" placeholder="Escribe tu respuesta, explicación o código..."><?= Security::escapeHtml($entrega ? ($entrega['respuesta'] ?? '') : '') ?></textarea>
     </div>
     <div class="aula-upload-zona" id="aulaUploadZona" style="margin-bottom:12px;">
       <i class="fas fa-cloud-upload-alt icono-upload"></i>

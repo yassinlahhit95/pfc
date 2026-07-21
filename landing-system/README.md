@@ -1,7 +1,7 @@
 # landing-system — Guía para Developers de Front-End
 
-> Esta carpeta es **tu área de trabajo**. Aquí vive todo lo que necesitas para crear y modificar plantillas y secciones de la landing pública del centro.
-> **No necesitas tocar ningún otro archivo del proyecto.**
+> Esta carpeta es **tu área de trabajo**. Aquí vive casi todo lo que necesitas para crear y modificar plantillas y secciones de la landing pública del centro.
+> **Única excepción:** el thumbnail de una plantilla nueva vive en `public/imagenes/landing/`, fuera de esta carpeta — ver la sección "Cómo crear una nueva PLANTILLA" más abajo.
 
 ---
 
@@ -11,16 +11,18 @@
 landing-system/
 ├── plantillas/        ← ⭐ CREA Y EDITA PLANTILLAS AQUÍ
 ├── secciones/         ← ⭐ CREA Y EDITA SECCIONES AQUÍ
-├── temas/             ← CSS de cada plantilla (base.css + tema-*.css)
+├── temas/             ← CSS de cada plantilla (base.css + tema-*.css) — cada plantilla necesita su tema-<slug>.css aquí
+├── herramientas/      ← nueva_plantilla.php: genera los 3 archivos de una plantilla nueva de una vez (solo CLI)
 ├── assets/
-│   ├── js/            ← landing.js (scripts de la landing pública: contadores, lightbox, etc.)
-│   └── imagenes/      ← Thumbnails de plantillas (.svg recomendado)
+│   └── js/            ← landing.js (scripts de la landing pública: contadores, lightbox, etc.)
 ├── views/
 │   └── public/        ← Estructura HTML de la landing (_head, _nav, _footer)
 └── engine/            ← 🔒 Motor interno. NO MODIFICAR.
     ├── secciones.php  ← Catálogo de tipos de sección y sus campos
     ├── plantillas.php ← Registro de plantillas disponibles
     └── modelo.php     ← Funciones de base de datos
+
+public/imagenes/landing/  ← ⚠️ Thumbnails de plantillas (.svg), FUERA de landing-system/
 ```
 
 > ⚠️ El **panel de administración** (constructor, arrastrar-soltar, editor de secciones, selector de plantillas) vive **fuera** de esta carpeta por completo: HTML en `vistas/admin/landing/builder.php` y `vistas/admin/landing/plantillas.php`, JS en `public/js/features/landing-builder.js`, CSS en `public/css/features/landing-builder.css`. `landing-system/` solo contiene la landing **pública** — si vas a tocar el constructor, edita en `vistas/admin/landing/`, no aquí.
@@ -30,22 +32,40 @@ landing-system/
 ## Cómo crear una nueva PLANTILLA
 
 Una plantilla define qué secciones aparecen por defecto y con qué contenido inicial.
+A diferencia de una sección nueva, una plantilla completa son **tres archivos**
+distintos que comparten el mismo slug — si te falta alguno, la plantilla sigue
+funcionando pero se ve incompleta o directamente sin estilo, sin ningún error
+visible que te avise. Los tres son:
 
-### Paso 1 — Crea el archivo PHP
+1. `plantillas/<slug>.php` — la estructura y el contenido inicial.
+2. `temas/tema-<slug>.css` — la identidad visual (tipografía, radios, colores,
+   hero, tarjetas...). **Sin este archivo la plantilla no falla, pero se ve
+   con el aspecto genérico de `base.css`** — es el paso que más se olvida.
+3. El thumbnail del selector, en `public/imagenes/landing/plantilla-<slug>.svg`.
+   ⚠️ Es esta carpeta — **no** `landing-system/assets/imagenes/`.
 
-Copia `plantillas/_nueva_plantilla.example.php` con el nombre de tu plantilla:
+### La forma rápida — generar los tres a la vez
 
 ```
-plantillas/moderna.php
+php landing-system/herramientas/nueva_plantilla.php moderna "Moderna" "#6d28d9"
 ```
 
-Rellena los campos del array:
+Esto crea `plantillas/moderna.php`, `temas/tema-moderna.css` (con los
+`--lp-*` comentados como punto de partida) y un thumbnail placeholder en
+`public/imagenes/landing/plantilla-moderna.svg`, todos con el slug ya
+correctamente enlazado entre sí. Solo queda rellenar el contenido real, el
+CSS del tema y sustituir el thumbnail por el diseño definitivo.
+
+### La forma manual, paso a paso
+
+**Paso 1 — Archivo PHP.** Copia `plantillas/_nueva_plantilla.example.php` con
+el nombre de tu plantilla (`plantillas/moderna.php`) y rellena el array:
 ```php
 return [
     'slug'        => 'moderna',
     'nombre'      => 'Moderna',
     'descripcion' => 'Diseño dinámico y actual.',
-    'thumbnail'   => 'plantilla-moderna.svg',    // en assets/imagenes/
+    'thumbnail'   => 'plantilla-moderna.svg',    // en public/imagenes/landing/
     'colorAcento' => '#6d28d9',
     'secciones'   => [
         ['tipo' => 'hero', 'contenido' => [
@@ -60,9 +80,15 @@ return [
 > ✅ **No necesitas registrar el slug en ningún otro archivo.**
 > El sistema detecta automáticamente todos los `.php` de esta carpeta que no empiecen por `_`.
 
-### Paso 2 — Añade el thumbnail
+**Paso 2 — Crea el tema.** Añade `temas/tema-moderna.css` (puedes partir de
+`temas/tema-clasico.css` u otro tema existente como plantilla) sobrescribiendo
+las variables `--lp-*` que definen su identidad. Sin este archivo la página
+sigue funcionando — simplemente pierde toda personalidad visual propia.
 
-Crea un `.svg` representativo y ponlo en `assets/imagenes/plantilla-moderna.svg`.
+**Paso 3 — Añade el thumbnail.** Crea un `.svg` representativo y ponlo en
+`public/imagenes/landing/plantilla-moderna.svg`. El panel de administración
+(`vistas/admin/landing/plantillas.php`) avisa con un aviso en rojo si el tema
+(paso 2) falta, para que este tipo de olvido no pase desapercibido.
 
 ¡Listo! La plantilla aparecerá automáticamente en el panel de administración.
 

@@ -58,6 +58,8 @@ function landing_iconos_permitidos(): array {
         'fa-rocket'         => 'Cohete',
         'fa-shield-halved'  => 'Escudo',
         'fa-star'           => 'Estrella',
+        'fa-money-bill-wave'=> 'Billete',
+        'fa-piggy-bank'     => 'Hucha',
     ];
 }
 
@@ -259,6 +261,36 @@ function landing_tipos(): array {
             ],
         ],
 
+        'becas_financiacion' => [
+            'nombre' => 'Becas y financiación',
+            'descripcion' => 'Explica cómo se puede pagar la matrícula: becas, ayudas o pago fraccionado, con un aviso legal opcional.',
+            'icono'  => 'fa-piggy-bank',
+            'menu'   => 'Becas y ayudas',
+            'campos' => [
+                'titulo'     => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
+                'subtitulo'  => ['tipo' => 'textarea', 'etiqueta' => 'Introducción', 'max' => 300],
+                'items'      => ['tipo' => 'lista', 'etiqueta' => 'Opciones', 'max' => 4, 'subcampos' => [
+                    'icono'  => ['tipo' => 'select',   'etiqueta' => 'Icono', 'opciones' => $iconos],
+                    'titulo' => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 80, 'requerido' => true],
+                    'texto'  => ['tipo' => 'textarea', 'etiqueta' => 'Texto', 'max' => 250],
+                ]],
+                'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón', 'max' => 40],
+                'botonUrl'   => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón', 'max' => 255],
+                'notaLegal'  => ['tipo' => 'textarea', 'etiqueta' => 'Aviso legal (opcional, letra pequeña al pie)', 'max' => 400],
+            ],
+            'defecto' => [
+                'titulo' => 'Becas, ayudas y financiación',
+                'subtitulo' => 'Estudiar aquí es más accesible de lo que piensas.',
+                'items' => [
+                    ['icono' => 'fa-piggy-bank', 'titulo' => 'Pago fraccionado', 'texto' => 'Divide el importe de la matrícula en cuotas mensuales sin intereses.'],
+                    ['icono' => 'fa-money-bill-wave', 'titulo' => 'Becas y ayudas al estudio', 'texto' => 'Consulta si tu ciclo es compatible con las becas del Ministerio de Educación o de tu comunidad autónoma.'],
+                    ['icono' => 'fa-shield-halved', 'titulo' => 'Becas propias del centro', 'texto' => 'Descuentos por número de hermanos matriculados o por expediente académico destacado.'],
+                ],
+                'botonTexto' => 'Consultar condiciones', 'botonUrl' => '#contacto',
+                'notaLegal' => 'Las condiciones de becas y financiación están sujetas a la normativa vigente y a estudio previo. Consulta con secretaría los requisitos específicos de tu ciclo.',
+            ],
+        ],
+
         'porque_elegirnos' => [
             'nombre' => 'Por qué elegirnos',
             'descripcion' => 'Lista de puntos fuertes del centro, cada uno con icono, título y texto breve.',
@@ -281,6 +313,34 @@ function landing_tipos(): array {
                     ['icono' => 'fa-briefcase', 'titulo' => 'Prácticas garantizadas', 'texto' => 'Convenios con empresas del sector para que hagas prácticas reales desde el primer curso.'],
                     ['icono' => 'fa-chalkboard-teacher', 'titulo' => 'Profesorado experto', 'texto' => 'Docentes con experiencia profesional activa en su especialidad.'],
                     ['icono' => 'fa-award', 'titulo' => 'Titulación oficial', 'texto' => 'Títulos oficiales de Formación Profesional válidos en toda España y la UE.'],
+                ],
+            ],
+        ],
+
+        'equipo_docente' => [
+            'nombre' => 'Equipo docente',
+            'descripcion' => 'Presenta al profesorado o personal clave del centro: foto, nombre, cargo y una frase breve.',
+            'icono'  => 'fa-chalkboard-teacher',
+            'menu'   => 'Equipo',
+            'campos' => [
+                'variante'  => ['tipo' => 'select',   'etiqueta' => 'Estilo',
+                                'opciones' => ['grid' => 'Cuadrícula', 'carrusel' => 'Carrusel horizontal']],
+                'titulo'    => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
+                'subtitulo' => ['tipo' => 'textarea', 'etiqueta' => 'Introducción', 'max' => 300],
+                'items'     => ['tipo' => 'lista', 'etiqueta' => 'Personas', 'max' => 8, 'subcampos' => [
+                    'foto'   => ['tipo' => 'imagen',   'etiqueta' => 'Foto (opcional)'],
+                    'nombre' => ['tipo' => 'text',     'etiqueta' => 'Nombre', 'max' => 80, 'requerido' => true],
+                    'cargo'  => ['tipo' => 'text',     'etiqueta' => 'Cargo / especialidad', 'max' => 100],
+                    'bio'    => ['tipo' => 'textarea', 'etiqueta' => 'Frase breve (opcional)', 'max' => 200],
+                ]],
+            ],
+            'defecto' => [
+                'variante' => 'grid',
+                'titulo' => 'Conoce a nuestro equipo',
+                'subtitulo' => 'Profesionales en activo que acompañan tu formación de principio a fin.',
+                'items' => [
+                    ['foto' => '', 'nombre' => 'Marta Sánchez', 'cargo' => 'Directora del centro', 'bio' => 'Más de 15 años dirigiendo proyectos educativos de Formación Profesional.'],
+                    ['foto' => '', 'nombre' => 'Javier Ruiz', 'cargo' => 'Jefe de estudios', 'bio' => 'Coordina la relación entre el aula y las empresas colaboradoras.'],
                 ],
             ],
         ],

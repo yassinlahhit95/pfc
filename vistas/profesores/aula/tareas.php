@@ -99,24 +99,26 @@ include_once __DIR__ . "/../comunes/nav.php";
             <textarea name="descripcion" id="descripcion" rows="5"><?= Security::escapeHtml($datos['descripcion'] ?? $tareaEditar['descripcion'] ?? '') ?></textarea>
         </div>
 
-        <div class="campo">
-            <label for="archivoAdjunto">Archivo adjunto (opcional)</label>
-            <input type="file" name="archivoAdjunto" id="archivoAdjunto" accept=".pdf,.docx,.txt,.zip,.png,.jpg,.jpeg">
-            <?php if (!empty($tareaEditar['archivoAdjunto'])): ?>
-            <small class="texto-suave">Ya hay un adjunto; si subes otro lo sustituirá.</small>
-            <?php else: ?>
-            <small class="texto-suave">PDF, DOCX, TXT, ZIP o imagen. Máx. 20 MB.</small>
-            <?php endif; ?>
-        </div>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="archivoAdjunto">Archivo adjunto (opcional)</label>
+                <input type="file" name="archivoAdjunto" id="archivoAdjunto" accept=".pdf,.docx,.txt,.zip,.png,.jpg,.jpeg">
+                <?php if (!empty($tareaEditar['archivoAdjunto'])): ?>
+                <small class="texto-suave">Ya hay un adjunto; si subes otro lo sustituirá.</small>
+                <?php else: ?>
+                <small class="texto-suave">PDF, DOCX, TXT, ZIP o imagen. Máx. 20 MB.</small>
+                <?php endif; ?>
+            </div>
 
-        <div class="campo">
-            <label for="publicado">Visibilidad</label>
-            <label style="display:flex;align-items:center;gap:8px;font-weight:400;cursor:pointer;">
-                <input type="checkbox" name="publicado" id="publicado" value="1"
-                    <?= !empty($datos) ? (!empty($datos['publicado']) ? 'checked' : '') : (($tareaEditar === null || !empty($tareaEditar['publicado'])) ? 'checked' : '') ?>>
-                Publicada (visible para los estudiantes)
-            </label>
-            <small class="texto-suave">Al publicar se notifica a los estudiantes del módulo.</small>
+            <div class="campo">
+                <label for="publicado">Visibilidad</label>
+                <label style="display:flex;align-items:center;gap:8px;font-weight:400;cursor:pointer;">
+                    <input type="checkbox" name="publicado" id="publicado" value="1"
+                        <?= !empty($datos) ? (!empty($datos['publicado']) ? 'checked' : '') : (($tareaEditar === null || !empty($tareaEditar['publicado'])) ? 'checked' : '') ?>>
+                    Publicada (visible para los estudiantes)
+                </label>
+                <small class="texto-suave">Al publicar se notifica a los estudiantes del módulo.</small>
+            </div>
         </div>
 
         <div class="campo ancho-total" style="display:flex;gap:10px;justify-content:flex-end;">

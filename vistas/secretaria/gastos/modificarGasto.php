@@ -35,75 +35,81 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idGasto" value="<?= (int)$gasto['idGasto'] ?>">
 
-        <div class="campo<?= fieldClass($errores, 'concepto') ?>">
-            <label for="concepto">Concepto <span style="color:var(--rojo)">*</span></label>
-            <input type="text" name="concepto" id="concepto" maxlength="255"
-                   value="<?= $valorCampo('concepto') ?>">
-            <?= fieldError($errores, 'concepto') ?>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'concepto') ?>">
+                <label for="concepto">Concepto <span style="color:var(--rojo)">*</span></label>
+                <input type="text" name="concepto" id="concepto" maxlength="255"
+                       value="<?= $valorCampo('concepto') ?>">
+                <?= fieldError($errores, 'concepto') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'importe') ?>">
+                <label for="importe">Importe (€) <span style="color:var(--rojo)">*</span></label>
+                <input type="number" name="importe" id="importe" step="0.01" min="0.01"
+                       value="<?= $valorCampo('importe') ?>">
+                <?= fieldError($errores, 'importe') ?>
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'importe') ?>">
-            <label for="importe">Importe (€) <span style="color:var(--rojo)">*</span></label>
-            <input type="number" name="importe" id="importe" step="0.01" min="0.01"
-                   value="<?= $valorCampo('importe') ?>">
-            <?= fieldError($errores, 'importe') ?>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'fecha') ?>">
+                <label for="fecha">Fecha del gasto <span style="color:var(--rojo)">*</span></label>
+                <input type="date" name="fecha" id="fecha" value="<?= $valorCampo('fecha') ?>">
+                <?= fieldError($errores, 'fecha') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'idCategoria') ?>">
+                <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
+                <select name="idCategoria" id="idCategoria">
+                    <option value="">— Selecciona —</option>
+                    <?php
+                    $selCat = $datos['idCategoria'] ?? $gasto['idCategoria'] ?? '';
+                    foreach ($categorias as $categoria): ?>
+                    <option value="<?= (int)$categoria['idCategoria'] ?>"
+                        <?= ((string)$selCat === (string)$categoria['idCategoria']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($categoria['nombre']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+                <?= fieldError($errores, 'idCategoria') ?>
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'fecha') ?>">
-            <label for="fecha">Fecha del gasto <span style="color:var(--rojo)">*</span></label>
-            <input type="date" name="fecha" id="fecha" value="<?= $valorCampo('fecha') ?>">
-            <?= fieldError($errores, 'fecha') ?>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="tipoJustificante">Tipo de justificante</label>
+                <select name="tipoJustificante" id="tipoJustificante">
+                    <?php
+                    $selTipo = $datos['tipoJustificante'] ?? $gasto['tipoJustificante'] ?? 'factura';
+                    foreach (['factura' => 'Factura', 'ticket' => 'Ticket', 'recibo' => 'Recibo', 'otro' => 'Otro'] as $val => $lbl): ?>
+                    <option value="<?= $val ?>" <?= ($selTipo === $val) ? 'selected' : '' ?>><?= $lbl ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="numeroReferencia">Nº Factura / Referencia</label>
+                <input type="text" name="numeroReferencia" id="numeroReferencia" maxlength="100"
+                       value="<?= $valorCampo('numeroReferencia') ?>">
+            </div>
+
+            <div class="campo">
+                <label for="idCiclo">Ciclo asociado <span class="texto-suave">(opcional)</span></label>
+                <select name="idCiclo" id="idCiclo">
+                    <option value="">— Sin ciclo específico —</option>
+                    <?php
+                    $selCiclo = $datos['idCiclo'] ?? $gasto['idCiclo'] ?? '';
+                    foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>"
+                        <?= ((string)$selCiclo === (string)$ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'idCategoria') ?>">
-            <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
-            <select name="idCategoria" id="idCategoria">
-                <option value="">— Selecciona —</option>
-                <?php
-                $selCat = $datos['idCategoria'] ?? $gasto['idCategoria'] ?? '';
-                foreach ($categorias as $categoria): ?>
-                <option value="<?= (int)$categoria['idCategoria'] ?>"
-                    <?= ((string)$selCat === (string)$categoria['idCategoria']) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($categoria['nombre']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-            <?= fieldError($errores, 'idCategoria') ?>
-        </div>
-
-        <div class="campo">
-            <label for="tipoJustificante">Tipo de justificante</label>
-            <select name="tipoJustificante" id="tipoJustificante">
-                <?php
-                $selTipo = $datos['tipoJustificante'] ?? $gasto['tipoJustificante'] ?? 'factura';
-                foreach (['factura' => 'Factura', 'ticket' => 'Ticket', 'recibo' => 'Recibo', 'otro' => 'Otro'] as $val => $lbl): ?>
-                <option value="<?= $val ?>" <?= ($selTipo === $val) ? 'selected' : '' ?>><?= $lbl ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div class="campo">
-            <label for="numeroReferencia">Nº Factura / Referencia</label>
-            <input type="text" name="numeroReferencia" id="numeroReferencia" maxlength="100"
-                   value="<?= $valorCampo('numeroReferencia') ?>">
-        </div>
-
-        <div class="campo">
-            <label for="idCiclo">Ciclo asociado <span class="texto-suave">(opcional)</span></label>
-            <select name="idCiclo" id="idCiclo">
-                <option value="">— Sin ciclo específico —</option>
-                <?php
-                $selCiclo = $datos['idCiclo'] ?? $gasto['idCiclo'] ?? '';
-                foreach ($ciclos as $ciclo): ?>
-                <option value="<?= (int)$ciclo['idCiclo'] ?>"
-                    <?= ((string)$selCiclo === (string)$ciclo['idCiclo']) ? 'selected' : '' ?>>
-                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div class="campo">
+        <div class="campo ancho-total">
             <label>Justificante</label>
             <?php if (!empty($gasto['archivoJustificante'])):
                 $archivos = json_decode($gasto['archivoJustificante'], true);

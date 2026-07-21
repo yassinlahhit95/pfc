@@ -103,9 +103,9 @@ include_once __DIR__ . "/../comunes/nav.php";
           </td>
           <td style="padding:var(--space-3);text-align:center;">
             <?php if ($asistencia['presente']): ?>
-              <span class="badge-estado-modern" style="background:#dcfce7;color:#15803d;"><i class="fas fa-check-circle"></i> PRESENTE</span>
+              <span class="texto-estado verde"><i class="fas fa-check-circle"></i> PRESENTE</span>
             <?php else: ?>
-              <span class="badge-estado-modern" style="background:#fee2e2;color:var(--rojo);"><i class="fas fa-times-circle"></i> AUSENTE</span>
+              <span class="texto-estado rojo"><i class="fas fa-times-circle"></i> AUSENTE</span>
             <?php endif; ?>
           </td>
         </tr>

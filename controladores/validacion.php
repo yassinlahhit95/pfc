@@ -128,6 +128,7 @@ if ($admin) {
     if (!empty($admin['mfa_enabled'])) {
         $_SESSION['mfa_pending'] = [
             'id'          => $admin['idDirector'],
+            'role'        => 'idAdmin',
             'must_change' => !empty($admin['must_change_password']),
             'ts'          => time(),
         ];
@@ -149,6 +150,19 @@ if ($profe) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();
+
+    if (!empty($profe['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $profe['idProfesor'],
+            'role'        => 'idProfesor',
+            'must_change' => !empty($profe['must_change_password']),
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $profe['idProfesor'], 'email' => $email]);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
+
     $_SESSION['idProfesor']   = $profe['idProfesor'];
     $_SESSION['esTutor']      = !empty($profe['esTutor']) ? 1 : 0;
     $_SESSION['idCicloTutor'] = (int)($profe['idCicloTutor'] ?? 0);
@@ -164,6 +178,19 @@ if ($tutor) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();
+
+    if (!empty($tutor['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $tutor['idTutor'],
+            'role'        => 'idTutor',
+            'must_change' => !empty($tutor['must_change_password']),
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $tutor['idTutor'], 'email' => $email]);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
+
     $_SESSION['idTutor'] = $tutor['idTutor'];
     $_SESSION['must_change_password'] = !empty($tutor['must_change_password']);
     $_SESSION['_pwd_at'] = !empty($tutor['pwd_changed_at']) ? strtotime($tutor['pwd_changed_at']) : 0;
@@ -187,6 +214,19 @@ if ($secretaria) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();
+
+    if (!empty($secretaria['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $secretaria['idSecretaria'],
+            'role'        => 'idSecretaria',
+            'must_change' => !empty($secretaria['must_change_password']),
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $secretaria['idSecretaria'], 'email' => $email]);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
+
     $_SESSION['idSecretaria'] = $secretaria['idSecretaria'];
     $_SESSION['must_change_password'] = !empty($secretaria['must_change_password']);
     $_SESSION['_pwd_at'] = !empty($secretaria['pwd_changed_at']) ? strtotime($secretaria['pwd_changed_at']) : 0;
@@ -200,6 +240,19 @@ if ($estu) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();
+
+    if (!empty($estu['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $estu['idEstudiante'],
+            'role'        => 'idEstudiante',
+            'must_change' => !empty($estu['must_change_password']),
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $estu['idEstudiante'], 'email' => $email]);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
+
     $_SESSION['idEstudiante'] = $estu['idEstudiante'];
     $_SESSION['must_change_password'] = !empty($estu['must_change_password']);
     $_SESSION['_pwd_at'] = !empty($estu['pwd_changed_at']) ? strtotime($estu['pwd_changed_at']) : 0;

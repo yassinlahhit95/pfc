@@ -13,6 +13,17 @@ $prematriculaFooter = FeatureGuard::check('feature_prematricula');
 $isHomeFooter = ($_SERVER['SCRIPT_NAME'] === '/index.php' || $_SERVER['SCRIPT_NAME'] === '/vistas/admin/landing/builder.php');
 $homePrefixFooter = $isHomeFooter ? '' : '/';
 $menuFooter = is_array($menuAnclas ?? null) ? $menuAnclas : [];
+
+// Nº de WhatsApp a partir del teléfono del centro (mismo dato que "Contacto").
+// Asume un móvil español de 9 dígitos si no viene ya con prefijo de país.
+$whatsappNumero = '';
+if (!empty($cfg['telefonoCentro'])) {
+    $digitos = preg_replace('/\D+/', '', $cfg['telefonoCentro']);
+    if ($digitos !== '') {
+        if (strlen($digitos) === 9) $digitos = '34' . $digitos;
+        $whatsappNumero = $digitos;
+    }
+}
 ?>
 </main>
 
@@ -126,6 +137,15 @@ $menuFooter = is_array($menuAnclas ?? null) ? $menuAnclas : [];
 <button class="lp-volver-arriba" id="lp-volver-arriba" aria-label="Volver arriba">
   <i class="fas fa-arrow-up"></i>
 </button>
+
+<?php if ($whatsappNumero): ?>
+<!-- Botón flotante de WhatsApp -->
+<a class="lp-whatsapp-flotante"
+   href="https://wa.me/<?= Security::escapeHtml($whatsappNumero) ?>?text=<?= rawurlencode('Hola, me gustaría más información sobre ' . ($cfg['nombreCentro'] ?? 'el centro') . '.') ?>"
+   target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+<?php endif; ?>
 
 <script src="/landing-system/assets/js/landing.js"></script>
 

@@ -100,11 +100,11 @@ $statusColors = [
 [$statusColor, $statusBg, $statusLabel] = $statusColors[$instanceStatus] ?? ['var(--dim)','var(--surface-2)','Desconocida'];
 
 $msgTypeColors = [
-    'info'         => ['var(--azul)',    'var(--azul-suave)',    'var(--azul-suave)',    'ℹ️'],
-    'warning'      => ['var(--naranja)', 'var(--naranja-suave)', 'var(--naranja-suave)', '⚠️'],
-    'error'        => ['var(--rojo)',    'var(--rojo-suave)',    'var(--rojo-suave)',    '🚨'],
-    'subscription' => ['#8b5cf6',        '#f5f3ff',              '#ede9fe',              '💳'],
-    'activation'   => ['var(--azul)',    'var(--azul-suave)',    'var(--azul-suave)',    '🔑'],
+    'info'         => ['var(--azul)',    'var(--azul-suave)',    'var(--azul-suave)',    'fa-circle-info'],
+    'warning'      => ['var(--naranja)', 'var(--naranja-suave)', 'var(--naranja-suave)', 'fa-triangle-exclamation'],
+    'error'        => ['var(--rojo)',    'var(--rojo-suave)',    'var(--rojo-suave)',    'fa-circle-exclamation'],
+    'subscription' => ['var(--violeta)', 'var(--violeta-suave)', 'color-mix(in srgb, var(--violeta) 35%, transparent)', 'fa-credit-card'],
+    'activation'   => ['var(--azul)',    'var(--azul-suave)',    'var(--azul-suave)',    'fa-key'],
 ];
 [$msgColor, $msgBg, $msgBorder, $msgIcon] = $msgTypeColors[$saasType] ?? $msgTypeColors['info'];
 
@@ -112,7 +112,7 @@ $features = [
     'feature_prematricula' => ['Pre-matrícula',  'fa-user-plus',     '#4f46e5'],
     'feature_chat'         => ['Chat',            'fa-comments',      '#10b981'],
     'feature_inventario'   => ['Inventario',      'fa-boxes',         '#f59e0b'],
-    'feature_subida_tfg'   => ['Entrega de TFG',  'fa-file-upload',   '#8b5cf6'],
+    'feature_subida_tfg'   => ['Entrega de TFG',  'fa-file-upload',   'var(--violeta)'],
     'feature_anuncios'     => ['Anuncios',         'fa-bullhorn',      '#f43f5e'],
     'feature_eventos'      => ['Eventos',          'fa-calendar-days', '#0ea5e9'],
     'feature_retos'        => ['Retos',            'fa-trophy',        '#f59e0b'],
@@ -178,7 +178,7 @@ $expLabel = $subExpTs ? 'Suscripción válida hasta' : 'Token válido hasta';
 
 <?php if ($saasMsg): ?>
 <div class="saas-message-box" style="background:<?= $msgBg ?>;border:1px solid <?= $msgBorder ?>;">
-  <span style="font-size:1.5rem;line-height:1;"><?= $msgIcon ?></span>
+  <span style="font-size:1.5rem;line-height:1;color:<?= $msgColor ?>;"><i class="fas <?= $msgIcon ?>"></i></span>
   <div>
     <div style="font-weight:700;color:<?= $msgColor ?>;margin-bottom:4px;">Mensaje de la plataforma</div>
     <div style="font-size:14px;color:var(--text);"><?= htmlspecialchars($saasMsg, ENT_QUOTES) ?></div>

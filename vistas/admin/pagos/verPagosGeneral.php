@@ -43,10 +43,10 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>GESTIÓN DE PAGOS</h1>
     <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <button type="button" class="boton-secundario" onclick="$('#modal-pendientes').addClass('modal-abierto').removeClass('modal-cerrando')"
-                style="border-color:var(--danger); color:var(--danger); display:inline-flex; align-items:center; gap:8px;">
+                style="border-color:var(--rojo); color:var(--rojo); display:inline-flex; align-items:center; gap:8px;">
             <i class="fas fa-exclamation-circle"></i> PAGOS PENDIENTES
             <?php if (count($listaPendientes) > 0): ?>
-            <span style="background:var(--danger);color:#fff;border-radius:999px;padding:1px 8px;font-size:.75rem;font-weight:700;"><?= count($listaPendientes) ?></span>
+            <span style="background:var(--rojo);color:#fff;border-radius:999px;padding:1px 8px;font-size:.75rem;font-weight:700;"><?= count($listaPendientes) ?></span>
             <?php endif; ?>
         </button>
         <a href="agregarPagos.php" class="boton-primario">
@@ -159,8 +159,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <!-- Modal Pagos Pendientes -->
 <div id="modal-pendientes" class="modal-backdrop" role="dialog" aria-modal="true">
     <div class="modal-caja" style="max-width:800px; width:90%;">
-        <div class="modal-icono" style="background:#fee2e2;">
-            <i class="fas fa-exclamation-circle" style="color:var(--danger)"></i>
+        <div class="modal-icono" style="background:var(--rojo-suave);">
+            <i class="fas fa-exclamation-circle" style="color:var(--rojo)"></i>
         </div>
         <h3 class="modal-titulo">Estudiantes con Pagos Pendientes</h3>
         <p class="modal-subtitulo">Saldo pendiente (precio del ciclo menos pagos realizados)</p>

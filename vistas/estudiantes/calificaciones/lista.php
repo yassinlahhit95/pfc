@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -25,6 +26,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h1>MIS CALIFICACIONES</h1>
         <p class="subtitulo-encabezado" style="font-size:1.1rem; opacity:0.8;"><i class="fas fa-graduation-cap"></i> <?= Security::escapeHtml($resumen['nombreCiclo'] ?? '') ?></p>
     </div>
+    <?php if (FeatureGuard::check('feature_informes')): ?>
+    <div class="acciones-pagina">
+        <form method="POST" action="../../../controladores/estudiantes/informes/generarBoletin.php" target="_blank">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <button type="submit" class="boton-primario"><i class="fas fa-file-pdf"></i> Descargar mi boletín</button>
+        </form>
+    </div>
+    <?php endif; ?>
 </div>
 
 <!-- ═══════════════ KPI DASHBOARD ═══════════════ -->

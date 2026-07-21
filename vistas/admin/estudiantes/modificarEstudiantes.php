@@ -46,59 +46,65 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreEstudiante') ?>">
-                <label for="nombreEstudiante">Nombre Completo</label>
-                <input type="text" id="nombreEstudiante" name="nombreEstudiante" value="<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>">
-                <?= fieldError($errores, 'nombreEstudiante') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreEstudiante') ?>">
+                    <label for="nombreEstudiante">Nombre Completo</label>
+                    <input type="text" id="nombreEstudiante" name="nombreEstudiante" value="<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>">
+                    <?= fieldError($errores, 'nombreEstudiante') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'emailEstudiante') ?>">
+                    <label for="emailEstudiante">Email</label>
+                    <input type="text" id="emailEstudiante" name="emailEstudiante" value="<?= Security::escapeHtml($estudiante['emailEstudiante']) ?>">
+                    <?= fieldError($errores, 'emailEstudiante') ?>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'emailEstudiante') ?>">
-                <label for="emailEstudiante">Email</label>
-                <input type="text" id="emailEstudiante" name="emailEstudiante" value="<?= Security::escapeHtml($estudiante['emailEstudiante']) ?>">
-                <?= fieldError($errores, 'emailEstudiante') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'curso') ?>">
+                    <label for="curso">Nivel</label>
+                    <select name="curso" id="curso" onchange="filtrarCiclos()">
+                        <option value="Grado Medio" <?php if ($estudiante['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                        <option value="Grado Superior" <?php if ($estudiante['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
+                    </select>
+                    <?= fieldError($errores, 'curso') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
+                    <label for="idCiclo">Ciclo Formativo</label>
+                    <select name="idCiclo" id="idCiclo">
+                        <option value="">-- Selecciona un ciclo --</option>
+                    </select>
+                    <?= fieldError($errores, 'idCiclo') ?>
+                </div>
+
+                <div class="campo">
+                    <label for="anioEstudio">Año de estudio</label>
+                    <select name="anioEstudio" id="anioEstudio">
+                        <option value="">-- Sin especificar --</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'curso') ?>">
-                <label for="curso">Nivel</label>
-                <select name="curso" id="curso" onchange="filtrarCiclos()">
-                    <option value="Grado Medio" <?php if ($estudiante['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
-                    <option value="Grado Superior" <?php if ($estudiante['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
-                </select>
-                <?= fieldError($errores, 'curso') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'dniEstudiante') ?>">
+                    <label for="dniEstudiante">DNI</label>
+                    <input type="text" id="dniEstudiante" name="dniEstudiante" value="<?= Security::escapeHtml($estudiante['dniEstudiante']) ?>">
+                    <?= fieldError($errores, 'dniEstudiante') ?>
+                </div>
 
-            <div class="campo">
-                <label for="anioEstudio">Año de estudio</label>
-                <select name="anioEstudio" id="anioEstudio">
-                    <option value="">-- Sin especificar --</option>
-                </select>
-            </div>
+                <div class="campo<?= fieldClass($errores, 'telefonoEstudiante') ?>">
+                    <label for="telefonoEstudiante">Teléfono</label>
+                    <input type="text" id="telefonoEstudiante" name="telefonoEstudiante" value="<?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?>">
+                    <?= fieldError($errores, 'telefonoEstudiante') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
-                <label for="idCiclo">Ciclo Formativo</label>
-                <select name="idCiclo" id="idCiclo">
-                    <option value="">-- Selecciona un ciclo --</option>
-                </select>
-                <?= fieldError($errores, 'idCiclo') ?>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'dniEstudiante') ?>">
-                <label for="dniEstudiante">DNI</label>
-                <input type="text" id="dniEstudiante" name="dniEstudiante" value="<?= Security::escapeHtml($estudiante['dniEstudiante']) ?>">
-                <?= fieldError($errores, 'dniEstudiante') ?>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'telefonoEstudiante') ?>">
-                <label for="telefonoEstudiante">Teléfono</label>
-                <input type="text" id="telefonoEstudiante" name="telefonoEstudiante" value="<?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?>">
-                <?= fieldError($errores, 'telefonoEstudiante') ?>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'fechaNacimientoEstudiante') ?>">
-                <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
-                <input type="date" id="fechaNacimientoEstudiante" name="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($estudiante['fechaNacimientoEstudiante']) ?>">
-                <input type="hidden" name="fechaAltaEstudiante" value="<?= Security::escapeHtml($estudiante['fechaAltaEstudiante'] ?? '') ?>">
-                <?= fieldError($errores, 'fechaNacimientoEstudiante') ?>
+                <div class="campo<?= fieldClass($errores, 'fechaNacimientoEstudiante') ?>">
+                    <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
+                    <input type="date" id="fechaNacimientoEstudiante" name="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($estudiante['fechaNacimientoEstudiante']) ?>">
+                    <input type="hidden" name="fechaAltaEstudiante" value="<?= Security::escapeHtml($estudiante['fechaAltaEstudiante'] ?? '') ?>">
+                    <?= fieldError($errores, 'fechaNacimientoEstudiante') ?>
+                </div>
             </div>
 
             <div class="campo ancho-total<?= fieldClass($errores, 'direccionEstudiante') ?>">
@@ -107,16 +113,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?= fieldError($errores, 'direccionEstudiante') ?>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'ciudadEstudiante') ?>">
-                <label for="ciudadEstudiante">Ciudad</label>
-                <input type="text" id="ciudadEstudiante" name="ciudadEstudiante" value="<?= Security::escapeHtml($estudiante['ciudadEstudiante']) ?>">
-                <?= fieldError($errores, 'ciudadEstudiante') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'ciudadEstudiante') ?>">
+                    <label for="ciudadEstudiante">Ciudad</label>
+                    <input type="text" id="ciudadEstudiante" name="ciudadEstudiante" value="<?= Security::escapeHtml($estudiante['ciudadEstudiante']) ?>">
+                    <?= fieldError($errores, 'ciudadEstudiante') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'codigoPostalEstudiante') ?>">
-                <label for="codigoPostalEstudiante">Código Postal</label>
-                <input type="text" id="codigoPostalEstudiante" name="codigoPostalEstudiante" value="<?= Security::escapeHtml($estudiante['codigoPostalEstudiante']) ?>">
-                <?= fieldError($errores, 'codigoPostalEstudiante') ?>
+                <div class="campo<?= fieldClass($errores, 'codigoPostalEstudiante') ?>">
+                    <label for="codigoPostalEstudiante">Código Postal</label>
+                    <input type="text" id="codigoPostalEstudiante" name="codigoPostalEstudiante" value="<?= Security::escapeHtml($estudiante['codigoPostalEstudiante']) ?>">
+                    <?= fieldError($errores, 'codigoPostalEstudiante') ?>
+                </div>
             </div>
 
             <div class="campo ancho-total">

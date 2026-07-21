@@ -20,7 +20,7 @@
 
 <div class="panel margen-abajo">
     <div class="formulario">
-        <div class="campo">
+        <div class="campo ancho-total">
             <label for="filtro-blog">BUSCAR</label>
             <input type="text" id="filtro-blog" placeholder="Buscar por título, categoría o autor..."
                    autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"

@@ -52,12 +52,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?= fieldError($errores, 'numero') ?>
                 </div>
                 <div class="campo">
-                    <label>Código resultante</label>
+                    <label for="codigoPreview">Código resultante</label>
                     <input type="text" id="codigoPreview" value="" readonly class="bg-gris-suave">
                 </div>
             </div>
 
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="nombreAula">Nombre / descripción (opcional)</label>
                 <input type="text" name="nombreAula" id="nombreAula" value="<?= Security::escapeHtml($datos['nombreAula'] ?? '') ?>" placeholder="Ej: Laboratorio de Redes">
             </div>
@@ -80,10 +80,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </div>
             </div>
 
-            <label class="campo-checkbox">
-                <input type="checkbox" name="activa" value="1" <?= (!empty($datos['activa'])) ? 'checked' : '' ?>>
-                Aula activa (disponible para asignar en el horario)
-            </label>
+            <div class="campo-checkbox-grupo">
+                <label class="campo-checkbox">
+                    <input type="checkbox" name="activa" value="1" <?= (!empty($datos['activa'])) ? 'checked' : '' ?>>
+                    Aula activa (disponible para asignar en el horario)
+                </label>
+            </div>
         </div>
 
         <div class="acciones">

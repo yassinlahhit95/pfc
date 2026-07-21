@@ -54,78 +54,90 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idFCT" value="<?= (int)$fct['idFCT'] ?>">
 
-        <div class="campo">
-            <label for="empresaExistente">Empresa colaboradora (si ya está en el directorio)</label>
-            <select id="empresaExistente" onchange="fctRellenarEmpresa()">
-                <option value="">-- Escribir empresa nueva abajo --</option>
-                <?php foreach ($empresas as $emp): ?>
-                <option value="<?= (int)$emp['idEmpresa'] ?>" data-nombre="<?= Security::escapeHtml($emp['nombre']) ?>" <?= ((int)($datos['idEmpresa'] ?? 0) === (int)$emp['idEmpresa']) ? 'selected' : '' ?>><?= Security::escapeHtml($emp['nombre']) ?></option>
-                <?php endforeach; ?>
-            </select>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="empresaExistente">Empresa colaboradora (si ya está en el directorio)</label>
+                <select id="empresaExistente" onchange="fctRellenarEmpresa()">
+                    <option value="">-- Escribir empresa nueva abajo --</option>
+                    <?php foreach ($empresas as $emp): ?>
+                    <option value="<?= (int)$emp['idEmpresa'] ?>" data-nombre="<?= Security::escapeHtml($emp['nombre']) ?>" <?= ((int)($datos['idEmpresa'] ?? 0) === (int)$emp['idEmpresa']) ? 'selected' : '' ?>><?= Security::escapeHtml($emp['nombre']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="empresa">Nombre de la empresa *</label>
+                <input type="text" id="empresa" name="empresa" maxlength="200" required value="<?= Security::escapeHtml($datos['empresa'] ?? '') ?>">
+                <?= fieldError($errores, 'empresa') ?>
+            </div>
         </div>
         <input type="hidden" id="idEmpresa" name="idEmpresa" value="<?= Security::escapeHtml($datos['idEmpresa'] ?? '') ?>">
 
-        <div class="campo">
-            <label for="empresa">Nombre de la empresa *</label>
-            <input type="text" id="empresa" name="empresa" maxlength="200" required value="<?= Security::escapeHtml($datos['empresa'] ?? '') ?>">
-            <?= fieldError($errores, 'empresa') ?>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="ciudadEmpresa">Ciudad</label>
+                <input type="text" id="ciudadEmpresa" name="ciudadEmpresa" maxlength="100" value="<?= Security::escapeHtml($datos['ciudadEmpresa'] ?? '') ?>">
+            </div>
+
+            <div class="campo">
+                <label for="tutorEmpresa">Tutor/a en la empresa</label>
+                <input type="text" id="tutorEmpresa" name="tutorEmpresa" maxlength="150" value="<?= Security::escapeHtml($datos['tutorEmpresa'] ?? '') ?>">
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="ciudadEmpresa">Ciudad</label>
-            <input type="text" id="ciudadEmpresa" name="ciudadEmpresa" maxlength="100" value="<?= Security::escapeHtml($datos['ciudadEmpresa'] ?? '') ?>">
+        <div class="form-fila">
+            <div class="campo">
+                <label for="emailTutorEmpresa">Email del tutor/a</label>
+                <input type="email" id="emailTutorEmpresa" name="emailTutorEmpresa" maxlength="150" value="<?= Security::escapeHtml($datos['emailTutorEmpresa'] ?? '') ?>">
+            </div>
+
+            <div class="campo">
+                <label for="telefonoEmpresa">Teléfono del tutor/a</label>
+                <input type="text" id="telefonoEmpresa" name="telefonoEmpresa" maxlength="20" value="<?= Security::escapeHtml($datos['telefonoEmpresa'] ?? '') ?>">
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="tutorEmpresa">Tutor/a en la empresa</label>
-            <input type="text" id="tutorEmpresa" name="tutorEmpresa" maxlength="150" value="<?= Security::escapeHtml($datos['tutorEmpresa'] ?? '') ?>">
+        <div class="form-fila">
+            <div class="campo">
+                <label for="fechaInicio">Fecha de inicio</label>
+                <input type="date" id="fechaInicio" name="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
+            </div>
+
+            <div class="campo">
+                <label for="fechaFin">Fecha de fin</label>
+                <input type="date" id="fechaFin" name="fechaFin" value="<?= Security::escapeHtml($datos['fechaFin'] ?? '') ?>">
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="emailTutorEmpresa">Email del tutor/a</label>
-            <input type="email" id="emailTutorEmpresa" name="emailTutorEmpresa" maxlength="150" value="<?= Security::escapeHtml($datos['emailTutorEmpresa'] ?? '') ?>">
-        </div>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="horasTotales">Horas totales requeridas</label>
+                <input type="number" id="horasTotales" name="horasTotales" min="0" value="<?= Security::escapeHtml($datos['horasTotales'] ?? '') ?>">
+            </div>
 
-        <div class="campo">
-            <label for="telefonoEmpresa">Teléfono del tutor/a</label>
-            <input type="text" id="telefonoEmpresa" name="telefonoEmpresa" maxlength="20" value="<?= Security::escapeHtml($datos['telefonoEmpresa'] ?? '') ?>">
-        </div>
-
-        <div class="campo">
-            <label for="fechaInicio">Fecha de inicio</label>
-            <input type="date" id="fechaInicio" name="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
-        </div>
-
-        <div class="campo">
-            <label for="fechaFin">Fecha de fin</label>
-            <input type="date" id="fechaFin" name="fechaFin" value="<?= Security::escapeHtml($datos['fechaFin'] ?? '') ?>">
-        </div>
-
-        <div class="campo">
-            <label for="horasTotales">Horas totales requeridas</label>
-            <input type="number" id="horasTotales" name="horasTotales" min="0" value="<?= Security::escapeHtml($datos['horasTotales'] ?? '') ?>">
-        </div>
-
-        <div class="campo">
-            <label for="horasRealizadas">Horas realizadas</label>
-            <input type="number" id="horasRealizadas" name="horasRealizadas" min="0" value="<?= Security::escapeHtml($datos['horasRealizadas'] ?? '') ?>">
+            <div class="campo">
+                <label for="horasRealizadas">Horas realizadas</label>
+                <input type="number" id="horasRealizadas" name="horasRealizadas" min="0" value="<?= Security::escapeHtml($datos['horasRealizadas'] ?? '') ?>">
+            </div>
         </div>
 
         <div class="campo ancho-total"><hr style="border:none;border-top:1px solid var(--border);margin:4px 0;"></div>
 
-        <div class="campo">
-            <label for="nota">Nota (0-10, opcional)</label>
-            <input type="text" id="nota" name="nota" placeholder="Ej: 8.5" value="<?= Security::escapeHtml($datos['nota'] ?? '') ?>">
-            <?= fieldError($errores, 'nota') ?>
-        </div>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="nota">Nota (0-10, opcional)</label>
+                <input type="text" id="nota" name="nota" placeholder="Ej: 8.5" value="<?= Security::escapeHtml($datos['nota'] ?? '') ?>">
+                <?= fieldError($errores, 'nota') ?>
+            </div>
 
-        <div class="campo">
-            <label for="apto">Apto / No apto</label>
-            <select id="apto" name="apto">
-                <option value="">-- Sin determinar --</option>
-                <option value="1" <?= (isset($datos['apto']) && $datos['apto'] !== null && (int)$datos['apto'] === 1) ? 'selected' : '' ?>>Apto</option>
-                <option value="0" <?= (isset($datos['apto']) && $datos['apto'] !== null && (int)$datos['apto'] === 0) ? 'selected' : '' ?>>No apto</option>
-            </select>
+            <div class="campo">
+                <label for="apto">Apto / No apto</label>
+                <select id="apto" name="apto">
+                    <option value="">-- Sin determinar --</option>
+                    <option value="1" <?= (isset($datos['apto']) && $datos['apto'] !== null && (int)$datos['apto'] === 1) ? 'selected' : '' ?>>Apto</option>
+                    <option value="0" <?= (isset($datos['apto']) && $datos['apto'] !== null && (int)$datos['apto'] === 0) ? 'selected' : '' ?>>No apto</option>
+                </select>
+            </div>
         </div>
 
         <div class="campo ancho-total">

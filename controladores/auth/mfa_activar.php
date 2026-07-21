@@ -2,17 +2,19 @@
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-// Activa MFA para el admin: verifica el primer código TOTP, guarda el secreto
-// y genera códigos de respaldo (mostrados una sola vez).
+// Activa MFA para cualquier rol: verifica el primer código TOTP, guarda el
+// secreto y genera códigos de respaldo (mostrados una sola vez).
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
-require_once __DIR__ . '/../../modelos/directores.php';
+require_once __DIR__ . '/../../include/MfaService.php';
+require_once __DIR__ . '/../../modelos/conectar.php';
 Security::initSession();
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN Y VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (empty($_SESSION['idAdmin'])) {
+$actor = MfaService::sesionActual();
+if (!$actor) {
     header('Location: ../../vistas/login.php');
     exit;
 }
@@ -46,7 +48,7 @@ for ($i = 0; $i < 8; $i++) {
     $hashes[] = password_hash($raw, PASSWORD_DEFAULT);
 }
 
-if (!activarMfaDirector((int)$_SESSION['idAdmin'], $secret, json_encode($hashes))) {
+if (!MfaService::activar($actor['tabla'], $actor['idCol'], $actor['id'], $secret, json_encode($hashes))) {
     $_SESSION['errores'] = 'No se pudo activar MFA. Inténtalo de nuevo.';
     header('Location: ../../vistas/auth/mfa_configurar.php');
     exit;

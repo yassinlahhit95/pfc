@@ -189,24 +189,26 @@ require_once __DIR__ . "/../comunes/nav.php";
 <!-- Selector de módulo y fecha -->
 <div class="panel margen-abajo">
   <form method="GET" action="" class="formulario">
-    <div class="campo">
-      <label>Módulo</label>
-      <select name="idModulo" onchange="this.form.submit()">
-        <option value="">Selecciona un módulo</option>
-        <?php foreach ($misModulos as $modulo): ?>
-        <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($modulo['nombreModulo']) ?>
-        </option>
-        <?php endforeach; ?>
-      </select>
+    <div class="form-fila">
+      <div class="campo">
+        <label for="filtroIdModulo">Módulo</label>
+        <select name="idModulo" id="filtroIdModulo" onchange="this.form.submit()">
+          <option value="">Selecciona un módulo</option>
+          <?php foreach ($misModulos as $modulo): ?>
+          <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
+            <?= Security::escapeHtml($modulo['nombreModulo']) ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <?php if ($idModulo): ?>
+      <div class="campo">
+        <label for="filtroFecha">Fecha</label>
+        <input type="date" name="fecha" id="filtroFecha" value="<?= Security::escapeHtml($fecha) ?>"
+               max="<?= $fechaHoy ?>" onchange="this.form.submit()">
+      </div>
+      <?php endif; ?>
     </div>
-    <?php if ($idModulo): ?>
-    <div class="campo">
-      <label>Fecha</label>
-      <input type="date" name="fecha" value="<?= Security::escapeHtml($fecha) ?>"
-             max="<?= $fechaHoy ?>" onchange="this.form.submit()">
-    </div>
-    <?php endif; ?>
   </form>
 </div>
 
@@ -326,7 +328,7 @@ require_once __DIR__ . "/../comunes/nav.php";
           <span title="<?= $mapaAbsentismo[$idEst]['ausencias'] ?>h ausente — <?= $mapaAbsentismo[$idEst]['porcentaje'] ?>% del módulo"
                 class="texto-estado <?= $mapaAbsentismo[$idEst]['excede'] ? 'rojo' : 'naranja' ?>"
                 style="font-size:.65rem;display:block;margin-top:2px;">
-            <?= $mapaAbsentismo[$idEst]['excede'] ? '⚠ Absentismo: ' : '' ?><?= $mapaAbsentismo[$idEst]['porcentaje'] ?>%
+            <?= $mapaAbsentismo[$idEst]['excede'] ? '<i class="fas fa-triangle-exclamation"></i> Absentismo: ' : '' ?><?= $mapaAbsentismo[$idEst]['porcentaje'] ?>%
           </span>
           <?php endif; ?>
         </div>

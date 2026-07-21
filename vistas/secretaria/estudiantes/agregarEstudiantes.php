@@ -28,62 +28,68 @@ include __DIR__ . '/../comunes/nav.php';
     <form action="../../../controladores/secretaria/estudiantes/insertar.php" method="POST" class="formulario">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
-        <div class="campo<?= fieldClass($errores, 'nombre') ?>">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" name="nombre" id="nombre" value="<?= Security::escapeHtml($datos['nombre'] ?? '') ?>">
-            <?= fieldError($errores, 'nombre') ?>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'nombre') ?>">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" name="nombre" id="nombre" value="<?= Security::escapeHtml($datos['nombre'] ?? '') ?>">
+                <?= fieldError($errores, 'nombre') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'email') ?>">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" value="<?= Security::escapeHtml($datos['email'] ?? '') ?>">
+                <?= fieldError($errores, 'email') ?>
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'email') ?>">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="<?= Security::escapeHtml($datos['email'] ?? '') ?>">
-            <?= fieldError($errores, 'email') ?>
+        <div class="form-fila">
+            <!-- Nivel / Curso -->
+            <div class="campo<?= fieldClass($errores, 'curso') ?>">
+                <label for="curso">Nivel</label>
+                <select name="curso" id="curso" onchange="filtrarCiclos()">
+                    <option value="">-- Selecciona un nivel --</option>
+                    <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
+                </select>
+                <?= fieldError($errores, 'curso') ?>
+            </div>
+
+            <!-- Ciclo formativo -->
+            <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
+                <label for="idCiclo">Ciclo formativo</label>
+                <select name="idCiclo" id="idCiclo">
+                    <option value="">-- Selecciona primero un nivel --</option>
+                </select>
+                <?= fieldError($errores, 'idCiclo') ?>
+            </div>
+
+            <!-- Año de estudio -->
+            <div class="campo">
+                <label for="anioEstudio">Año de estudio</label>
+                <select name="anioEstudio" id="anioEstudio">
+                    <option value="">-- Selecciona primero un ciclo --</option>
+                </select>
+            </div>
         </div>
 
-        <!-- Nivel / Curso -->
-        <div class="campo<?= fieldClass($errores, 'curso') ?>">
-            <label for="curso">Nivel</label>
-            <select name="curso" id="curso" onchange="filtrarCiclos()">
-                <option value="">-- Selecciona un nivel --</option>
-                <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
-                <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
-            </select>
-            <?= fieldError($errores, 'curso') ?>
-        </div>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'dni') ?>">
+                <label for="dni">DNI</label>
+                <input type="text" name="dni" id="dni" value="<?= Security::escapeHtml($datos['dni'] ?? '') ?>">
+                <?= fieldError($errores, 'dni') ?>
+            </div>
 
-        <!-- Año de estudio -->
-        <div class="campo">
-            <label for="anioEstudio">Año de estudio</label>
-            <select name="anioEstudio" id="anioEstudio">
-                <option value="">-- Selecciona primero un ciclo --</option>
-            </select>
-        </div>
+            <div class="campo<?= fieldClass($errores, 'telefono') ?>">
+                <label for="telefono">Teléfono</label>
+                <input type="text" name="telefono" id="telefono" value="<?= Security::escapeHtml($datos['telefono'] ?? '') ?>">
+                <?= fieldError($errores, 'telefono') ?>
+            </div>
 
-        <!-- Ciclo formativo -->
-        <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
-            <label for="idCiclo">Ciclo formativo</label>
-            <select name="idCiclo" id="idCiclo">
-                <option value="">-- Selecciona primero un nivel --</option>
-            </select>
-            <?= fieldError($errores, 'idCiclo') ?>
-        </div>
-
-        <div class="campo<?= fieldClass($errores, 'dni') ?>">
-            <label for="dni">DNI</label>
-            <input type="text" name="dni" id="dni" value="<?= Security::escapeHtml($datos['dni'] ?? '') ?>">
-            <?= fieldError($errores, 'dni') ?>
-        </div>
-
-        <div class="campo<?= fieldClass($errores, 'telefono') ?>">
-            <label for="telefono">Teléfono</label>
-            <input type="text" name="telefono" id="telefono" value="<?= Security::escapeHtml($datos['telefono'] ?? '') ?>">
-            <?= fieldError($errores, 'telefono') ?>
-        </div>
-
-        <div class="campo<?= fieldClass($errores, 'fechaNacimiento') ?>">
-            <label for="fechaNacimiento">Fecha de nacimiento</label>
-            <input type="date" name="fechaNacimiento" id="fechaNacimiento" value="<?= Security::escapeHtml($datos['fechaNacimiento'] ?? '') ?>">
-            <?= fieldError($errores, 'fechaNacimiento') ?>
+            <div class="campo<?= fieldClass($errores, 'fechaNacimiento') ?>">
+                <label for="fechaNacimiento">Fecha de nacimiento</label>
+                <input type="date" name="fechaNacimiento" id="fechaNacimiento" value="<?= Security::escapeHtml($datos['fechaNacimiento'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaNacimiento') ?>
+            </div>
         </div>
 
         <div class="campo ancho-total<?= fieldClass($errores, 'direccion') ?>">

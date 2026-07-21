@@ -42,43 +42,47 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idPago" value="<?= $idPago ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'idEstudiante') ?>">
-                <label for="idEstudiante">Estudiante</label>
-                <select name="idEstudiante" id="idEstudiante">
-                    <?php foreach ($todosLosEstudiantes as $estudiante) { ?>
-                        <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $pago['idEstudiante'] == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
-                        </option>
-                    <?php } ?>
-                </select>
-                <?= fieldError($errores, 'idEstudiante') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'idEstudiante') ?>">
+                    <label for="idEstudiante">Estudiante</label>
+                    <select name="idEstudiante" id="idEstudiante">
+                        <?php foreach ($todosLosEstudiantes as $estudiante) { ?>
+                            <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $pago['idEstudiante'] == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
+                                <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                    <?= fieldError($errores, 'idEstudiante') ?>
+                </div>
+
+                <div class="campo">
+                    <label for="tipoPago">Tipo de Pago</label>
+                    <select name="tipoPago" id="tipoPago">
+                        <option value="mensual" <?= ($pago['tipoPago'] ?? '') == 'mensual' ? 'selected' : '' ?>>Mensual</option>
+                        <option value="trimestral" <?= ($pago['tipoPago'] ?? '') == 'trimestral' ? 'selected' : '' ?>>Trimestral</option>
+                        <option value="semestral" <?= ($pago['tipoPago'] ?? '') == 'semestral' ? 'selected' : '' ?>>Semestral</option>
+                        <option value="unico" <?= ($pago['tipoPago'] ?? '') == 'unico' ? 'selected' : '' ?>>Único</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="tipoPago">Tipo de Pago</label>
-                <select name="tipoPago" id="tipoPago">
-                    <option value="mensual" <?= ($pago['tipoPago'] ?? '') == 'mensual' ? 'selected' : '' ?>>Mensual</option>
-                    <option value="trimestral" <?= ($pago['tipoPago'] ?? '') == 'trimestral' ? 'selected' : '' ?>>Trimestral</option>
-                    <option value="semestral" <?= ($pago['tipoPago'] ?? '') == 'semestral' ? 'selected' : '' ?>>Semestral</option>
-                    <option value="unico" <?= ($pago['tipoPago'] ?? '') == 'unico' ? 'selected' : '' ?>>Único</option>
-                </select>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'cantidadPago') ?>">
+                    <label for="cantidadPago">Cantidad (Monto)</label>
+                    <input type="number" name="cantidadPago" id="cantidadPago" step="0.01" value="<?= Security::escapeHtml($pago['cantidadPago'] ?? $pago['monto'] ?? '') ?>">
+                    <?= fieldError($errores, 'cantidadPago') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'cantidadPago') ?>">
-                <label for="cantidadPago">Cantidad (Monto)</label>
-                <input type="number" name="cantidadPago" id="cantidadPago" step="0.01" value="<?= Security::escapeHtml($pago['cantidadPago'] ?? $pago['monto'] ?? '') ?>">
-                <?= fieldError($errores, 'cantidadPago') ?>
-            </div>
+                <div class="campo<?= fieldClass($errores, 'fechaPago') ?>">
+                    <label for="fechaPago">Fecha de Pago</label>
+                    <input type="date" name="fechaPago" id="fechaPago" value="<?= Security::escapeHtml($pago['fechaPago'] ?? '') ?>">
+                    <?= fieldError($errores, 'fechaPago') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'fechaPago') ?>">
-                <label for="fechaPago">Fecha de Pago</label>
-                <input type="date" name="fechaPago" id="fechaPago" value="<?= Security::escapeHtml($pago['fechaPago'] ?? '') ?>">
-                <?= fieldError($errores, 'fechaPago') ?>
-            </div>
-
-            <div class="campo">
-                <label for="fechaProximoPago">Próxima Fecha de Pago</label>
-                <input type="date" name="fechaProximoPago" id="fechaProximoPago" value="<?= Security::escapeHtml($pago['fechaProximoPago'] ?? '') ?>">
+                <div class="campo">
+                    <label for="fechaProximoPago">Próxima Fecha de Pago</label>
+                    <input type="date" name="fechaProximoPago" id="fechaProximoPago" value="<?= Security::escapeHtml($pago['fechaProximoPago'] ?? '') ?>">
+                </div>
             </div>
         </div>
 

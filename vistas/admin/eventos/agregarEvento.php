@@ -26,28 +26,32 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/admin/eventos/insertar.php">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
-                <label for="tituloEvento">Título del Evento</label>
-                <input type="text" name="tituloEvento" id="tituloEvento" value="<?= Security::escapeHtml($datos['tituloEvento'] ?? '') ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
-                <?= fieldError($errores, 'tituloEvento') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
+                    <label for="tituloEvento">Título del Evento</label>
+                    <input type="text" name="tituloEvento" id="tituloEvento" value="<?= Security::escapeHtml($datos['tituloEvento'] ?? '') ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                    <?= fieldError($errores, 'tituloEvento') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'ubicacionEvento') ?>">
+                    <label for="ubicacionEvento">Ubicación</label>
+                    <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= Security::escapeHtml($datos['ubicacionEvento'] ?? '') ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
+                    <?= fieldError($errores, 'ubicacionEvento') ?>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'ubicacionEvento') ?>">
-                <label for="ubicacionEvento">Ubicación</label>
-                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= Security::escapeHtml($datos['ubicacionEvento'] ?? '') ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
-                <?= fieldError($errores, 'ubicacionEvento') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
+                    <label for="fechaEvento">Fecha</label>
+                    <input type="date" name="fechaEvento" id="fechaEvento" value="<?= Security::escapeHtml($datos['fechaEvento'] ?? date('Y-m-d')) ?>">
+                    <?= fieldError($errores, 'fechaEvento') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
-                <label for="fechaEvento">Fecha</label>
-                <input type="date" name="fechaEvento" id="fechaEvento" value="<?= Security::escapeHtml($datos['fechaEvento'] ?? date('Y-m-d')) ?>">
-                <?= fieldError($errores, 'fechaEvento') ?>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
-                <label for="horaEvento">Hora</label>
-                <input type="time" name="horaEvento" id="horaEvento" value="<?= Security::escapeHtml($datos['horaEvento'] ?? '09:00') ?>">
-                <?= fieldError($errores, 'horaEvento') ?>
+                <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
+                    <label for="horaEvento">Hora</label>
+                    <input type="time" name="horaEvento" id="horaEvento" value="<?= Security::escapeHtml($datos['horaEvento'] ?? '09:00') ?>">
+                    <?= fieldError($errores, 'horaEvento') ?>
+                </div>
             </div>
 
             <div class="campo ancho-total">

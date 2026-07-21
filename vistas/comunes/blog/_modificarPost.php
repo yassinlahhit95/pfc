@@ -32,48 +32,52 @@
                 <?= fieldError($errores, 'titulo') ?>
             </div>
 
-            <div class="campo">
-                <label for="categoria">Categoría</label>
-                <input type="text" id="categoria" name="categoria" maxlength="80" list="categorias-blog"
-                       value="<?= Security::escapeHtml($post['categoria']) ?>">
-                <datalist id="categorias-blog">
-                    <?php foreach ($categorias as $categoria) { ?>
-                    <option value="<?= Security::escapeHtml($categoria['categoria']) ?>"></option>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="categoria">Categoría</label>
+                    <input type="text" id="categoria" name="categoria" maxlength="80" list="categorias-blog"
+                           value="<?= Security::escapeHtml($post['categoria']) ?>">
+                    <datalist id="categorias-blog">
+                        <?php foreach ($categorias as $categoria) { ?>
+                        <option value="<?= Security::escapeHtml($categoria['categoria']) ?>"></option>
+                        <?php } ?>
+                    </datalist>
+                </div>
+
+                <div class="campo">
+                    <label for="autor">Autor (opcional)</label>
+                    <input type="text" id="autor" name="autor" maxlength="120"
+                           value="<?= Security::escapeHtml($post['autor']) ?>">
+                </div>
+            </div>
+
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'fechaPublicacion') ?>">
+                    <label for="fechaPublicacion">Fecha de publicación</label>
+                    <input type="datetime-local" id="fechaPublicacion" name="fechaPublicacion"
+                           value="<?= Security::escapeHtml($fechaValor) ?>">
+                    <?= fieldError($errores, 'fechaPublicacion') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'imagen') ?>">
+                    <label for="imagen">Imagen de portada</label>
+                    <?php if (!empty($post['imagen'])) { ?>
+                    <img src="/public/uploads/blog/<?= Security::escapeHtml(basename($post['imagen'])) ?>" alt=""
+                         style="max-height:90px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
                     <?php } ?>
-                </datalist>
-            </div>
-
-            <div class="campo">
-                <label for="autor">Autor (opcional)</label>
-                <input type="text" id="autor" name="autor" maxlength="120"
-                       value="<?= Security::escapeHtml($post['autor']) ?>">
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'fechaPublicacion') ?>">
-                <label for="fechaPublicacion">Fecha de publicación</label>
-                <input type="datetime-local" id="fechaPublicacion" name="fechaPublicacion"
-                       value="<?= Security::escapeHtml($fechaValor) ?>">
-                <?= fieldError($errores, 'fechaPublicacion') ?>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'imagen') ?>">
-                <label>Imagen de portada</label>
-                <?php if (!empty($post['imagen'])) { ?>
-                <img src="/public/uploads/blog/<?= Security::escapeHtml(basename($post['imagen'])) ?>" alt=""
-                     style="max-height:90px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
-                <?php } ?>
-                <label class="zona-subida" for="imagen">
-                    <i class="fas fa-image"></i>
-                    <span><?= !empty($post['imagen']) ? 'Cambiar imagen de portada' : 'Elige una imagen de portada' ?></span>
-                    <small>JPG, PNG o WebP</small>
-                    <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
-                </label>
-                <?= fieldError($errores, 'imagen') ?>
-                <?php if (!empty($post['imagen'])) { ?>
-                <label class="campo-checkbox" style="margin-top:6px;">
-                    <input type="checkbox" name="quitarImagen" value="1"> Quitar la imagen actual
-                </label>
-                <?php } ?>
+                    <label class="zona-subida" for="imagen">
+                        <i class="fas fa-image"></i>
+                        <span><?= !empty($post['imagen']) ? 'Cambiar imagen de portada' : 'Elige una imagen de portada' ?></span>
+                        <small>JPG, PNG o WebP</small>
+                        <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
+                    </label>
+                    <?= fieldError($errores, 'imagen') ?>
+                    <?php if (!empty($post['imagen'])) { ?>
+                    <label class="campo-checkbox" style="margin-top:6px;">
+                        <input type="checkbox" name="quitarImagen" value="1"> Quitar la imagen actual
+                    </label>
+                    <?php } ?>
+                </div>
             </div>
 
             <div class="campo ancho-total">

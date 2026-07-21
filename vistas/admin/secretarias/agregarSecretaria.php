@@ -24,19 +24,21 @@ include_once __DIR__ . '/../comunes/nav.php';
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreSecretaria') ?>">
-                <label for="nombreSecretaria">Nombre Completo <span style="color:red;">*</span></label>
-                <input type="text" id="nombreSecretaria" name="nombreSecretaria"
-                       value="<?= Security::escapeHtml($datos['nombreSecretaria'] ?? '') ?>"
-                       placeholder="Ej: María García López">
-                <?= fieldError($errores, 'nombreSecretaria') ?>
-            </div>
-            <div class="campo<?= fieldClass($errores, 'emailSecretaria') ?>">
-                <label for="emailSecretaria">Correo Electrónico <span style="color:red;">*</span></label>
-                <input type="email" id="emailSecretaria" name="emailSecretaria"
-                       value="<?= Security::escapeHtml($datos['emailSecretaria'] ?? '') ?>"
-                       placeholder="correo@centro.es">
-                <?= fieldError($errores, 'emailSecretaria') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreSecretaria') ?>">
+                    <label for="nombreSecretaria">Nombre Completo <span style="color:red;">*</span></label>
+                    <input type="text" id="nombreSecretaria" name="nombreSecretaria"
+                           value="<?= Security::escapeHtml($datos['nombreSecretaria'] ?? '') ?>"
+                           placeholder="Ej: María García López">
+                    <?= fieldError($errores, 'nombreSecretaria') ?>
+                </div>
+                <div class="campo<?= fieldClass($errores, 'emailSecretaria') ?>">
+                    <label for="emailSecretaria">Correo Electrónico <span style="color:red;">*</span></label>
+                    <input type="email" id="emailSecretaria" name="emailSecretaria"
+                           value="<?= Security::escapeHtml($datos['emailSecretaria'] ?? '') ?>"
+                           placeholder="correo@centro.es">
+                    <?= fieldError($errores, 'emailSecretaria') ?>
+                </div>
             </div>
         </div>
 

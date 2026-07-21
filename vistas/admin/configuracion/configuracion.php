@@ -58,7 +58,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             ['key' => 'prematricula_filtrar_niveles', 'icon' => 'fa-filter', 'color' => '#6366f1', 'label' => 'Filtro Nivel Pre-Matrícula', 'desc' => 'Filtro Grado Superior/Medio en admisiones'],
             ['key' => 'feature_chat',         'icon' => 'fa-comments',      'color' => '#10b981', 'label' => 'Chat',              'desc' => 'Mensajería instantánea'],
             ['key' => 'feature_inventario',   'icon' => 'fa-boxes',         'color' => '#f59e0b', 'label' => 'Inventario',        'desc' => 'Recursos y préstamos'],
-            ['key' => 'feature_subida_tfg',   'icon' => 'fa-file-upload',   'color' => '#8b5cf6', 'label' => 'Entrega de TFG',   'desc' => 'Subida del trabajo fin de grado'],
+            ['key' => 'feature_subida_tfg',   'icon' => 'fa-file-upload',   'color' => 'var(--violeta)', 'label' => 'Entrega de TFG',   'desc' => 'Subida del trabajo fin de grado'],
             ['key' => 'feature_anuncios',     'icon' => 'fa-bullhorn',      'color' => '#f43f5e', 'label' => 'Anuncios',          'desc' => 'Tablón de avisos del centro'],
             ['key' => 'feature_eventos',      'icon' => 'fa-calendar-days', 'color' => '#0ea5e9', 'label' => 'Eventos',           'desc' => 'Calendario de actividades'],
             ['key' => 'feature_retos',        'icon' => 'fa-trophy',        'color' => '#f59e0b', 'label' => 'Retos',             'desc' => 'Actividades académicas gamificadas'],
@@ -69,6 +69,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             ['key' => 'feature_horario',      'icon' => 'fa-calendar-alt',  'color' => '#4f46e5', 'label' => 'Cuadro Horario',    'desc' => 'Horarios y asignaciones de clase'],
             ['key' => 'feature_geoblock_admin','icon' => 'fa-globe-europe','color' => '#dc2626', 'label' => 'Geo-Block (España)','desc' => 'Bloquea el panel admin al extranjero'],
             ['key' => 'feature_ra_ce',        'icon' => 'fa-star-half-stroke','color' => '#f59e0b', 'label' => 'Eval. LOMLOE (RA/CE)','desc' => 'Sistema avanzado de calificación por Resultados de Aprendizaje'],
+            ['key' => 'feature_academico_config','icon' => 'fa-sliders',    'color' => '#7c3aed', 'label' => 'Motor de Calificaciones Configurable','desc' => 'Pesos de evaluación personalizables (sustituye al motor con pesos fijos). Se activa desde el asistente académico; aquí puedes revisar su estado o desactivarlo.'],
             ['key' => 'feature_fp_dual',      'icon' => 'fa-building',      'color' => '#10b981', 'label' => 'FP Dual / Empresas','desc' => 'Gestión de prácticas y estancias en centros de trabajo'],
             ['key' => 'feature_fct',          'icon' => 'fa-briefcase',     'color' => '#0891b2', 'label' => 'FCT',               'desc' => 'Alta y seguimiento de la Formación en Centros de Trabajo'],
             ['key' => 'feature_landing',      'icon' => 'fa-globe',         'color' => '#0ea5e9', 'label' => 'Página Web Pública','desc' => 'Landing personalizable del centro con plantillas'],
@@ -126,6 +127,8 @@ include_once __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
+<?php require __DIR__ . '/../../comunes/rgpd/_mis_datos.php'; ?>
+
 <!-- ══════════════════════════════════════════════════════════════════
      FORM: Datos del Centro + Logotipos
      ══════════════════════════════════════════════════════════════════ -->
@@ -147,17 +150,19 @@ include_once __DIR__ . '/../comunes/nav.php';
                        value="<?= Security::escapeHtml($datos['nombreCentro'] ?? $cfg['nombreCentro']) ?>">
                 <?= fieldError($errores, 'nombreCentro') ?>
             </div>
-            <div class="campo">
-                <label for="codigoCentro">Código del Centro</label>
-                <input type="text" id="codigoCentro" name="codigoCentro"
-                       value="<?= Security::escapeHtml($datos['codigoCentro'] ?? $cfg['codigoCentro']) ?>"
-                       placeholder="Ej: 28001234">
-            </div>
-            <div class="campo">
-                <label for="cursoEscolar">Curso Escolar</label>
-                <input type="text" id="cursoEscolar" name="cursoEscolar"
-                       value="<?= Security::escapeHtml($datos['cursoEscolar'] ?? $cfg['cursoEscolar']) ?>"
-                       placeholder="2024-2025">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="codigoCentro">Código del Centro</label>
+                    <input type="text" id="codigoCentro" name="codigoCentro"
+                           value="<?= Security::escapeHtml($datos['codigoCentro'] ?? $cfg['codigoCentro']) ?>"
+                           placeholder="Ej: 28001234">
+                </div>
+                <div class="campo">
+                    <label for="cursoEscolar">Curso Escolar</label>
+                    <input type="text" id="cursoEscolar" name="cursoEscolar"
+                           value="<?= Security::escapeHtml($datos['cursoEscolar'] ?? $cfg['cursoEscolar']) ?>"
+                           placeholder="2024-2025">
+                </div>
             </div>
             <div class="campo ancho-total">
                 <label for="direccionCentro">Dirección</label>
@@ -165,30 +170,34 @@ include_once __DIR__ . '/../comunes/nav.php';
                        value="<?= Security::escapeHtml($datos['direccionCentro'] ?? $cfg['direccionCentro']) ?>"
                        placeholder="Calle, número, etc.">
             </div>
-            <div class="campo">
-                <label for="ciudadCentro">Ciudad</label>
-                <input type="text" id="ciudadCentro" name="ciudadCentro"
-                       value="<?= Security::escapeHtml($datos['ciudadCentro'] ?? $cfg['ciudadCentro']) ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="ciudadCentro">Ciudad</label>
+                    <input type="text" id="ciudadCentro" name="ciudadCentro"
+                           value="<?= Security::escapeHtml($datos['ciudadCentro'] ?? $cfg['ciudadCentro']) ?>">
+                </div>
+                <div class="campo">
+                    <label for="cpCentro">Código Postal</label>
+                    <input type="text" id="cpCentro" name="cpCentro"
+                           value="<?= Security::escapeHtml($datos['cpCentro'] ?? $cfg['cpCentro']) ?>"
+                           placeholder="28001">
+                </div>
             </div>
-            <div class="campo">
-                <label for="cpCentro">Código Postal</label>
-                <input type="text" id="cpCentro" name="cpCentro"
-                       value="<?= Security::escapeHtml($datos['cpCentro'] ?? $cfg['cpCentro']) ?>"
-                       placeholder="28001">
-            </div>
-            <div class="campo<?= fieldClass($errores, 'telefonoCentro') ?>">
-                <label for="telefonoCentro">Teléfono</label>
-                <input type="tel" id="telefonoCentro" name="telefonoCentro"
-                       value="<?= Security::escapeHtml($datos['telefonoCentro'] ?? $cfg['telefonoCentro']) ?>"
-                       placeholder="912 345 678">
-                <?= fieldError($errores, 'telefonoCentro') ?>
-            </div>
-            <div class="campo<?= fieldClass($errores, 'emailCentro') ?>">
-                <label for="emailCentro">Email del Centro</label>
-                <input type="email" id="emailCentro" name="emailCentro"
-                       value="<?= Security::escapeHtml($datos['emailCentro'] ?? $cfg['emailCentro']) ?>"
-                       placeholder="info@centro.es">
-                <?= fieldError($errores, 'emailCentro') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'telefonoCentro') ?>">
+                    <label for="telefonoCentro">Teléfono</label>
+                    <input type="tel" id="telefonoCentro" name="telefonoCentro"
+                           value="<?= Security::escapeHtml($datos['telefonoCentro'] ?? $cfg['telefonoCentro']) ?>"
+                           placeholder="912 345 678">
+                    <?= fieldError($errores, 'telefonoCentro') ?>
+                </div>
+                <div class="campo<?= fieldClass($errores, 'emailCentro') ?>">
+                    <label for="emailCentro">Email del Centro</label>
+                    <input type="email" id="emailCentro" name="emailCentro"
+                           value="<?= Security::escapeHtml($datos['emailCentro'] ?? $cfg['emailCentro']) ?>"
+                           placeholder="info@centro.es">
+                    <?= fieldError($errores, 'emailCentro') ?>
+                </div>
             </div>
             <div class="campo ancho-total">
                 <label for="nombreDirectorFirmante">Nombre del Director/a Firmante</label>
@@ -214,6 +223,7 @@ include_once __DIR__ . '/../comunes/nav.php';
         </p>
 
         <div class="formulario">
+            <div class="form-fila">
             <?php
             $logoConfig = [
                 'logoCentro'    => ['label' => 'Logo del Centro',                'desc' => 'Aparece en la parte izquierda de los documentos PDF'],
@@ -224,6 +234,11 @@ include_once __DIR__ . '/../comunes/nav.php';
                 $tieneActual = !empty($cfg[$field]);
             ?>
             <div class="campo">
+                <!-- Sin "for": describe todo el widget compuesto (preview +
+                     borrar + subir), no un único control — el input file ya
+                     tiene su propio label real más abajo, asociado por
+                     contención, así que un for/id aquí apuntaría al control
+                     equivocado. -->
                 <label><?= $meta['label'] ?></label>
 
                 <!-- Current logo preview -->

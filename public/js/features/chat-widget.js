@@ -1,11 +1,11 @@
-/**
+﻿/**
  * AulaPro — Floating Chat Widget
  * Self-contained IIFE. Exposes window.ChatWidget.init(cfg).
  */
 (function () {
   'use strict';
 
-  /* ── State ──────────────────────────────────────────────────────────────── */
+  /* â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   let BASE       = '/';
   let myRol      = null;
   let myId       = 0;
@@ -20,7 +20,7 @@
   let pollInterval  = 3000;
   let contactTimer  = null;
 
-  /* ── Helpers ─────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const $ = id => document.getElementById(id);
 
   function escHtml(str) {
@@ -78,7 +78,7 @@
     return base + '/' + path.replace(/^(\.\.\/)+/, '');
   }
 
-  /* ── Badge ───────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function updateBadge(count) {
     const badge = $('cw-fab-badge');
     if (!badge) return;
@@ -86,7 +86,7 @@
     badge.hidden = count <= 0;
   }
 
-  /* ── Window open/close ───────────────────────────────────────────────────── */
+  /* â”€â”€ Window open/close â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function toggleWindow() {
     isOpen ? closeWindow() : openWindow();
   }
@@ -99,7 +99,7 @@
     if (overlay) overlay.hidden = false;
     $('cw-fab')?.classList.add('open');
     if (currentView === 'list') loadConversations();
-    // El sondeo en segundo plano puede estar a 30s: al abrir volvemos al ritmo rápido
+    // El sondeo en segundo plano puede estar a 30s: al abrir volvemos al ritmo rÃ¡pido
     pollInterval = 3000;
     schedulePoll();
   }
@@ -114,7 +114,7 @@
     // We intentionally don't stop poll here, we just change interval/endpoint in fetchNew
   }
 
-  /* ── Panels ──────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Panels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function showPanel(name) {
     currentView = name;
     ['list', 'conv', 'contacts'].forEach(v => {
@@ -123,10 +123,10 @@
     });
   }
 
-  /* ── Conversation list ───────────────────────────────────────────────────── */
+  /* â”€â”€ Conversation list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function loadConversations() {
     const list = $('cw-list');
-    if (list) list.innerHTML = '<div class="cw-loading">Cargando…</div>';
+    if (list) list.innerHTML = '<div class="cw-loading"><span class="cw-spinner"></span>Cargando…</div>';
     fetch(resolveUrl(BASE + 'controladores/chat/conversaciones.php'), { credentials: 'same-origin' })
       .then(r => r.json())
       .then(data => {
@@ -134,7 +134,7 @@
         else if (list) list.innerHTML = '<div class="cw-empty">Error al cargar conversaciones</div>';
       })
       .catch(() => {
-        if (list) list.innerHTML = '<div class="cw-empty">Sin conexión</div>';
+        if (list) list.innerHTML = '<div class="cw-empty">Sin conexiÃ³n</div>';
       });
   }
 
@@ -142,7 +142,7 @@
     const list = $('cw-list');
     if (!list) return;
     if (!convs || !convs.length) {
-      list.innerHTML = '<div class="cw-empty">Sin conversaciones. Crea una nueva con el botón +</div>';
+      list.innerHTML = '<div class="cw-empty">Sin conversaciones. Crea una nueva con el botÃ³n +</div>';
       return;
     }
     list.innerHTML = '';
@@ -174,7 +174,7 @@
     });
   }
 
-  /* ── Open a conversation ─────────────────────────────────────────────────── */
+  /* â”€â”€ Open a conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function openConversation(convId, name, rol) {
     stopPoll();
     currentConvId = convId;
@@ -191,7 +191,7 @@
 
     // Clear + show loading
     const msgBox = $('cw-messages');
-    if (msgBox) msgBox.innerHTML = '<div class="cw-loading">Cargando…</div>';
+    if (msgBox) msgBox.innerHTML = '<div class="cw-loading"><span class="cw-spinner"></span>Cargando…</div>';
 
     showPanel('conv');
 
@@ -208,7 +208,7 @@
     setTimeout(() => $('cw-input')?.focus(), 100);
   }
 
-  /* ── Messages ────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Messages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function renderMessages(messages, initial) {
     const box = $('cw-messages');
     if (!box) return;
@@ -263,7 +263,7 @@
     if (box) box.scrollTop = box.scrollHeight;
   }
 
-  /* ── Polling ─────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Polling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function startPoll() {
     pollInterval = 3000;
     schedulePoll();
@@ -280,7 +280,7 @@
     if (document.hidden) {
       delay = Math.max(pollInterval, 15000);
     } else if (isOpen && currentView === 'conv' && currentConvId > 0) {
-      delay = Math.min(pollInterval, 6000);  // conversación abierta y visible: casi tiempo real
+      delay = Math.min(pollInterval, 6000);  // conversaciÃ³n abierta y visible: casi tiempo real
     } else if (isOpen) {
       delay = Math.min(pollInterval, 10000); // lista abierta: refresco frecuente
     }
@@ -352,7 +352,7 @@
     }
   }
 
-  /* ── Send ────────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Send â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function sendMessage() {
     const input = $('cw-input');
     const text = (input?.value || '').trim();
@@ -373,7 +373,7 @@
       .catch(() => {});
   }
 
-  /* ── Contacts ────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Contacts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function showContacts() {
     showPanel('contacts');
     const search = $('cw-contact-search');
@@ -383,7 +383,7 @@
 
   function loadContacts(q) {
     const list = $('cw-contacts');
-    if (list) list.innerHTML = '<div class="cw-loading">Buscando…</div>';
+    if (list) list.innerHTML = '<div class="cw-loading"><span class="cw-spinner"></span>Buscando…</div>';
     fetch(resolveUrl(BASE + 'controladores/chat/contactos.php') + '?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
       .then(r => r.json())
       .then(data => { if (data.ok) renderContacts(data.contacts); })
@@ -424,7 +424,7 @@
     fd.append('target_id',  contact.uid);
 
     const list = $('cw-contacts');
-    if (list) list.innerHTML = '<div class="cw-loading">Abriendo…</div>';
+    if (list) list.innerHTML = '<div class="cw-loading"><span class="cw-spinner"></span>Abriendo…</div>';
 
     fetch(resolveUrl(BASE + 'controladores/chat/iniciar.php'), {
       method: 'POST', body: fd, credentials: 'same-origin',
@@ -441,7 +441,7 @@
       });
   }
 
-  /* ── Keyboard Adjustments for Mobile (iOS & Android) ───────────────────── */
+  /* â”€â”€ Keyboard Adjustments for Mobile (iOS & Android) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function adjustForKeyboard() {
     const win = $('cw-window');
     if (!win || win.hidden) return;
@@ -469,7 +469,7 @@
     }
   }
 
-  /* ── Boot ────────────────────────────────────────────────────────────────── */
+  /* â”€â”€ Boot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function boot() {
     const fab = $('cw-fab');
     if (!fab) return;
@@ -538,7 +538,7 @@
     document.addEventListener('DOMContentLoaded', boot);
   }
 
-  /* ── Public API ──────────────────────────────────────────────────────────── */
+  /* â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   window.ChatWidget = {
     init(cfg) {
       myRol      = cfg.myRol;
@@ -553,7 +553,7 @@
     startWith(targetRol, targetId, nombre) {
       if (!isOpen) openWindow();
       const msgBox = $('cw-messages');
-      if (msgBox) msgBox.innerHTML = '<div class="cw-loading">Iniciando…</div>';
+      if (msgBox) msgBox.innerHTML = '<div class="cw-loading"><span class="cw-spinner"></span>Iniciando…</div>';
       showPanel('conv');
 
       const avaEl = $('cw-conv-ava');
@@ -578,7 +578,7 @@
           else if (msgBox) msgBox.innerHTML = '<div class="cw-empty">No se pudo iniciar el chat</div>';
         })
         .catch(() => {
-          if (msgBox) msgBox.innerHTML = '<div class="cw-empty">Error de conexión</div>';
+          if (msgBox) msgBox.innerHTML = '<div class="cw-empty">Error de conexiÃ³n</div>';
         });
     },
   };

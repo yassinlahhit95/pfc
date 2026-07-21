@@ -106,9 +106,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?></td>
                     <td>
                         <?php if ($entrega['nota'] !== null) { ?>
-                            <strong style="font-size: 16px; color: #4caf50;"><?= Security::escapeHtml($entrega['nota']) ?>/10</strong>
+                            <strong style="font-size: 16px; color: var(--verde);"><?= Security::escapeHtml($entrega['nota']) ?>/10</strong>
                         <?php } else { ?>
-                            <span style="color: #ff9800;">Pendiente</span>
+                            <span style="color: var(--naranja);">Pendiente</span>
                         <?php } ?>
                     </td>
                     <td>

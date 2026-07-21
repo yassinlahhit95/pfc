@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReclamacion" value="<?= Security::escapeHtml($idReclamacion ) ?>">
 
-        <div class="campo">
+        <div class="campo ancho-total">
             <label for="respuesta">Tu Respuesta / Explicación:</label>
             <textarea name="respuesta" id="respuesta" rows="5" placeholder="Escribe tu respuesta..."><?= Security::escapeHtml($mensaje['respuesta'] ?? '') ?></textarea>
         </div>

@@ -57,19 +57,21 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReto" value="<?= Security::escapeHtml($idReto ) ?>">
 
-        <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
-            <label for="nombreReto">Nombre del Reto</label>
-            <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($reto['nombreReto'] ?? '') ?>">
-            <?= fieldError($errores, 'nombreReto') ?>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
+                <label for="nombreReto">Nombre del Reto</label>
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($reto['nombreReto'] ?? '') ?>">
+                <?= fieldError($errores, 'nombreReto') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
+                <label for="horasReto">Horas Totales</label>
+                <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($reto['horasReto'] ?? '') ?>">
+                <?= fieldError($errores, 'horasReto') ?>
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
-            <label for="horasReto">Horas Totales</label>
-            <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($reto['horasReto'] ?? '') ?>">
-            <?= fieldError($errores, 'horasReto') ?>
-        </div>
-
-        <div class="row">
+        <div class="form-fila">
             <div class="campo<?= fieldClass($errores, 'fechaInicio') ?>">
                 <label for="fechaInicio">Fecha Inicio</label>
                 <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($reto['fechaInicio'] ?? '') ?>">

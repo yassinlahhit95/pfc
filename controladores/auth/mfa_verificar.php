@@ -2,11 +2,12 @@
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-// Segundo factor en el login (TOTP o código de respaldo).
-// Hasta superarlo no existe $_SESSION['idAdmin'] → sin acceso al sistema.
+// Segundo factor en el login (TOTP o código de respaldo), para cualquier rol.
+// Hasta superarlo no existe sesión concedida → sin acceso al sistema.
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
-require_once __DIR__ . '/../../modelos/directores.php';
+require_once __DIR__ . '/../../include/MfaService.php';
+require_once __DIR__ . '/../../modelos/conectar.php';
 Security::initSession();
 @include_once __DIR__ . '/../../include/Logger.php';
 if (!class_exists('Logger')) {
@@ -16,11 +17,17 @@ if (!class_exists('Logger')) {
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN Y VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (empty($_SESSION['mfa_pending']['id'])) {
+if (empty($_SESSION['mfa_pending']['id']) || empty($_SESSION['mfa_pending']['role'])) {
     header('Location: ../../vistas/login.php');
     exit;
 }
 $pending = $_SESSION['mfa_pending'];
+$roleCfg = MfaService::config($pending['role']);
+if (!$roleCfg) {
+    unset($_SESSION['mfa_pending']);
+    header('Location: ../../vistas/login.php');
+    exit;
+}
 
 // El estado intermedio caduca a los 5 minutos
 if (time() - ($pending['ts'] ?? 0) > 300) {
@@ -42,7 +49,7 @@ if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
 
 $_SESSION['mfa_attempts'] = ($_SESSION['mfa_attempts'] ?? 0) + 1;
 if ($_SESSION['mfa_attempts'] > 5) {
-    Logger::security('MFA_TOO_MANY_ATTEMPTS', ['id' => $pending['id']]);
+    Logger::security('MFA_TOO_MANY_ATTEMPTS', ['id' => $pending['id'], 'role' => $pending['role']]);
     unset($_SESSION['mfa_pending'], $_SESSION['mfa_attempts']);
     $_SESSION['errores'] = 'Demasiados intentos. Inicia sesión de nuevo.';
     header('Location: ../../vistas/login.php');
@@ -50,7 +57,7 @@ if ($_SESSION['mfa_attempts'] > 5) {
 }
 
 $code = trim($_POST['code'] ?? '');
-$mfa  = obtenerMfaDirector((int)$pending['id']);
+$mfa  = MfaService::obtenerMfa($roleCfg['tabla'], $roleCfg['idCol'], (int)$pending['id']);
 if (!$mfa || empty($mfa['mfa_secret'])) {
     unset($_SESSION['mfa_pending']);
     header('Location: ../../vistas/login.php');
@@ -74,14 +81,14 @@ if (!$ok) {
         if (is_string($hash) && $norm !== '' && password_verify($norm, $hash)) {
             $ok = true; $usedBackup = true;
             unset($codes[$i]);
-            actualizarBackupCodesDirector((int)$pending['id'], json_encode(array_values($codes)));
+            MfaService::actualizarBackupCodes($roleCfg['tabla'], $roleCfg['idCol'], (int)$pending['id'], json_encode(array_values($codes)));
             break;
         }
     }
 }
 
 if (!$ok) {
-    Logger::security('MFA_FAILED', ['id' => $pending['id']]);
+    Logger::security('MFA_FAILED', ['id' => $pending['id'], 'role' => $pending['role']]);
     $_SESSION['errores'] = 'Código incorrecto.';
     header('Location: ../../vistas/auth/mfa_verificar.php');
     exit;
@@ -91,14 +98,14 @@ if (!$ok) {
 // CONCEDER SESIÓN
 // ══════════════════════════════════════════════════════════════════════
 Security::regenerateSession();
-$_SESSION['idAdmin'] = (int)$pending['id'];
+$_SESSION[$pending['role']] = (int)$pending['id'];
 $_SESSION['must_change_password'] = !empty($pending['must_change']);
 $_SESSION['_pwd_at'] = time();
 $_SESSION['_pwd_check'] = time();
 unset($_SESSION['mfa_pending'], $_SESSION['mfa_attempts']);
-Logger::activity('LOGIN_SUCCESS', $_SESSION['idAdmin'], ['role' => 'admin', 'mfa' => $usedBackup ? 'backup' : 'totp']);
+Logger::activity('LOGIN_SUCCESS', (int)$pending['id'], ['role' => $pending['role'], 'mfa' => $usedBackup ? 'backup' : 'totp']);
 if ($usedBackup) {
     $_SESSION['exito'] = 'Has accedido con un código de respaldo. Genera nuevos si te quedan pocos.';
 }
-header('Location: ../../vistas/admin/inicio/dashboard.php');
+header('Location: ' . $roleCfg['home']);
 exit;

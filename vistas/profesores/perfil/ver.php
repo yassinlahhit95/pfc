@@ -65,4 +65,28 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } ?>
 </div>
 
+<div class="panel" style="margin-top:20px;">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-shield-alt"></i> SEGURIDAD DE LA CUENTA</h3>
+    </div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Verificación en dos pasos (2FA)</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['mfa_enabled'])): ?>
+                <span style="color:var(--verde);font-weight:600;"><i class="fas fa-check-circle"></i> Activada</span>
+            <?php else: ?>
+                <a href="../../auth/mfa_configurar.php" class="boton-secundario" style="font-size:.85rem;padding:6px 14px;">
+                    <i class="fas fa-lock"></i> Activar 2FA
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Contraseña</div>
+        <div class="valor-detalle"><a href="../../cambiar_password.php" class="boton-secundario" style="font-size:.85rem;padding:6px 14px;"><i class="fas fa-key"></i> Cambiar contraseña</a></div>
+    </div>
+</div>
+
+<?php require __DIR__ . '/../../comunes/rgpd/_mis_datos.php'; ?>
+
 <?php include '../comunes/footer.php'; ?>

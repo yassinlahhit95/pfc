@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="tituloAnuncioModal">TÍTULO DEL ANUNCIO</label>
                 <input type="text" id="tituloAnuncioModal" name="tituloAnuncio" required placeholder="Ej: Mantenimiento de la plataforma">
             </div>
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="dirigidoAModal">DIRIGIDO A</label>
                 <select id="dirigidoAModal" name="dirigidoA">
                     <option value="todos">Todos los usuarios</option>
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-abajo">
     <div class="formulario">
-        <div class="campo">
+        <div class="campo ancho-total">
             <label for="filtroAnuncios">BUSCAR</label>
             <input type="text" id="filtroAnuncios" placeholder="Buscar por título o contenido..."
                    autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"

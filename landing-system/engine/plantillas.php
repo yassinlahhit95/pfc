@@ -5,10 +5,14 @@
 // Cada plantilla vive en landing-system/plantillas/<slug>.php y devuelve:
 //   slug, nombre, descripcion, thumbnail, colorAcento,
 //   secciones => [ ['tipo' => ..., 'contenido' => [...sobrescribe el defecto...]], ... ]
-// Los slugs están whitelisted aquí: es la única lista válida en todo el sistema.
-// Para añadir una nueva plantilla:
-//   1. Crea landing-system/plantillas/mi-plantilla.php siguiendo _nueva_plantilla.example.php
-//   2. Añade el slug a landing_plantillas_slugs() más abajo.
+//
+// Los slugs se detectan automáticamente (landing_plantillas_slugs() hace un
+// glob() de esta carpeta) — NO hay que registrar el slug en ningún sitio.
+// Para añadir una nueva plantilla, lo más rápido es:
+//   php landing-system/herramientas/nueva_plantilla.php <slug> "<Nombre>" <colorAcento>
+// que genera de una vez el archivo de esta carpeta, su tema en temas/tema-<slug>.css
+// y un thumbnail placeholder en public/imagenes/landing/. Ver el README de
+// landing-system/ para hacerlo a mano paso a paso.
 
 require_once __DIR__ . '/secciones.php';
 

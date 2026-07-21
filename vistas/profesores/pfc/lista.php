@@ -32,7 +32,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel margen-abajo">
     <div class="feature-card">
         <div class="feature-info">
-            <i class="fas fa-file-upload feature-icon" style="color: #8b5cf6;"></i>
+            <i class="fas fa-file-upload feature-icon" style="color: var(--violeta);"></i>
             <div>
                 <div class="feature-label">Entrega de TFG</div>
                 <div class="feature-desc">
@@ -98,12 +98,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>">
                                         <div class="campo">
-                                            <label>Nota (0-10):</label>
-                                            <input type="text" name="nota" value="<?= Security::escapeHtml(!empty($notaTFG) ? $notaTFG['nota'] : '') ?>" placeholder="Ej: 7.5" class="input-pequeno">
+                                            <label for="nota-<?= (int)$tfg['idEstudiante'] ?>">Nota (0-10):</label>
+                                            <input type="text" id="nota-<?= (int)$tfg['idEstudiante'] ?>" name="nota" value="<?= Security::escapeHtml(!empty($notaTFG) ? $notaTFG['nota'] : '') ?>" placeholder="Ej: 7.5" class="input-pequeno">
                                         </div>
                                         <div class="campo">
-                                            <label>Observaciones:</label>
-                                            <textarea name="observaciones" rows="2" placeholder="Comentarios opcionales..."><?= Security::escapeHtml(!empty($notaTFG) ? $notaTFG['observaciones'] : '') ?></textarea>
+                                            <label for="observaciones-<?= (int)$tfg['idEstudiante'] ?>">Observaciones:</label>
+                                            <textarea id="observaciones-<?= (int)$tfg['idEstudiante'] ?>" name="observaciones" rows="2" placeholder="Comentarios opcionales..."><?= Security::escapeHtml(!empty($notaTFG) ? $notaTFG['observaciones'] : '') ?></textarea>
                                         </div>
                                         <div class="campo">
                                             <label>

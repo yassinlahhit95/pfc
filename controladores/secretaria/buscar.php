@@ -3,7 +3,8 @@
 // BÚSQUEDA GLOBAL DE SECRETARÍA (topbar)
 // Devuelve JSON [{type, label, url}] para dashboard-shell.js
 // ══════════════════════════════════════════════════════════════════════
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/../../include/Security.php';
+Security::initSession();
 if (empty($_SESSION['idSecretaria'])) { http_response_code(403); echo json_encode([]); exit; }
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); echo json_encode([]); exit; }
 

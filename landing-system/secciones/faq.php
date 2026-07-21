@@ -28,3 +28,23 @@ if (!$items) return;
     </div>
   </div>
 </section>
+
+<?php
+// Datos estructurados FAQPage — habilita el rich snippet de preguntas
+// desplegables de Google para esta sección.
+$faqSchema = [
+    '@context'   => 'https://schema.org',
+    '@type'      => 'FAQPage',
+    'mainEntity' => array_map(function ($item) {
+        return [
+            '@type'          => 'Question',
+            'name'           => $item['pregunta'] ?? '',
+            'acceptedAnswer' => [
+                '@type' => 'Answer',
+                'text'  => $item['respuesta'] ?? '',
+            ],
+        ];
+    }, $items),
+];
+?>
+<script type="application/ld+json"><?= json_encode($faqSchema, JSON_UNESCAPED_UNICODE) ?></script>

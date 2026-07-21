@@ -49,33 +49,37 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($idCiclo) ?>">
         
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreCiclo') ?>">
-                <label for="nombreCiclo">Nombre del Ciclo</label>
-                <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?>">
-                <?= fieldError($errores, 'nombreCiclo') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreCiclo') ?>">
+                    <label for="nombreCiclo">Nombre del Ciclo</label>
+                    <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?>">
+                    <?= fieldError($errores, 'nombreCiclo') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'abreviaturaCiclo') ?>">
+                    <label for="abreviaturaCiclo">Abreviatura</label>
+                    <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?? '') ?>">
+                    <?= fieldError($errores, 'abreviaturaCiclo') ?>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'abreviaturaCiclo') ?>">
-                <label for="abreviaturaCiclo">Abreviatura</label>
-                <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?? '') ?>">
-                <?= fieldError($errores, 'abreviaturaCiclo') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="idNivel">Nivel Formativo</label>
+                    <select id="idNivel" name="idNivel">
+                        <?php foreach ($listaNiveles as $nivel) { ?>
+                            <option value="<?= Security::escapeHtml($nivel['idNivel']) ?>" <?php if (($ciclo['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
+                                <?= Security::escapeHtml($nivel['nombreNivel']) ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
 
-            <div class="campo">
-                <label for="idNivel">Nivel Formativo</label>
-                <select id="idNivel" name="idNivel">
-                    <?php foreach ($listaNiveles as $nivel) { ?>
-                        <option value="<?= Security::escapeHtml($nivel['idNivel']) ?>" <?php if (($ciclo['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
-                            <?= Security::escapeHtml($nivel['nombreNivel']) ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'precioCiclo') ?>">
-                <label for="precioCiclo">Precio Total del Ciclo (€)</label>
-                <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= Security::escapeHtml($ciclo['precioCiclo'] ?? '') ?>">
-                <?= fieldError($errores, 'precioCiclo') ?>
+                <div class="campo<?= fieldClass($errores, 'precioCiclo') ?>">
+                    <label for="precioCiclo">Precio Total del Ciclo (€)</label>
+                    <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= Security::escapeHtml($ciclo['precioCiclo'] ?? '') ?>">
+                    <?= fieldError($errores, 'precioCiclo') ?>
+                </div>
             </div>
         </div>
 

@@ -3,8 +3,12 @@
    Azul corporativo, degradados suaves, tarjetas limpias, aire premium.
    ══════════════════════════════════════════════════════════════════════ */
 
-/* Acento y paleta claro/oscuro vienen de config + base.css; el tema solo
-   aporta forma (radios, sombras al color de acento, cabeceras). */
+/* Acento y paleta claro/oscuro vienen de config + base.css; el tema aporta
+   forma (radios, sombras al color de acento, cabeceras) y una identidad
+   deliberadamente MÁS CONTENIDA que el resto de temas: menos animación,
+   menos degradados de campaña, más aire de "documento oficial" — es lo que
+   distingue a un CIFP/IES público del tono de campaña de "Vocacional" o el
+   peso corporativo-privado de "Universidad". */
 .tema-institucional {
   --lp-acento-2: color-mix(in srgb, var(--lp-acento) 62%, #0ea5e9);
   --lp-radio: 20px;
@@ -12,11 +16,22 @@
   --lp-sombra: 0 1px 2px color-mix(in srgb, var(--lp-acento) 5%, transparent), 0 14px 36px color-mix(in srgb, var(--lp-acento) 9%, transparent);
   --lp-sombra-hover: 0 2px 4px color-mix(in srgb, var(--lp-acento) 6%, transparent), 0 24px 56px color-mix(in srgb, var(--lp-acento) 16%, transparent);
   --lp-footer-fondo: #091634;
+  /* Titulares en Plus Jakarta Sans (la misma fuente que el cuerpo, ya
+     cargada siempre) en vez de Sora: menos "startup", más formal, y evita
+     pedir una segunda familia de letra solo para este tema — ver el mapa
+     de fuentes por tema en views/public/_head.php. */
+  --lp-fuente-titulos: 'Plus Jakarta Sans', var(--lp-fuente);
 }
 
 /* Tinte azul claro de secciones alternas — solo modo claro */
 html:not([data-theme="dark"]) .tema-institucional {
   --lp-fondo-alt: #f5f8fd;
+}
+
+.tema-institucional h1,
+.tema-institucional .lp-sec-cabecera h2 {
+  font-weight: 800;
+  letter-spacing: -0.015em;
 }
 
 /* Cabeceras de sección con subrayado degradado */
@@ -25,6 +40,44 @@ html:not([data-theme="dark"]) .tema-institucional {
   content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
   width: 64px; height: 4px; border-radius: 2px;
   background: linear-gradient(90deg, var(--lp-acento), var(--lp-acento-2));
+}
+
+/* Hero: patrón de puntos sutil en vez del resplandor difuso genérico de
+   base.css — más "plano/documento oficial", menos "campaña de marketing". */
+.tema-institucional .lp-hero-split::before { display: none; }
+.tema-institucional .lp-hero-split {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--lp-acento) 16%, transparent) 1.5px, transparent 1.5px),
+    linear-gradient(135deg, var(--lp-fondo-alt) 0%, var(--lp-fondo) 100%);
+  background-size: 26px 26px, 100% 100%;
+  border-bottom: 1px solid var(--lp-borde);
+}
+
+/* Tarjetas: borde fino + filete de acento arriba (look de "ficha oficial")
+   en vez del borde que se tiñe entero de acento al pasar el ratón — el
+   filete ya es la identidad de color, no hace falta repetirlo en el hover. */
+.tema-institucional .lp-tarjeta, .tema-institucional .lp-contacto-grid {
+  border-top: 3px solid var(--lp-acento);
+}
+.tema-institucional .lp-tarjeta:hover {
+  transform: translateY(-2px);
+  border-top-color: var(--lp-acento);
+}
+
+/* Botones: relleno plano (sin el degradado ni el brillo animado que usa
+   base.css por defecto) — una institución pública pide un CTA serio, no
+   uno con efecto "shine" de campaña comercial. */
+.tema-institucional .lp-boton-primario::before { display: none; }
+.tema-institucional .lp-boton-primario {
+  background: var(--lp-acento);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--lp-acento) 20%, transparent),
+              0 8px 20px color-mix(in srgb, var(--lp-acento) 18%, transparent);
+}
+.tema-institucional .lp-boton-primario:hover {
+  background: color-mix(in srgb, var(--lp-acento) 88%, black 12%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--lp-acento) 22%, transparent),
+              0 14px 28px color-mix(in srgb, var(--lp-acento) 24%, transparent);
 }
 
 /* Cifras sobre azul institucional profundo */

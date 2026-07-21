@@ -33,27 +33,31 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h4 style="margin:0 0 20px;"><i class="fas fa-user"></i> Datos del Familiar / Tutor Legal</h4>
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreTutor') ?>">
-                <label for="nombreTutor">Nombre Completo <span style="color:red;">*</span></label>
-                <input type="text" id="nombreTutor" name="nombreTutor" value="<?= Security::escapeHtml($datos['nombreTutor'] ?? '') ?>">
-                <?= fieldError($errores, 'nombreTutor') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreTutor') ?>">
+                    <label for="nombreTutor">Nombre Completo <span style="color:red;">*</span></label>
+                    <input type="text" id="nombreTutor" name="nombreTutor" value="<?= Security::escapeHtml($datos['nombreTutor'] ?? '') ?>">
+                    <?= fieldError($errores, 'nombreTutor') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'emailTutor') ?>">
+                    <label for="emailTutor">Correo Electrónico <span style="color:red;">*</span></label>
+                    <input type="email" id="emailTutor" name="emailTutor" value="<?= Security::escapeHtml($datos['emailTutor'] ?? '') ?>">
+                    <?= fieldError($errores, 'emailTutor') ?>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'emailTutor') ?>">
-                <label for="emailTutor">Correo Electrónico <span style="color:red;">*</span></label>
-                <input type="email" id="emailTutor" name="emailTutor" value="<?= Security::escapeHtml($datos['emailTutor'] ?? '') ?>">
-                <?= fieldError($errores, 'emailTutor') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'dniTutor') ?>">
+                    <label for="dniTutor">DNI / NIE <span style="color:red;">*</span></label>
+                    <input type="text" id="dniTutor" name="dniTutor" value="<?= Security::escapeHtml($datos['dniTutor'] ?? '') ?>">
+                    <?= fieldError($errores, 'dniTutor') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'dniTutor') ?>">
-                <label for="dniTutor">DNI / NIE <span style="color:red;">*</span></label>
-                <input type="text" id="dniTutor" name="dniTutor" value="<?= Security::escapeHtml($datos['dniTutor'] ?? '') ?>">
-                <?= fieldError($errores, 'dniTutor') ?>
-            </div>
-
-            <div class="campo">
-                <label for="telefonoTutor">Teléfono</label>
-                <input type="text" id="telefonoTutor" name="telefonoTutor" value="<?= Security::escapeHtml($datos['telefonoTutor'] ?? '') ?>">
+                <div class="campo">
+                    <label for="telefonoTutor">Teléfono</label>
+                    <input type="text" id="telefonoTutor" name="telefonoTutor" value="<?= Security::escapeHtml($datos['telefonoTutor'] ?? '') ?>">
+                </div>
             </div>
         </div>
 

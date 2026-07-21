@@ -47,64 +47,68 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-abajo">
   <form method="GET" action="" class="formulario" id="form-filtros-asistencias">
-    <div class="campo">
-      <label>Ciclo</label>
-      <select name="idCiclo" id="sel-ciclo-asist" onchange="this.form.submit()">
-        <option value="">Todos los ciclos</option>
-        <?php foreach ($ciclos as $ciclo): ?>
-        <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= $idCiclo === (int)$ciclo['idCiclo'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
-        </option>
-        <?php endforeach; ?>
-      </select>
+    <div class="form-fila">
+      <div class="campo">
+        <label for="sel-ciclo-asist">Ciclo</label>
+        <select name="idCiclo" id="sel-ciclo-asist" onchange="this.form.submit()">
+          <option value="">Todos los ciclos</option>
+          <?php foreach ($ciclos as $ciclo): ?>
+          <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= $idCiclo === (int)$ciclo['idCiclo'] ? 'selected' : '' ?>>
+            <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <?php if ($idCiclo && $modulos): ?>
+      <div class="campo">
+        <label for="sel-modulo-asist">Módulo</label>
+        <select name="idModulo" id="sel-modulo-asist" onchange="this.form.submit()">
+          <option value="">Todos los módulos</option>
+          <?php foreach ($modulos as $modulo): ?>
+          <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
+            <?= Security::escapeHtml($modulo['nombreModulo']) ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <?php endif; ?>
+      <?php if ($idCiclo && $estudiantesCiclo): ?>
+      <div class="campo">
+        <label for="sel-estudiante-asist">Estudiante</label>
+        <select name="idEstudiante" id="sel-estudiante-asist" onchange="this.form.submit()">
+          <option value="">Todos los estudiantes</option>
+          <?php foreach ($estudiantesCiclo as $estudiante): ?>
+          <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $idEstudiante === (int)$estudiante['idEstudiante'] ? 'selected' : '' ?>>
+            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <?php elseif ($idEstudiante): ?>
+        <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+      <?php endif; ?>
     </div>
-    <?php if ($idCiclo && $modulos): ?>
-    <div class="campo">
-      <label>Módulo</label>
-      <select name="idModulo" onchange="this.form.submit()">
-        <option value="">Todos los módulos</option>
-        <?php foreach ($modulos as $modulo): ?>
-        <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($modulo['nombreModulo']) ?>
-        </option>
-        <?php endforeach; ?>
-      </select>
+    <div class="form-fila">
+      <div class="campo">
+        <label for="sel-estado-asist">Estado</label>
+        <select name="estado" id="sel-estado-asist" onchange="this.form.submit()">
+          <option value="">Todos los estados</option>
+          <option value="presente" <?= $estado === 'presente' ? 'selected' : '' ?>>Presente</option>
+          <option value="ausente" <?= $estado === 'ausente' ? 'selected' : '' ?>>Ausente</option>
+          <option value="retraso" <?= $estado === 'retraso' ? 'selected' : '' ?>>Retraso</option>
+          <option value="justificado" <?= $estado === 'justificado' ? 'selected' : '' ?>>Justificado</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="fecha-desde-asist">Desde</label>
+        <input type="date" name="fechaDesde" id="fecha-desde-asist" value="<?= Security::escapeHtml($fechaDesde) ?>">
+      </div>
+      <div class="campo">
+        <label for="fecha-hasta-asist">Hasta</label>
+        <input type="date" name="fechaHasta" id="fecha-hasta-asist" value="<?= Security::escapeHtml($fechaHasta) ?>">
+      </div>
     </div>
-    <?php endif; ?>
-    <?php if ($idCiclo && $estudiantesCiclo): ?>
-    <div class="campo">
-      <label>Estudiante</label>
-      <select name="idEstudiante" onchange="this.form.submit()">
-        <option value="">Todos los estudiantes</option>
-        <?php foreach ($estudiantesCiclo as $estudiante): ?>
-        <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $idEstudiante === (int)$estudiante['idEstudiante'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
-        </option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-    <?php elseif ($idEstudiante): ?>
-      <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
-    <?php endif; ?>
-    <div class="campo">
-      <label>Estado</label>
-      <select name="estado" onchange="this.form.submit()">
-        <option value="">Todos los estados</option>
-        <option value="presente" <?= $estado === 'presente' ? 'selected' : '' ?>>Presente</option>
-        <option value="ausente" <?= $estado === 'ausente' ? 'selected' : '' ?>>Ausente</option>
-        <option value="retraso" <?= $estado === 'retraso' ? 'selected' : '' ?>>Retraso</option>
-        <option value="justificado" <?= $estado === 'justificado' ? 'selected' : '' ?>>Justificado</option>
-      </select>
-    </div>
-    <div class="campo">
-      <label>Desde</label>
-      <input type="date" name="fechaDesde" value="<?= Security::escapeHtml($fechaDesde) ?>">
-    </div>
-    <div class="campo">
-      <label>Hasta</label>
-      <input type="date" name="fechaHasta" value="<?= Security::escapeHtml($fechaHasta) ?>">
-    </div>
-    <div class="campo" style="display:flex;align-items:flex-end;gap:8px;">
+    <div class="acciones">
       <button type="submit" class="boton-primario"><i class="fas fa-search"></i> Filtrar</button>
       <a href="verAsistencias.php" class="boton-secundario">Limpiar</a>
     </div>

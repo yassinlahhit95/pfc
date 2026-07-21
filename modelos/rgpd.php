@@ -181,3 +181,58 @@ function listarEliminacionesRGPD(int $limit = 50): array {
     mysqli_stmt_execute($stmt);
     return mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// AUTOSERVICIO — exportar mis propios datos (Art. 20) y solicitar baja (Art. 17)
+// Disponible para los 5 roles. Nunca hay auto-borrado real: la solicitud
+// la resuelve un admin manualmente (ver eliminarEstudianteRGPD arriba,
+// que sigue siendo la única vía de borrado efectivo, y solo para estudiantes).
+// ══════════════════════════════════════════════════════════════════════
+
+/**
+ * Exporta la propia fila de un usuario de rol no-estudiante (admin, profesor,
+ * secretaría, tutor) — no tienen historial académico propio como el estudiante,
+ * así que basta con su registro de cuenta, sin la contraseña.
+ */
+function exportarDatosPropios(string $tabla, string $idCol, int $id): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "SELECT * FROM `$tabla` WHERE `$idCol` = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $perfil = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    if (!$perfil) return [];
+    unset($perfil['password'], $perfil['mfa_secret'], $perfil['mfa_backup_codes']);
+
+    return [
+        'exportado_en' => date('c'),
+        'base_legal'   => 'RGPD Art. 20 – Derecho a la portabilidad de datos',
+        'perfil'       => $perfil,
+    ];
+}
+
+function crearSolicitudRGPD(string $rolSesion, int $idUsuario, string $nombreUsuario, string $emailUsuario, string $motivo): bool {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "INSERT INTO rgpd_solicitudes (rolSesion, idUsuario, nombreUsuario, emailUsuario, motivo)
+         VALUES (?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "sisss", $rolSesion, $idUsuario, $nombreUsuario, $emailUsuario, $motivo);
+    return mysqli_stmt_execute($stmt);
+}
+
+function listarSolicitudesRGPD(string $estado = 'pendiente', int $limit = 50): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT * FROM rgpd_solicitudes WHERE estado = ? ORDER BY fechaSolicitud DESC LIMIT ?");
+    mysqli_stmt_bind_param($stmt, "si", $estado, $limit);
+    mysqli_stmt_execute($stmt);
+    return mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+}
+
+function resolverSolicitudRGPD(int $idSolicitud, int $idAdmin): bool {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "UPDATE rgpd_solicitudes SET estado = 'resuelta', resueltaPorAdmin = ?, fechaResolucion = NOW()
+         WHERE idSolicitud = ? AND estado = 'pendiente'");
+    mysqli_stmt_bind_param($stmt, "ii", $idAdmin, $idSolicitud);
+    return mysqli_stmt_execute($stmt) && mysqli_stmt_affected_rows($stmt) > 0;
+}

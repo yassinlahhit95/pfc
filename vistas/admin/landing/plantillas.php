@@ -39,12 +39,19 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <div class="plantillas-grid">
     <?php foreach ($plantillas as $slug => $plantilla):
-        $esActual = ($landingCfg['plantilla'] === $slug); ?>
+        $esActual = ($landingCfg['plantilla'] === $slug);
+        $sinTema  = !file_exists(__DIR__ . '/../../../landing-system/temas/tema-' . $slug . '.css'); ?>
     <article class="panel plantilla-card<?= $esActual ? ' plantilla-actual' : '' ?>">
         <div class="plantilla-thumb">
             <img src="../../../public/imagenes/landing/<?= Security::escapeHtml($plantilla['thumbnail']) ?>" alt="<?= Security::escapeHtml($plantilla['nombre']) ?>">
             <?php if ($esActual): ?>
             <span class="texto-estado verde plantilla-badge">Plantilla del borrador</span>
+            <?php endif; ?>
+            <?php if ($sinTema): ?>
+            <span class="texto-estado rojo plantilla-badge plantilla-badge-izquierda"
+                  title="Falta landing-system/temas/tema-<?= Security::escapeHtml($slug) ?>.css — la plantilla funciona pero se ve con el aspecto genérico de base.css, sin su identidad visual propia.">
+                <i class="fas fa-triangle-exclamation"></i> Sin hoja de estilos
+            </span>
             <?php endif; ?>
         </div>
         <div class="plantilla-info">
@@ -123,10 +130,10 @@ include_once __DIR__ . '/../comunes/nav.php';
 .plantilla-card:hover .plantilla-thumb img {
     transform: scale(1.05);
 }
-.plantilla-badge { 
-    position: absolute; 
-    top: 16px; 
-    right: 16px; 
+.plantilla-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
     background: var(--green-bg, #dcfce7);
     color: var(--green-fg, #166534);
     padding: 6px 12px;
@@ -137,6 +144,10 @@ include_once __DIR__ . '/../comunes/nav.php';
     text-transform: uppercase;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     backdrop-filter: blur(4px);
+}
+.plantilla-badge-izquierda {
+    right: auto;
+    left: 16px;
 }
 .plantilla-info { 
     padding: 24px; 

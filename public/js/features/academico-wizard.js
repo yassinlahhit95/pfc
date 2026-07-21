@@ -12,6 +12,23 @@
     function idConfig() { return $('#aw-idConfig').val(); }
     function toast(msg, tipo) { if (window.Toast) Toast.show(msg, tipo || 'info'); }
 
+    // Las filas se borran en el cliente (sin recargar) — si era la última,
+    // el <tbody> se queda vacío sin más. Repone la fila ".vacio" que ya
+    // pinta el servidor para no dejar una tabla en blanco sin mensaje.
+    function reponerVacioSiTablaQueda(idTabla, colspan, mensaje) {
+        var $tbody = $('#' + idTabla + ' tbody');
+        if ($tbody.length && !$tbody.find('tr').length) {
+            $tbody.html('<tr><td colspan="' + colspan + '" class="vacio">' + mensaje + '</td></tr>');
+        }
+    }
+
+    // Reemplaza confirm() nativo por el modal de la app; si ModalConfirm no
+    // llegó a cargar por lo que sea, cae de vuelta a confirm() para no romper.
+    function confirmarBorrado(mensaje, tipo) {
+        if (window.ModalConfirm) return ModalConfirm.prompt(mensaje, tipo === 'info' ? 'Confirmar' : 'Confirmar eliminación', tipo);
+        return $.Deferred().resolve(confirm(mensaje)).promise();
+    }
+
     function post(accion, datos) {
         datos = $.extend({ csrf_token: csrf(), accion: accion, idConfig: idConfig() }, datos);
         return $.ajax({
@@ -55,11 +72,13 @@
     });
 
     $('#aw-activar').on('click', function () {
-        if (!confirm('¿Activar esta configuración? A partir de ahora se usará para calcular todas las notas.')) return;
-        post('activar', {}).done(function (res) {
-            if (res.ok) { toast('Motor académico activado', 'success'); setTimeout(function () { location.reload(); }, 800); }
-            else toast(res.msg || 'No se pudo activar', 'error');
-        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
+        confirmarBorrado('¿Activar esta configuración? A partir de ahora se usará para calcular todas las notas.', 'info').then(function (ok) {
+            if (!ok) return;
+            post('activar', {}).done(function (res) {
+                if (res.ok) { toast('Motor académico activado', 'success'); setTimeout(function () { location.reload(); }, 800); }
+                else toast(res.msg || 'No se pudo activar', 'error');
+            }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
+        });
     });
 
     // ── PASO 2: cursos (la tabla se sirve ya rellena desde el servidor para
@@ -95,10 +114,13 @@
     });
 
     $(document).on('click', '.aw-eliminar-curso', function () {
-        if (!confirm('¿Eliminar este curso?')) return;
         var $fila = $(this).closest('tr');
-        post('eliminar_curso', { idCiclo: $('#aw-curso-ciclo').val(), idCurso: $(this).data('id') }).done(function (res) {
-            if (res.ok) $fila.remove(); else toast('No se pudo eliminar', 'error');
+        confirmarBorrado('¿Eliminar este curso?').then(function (ok) {
+            if (!ok) return;
+            post('eliminar_curso', { idCiclo: $('#aw-curso-ciclo').val(), idCurso: $fila.data('id') }).done(function (res) {
+                if (res.ok) { $fila.remove(); reponerVacioSiTablaQueda('tabla-cursos', 3, 'Este ciclo todavía no tiene cursos definidos.'); }
+                else toast('No se pudo eliminar', 'error');
+            });
         });
     });
 
@@ -114,17 +136,20 @@
     });
 
     $(document).on('click', '.aw-eliminar-periodo', function () {
-        if (!confirm('¿Eliminar este período? Las notas guardadas en él dejarán de contar.')) return;
         var $btn = $(this);
-        post('eliminar_periodo', { idPeriodo: $btn.data('id') }).done(function (res) {
-            if (res.ok) $btn.closest('tr').remove(); else toast('No se pudo eliminar', 'error');
+        confirmarBorrado('¿Eliminar este período? Las notas guardadas en él dejarán de contar.').then(function (ok) {
+            if (!ok) return;
+            post('eliminar_periodo', { idPeriodo: $btn.data('id') }).done(function (res) {
+                if (res.ok) { $btn.closest('tr').remove(); reponerVacioSiTablaQueda('tabla-periodos', 6, 'Todavía no hay períodos académicos definidos.'); }
+                else toast('No se pudo eliminar', 'error');
+            });
         });
     });
 
     // ── PASO 4: tipos de evaluación ──
     $('#aw-form-tipo').on('submit', function (e) {
         e.preventDefault();
-        var datos = { obligatorio: 0, recuperable: 0, incluirEnMedia: 0 };
+        var datos = { obligatorio: 0, incluirEnMedia: 0 };
         $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_tipo', datos).done(function (res) {
             if (res.ok) { toast('Tipo guardado. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
@@ -133,10 +158,13 @@
     });
 
     $(document).on('click', '.aw-eliminar-tipo', function () {
-        if (!confirm('¿Eliminar este tipo de evaluación? Las notas guardadas bajo él dejarán de contar.')) return;
         var $btn = $(this);
-        post('eliminar_tipo', { idTipo: $btn.data('id') }).done(function (res) {
-            if (res.ok) $btn.closest('tr').remove(); else toast('No se pudo eliminar', 'error');
+        confirmarBorrado('¿Eliminar este tipo de evaluación? Las notas guardadas bajo él dejarán de contar.').then(function (ok) {
+            if (!ok) return;
+            post('eliminar_tipo', { idTipo: $btn.data('id') }).done(function (res) {
+                if (res.ok) { $btn.closest('tr').remove(); reponerVacioSiTablaQueda('tabla-tipos', 6, 'Todavía no hay tipos de evaluación definidos.'); }
+                else toast('No se pudo eliminar', 'error');
+            });
         });
     });
 
@@ -154,13 +182,15 @@
     }
     enviarFormularioSimple('#aw-form-calificacion', 'guardar_calificacion', ['requiereTodosModulos']);
     enviarFormularioSimple('#aw-form-fct', 'guardar_fct', ['habilitado', 'requiereAprobarParaTitular']);
-    enviarFormularioSimple('#aw-form-tfg', 'guardar_tfg', ['habilitado', 'requiereComite', 'requiereDefensa', 'permiteRecuperacion']);
-    enviarFormularioSimple('#aw-form-retos', 'guardar_retos', ['permiteGrupal', 'permiteFases', 'requiereRubrica', 'evaluacionPares']);
+    enviarFormularioSimple('#aw-form-tfg', 'guardar_tfg', ['habilitado']);
+    enviarFormularioSimple('#aw-form-retos', 'guardar_retos', []);
 
     // ── PASO 9: plantillas ──
     $(document).on('click', '.aw-aplicar-plantilla', function () {
-        var nombre = prompt('Nombre para la nueva configuración creada a partir de esta plantilla:');
-        if (!nombre) return;
+        // Nombre autogenerado a partir de la plantilla — se puede renombrar
+        // después desde el paso "General", sin interrumpir con un prompt() nativo.
+        var nombrePlantilla = $(this).closest('tr').find('td').first().text().trim();
+        var nombre = 'Copia de ' + (nombrePlantilla || 'plantilla') + ' — ' + new Date().toLocaleDateString('es-ES');
         post('aplicar_plantilla', { idPlantilla: $(this).data('id'), nombre: nombre }).done(function (res) {
             if (res.ok) { toast('Plantilla aplicada. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
             else toast(res.msg || 'Error', 'error');

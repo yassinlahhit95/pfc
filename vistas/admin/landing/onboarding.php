@@ -24,14 +24,13 @@ $csrfToken = Security::generateCSRFToken();
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="../../../public/css/dashboard.css">
+
     <style>
         :root {
             --accent: #4f46e5;
             --accent-glow: rgba(79, 70, 229, 0.12);
             --surface: rgba(255, 255, 255, 0.85);
-            --bg: var(--surface-2);
-            --text: var(--text);
             --text-muted: var(--dim);
             --border: rgba(0, 0, 0, 0.08);
             --radius: 24px;

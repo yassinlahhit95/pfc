@@ -32,54 +32,60 @@
                 <?= fieldError($errores, 'titulo') ?>
             </div>
 
-            <div class="campo">
-                <label for="etiqueta">Etiqueta</label>
-                <input type="text" id="etiqueta" name="etiqueta" maxlength="60"
-                       value="<?= Security::escapeHtml($ciclo['etiqueta']) ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="etiqueta">Etiqueta</label>
+                    <input type="text" id="etiqueta" name="etiqueta" maxlength="60"
+                           value="<?= Security::escapeHtml($ciclo['etiqueta']) ?>">
+                </div>
+
+                <div class="campo">
+                    <label for="precio">Precio</label>
+                    <input type="text" id="precio" name="precio" maxlength="60"
+                           value="<?= Security::escapeHtml($ciclo['precio']) ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="precio">Precio</label>
-                <input type="text" id="precio" name="precio" maxlength="60"
-                       value="<?= Security::escapeHtml($ciclo['precio']) ?>">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="duracion">Duración</label>
+                    <input type="text" id="duracion" name="duracion" maxlength="60"
+                           value="<?= Security::escapeHtml($ciclo['duracion']) ?>">
+                </div>
+
+                <div class="campo">
+                    <label for="modalidad">Modalidad</label>
+                    <input type="text" id="modalidad" name="modalidad" maxlength="60"
+                           value="<?= Security::escapeHtml($ciclo['modalidad']) ?>">
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="duracion">Duración</label>
-                <input type="text" id="duracion" name="duracion" maxlength="60"
-                       value="<?= Security::escapeHtml($ciclo['duracion']) ?>">
-            </div>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="orden">Orden en el catálogo</label>
+                    <input type="number" id="orden" name="orden" min="0" step="1"
+                           value="<?= (int)$ciclo['orden'] ?>">
+                </div>
 
-            <div class="campo">
-                <label for="modalidad">Modalidad</label>
-                <input type="text" id="modalidad" name="modalidad" maxlength="60"
-                       value="<?= Security::escapeHtml($ciclo['modalidad']) ?>">
-            </div>
-
-            <div class="campo">
-                <label for="orden">Orden en el catálogo</label>
-                <input type="number" id="orden" name="orden" min="0" step="1"
-                       value="<?= (int)$ciclo['orden'] ?>">
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'imagen') ?>">
-                <label>Imagen de portada</label>
-                <?php if (!empty($ciclo['imagen'])) { ?>
-                <img src="/public/uploads/ofertaCiclos/<?= Security::escapeHtml(basename($ciclo['imagen'])) ?>" alt=""
-                     style="max-height:90px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
-                <?php } ?>
-                <label class="zona-subida" for="imagen">
-                    <i class="fas fa-image"></i>
-                    <span><?= !empty($ciclo['imagen']) ? 'Cambiar imagen de portada' : 'Elige una imagen de portada' ?></span>
-                    <small>JPG, PNG o WebP</small>
-                    <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
-                </label>
-                <?= fieldError($errores, 'imagen') ?>
-                <?php if (!empty($ciclo['imagen'])) { ?>
-                <label class="campo-checkbox" style="margin-top:6px;">
-                    <input type="checkbox" name="quitarImagen" value="1"> Quitar la imagen actual
-                </label>
-                <?php } ?>
+                <div class="campo<?= fieldClass($errores, 'imagen') ?>">
+                    <label for="imagen">Imagen de portada</label>
+                    <?php if (!empty($ciclo['imagen'])) { ?>
+                    <img src="/public/uploads/ofertaCiclos/<?= Security::escapeHtml(basename($ciclo['imagen'])) ?>" alt=""
+                         style="max-height:90px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
+                    <?php } ?>
+                    <label class="zona-subida" for="imagen">
+                        <i class="fas fa-image"></i>
+                        <span><?= !empty($ciclo['imagen']) ? 'Cambiar imagen de portada' : 'Elige una imagen de portada' ?></span>
+                        <small>JPG, PNG o WebP</small>
+                        <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
+                    </label>
+                    <?= fieldError($errores, 'imagen') ?>
+                    <?php if (!empty($ciclo['imagen'])) { ?>
+                    <label class="campo-checkbox" style="margin-top:6px;">
+                        <input type="checkbox" name="quitarImagen" value="1"> Quitar la imagen actual
+                    </label>
+                    <?php } ?>
+                </div>
             </div>
 
             <div class="campo ancho-total">

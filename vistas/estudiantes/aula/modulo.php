@@ -239,7 +239,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
             <?php if ($entrega):
               if ($entrega['estado'] === 'corregida') {
-                echo '<span class="badge-estado-modern" style="background:var(--verde-suave);color:var(--verde);"><i class="fas fa-check-circle"></i> ★ '.$entrega['nota'].'/10</span>';
+                echo '<span class="badge-estado-modern" style="background:var(--verde-suave);color:var(--verde);"><i class="fas fa-check-circle"></i> '.$entrega['nota'].'/10</span>';
               } else {
                 echo '<span class="badge-estado-modern" style="background:var(--azul-suave);color:var(--azul-ink);"><i class="fas fa-paper-plane"></i> Enviada</span>';
               }

@@ -43,8 +43,8 @@ function _nav_active_tutor($check) {
 <?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
-    <span class="blob b1" style="background: rgba(16, 185, 129, 0.4)"></span>
-    <span class="blob b2" style="background: rgba(59, 130, 246, 0.4)"></span>
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
   </div>
 
   <aside class="sidebar" id="main-sidebar">
@@ -115,6 +115,10 @@ function _nav_active_tutor($check) {
     </nav>
 
     <nav class="sidebar-bottom-nav">
+      <a href="../perfil/ver.php" class="nav-item<?= _nav_active_tutor('perfil') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <span class="nav-label">Mi Perfil</span>
+      </a>
       <a href="../../cambiar_password.php" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
         <span class="nav-label">Cambiar Contraseña</span>
@@ -134,7 +138,7 @@ function _nav_active_tutor($check) {
         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
       </button>
       <div class="topbar-user">
-        <span class="role-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--verde);">FAMILIA</span>
+        <span class="role-badge" style="background: var(--verde-suave); color: var(--verde-ink);">FAMILIA</span>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
 

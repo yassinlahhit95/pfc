@@ -206,7 +206,18 @@
   color: var(--mut);
   font-size: .855rem;
 }
-.cw-loading { padding: 20px; }
+.cw-loading {
+  padding: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.cw-spinner {
+  width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  display: inline-block;
+  animation: cw-spin .7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .cw-spinner { animation: none; } }
+@keyframes cw-spin { to { transform: rotate(360deg); } }
 
 /* ── Conversation panel ──────────────────────────────────────────────────── */
 .cw-conv-head {

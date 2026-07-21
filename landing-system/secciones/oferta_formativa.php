@@ -57,3 +57,27 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
     <?php endif; ?>
   </div>
 </section>
+
+<?php
+// Datos estructurados Course — uno por ciclo con título, para el mismo tipo
+// de rich result que ya usa la sección FAQ. Se agrupan en un único bloque
+// @graph en vez de un <script> por ciclo (varios bloques ld+json sueltos
+// también son válidos, pero esto evita repetir @context en cada uno).
+$cursosSchema = [];
+foreach ($items as $item) {
+    $tituloCurso = trim($item['titulo'] ?? '');
+    if ($tituloCurso === '') continue;
+    $cursosSchema[] = [
+        '@type'       => 'Course',
+        'name'        => $tituloCurso,
+        'description' => trim($item['texto'] ?? '') ?: $tituloCurso,
+        'provider'    => [
+            '@type' => 'EducationalOrganization',
+            'name'  => $cfg['nombreCentro'] ?? '',
+        ],
+    ];
+}
+if ($cursosSchema):
+?>
+<script type="application/ld+json"><?= json_encode(['@context' => 'https://schema.org', '@graph' => $cursosSchema], JSON_UNESCAPED_UNICODE) ?></script>
+<?php endif; ?>

@@ -39,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'tituloAnuncio') ?>">
+            <div class="campo ancho-total<?= fieldClass($errores, 'tituloAnuncio') ?>">
                 <label for="tituloAnuncio">Título del Anuncio</label>
                 <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= Security::escapeHtml($anuncio['tituloAnuncio']) ?>">
                 <?= fieldError($errores, 'tituloAnuncio') ?>

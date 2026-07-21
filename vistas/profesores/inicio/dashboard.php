@@ -53,6 +53,34 @@ $nombreProf = $profesorActual['nombreProfesor'] ?? '';
 
 // Arrow SVG
 $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+// Avisos que necesitan atención — antes solo se veían si se bajaba hasta la
+// tabla de "Alumnos en Riesgo" (que además solo aparece si no está vacía);
+// aquí arriba se resume todo lo accionable de un vistazo, como ya hace el
+// portal de familias con su franja de avisos.
+$tfgsSinCalificar = $totalTFGsProfesor - $calificadosTFGsProfesor;
+$avisosProfesor = [];
+if ($mensajesPendientes > 0) {
+    $avisosProfesor[] = [
+        'tipo' => 'rojo', 'icono' => 'fa-envelope',
+        'texto' => $mensajesPendientes . ' mensaje' . ($mensajesPendientes !== 1 ? 's' : '') . ' sin resolver',
+        'url' => '../mensajes/lista.php',
+    ];
+}
+if (!empty($alumnosRiesgo)) {
+    $avisosProfesor[] = [
+        'tipo' => 'naranja', 'icono' => 'fa-triangle-exclamation',
+        'texto' => count($alumnosRiesgo) . ' alumno' . (count($alumnosRiesgo) !== 1 ? 's' : '') . ' en riesgo en Aula Digital',
+        'url' => '#alumnos-riesgo',
+    ];
+}
+if ($tfgsSinCalificar > 0) {
+    $avisosProfesor[] = [
+        'tipo' => 'azul', 'icono' => 'fa-file-signature',
+        'texto' => $tfgsSinCalificar . ' TFG' . ($tfgsSinCalificar !== 1 ? 's' : '') . ' sin calificar',
+        'url' => '../calificaciones/lista.php',
+    ];
+}
 ?>
 
 
@@ -63,6 +91,17 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     <p class="sub">Tu área docente — <b><?= count($listaEstudiantes) ?> estudiantes</b> · <b><?= count($listaModulos) ?> módulos</b> · <b><?= count($listaRetos) ?> retos</b></p>
   </div>
 </section>
+
+<?php if (!empty($avisosProfesor)): ?>
+<div class="aviso-atencion" style="margin:16px 0 4px;">
+  <?php foreach ($avisosProfesor as $aviso): ?>
+    <a href="<?= Security::escapeHtml($aviso['url']) ?>" class="aviso-chip aviso-chip--<?= $aviso['tipo'] ?>">
+      <i class="fas <?= Security::escapeHtml($aviso['icono']) ?>"></i>
+      <span><?= Security::escapeHtml($aviso['texto']) ?></span>
+    </a>
+  <?php endforeach; ?>
+</div>
+<?php endif; ?>
 
 <div class="section-head">
   <h2>Acceso rápido</h2>
@@ -199,7 +238,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 
 <!-- Heatmap de Alumnos en Riesgo -->
 <?php if (!empty($alumnosRiesgo)): ?>
-<div class="section-head" style="margin-top:24px;">
+<div class="section-head" id="alumnos-riesgo" style="margin-top:24px; scroll-margin-top:90px;">
   <h2><i class="fas fa-exclamation-triangle" style="color:var(--rojo); margin-right:8px;"></i> Alumnos en Riesgo (Aula Digital)</h2>
   <span class="count">Requieren atención temprana</span>
 </div>

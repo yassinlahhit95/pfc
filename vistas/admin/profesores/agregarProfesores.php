@@ -36,28 +36,38 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreProfesor') ?>">
-                <label for="nombreProfesor">Nombre Completo</label>
-                <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= Security::escapeHtml($datos['nombreProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'nombreProfesor') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreProfesor') ?>">
+                    <label for="nombreProfesor">Nombre Completo</label>
+                    <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= Security::escapeHtml($datos['nombreProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'nombreProfesor') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'emailProfesor') ?>">
+                    <label for="emailProfesor">Email</label>
+                    <input type="text" id="emailProfesor" name="emailProfesor" value="<?= Security::escapeHtml($datos['emailProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'emailProfesor') ?>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'emailProfesor') ?>">
-                <label for="emailProfesor">Email</label>
-                <input type="text" id="emailProfesor" name="emailProfesor" value="<?= Security::escapeHtml($datos['emailProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'emailProfesor') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'dniProfesor') ?>">
+                    <label for="dniProfesor">DNI</label>
+                    <input type="text" id="dniProfesor" name="dniProfesor" value="<?= Security::escapeHtml($datos['dniProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'dniProfesor') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'dniProfesor') ?>">
-                <label for="dniProfesor">DNI</label>
-                <input type="text" id="dniProfesor" name="dniProfesor" value="<?= Security::escapeHtml($datos['dniProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'dniProfesor') ?>
-            </div>
+                <div class="campo<?= fieldClass($errores, 'telefonoProfesor') ?>">
+                    <label for="telefonoProfesor">Teléfono</label>
+                    <input type="text" id="telefonoProfesor" name="telefonoProfesor" value="<?= Security::escapeHtml($datos['telefonoProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'telefonoProfesor') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'telefonoProfesor') ?>">
-                <label for="telefonoProfesor">Teléfono</label>
-                <input type="text" id="telefonoProfesor" name="telefonoProfesor" value="<?= Security::escapeHtml($datos['telefonoProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'telefonoProfesor') ?>
+                <div class="campo<?= fieldClass($errores, 'fechaNacimientoProfesor') ?>">
+                    <label for="fechaNacimientoProfesor">Fecha de Nacimiento</label>
+                    <input type="date" id="fechaNacimientoProfesor" name="fechaNacimientoProfesor" value="<?= Security::escapeHtml($datos['fechaNacimientoProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'fechaNacimientoProfesor') ?>
+                </div>
             </div>
 
             <div class="campo ancho-total<?= fieldClass($errores, 'direccionProfesor') ?>">
@@ -66,22 +76,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?= fieldError($errores, 'direccionProfesor') ?>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'ciudadProfesor') ?>">
-                <label for="ciudadProfesor">Ciudad</label>
-                <input type="text" id="ciudadProfesor" name="ciudadProfesor" value="<?= Security::escapeHtml($datos['ciudadProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'ciudadProfesor') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'ciudadProfesor') ?>">
+                    <label for="ciudadProfesor">Ciudad</label>
+                    <input type="text" id="ciudadProfesor" name="ciudadProfesor" value="<?= Security::escapeHtml($datos['ciudadProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'ciudadProfesor') ?>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'codigoPostalProfesor') ?>">
-                <label for="codigoPostalProfesor">Código Postal</label>
-                <input type="text" id="codigoPostalProfesor" name="codigoPostalProfesor" value="<?= Security::escapeHtml($datos['codigoPostalProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'codigoPostalProfesor') ?>
-            </div>
-
-            <div class="campo<?= fieldClass($errores, 'fechaNacimientoProfesor') ?>">
-                <label for="fechaNacimientoProfesor">Fecha de Nacimiento</label>
-                <input type="date" id="fechaNacimientoProfesor" name="fechaNacimientoProfesor" value="<?= Security::escapeHtml($datos['fechaNacimientoProfesor'] ?? '') ?>">
-                <?= fieldError($errores, 'fechaNacimientoProfesor') ?>
+                <div class="campo<?= fieldClass($errores, 'codigoPostalProfesor') ?>">
+                    <label for="codigoPostalProfesor">Código Postal</label>
+                    <input type="text" id="codigoPostalProfesor" name="codigoPostalProfesor" value="<?= Security::escapeHtml($datos['codigoPostalProfesor'] ?? '') ?>">
+                    <?= fieldError($errores, 'codigoPostalProfesor') ?>
+                </div>
             </div>
 
             <div class="campo ancho-total">

@@ -52,61 +52,69 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
 
         <div class="formulario">
-            <div class="campo<?= fieldClass($errores, 'nombreModulo') ?>">
-                <label for="nombreModulo">Nombre del Módulo</label>
-                <input type="text" name="nombreModulo" id="nombreModulo" value="<?= Security::escapeHtml($modulo['nombreModulo']) ?>">
-                <?= fieldError($errores, 'nombreModulo') ?>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'nombreModulo') ?>">
+                    <label for="nombreModulo">Nombre del Módulo</label>
+                    <input type="text" name="nombreModulo" id="nombreModulo" value="<?= Security::escapeHtml($modulo['nombreModulo']) ?>">
+                    <?= fieldError($errores, 'nombreModulo') ?>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'codigoModulo') ?>">
+                    <label for="codigoModulo">Código del Módulo <span class="texto-suave" style="font-weight:400;">(oficial, ej: 0483)</span></label>
+                    <input type="text" name="codigoModulo" id="codigoModulo" maxlength="20" value="<?= Security::escapeHtml($modulo['codigoModulo'] ?? '') ?>">
+                    <?= fieldError($errores, 'codigoModulo') ?>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'codigoModulo') ?>">
-                <label for="codigoModulo">Código del Módulo <span class="texto-suave" style="font-weight:400;">(oficial, ej: 0483)</span></label>
-                <input type="text" name="codigoModulo" id="codigoModulo" maxlength="20" value="<?= Security::escapeHtml($modulo['codigoModulo'] ?? '') ?>">
-                <?= fieldError($errores, 'codigoModulo') ?>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="nivel">Nivel</label>
+                    <select id="nivel" onchange="filtrarCiclos()">
+                        <option value="">-- Selecciona un nivel --</option>
+                        <option value="Grado Medio" <?php if ($nivelActual === 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                        <option value="Grado Superior" <?php if ($nivelActual === 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
+                    </select>
+                </div>
+
+                <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
+                    <label for="idCiclo">Ciclo Formativo</label>
+                    <select name="idCiclo" id="idCiclo">
+                        <option value="">-- Selecciona primero un nivel --</option>
+                    </select>
+                    <?= fieldError($errores, 'idCiclo') ?>
+                </div>
             </div>
 
-            <div class="campo">
-                <label for="nivel">Nivel</label>
-                <select id="nivel" onchange="filtrarCiclos()">
-                    <option value="">-- Selecciona un nivel --</option>
-                    <option value="Grado Medio" <?php if ($nivelActual === 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
-                    <option value="Grado Superior" <?php if ($nivelActual === 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
-                </select>
+            <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'horasMaximas') ?>">
+                    <label for="horasMaximas">Horas Totales</label>
+                    <input type="number" name="horasMaximas" id="horasMaximas" min="1" value="<?= Security::escapeHtml($modulo['horasMaximas']) ?>">
+                    <?= fieldError($errores, 'horasMaximas') ?>
+                </div>
+
+                <div class="campo">
+                    <label for="cursoAnio">Año del ciclo</label>
+                    <select name="cursoAnio" id="cursoAnio">
+                        <option value="">-- Selecciona primero un ciclo --</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
-                <label for="idCiclo">Ciclo Formativo</label>
-                <select name="idCiclo" id="idCiclo">
-                    <option value="">-- Selecciona primero un nivel --</option>
-                </select>
-                <?= fieldError($errores, 'idCiclo') ?>
-            </div>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="tipoModulo">Tipo de Módulo</label>
+                    <select name="tipoModulo" id="tipoModulo">
+                        <option value="Específico" <?= (($modulo['tipoModulo'] ?? '') == 'Específico') ? 'selected' : '' ?>>Específico del Ciclo</option>
+                        <option value="Transversal" <?= (($modulo['tipoModulo'] ?? '') == 'Transversal') ? 'selected' : '' ?>>Módulo Transversal (RD 659/2023)</option>
+                        <option value="Proyecto" <?= (($modulo['tipoModulo'] ?? '') == 'Proyecto') ? 'selected' : '' ?>>Proyecto Intermodular</option>
+                        <option value="Empresa" <?= (($modulo['tipoModulo'] ?? '') == 'Empresa') ? 'selected' : '' ?>>Estancia en Empresa</option>
+                    </select>
+                </div>
 
-            <div class="campo<?= fieldClass($errores, 'horasMaximas') ?>">
-                <label for="horasMaximas">Horas Totales</label>
-                <input type="number" name="horasMaximas" id="horasMaximas" min="1" value="<?= Security::escapeHtml($modulo['horasMaximas']) ?>">
-                <?= fieldError($errores, 'horasMaximas') ?>
-            </div>
-
-            <div class="campo">
-                <label for="cursoAnio">Año del ciclo</label>
-                <select name="cursoAnio" id="cursoAnio">
-                    <option value="">-- Selecciona primero un ciclo --</option>
-                </select>
-            </div>
-
-            <div class="campo">
-                <label for="tipoModulo">Tipo de Módulo</label>
-                <select name="tipoModulo" id="tipoModulo">
-                    <option value="Específico" <?= (($modulo['tipoModulo'] ?? '') == 'Específico') ? 'selected' : '' ?>>Específico del Ciclo</option>
-                    <option value="Transversal" <?= (($modulo['tipoModulo'] ?? '') == 'Transversal') ? 'selected' : '' ?>>Módulo Transversal (RD 659/2023)</option>
-                    <option value="Proyecto" <?= (($modulo['tipoModulo'] ?? '') == 'Proyecto') ? 'selected' : '' ?>>Proyecto Intermodular</option>
-                    <option value="Empresa" <?= (($modulo['tipoModulo'] ?? '') == 'Empresa') ? 'selected' : '' ?>>Estancia en Empresa</option>
-                </select>
-            </div>
-
-            <div class="campo">
-                <label for="creditosECTS">Créditos ECTS <span class="texto-suave" style="font-weight:400;">(RD 659/2023)</span></label>
-                <input type="number" name="creditosECTS" id="creditosECTS" min="1" max="30" value="<?= Security::escapeHtml($modulo['creditosECTS'] ?? '') ?>" placeholder="Opcional">
+                <div class="campo">
+                    <label for="creditosECTS">Créditos ECTS <span class="texto-suave" style="font-weight:400;">(RD 659/2023)</span></label>
+                    <input type="number" name="creditosECTS" id="creditosECTS" min="1" max="30" value="<?= Security::escapeHtml($modulo['creditosECTS'] ?? '') ?>" placeholder="Opcional">
+                </div>
             </div>
         </div>
 

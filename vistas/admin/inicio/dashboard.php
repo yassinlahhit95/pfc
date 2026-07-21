@@ -514,7 +514,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
           </p>
         <?php } ?>
       <?php } else { ?>
-        <p class="empty-state" style="padding:20px; text-align:center;">✅ No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
+        <p class="empty-state" style="padding:20px; text-align:center;"><i class="fas fa-circle-check" style="color:var(--verde);"></i> No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
       <?php } ?>
     </div>
   </div>

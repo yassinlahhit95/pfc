@@ -280,7 +280,7 @@ if ($rVencidos) {
         <p style="padding:10px; text-align:center; font-size:0.85rem; color:var(--dim);">Mostrando 8 de <?= count($estudiantesPendientes) ?> estudiantes. <a href="../pagos/verPagos.php">Ver todos →</a></p>
     <?php } ?>
     <?php } else { ?>
-        <p style="padding:20px; text-align:center; color:var(--dim);">✅ No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
+        <p style="padding:20px; text-align:center; color:var(--dim);"><i class="fas fa-circle-check" style="color:var(--verde);"></i> No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
     <?php } ?>
 </div>
 

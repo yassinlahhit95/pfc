@@ -29,65 +29,71 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="insertarGasto" value="1">
 
-        <div class="campo">
-            <label for="concepto">Concepto <span style="color:var(--rojo)">*</span></label>
-            <input type="text" name="concepto" id="concepto" maxlength="255"
-                   placeholder="Ej: Compra de papel y bolígrafos" required>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="concepto">Concepto <span style="color:var(--rojo)">*</span></label>
+                <input type="text" name="concepto" id="concepto" maxlength="255"
+                       placeholder="Ej: Compra de papel y bolígrafos" required>
+            </div>
+
+            <div class="campo">
+                <label for="importe">Importe (€) <span style="color:var(--rojo)">*</span></label>
+                <input type="number" name="importe" id="importe" step="0.01" min="0.01"
+                       placeholder="0.00" required>
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="importe">Importe (€) <span style="color:var(--rojo)">*</span></label>
-            <input type="number" name="importe" id="importe" step="0.01" min="0.01"
-                   placeholder="0.00" required>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="fecha">Fecha del gasto <span style="color:var(--rojo)">*</span></label>
+                <input type="date" name="fecha" id="fecha" value="<?= date('Y-m-d') ?>" required>
+            </div>
+
+            <div class="campo">
+                <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
+                <select name="idCategoria" id="idCategoria" required>
+                    <option value="">— Selecciona —</option>
+                    <?php foreach ($categorias as $categoria): ?>
+                    <option value="<?= (int)$categoria['idCategoria'] ?>">
+                        <?= Security::escapeHtml($categoria['nombre']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+                <small class="texto-suave">¿No encuentras la categoría? <a href="categorias.php">Gestiónala aquí</a></small>
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="fecha">Fecha del gasto <span style="color:var(--rojo)">*</span></label>
-            <input type="date" name="fecha" id="fecha" value="<?= date('Y-m-d') ?>" required>
+        <div class="form-fila">
+            <div class="campo">
+                <label for="tipoJustificante">Tipo de justificante</label>
+                <select name="tipoJustificante" id="tipoJustificante">
+                    <option value="factura">Factura</option>
+                    <option value="ticket">Ticket</option>
+                    <option value="recibo">Recibo</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="numeroReferencia">Nº Factura / Referencia</label>
+                <input type="text" name="numeroReferencia" id="numeroReferencia" maxlength="100"
+                       placeholder="Ej: FAC-2026-0123">
+            </div>
+
+            <div class="campo">
+                <label for="idCiclo">Ciclo asociado <span class="texto-suave">(opcional)</span></label>
+                <select name="idCiclo" id="idCiclo">
+                    <option value="">— Sin ciclo específico —</option>
+                    <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">
+                        [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
-            <select name="idCategoria" id="idCategoria" required>
-                <option value="">— Selecciona —</option>
-                <?php foreach ($categorias as $categoria): ?>
-                <option value="<?= (int)$categoria['idCategoria'] ?>">
-                    <?= Security::escapeHtml($categoria['nombre']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-            <small class="texto-suave">¿No encuentras la categoría? <a href="categorias.php">Gestiónala aquí</a></small>
-        </div>
-
-        <div class="campo">
-            <label for="tipoJustificante">Tipo de justificante</label>
-            <select name="tipoJustificante" id="tipoJustificante">
-                <option value="factura">Factura</option>
-                <option value="ticket">Ticket</option>
-                <option value="recibo">Recibo</option>
-                <option value="otro">Otro</option>
-            </select>
-        </div>
-
-        <div class="campo">
-            <label for="numeroReferencia">Nº Factura / Referencia</label>
-            <input type="text" name="numeroReferencia" id="numeroReferencia" maxlength="100"
-                   placeholder="Ej: FAC-2026-0123">
-        </div>
-
-        <div class="campo">
-            <label for="idCiclo">Ciclo asociado <span class="texto-suave">(opcional)</span></label>
-            <select name="idCiclo" id="idCiclo">
-                <option value="">— Sin ciclo específico —</option>
-                <?php foreach ($ciclos as $ciclo): ?>
-                <option value="<?= (int)$ciclo['idCiclo'] ?>">
-                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div class="campo">
+        <div class="campo campo-ancho-total">
             <label>Justificante <span class="texto-suave">(PDF o imagen, máx. 8 MB)</span></label>
             <label class="zona-subida" for="archivoJustificante">
                 <i class="fas fa-file-upload"></i>

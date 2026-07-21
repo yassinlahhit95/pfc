@@ -79,19 +79,21 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
-            <label for="nombreReto">Nombre del Reto</label>
-            <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>">
-            <?= fieldError($errores, 'nombreReto') ?>
+        <div class="form-fila">
+            <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
+                <label for="nombreReto">Nombre del Reto</label>
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>">
+                <?= fieldError($errores, 'nombreReto') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
+                <label for="horasReto">Horas Totales</label>
+                <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
+                <?= fieldError($errores, 'horasReto') ?>
+            </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
-            <label for="horasReto">Horas Totales</label>
-            <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
-            <?= fieldError($errores, 'horasReto') ?>
-        </div>
-
-        <div class="row">
+        <div class="form-fila">
             <div class="campo<?= fieldClass($errores, 'fechaInicio') ?>">
                 <label for="fechaInicio">Fecha Inicio</label>
                 <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
@@ -105,7 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="campo">
+        <div class="campo ancho-total">
             <label for="archivosReto">Materiales del Reto (PDF / Imágenes)</label>
             <div class="file-manager-premium">
                 <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" class="form-control mb-2">
@@ -118,7 +120,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'modulos') ?>" style="margin-top: 25px;">
+        <div class="campo ancho-total<?= fieldClass($errores, 'modulos') ?>" style="margin-top: 25px;">
             <label style="font-size: 1.1rem;">Asociar a Módulos</label>
             <p class="texto-suave" style="margin-bottom: 5px;">Seleccione los módulos en los que se evaluará este reto.</p>
             <?php if (!empty($errores['modulos'])): ?>

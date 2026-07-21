@@ -342,20 +342,6 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1fi
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// ELIMINACIONES
-// ══════════════════════════════════════════════════════════════════════
-
-function eliminarCalificacion($idCalificacion)
-{
-    $con = obtenerConexion();
-    $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCalificacion);
-    $exito = mysqli_stmt_execute($stmt);
-    return $exito;
-}
-
-// ══════════════════════════════════════════════════════════════════════
 // RESULTADOS FINALES
 // ══════════════════════════════════════════════════════════════════════
 

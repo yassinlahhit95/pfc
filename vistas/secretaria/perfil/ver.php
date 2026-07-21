@@ -75,6 +75,26 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="../../../vistas/cambiar_password.php" class="boton-secundario"><i class="fas fa-lock"></i> Cambiar contraseña</a>
     </div>
 </div>
+
+<div class="panel" style="margin-top:20px;">
+    <div class="titulo-tarjeta"><h3><i class="fas fa-shield-alt"></i> Seguridad de la cuenta</h3></div>
+    <div class="fila-datos">
+        <div class="dato">
+            <span class="dato-label">Verificación en dos pasos (2FA)</span>
+            <span class="dato-valor">
+                <?php if (!empty($secretaria['mfa_enabled'])): ?>
+                    <span style="color:var(--verde);font-weight:600;"><i class="fas fa-check-circle"></i> Activada</span>
+                <?php else: ?>
+                    <a href="../../auth/mfa_configurar.php" class="boton-secundario" style="font-size:.85rem;padding:6px 14px;">
+                        <i class="fas fa-lock"></i> Activar 2FA
+                    </a>
+                <?php endif; ?>
+            </span>
+        </div>
+    </div>
+</div>
+
+<?php require __DIR__ . '/../../comunes/rgpd/_mis_datos.php'; ?>
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
