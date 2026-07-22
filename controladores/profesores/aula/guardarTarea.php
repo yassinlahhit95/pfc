@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $idProfesor = (int)$_SESSION['idProfesor'];
 
@@ -80,20 +81,26 @@ if ($errores) {
 }
 
 if (!empty($_FILES['archivoAdjunto']['name']) && $_FILES['archivoAdjunto']['error'] === UPLOAD_ERR_OK) {
-    $dir = __DIR__ . "/../../../public/uploads/aula/tareas/";
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $dir = __DIR__ . "/../../../public/uploads/aula/tareas/"; // solo para localizar/borrar adjuntos heredados
     $ext = strtolower(pathinfo($_FILES['archivoAdjunto']['name'], PATHINFO_EXTENSION));
     $nombreAdjunto = bin2hex(random_bytes(12)) . '.' . $ext;
-    if (!move_uploaded_file($_FILES['archivoAdjunto']['tmp_name'], $dir . $nombreAdjunto)) {
+    $tmpName = $_FILES['archivoAdjunto']['tmp_name'];
+
+    $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
+    if (isset($imgMimes[$ext])) ImageOptimizer::optimize($tmpName, $imgMimes[$ext]); // optimizar el temporal ANTES de subir a R2
+
+    $mimeReal = @mime_content_type($tmpName) ?: 'application/octet-stream';
+    $bytes    = file_get_contents($tmpName);
+    $subioOk  = $bytes !== false && R2Client::putObject('aula/tareas/' . $nombreAdjunto, $bytes, $mimeReal);
+    @unlink($tmpName);
+
+    if (!$subioOk) {
         $nombreAdjunto = null;
-    } else {
-        $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
-        if (isset($imgMimes[$ext])) ImageOptimizer::optimize($dir . $nombreAdjunto, $imgMimes[$ext]);
-    }
-    if ($nombreAdjunto !== null && $tareaExistente && !empty($tareaExistente['archivoAdjunto'])) {
-        // Sustituye el adjunto anterior
+    } elseif ($tareaExistente && !empty($tareaExistente['archivoAdjunto'])) {
+        // Sustituye el adjunto anterior (en cualquiera de los dos almacenamientos)
         $rutaVieja = $dir . $tareaExistente['archivoAdjunto'];
         if (is_file($rutaVieja)) unlink($rutaVieja);
+        R2Client::deleteObject('aula/tareas/' . $tareaExistente['archivoAdjunto']);
     }
 }
 

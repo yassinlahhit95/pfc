@@ -7,6 +7,18 @@
 // aprobar la FCT es obligatorio por normativa para poder titular.
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Crypto.php";
+
+// Cifrado de datos personales (RGPD Art. 32): datos de contacto de la
+// empresa/tutor y observaciones de seguimiento. Todo aleatorio (sin
+// necesidad de búsqueda exacta ni UNIQUE KEY sobre estas columnas).
+function _descifrarFilaFCT(?array $fila): ?array {
+    if (!$fila) return $fila;
+    foreach (['tutorEmpresa', 'emailTutorEmpresa', 'telefonoEmpresa', 'observaciones'] as $c) {
+        if (array_key_exists($c, $fila)) $fila[$c] = Crypto::decrypt($fila[$c]);
+    }
+    return $fila;
+}
 
 function _sqlCiclosFCTDeProfesor(): string {
     return "(f.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
@@ -23,7 +35,7 @@ function listarFCTPorCiclo(int $idCiclo): array {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $out = [];
-    while ($fila = mysqli_fetch_assoc($res)) $out[] = $fila;
+    while ($fila = mysqli_fetch_assoc($res)) $out[] = _descifrarFilaFCT($fila);
     return $out;
 }
 
@@ -35,7 +47,7 @@ function obtenerFCTPorId(int $idFCT): ?array {
          WHERE f.idFCT = ?");
     mysqli_stmt_bind_param($stmt, "i", $idFCT);
     mysqli_stmt_execute($stmt);
-    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
+    return _descifrarFilaFCT(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null);
 }
 
 // FCT de los estudiantes de los ciclos que imparte este profesor (tutor de
@@ -54,7 +66,7 @@ function listarFCTPorProfesor(int $idProfesor): array {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $out = [];
-    while ($fila = mysqli_fetch_assoc($res)) $out[] = $fila;
+    while ($fila = mysqli_fetch_assoc($res)) $out[] = _descifrarFilaFCT($fila);
     return $out;
 }
 
@@ -67,9 +79,12 @@ function insertarFCT(array $datos): int|false {
     $idEmpresa = $datos['idEmpresa'] ?? null;
     $fase = $datos['fase'] ?? 1;
     $idProfesorTutor = $datos['idProfesorTutor'] ?? null;
+    $tutorEmpresaC      = Crypto::encrypt($datos['tutorEmpresa']);
+    $emailTutorEmpresaC = Crypto::encrypt($datos['emailTutorEmpresa']);
+    $telefonoEmpresaC   = Crypto::encrypt($datos['telefonoEmpresa']);
     mysqli_stmt_bind_param($stmt, "iisisssssssii",
         $datos['idEstudiante'], $datos['idCiclo'], $datos['empresa'], $idEmpresa,
-        $datos['tutorEmpresa'], $datos['emailTutorEmpresa'], $datos['telefonoEmpresa'], $datos['ciudadEmpresa'],
+        $tutorEmpresaC, $emailTutorEmpresaC, $telefonoEmpresaC, $datos['ciudadEmpresa'],
         $datos['fechaInicio'], $datos['fechaFin'], $datos['horasTotales'], $fase, $idProfesorTutor);
     if (!mysqli_stmt_execute($stmt)) return false;
     return mysqli_insert_id($con);
@@ -88,13 +103,16 @@ function actualizarFCT(int $idFCT, array $datos): bool {
     $idProfesorTutor = array_key_exists('idProfesorTutor', $datos)
         ? $datos['idProfesorTutor']
         : (obtenerFCTPorId($idFCT)['idProfesorTutor'] ?? null);
+    $tutorEmpresaC      = Crypto::encrypt($datos['tutorEmpresa']);
+    $emailTutorEmpresaC = Crypto::encrypt($datos['emailTutorEmpresa']);
+    $telefonoEmpresaC   = Crypto::encrypt($datos['telefonoEmpresa']);
     $stmt = mysqli_prepare($con,
         "UPDATE fct SET empresa=?, idEmpresa=?, tutorEmpresa=?, emailTutorEmpresa=?,
                 telefonoEmpresa=?, ciudadEmpresa=?, fechaInicio=?, fechaFin=?, horasTotales=?, idProfesorTutor=?
          WHERE idFCT = ?");
     mysqli_stmt_bind_param($stmt, "sisssssssii",
-        $datos['empresa'], $idEmpresa, $datos['tutorEmpresa'], $datos['emailTutorEmpresa'],
-        $datos['telefonoEmpresa'], $datos['ciudadEmpresa'], $datos['fechaInicio'], $datos['fechaFin'],
+        $datos['empresa'], $idEmpresa, $tutorEmpresaC, $emailTutorEmpresaC,
+        $telefonoEmpresaC, $datos['ciudadEmpresa'], $datos['fechaInicio'], $datos['fechaFin'],
         $datos['horasTotales'], $idProfesorTutor, $idFCT);
     return mysqli_stmt_execute($stmt);
 }
@@ -103,10 +121,11 @@ function actualizarFCT(int $idFCT, array $datos): bool {
 // seguimiento y evaluación, lo que más cambia tras el alta inicial).
 function actualizarSeguimientoFCT(int $idFCT, ?int $horasRealizadas, ?float $nota, ?bool $apto, ?string $observaciones): bool {
     $con = obtenerConexion();
+    $observacionesC = Crypto::encrypt($observaciones);
     $stmt = mysqli_prepare($con,
         "UPDATE fct SET horasRealizadas = ?, nota = ?, apto = ?, observaciones = ? WHERE idFCT = ?");
     $aptoInt = $apto === null ? null : (int)$apto;
-    mysqli_stmt_bind_param($stmt, "idisi", $horasRealizadas, $nota, $aptoInt, $observaciones, $idFCT);
+    mysqli_stmt_bind_param($stmt, "idisi", $horasRealizadas, $nota, $aptoInt, $observacionesC, $idFCT);
     return mysqli_stmt_execute($stmt);
 }
 

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../modelos/calificaciones.php';
 require_once __DIR__ . '/../modelos/configuracion.php';
+require_once __DIR__ . '/../include/R2Client.php';
 
 $_ip = !empty($_SERVER['HTTP_X_FORWARDED_FOR'])
     ? explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]
@@ -22,6 +23,15 @@ if ($serial && !preg_match('/^BLT-\d{4}(-[A-F0-9]{4}){3,4}$/', $serial)) {
 $cfg     = obtenerConfiguracionCentro();
 $doc     = $serial ? verificarBoletinPorSerial($serial, $_ip) : null;
 $valido  = $doc !== null;
+$logoUrl = '';
+if (!empty($cfg['logoCentro'])) {
+    $logoFichero = basename($cfg['logoCentro']);
+    $logoUrl = R2Client::imagenUrl(
+        __DIR__ . '/../public/uploads/configuracion/' . $logoFichero,
+        '../public/uploads/configuracion/' . $logoFichero,
+        'configuracion/' . $logoFichero
+    );
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -112,8 +122,8 @@ $valido  = $doc !== null;
 <body>
 <div class="card">
     <div class="card-header">
-        <?php if (!empty($cfg['logoCentro'])): ?>
-        <img src="<?= htmlspecialchars($cfg['logoCentro']) ?>" alt="">
+        <?php if ($logoUrl): ?>
+        <img src="<?= htmlspecialchars($logoUrl) ?>" alt="">
         <?php endif; ?>
         <div>
             <div class="nombre"><?= htmlspecialchars($cfg['nombreCentro']) ?></div>

@@ -9,6 +9,7 @@ $ajax = !empty($_POST['ajax']);
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN PREVIA
@@ -53,9 +54,6 @@ try {
 
     $destino = "../../../vistas/profesores/aula/recursos.php?id=$idModulo";
     if ($idCarpeta) $destino .= "&carpeta=$idCarpeta";
-
-    $dir = __DIR__ . "/../../../public/uploads/aula/archivos/";
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
 
     $permitidos = [
         'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt',
@@ -143,10 +141,17 @@ try {
 
             // 4. Nombre aleatorio para evitar colisiones y exposición del nombre original
             $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $ext;
+            $tmpName       = $_FILES['archivos']['tmp_name'][$i];
 
-            if (move_uploaded_file($_FILES['archivos']['tmp_name'][$i], $dir . $nombreArchivo)) {
-                $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
-                if (isset($imgMimes[$ext])) ImageOptimizer::optimize($dir . $nombreArchivo, $imgMimes[$ext]);
+            $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+            if (isset($imgMimes[$ext])) ImageOptimizer::optimize($tmpName, $imgMimes[$ext]); // optimizar el temporal ANTES de subir a R2
+
+            $contentType = $mimeReal !== '' ? $mimeReal : ($mimesValidos[$ext] ?? 'application/octet-stream');
+            $bytes       = file_get_contents($tmpName);
+            $subioOk     = $bytes !== false && R2Client::putObject('aula/archivos/' . $nombreArchivo, $bytes, $contentType);
+            @unlink($tmpName);
+
+            if ($subioOk) {
                 $nombreVisible = $nombreOrig;
                 if ($titulo !== '') {
                     $base   = $titulo;

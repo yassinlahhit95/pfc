@@ -66,30 +66,37 @@ if (isset($_POST['subirTFG'])) {
         $ext           = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
         $nombreLimpio  = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $datosEstudiante['nombreEstudiante']));
         $nombreArchivo = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . "." . $ext;
-        
-        $directorioDestino = __DIR__ . "/../../../public/uploads/pfc/";
-        if (!is_dir($directorioDestino)) {
-            mkdir($directorioDestino, 0777, true);
-        }
-        $rutaDestino   = $directorioDestino . $nombreArchivo;
+        $mimesPorExt   = ['pdf' => 'application/pdf', 'doc' => 'application/msword', 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        $mimeReal      = $mimesPorExt[$ext] ?? 'application/octet-stream';
 
-        // Guardar ruta del archivo anterior ANTES de cualquier operación de escritura.
-        // El orden correcto es: mover nuevo → actualizar BD → borrar antiguo.
+        // Guardar ruta/clave del archivo anterior ANTES de cualquier operación de escritura.
+        // El orden correcto es: subir nuevo → actualizar BD → borrar antiguo.
         $tfgActual = obtenerTFGporEstudiante($idEstudiante);
         $rutaVieja = (!empty($tfgActual['archivoTFG']))
             ? __DIR__ . "/../../../public/uploads/pfc/" . $tfgActual['archivoTFG']
             : null;
+        $r2KeyVieja = !empty($tfgActual['archivoTFG']) ? 'pfc/' . $tfgActual['archivoTFG'] : null;
 
-        if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
+        require_once __DIR__ . "/../../../include/R2Client.php";
+        $bytes = file_get_contents($archivoTFG['tmp_name']);
+        $subioOk = $bytes !== false && R2Client::putObject('pfc/' . $nombreArchivo, $bytes, $mimeReal);
+        @unlink($archivoTFG['tmp_name']);
+
+        if ($subioOk) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {
                 // BD actualizada correctamente — ahora es seguro eliminar el archivo anterior
+                // (en cualquiera de los dos almacenamientos: no hay backfill, así que el
+                // archivo anterior puede seguir en disco local o ya estar en R2).
                 if ($rutaVieja && file_exists($rutaVieja)) {
                     @unlink($rutaVieja);
+                }
+                if ($r2KeyVieja) {
+                    R2Client::deleteObject($r2KeyVieja);
                 }
                 $_SESSION['exito'] = "El TFG ha sido subido correctamente.";
             } else {
                 // Fallo en BD — el nuevo archivo es un huérfano, elimínarlo; el anterior sigue en BD
-                @unlink($rutaDestino);
+                R2Client::deleteObject('pfc/' . $nombreArchivo);
                 $_SESSION['errores'] = "Error al actualizar la base de datos. El TFG anterior sigue activo.";
             }
         } else {

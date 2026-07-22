@@ -9,6 +9,7 @@ require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/ciclos.php";
 require_once __DIR__ . "/../../modelos/configuracion.php";
 require_once __DIR__ . "/../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../include/R2Client.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // LÍMITE DE TASA
@@ -227,13 +228,14 @@ switch ($action) {
 
         // 3) Nombre aleatorio: sin datos del usuario en la ruta → sin path traversal ni sobrescritura
         $newName = 'adm_' . $idPreMatricula . '_' . $tipo . '_' . bin2hex(random_bytes(16)) . '.' . $ext;
-        $destDir = __DIR__ . '/../../public/uploads/admisiones/';
-        if (!is_dir($destDir)) { @mkdir($destDir, 0755, true); }
-        $dest = $destDir . $newName;
+        $tmpName = $file['tmp_name'];
 
-        if (move_uploaded_file($file['tmp_name'], $dest)) {
-            @chmod($dest, 0644);
-            if ($ext !== 'pdf') ImageOptimizer::optimize($dest, $allowed[$ext]);
+        if ($ext !== 'pdf') ImageOptimizer::optimize($tmpName, $allowed[$ext]); // optimizar el temporal antes de subir a R2
+        $bytes   = file_get_contents($tmpName);
+        $subioOk = $bytes !== false && R2Client::putObject('admisiones/' . $newName, $bytes, $allowed[$ext]);
+        @unlink($tmpName);
+
+        if ($subioOk) {
             $nombreOriginalLimpio = mb_substr(basename($file['name']), 0, 150);
             registrarArchivoPreMatricula($idPreMatricula, $tipo, $nombreOriginalLimpio, "/public/uploads/admisiones/" . $newName);
             echo json_encode(['status' => 'success', 'filename' => $nombreOriginalLimpio]);

@@ -5,6 +5,7 @@ FeatureGuard::requirePage('feature_pagos');
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/pagos/agregarPago.php");
@@ -57,10 +58,6 @@ if ($tipoPago === 'mensual') {
 // --- SUBIDA DE COMPROBANTE ---
 $nombreComprobante = null;
 if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] === UPLOAD_ERR_OK) {
-    $directorioUpload = __DIR__ . '/../../../public/uploads/comprobantes/';
-    if (!is_dir($directorioUpload)) {
-        mkdir($directorioUpload, 0755, true);
-    }
     $extension = strtolower(pathinfo($_FILES['comprobante']['name'], PATHINFO_EXTENSION));
     $mimesPermitidos = ['pdf' => 'application/pdf', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -71,12 +68,14 @@ if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] === UPLOAD_
         // mismo segundo pisarían el comprobante anterior con solo time()) y evita
         // exponer el id del estudiante en el nombre de fichero.
         $nombreComprobante = 'pago_sec_' . bin2hex(random_bytes(16)) . '.' . $extension;
-        $rutaDestino = $directorioUpload . $nombreComprobante;
-        if (!move_uploaded_file($_FILES['comprobante']['tmp_name'], $rutaDestino)) {
-            $nombreComprobante = null;
-        } elseif ($extension !== 'pdf') {
-            ImageOptimizer::optimize($rutaDestino, $mimeReal);
-        }
+        $tmpName = $_FILES['comprobante']['tmp_name'];
+
+        if ($extension !== 'pdf') ImageOptimizer::optimize($tmpName, $mimeReal); // optimizar el temporal ANTES de subir a R2
+
+        $bytes   = file_get_contents($tmpName);
+        $subioOk = $bytes !== false && R2Client::putObject('comprobantes/' . $nombreComprobante, $bytes, $mimeReal);
+        @unlink($tmpName);
+        if (!$subioOk) $nombreComprobante = null;
     }
 }
 // ------------------------------

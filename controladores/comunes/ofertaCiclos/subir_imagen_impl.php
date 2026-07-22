@@ -24,4 +24,5 @@ if ($nombre === '') {
     exit;
 }
 
-echo json_encode(['ok' => true, 'url' => '/public/uploads/ofertaCiclos/' . $nombre]);
+require_once __DIR__ . "/../../../include/R2Client.php";
+echo json_encode(['ok' => true, 'url' => R2Client::publicUrl('ofertaCiclos/' . $nombre)]);

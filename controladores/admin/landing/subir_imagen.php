@@ -1,8 +1,12 @@
 <?php
-// Sube una imagen del constructor a public/uploads/landing/ (AJAX multipart).
+// Sube una imagen del constructor a Cloudflare R2 (AJAX multipart). URL
+// pública permanente, sin firma — mismo motivo que blogSubirImagen(): es
+// contenido de marketing sin control de acceso hoy, y una URL firmada
+// caducaría rompiendo la imagen en el sitio publicado.
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/ImageOptimizer.php';
+require_once __DIR__ . '/../../../include/R2Client.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -48,23 +52,23 @@ if (!isset($mimeExtMap[$mime])) {
     exit;
 }
 
-$uploadDir = __DIR__ . '/../../../public/uploads/landing/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+$filename = 'landing_' . bin2hex(random_bytes(6)) . '.' . $mimeExtMap[$mime];
+
+if ($mime !== 'video/mp4') {
+    ImageOptimizer::optimize($file['tmp_name'], $mime); // optimizar el temporal ANTES de subir a R2
 }
 
-$filename = 'landing_' . bin2hex(random_bytes(6)) . '.' . $mimeExtMap[$mime];
-if (!move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
+$bytes = file_get_contents($file['tmp_name']);
+$subioOk = $bytes !== false && R2Client::putObject('landing/' . $filename, $bytes, $mime);
+@unlink($file['tmp_name']);
+
+if (!$subioOk) {
     ob_clean();
     echo json_encode(['ok' => false, 'msg' => 'No se pudo guardar la imagen.']);
     exit;
 }
 
-if ($mime !== 'video/mp4') {
-    ImageOptimizer::optimize($uploadDir . $filename, $mime);
-}
-
 registrarAccion('insertar', 'landing', null, 'Imagen subida: ' . $filename);
 ob_clean();
-echo json_encode(['ok' => true, 'msg' => 'Imagen subida.', 'filename' => $filename,
-                  'url' => '/public/uploads/landing/' . $filename]);
+$url = R2Client::publicUrl('landing/' . $filename);
+echo json_encode(['ok' => true, 'msg' => 'Imagen subida.', 'filename' => $url, 'url' => $url]);

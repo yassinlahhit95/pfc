@@ -1,5 +1,23 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Crypto.php";
+
+// ── Cifrado de datos personales (RGPD Art. 32) ──────────────────────────
+// dniDirector usa cifrado determinista (mismo texto → mismo cifrado) para
+// que UNIQUE KEY y checkDirectorExistente sigan funcionando. El resto usa
+// cifrado aleatorio.
+function _descifrarFilaDirector(?array $fila): ?array {
+    if (!$fila) return $fila;
+    foreach (['dniDirector', 'telefonoDirector', 'fechaNacimientoDirector', 'direccionDirector', 'observacionesDirector'] as $c) {
+        if (array_key_exists($c, $fila)) $fila[$c] = Crypto::decrypt($fila[$c]);
+    }
+    return $fila;
+}
+
+// Público (con "descifrar" en vez de "_") para que modelos/rgpd.php pueda reutilizarlo.
+function descifrarFilaDirector(?array $fila): ?array {
+    return _descifrarFilaDirector($fila);
+}
 
 // ══════════════════════════════════════════════════════════════════════
 // CONSULTAS
@@ -11,7 +29,7 @@ function listarDirectores() {
     $res = mysqli_query($con, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) {
-        $lista[] = $fila;
+        $lista[] = _descifrarFilaDirector($fila);
     }
     return $lista;
 }
@@ -23,7 +41,7 @@ function obtenerDirectorPorId($idDirector) {
     mysqli_stmt_bind_param($stmt, "i", $idDirector);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_assoc($resultado);
+    return _descifrarFilaDirector(mysqli_fetch_assoc($resultado));
 }
 
 function obtenerTokensDirectores() {
@@ -49,9 +67,14 @@ function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNa
     $con = obtenerConexion();
     require_once __DIR__ . '/../include/credenciales.php';
     [$pass] = generarCredencialesTemporales($email, $nombre, 'Director');
+    $dniC             = Crypto::encryptDeterministic($dni);
+    $telefonoC        = Crypto::encrypt($telefono);
+    $fechaNacimientoC = Crypto::encrypt($fechaNacimiento);
+    $direccionC       = Crypto::encrypt($direccion);
+    $observacionesC   = Crypto::encrypt($observaciones);
     $sql = "INSERT INTO directores (nombreDirector, emailDirector, password, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
+    mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $dniC, $telefonoC, $fechaAlta, $fechaNacimientoC, $direccionC, $ciudad, $codigoPostal, $observacionesC);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -61,9 +84,14 @@ function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNa
 
 function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $con = obtenerConexion();
+    $dniC             = Crypto::encryptDeterministic($dni);
+    $telefonoC        = Crypto::encrypt($telefono);
+    $fechaNacimientoC = Crypto::encrypt($fechaNacimiento);
+    $direccionC       = Crypto::encrypt($direccion);
+    $observacionesC   = Crypto::encrypt($observaciones);
     $sql = "UPDATE directores SET nombreDirector=?, emailDirector=?, dniDirector=?, telefonoDirector=?, fechaAltaDirector=?, fechaNacimientoDirector=?, direccionDirector=?, ciudadDirector=?, codigoPostalDirector=?, observacionesDirector=? WHERE idDirector=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones, $idDirector);
+    mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $dniC, $telefonoC, $fechaAlta, $fechaNacimientoC, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idDirector);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -98,7 +126,7 @@ function validarLoginDirector($email, $password) {
     $datos = mysqli_fetch_assoc($resultado);
     if ($datos && password_verify($password, $datos['password'])) {
         if (class_exists('Security')) Security::rehashOnLogin($con, 'directores', 'idDirector', $datos['idDirector'], $password, $datos['password']);
-        return $datos;
+        return _descifrarFilaDirector($datos);
     }
     return null;
 }
@@ -112,9 +140,10 @@ function validarLoginDirector($email, $password) {
 // $idExcluir evita falso positivo de duplicado al editar el propio registro
 function checkDirectorExistente($dni, $email, $idExcluir = 0) {
     $con = obtenerConexion();
+    $dniC = Crypto::encryptDeterministic($dni);
     $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?) AND idDirector != ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
+    mysqli_stmt_bind_param($stmt, "ssi", $dniC, $email, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resultado) > 0;

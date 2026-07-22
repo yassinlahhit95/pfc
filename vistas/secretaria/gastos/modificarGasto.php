@@ -6,6 +6,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/gastos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../include/form_helpers.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $gasto = obtenerGastoPorId((int)($_GET['idGasto'] ?? 0));
 if (!$gasto) {
@@ -114,25 +115,35 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (!empty($gasto['archivoJustificante'])):
                 $archivos = json_decode($gasto['archivoJustificante'], true);
                 if (is_array($archivos)):
-                    foreach ($archivos as $i => $archivo): ?>
+                    foreach ($archivos as $i => $archivo):
+                        $archivoUrl = R2Client::documentoUrl(
+                            __DIR__ . '/../../../public/uploads/justificantes/' . $archivo,
+                            '../../../public/uploads/justificantes/' . $archivo,
+                            'justificantes/' . $archivo
+                        ); ?>
                     <div class="file-item-premium" style="margin-bottom:10px;max-width:360px;">
                         <i class="fas fa-file-alt" style="color:var(--accent);font-size:1.2rem;flex-shrink:0;"></i>
                         <div class="file-info-premium">
                             <span class="file-name-premium">Archivo actual <?= count($archivos)>1 ? ($i+1) : '' ?></span>
                             <span class="file-type-premium">
-                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($archivo) ?>"
+                                <a href="<?= Security::escapeHtml($archivoUrl) ?>"
                                    target="_blank" rel="noopener">Ver archivo adjunto</a>
                             </span>
                         </div>
                     </div>
                     <?php endforeach;
-                else: ?>
+                else:
+                    $archivoUrl = R2Client::documentoUrl(
+                        __DIR__ . '/../../../public/uploads/justificantes/' . $gasto['archivoJustificante'],
+                        '../../../public/uploads/justificantes/' . $gasto['archivoJustificante'],
+                        'justificantes/' . $gasto['archivoJustificante']
+                    ); ?>
                     <div class="file-item-premium" style="margin-bottom:10px;max-width:360px;">
                         <i class="fas fa-file-alt" style="color:var(--accent);font-size:1.2rem;flex-shrink:0;"></i>
                         <div class="file-info-premium">
                             <span class="file-name-premium">Archivo actual</span>
                             <span class="file-type-premium">
-                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($gasto['archivoJustificante']) ?>"
+                                <a href="<?= Security::escapeHtml($archivoUrl) ?>"
                                    target="_blank" rel="noopener">Ver archivo adjunto</a>
                             </span>
                         </div>

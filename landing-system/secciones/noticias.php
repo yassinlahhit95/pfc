@@ -8,6 +8,7 @@ $numPosts   = ($contenido['numPosts'] ?? 'n3') === 'n6' ? 6 : 3;
 $noticias = [];
 try {
     require_once __DIR__ . '/../../modelos/blog.php';
+    require_once __DIR__ . '/../../include/R2Client.php';
     $noticias = listarPostsPublicados($numPosts);
 } catch (Throwable $e) {
     // La landing pública nunca debe romperse por un error de BD
@@ -32,7 +33,11 @@ try {
     <div class="lp-blog-grid lp-noticias-grid">
       <?php foreach ($noticias as $noticia):
           $enlace = $noticia['slug'] !== '' ? '/vistas/blog.php?post=' . rawurlencode($noticia['slug']) : '/vistas/blog.php';
-          $img    = !empty($noticia['imagen']) ? '/public/uploads/blog/' . basename($noticia['imagen']) : '';
+          $img    = !empty($noticia['imagen']) ? R2Client::imagenUrl(
+              __DIR__ . '/../../public/uploads/blog/' . basename($noticia['imagen']),
+              '/public/uploads/blog/' . basename($noticia['imagen']),
+              'blog/' . basename($noticia['imagen'])
+          ) : '';
       ?>
       <article class="lp-blog-card">
         <a class="lp-blog-card-media" href="<?= Security::escapeHtml($enlace) ?>">

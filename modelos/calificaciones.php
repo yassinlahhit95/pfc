@@ -604,7 +604,7 @@ function generarDatosBoletinCiclo($idCiclo) {
     $resEst = mysqli_stmt_get_result($stmt);
     $estudiantes = [];
     while ($fila = mysqli_fetch_assoc($resEst)) {
-        $estudiantes[] = $fila;
+        $estudiantes[] = descifrarFilaEstudiante($fila);
     }
     mysqli_stmt_close($stmt);
 

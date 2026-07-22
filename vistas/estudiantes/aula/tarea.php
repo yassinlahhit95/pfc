@@ -4,6 +4,7 @@ $idEstudiante = $_SESSION['idEstudiante'] ?? '';
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $exito   = $_SESSION['exito'] ?? ''; unset($_SESSION['exito']);
 $errores = $_SESSION['errores'] ?? ''; unset($_SESSION['errores']);
@@ -62,10 +63,17 @@ include_once __DIR__ . "/../comunes/nav.php";
   <?php endif; ?>
 
   <?php if ($tarea['archivoAdjunto']): ?>
-  <?php $extAdj = strtolower(pathinfo($tarea['archivoAdjunto'], PATHINFO_EXTENSION)); ?>
+  <?php
+  $extAdj = strtolower(pathinfo($tarea['archivoAdjunto'], PATHINFO_EXTENSION));
+  $adjuntoUrl = R2Client::documentoUrl(
+      __DIR__ . '/../../../public/uploads/aula/tareas/' . $tarea['archivoAdjunto'],
+      '../../../public/uploads/aula/tareas/' . $tarea['archivoAdjunto'],
+      'aula/tareas/' . $tarea['archivoAdjunto']
+  );
+  ?>
   <div style="margin-top:8px;">
     <button class="boton-secundario btn-pequeno"
-            data-ver-archivo="../../../public/uploads/aula/tareas/<?= Security::escapeHtml($tarea['archivoAdjunto']) ?>"
+            data-ver-archivo="<?= Security::escapeHtml($adjuntoUrl) ?>"
             data-ext="<?= Security::escapeHtml($extAdj) ?>"
             data-nombre="Adjunto tarea">
       <i class="fas fa-paperclip"></i> Ver archivo adjunto
@@ -102,9 +110,15 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div>
         <div class="aula-feedback-burbuja">
           <?= Security::escapeHtml($comentario['mensaje']) ?>
-          <?php if ($comentario['archivoCorreccion']): ?>
+          <?php if ($comentario['archivoCorreccion']):
+            $correccionUrl = R2Client::documentoUrl(
+                __DIR__ . '/../../../public/uploads/aula/correcciones/' . $comentario['archivoCorreccion'],
+                '../../../public/uploads/aula/correcciones/' . $comentario['archivoCorreccion'],
+                'aula/correcciones/' . $comentario['archivoCorreccion']
+            );
+          ?>
           <div style="margin-top:8px;">
-            <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml($comentario['archivoCorreccion']) ?>"
+            <a href="<?= Security::escapeHtml($correccionUrl) ?>"
                target="_blank" style="font-size:0.78rem;color:var(--azul);display:flex;align-items:center;gap:4px;">
               <i class="fas fa-paperclip"></i> Archivo adjunto
             </a>

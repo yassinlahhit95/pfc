@@ -40,12 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['comprobante'])) {
                 if (!$pagoRow) {
                     $error = "No se encontró ningún pago para este estudiante.";
                 } else {
-                    $dir = __DIR__ . '/../../../public/uploads/comprobantes/';
-                    if (!is_dir($dir)) mkdir($dir, 0755, true);
-
+                    require_once __DIR__ . '/../../../include/R2Client.php';
+                    $mimePorExt = ['pdf' => 'application/pdf', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
                     $filename = "comp_" . $idEstudianteSubida . "_" . time() . "." . $ext;
+                    $bytes    = file_get_contents($file['tmp_name']);
+                    $subioOk  = $bytes !== false && R2Client::putObject('comprobantes/' . $filename, $bytes, $mimePorExt[$ext] ?? 'application/octet-stream');
+                    @unlink($file['tmp_name']);
 
-                    if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
+                    if ($subioOk) {
                         $sqlUp = "UPDATE pagos SET comprobante = ?, estadoComprobante = 'verificando' WHERE idPago = ?";
                         $stmtUp = mysqli_prepare($db, $sqlUp);
                         mysqli_stmt_bind_param($stmtUp, "si", $filename, $pagoRow['idPago']);

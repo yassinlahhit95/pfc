@@ -7,6 +7,7 @@ require_once __DIR__ . "/../../../modelos/admisiones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $loginUrl = rtrim(Config::getInstance()->get('APP_URL', ''), '/') . '/vistas/login.php';
 $action = $_GET['action'] ?? '';
@@ -24,6 +25,19 @@ switch ($action) {
         }
         $detalles = obtenerPreMatriculaPorId($id);
         $archivos = obtenerArchivosPreMatricula($id);
+        foreach ($archivos as &$archivo) {
+            // rutaArchivo puede ser "/public/uploads/admisiones/<f>" (subida directa)
+            // o "/public/uploads/admisiones/documentos/<f>" (PDF de aceptación generado
+            // en el servidor) — se deriva la clave R2 quitando el prefijo común, en vez
+            // de asumir una única subcarpeta plana.
+            $relativo = ltrim(preg_replace('#^/?public/uploads/#', '', $archivo['rutaArchivo']), '/');
+            $archivo['rutaArchivo'] = R2Client::documentoUrl(
+                __DIR__ . '/../../../public/uploads/' . $relativo,
+                '/public/uploads/' . $relativo,
+                $relativo
+            );
+        }
+        unset($archivo);
         echo json_encode(['status' => 'success', 'data' => $detalles, 'archivos' => $archivos]);
         break;
 
@@ -70,8 +84,9 @@ switch ($action) {
                     $emailInstitucional = $nombreLimpio . "." . $apellidosLimpio . "@aulapro.com";
 
                     $con = obtenerConexion();
+                    $dniCifrado = Crypto::encryptDeterministic($datos['dni']);
                     $stmtCheck = mysqli_prepare($con, "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = ?");
-                    mysqli_stmt_bind_param($stmtCheck, "s", $datos['dni']);
+                    mysqli_stmt_bind_param($stmtCheck, "s", $dniCifrado);
                     mysqli_stmt_execute($stmtCheck);
                     $resCheck = mysqli_stmt_get_result($stmtCheck);
 
@@ -86,12 +101,13 @@ switch ($action) {
                         $filaNivel = mysqli_fetch_assoc($resNivel);
                         $cursoEnum = ($filaNivel['idNivel'] == 2) ? 'Grado Superior' : 'Grado Medio';
 
+                        $telefonoCifrado = Crypto::encrypt($datos['telefono']);
                         $stmtIns = mysqli_prepare($con,
                             "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, dniEstudiante, fechaAltaEstudiante, idCiclo, curso)
                              VALUES (?, ?, ?, ?, ?, CURDATE(), ?, ?)");
                         mysqli_stmt_bind_param($stmtIns, "sssssis",
                             $datos['nombre'], $emailInstitucional, $passHash,
-                            $datos['telefono'], $datos['dni'], $datos['idCiclo'], $cursoEnum);
+                            $telefonoCifrado, $dniCifrado, $datos['idCiclo'], $cursoEnum);
                         mysqli_stmt_execute($stmtIns);
                         $idNuevoEstudiante = mysqli_insert_id($con);
 
@@ -139,7 +155,7 @@ switch ($action) {
                     } else {
                         $tempPass = "(Usa tu contraseña actual)";
                         $stmtRec = mysqli_prepare($con, "SELECT emailEstudiante FROM estudiantes WHERE dniEstudiante = ?");
-                        mysqli_stmt_bind_param($stmtRec, "s", $datos['dni']);
+                        mysqli_stmt_bind_param($stmtRec, "s", $dniCifrado);
                         mysqli_stmt_execute($stmtRec);
                         $resRec = mysqli_stmt_get_result($stmtRec);
                         $filaRec = mysqli_fetch_assoc($resRec);

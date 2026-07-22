@@ -11,6 +11,7 @@ require_once __DIR__ . '/../modelos/landing.php';
 require_once __DIR__ . '/../modelos/landingCiclos.php';
 require_once __DIR__ . '/../include/landing/secciones.php';
 require_once __DIR__ . '/../include/landing/plantillas.php';
+require_once __DIR__ . '/../include/R2Client.php';
 
 $cfg = obtenerConfiguracionCentro();
 
@@ -51,7 +52,11 @@ if ($ciclo) {
     $ajustes['tituloSeo']      = $ciclo['titulo'] . ' — ' . $cfg['nombreCentro'];
     $ajustes['descripcionSeo'] = $ciclo['resumen'] ?: mb_substr(strip_tags($ciclo['descripcion']), 0, 155);
 
-    $imgCiclo     = $ciclo['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($ciclo['imagen']) : '';
+    $imgCiclo     = R2Client::imagenUrl(
+        __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($ciclo['imagen']),
+        $ciclo['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($ciclo['imagen']) : '',
+        'ofertaCiclos/' . basename($ciclo['imagen'])
+    );
     $relacionados = listarCiclosLandingRelacionados($ciclo['idLandingCiclo'], 3);
 
     include __DIR__ . '/landing/_head.php';
@@ -109,7 +114,11 @@ if ($ciclo) {
         </div>
         <div class="lp-blog-grid">
           <?php foreach ($relacionados as $rel):
-              $imgRel = $rel['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($rel['imagen']) : ''; ?>
+              $imgRel = R2Client::imagenUrl(
+                  __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($rel['imagen']),
+                  $rel['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($rel['imagen']) : '',
+                  'ofertaCiclos/' . basename($rel['imagen'])
+              ); ?>
           <article class="lp-blog-card lp-ciclo-card">
             <a class="lp-blog-card-media" href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($rel['slug']) ?>">
               <?php if ($imgRel): ?>
@@ -182,7 +191,11 @@ include __DIR__ . '/landing/_nav.php';
       <?php else: ?>
       <div class="lp-blog-grid">
         <?php foreach ($ciclos as $cicloItem):
-            $img = $cicloItem['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']) : ''; ?>
+            $img = R2Client::imagenUrl(
+                __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']),
+                $cicloItem['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']) : '',
+                'ofertaCiclos/' . basename($cicloItem['imagen'])
+            ); ?>
         <article class="lp-blog-card lp-ciclo-card">
           <a class="lp-blog-card-media" href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($cicloItem['slug']) ?>">
             <?php if ($img): ?>

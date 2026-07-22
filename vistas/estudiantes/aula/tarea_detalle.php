@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $idTarea = (int)($_GET['id'] ?? 0);
@@ -56,10 +57,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?= Security::escapeHtml($tarea['descripcion']) ?>
             </div>
 
-            <?php if ($tarea['archivoAdjunto']) { ?>
+            <?php if ($tarea['archivoAdjunto']) {
+                $adjuntoUrl = R2Client::documentoUrl(
+                    __DIR__ . '/../../../public/uploads/aula/tareas/' . $tarea['archivoAdjunto'],
+                    '../../../public/uploads/aula/tareas/' . $tarea['archivoAdjunto'],
+                    'aula/tareas/' . $tarea['archivoAdjunto']
+                );
+            ?>
             <div style="margin-top: 20px; padding: 15px; background:var(--surface-2); border-radius: 5px;">
                 <strong><i class="fas fa-paperclip"></i> Archivo Adjunto:</strong><br>
-                <a href="../../../public/uploads/aula/tareas/<?= Security::escapeHtml($tarea['archivoAdjunto']) ?>"
+                <a href="<?= Security::escapeHtml($adjuntoUrl) ?>"
                    class="boton-secundario" download>
                     <i class="fas fa-download"></i> Descargar
                 </a>
@@ -90,17 +97,30 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </div>
 
+                <?php
+                    $entregaUrl = R2Client::documentoUrl(
+                        __DIR__ . '/../../../public/uploads/aula/entregas/' . $entrega['archivoEntrega'],
+                        '../../../public/uploads/aula/entregas/' . $entrega['archivoEntrega'],
+                        'aula/entregas/' . $entrega['archivoEntrega']
+                    );
+                ?>
                 <strong><i class="fas fa-file"></i> Tu Entrega:</strong><br>
-                <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($entrega['archivoEntrega']) ?>"
+                <a href="<?= Security::escapeHtml($entregaUrl) ?>"
                    class="boton-secundario" download style="margin: 10px 0;">
                     <i class="fas fa-download"></i> Descargar Mi Entrega
                 </a>
 
-                <?php if ($entrega['archivoCorreccion']) { ?>
+                <?php if ($entrega['archivoCorreccion']) {
+                    $correccionUrl = R2Client::documentoUrl(
+                        __DIR__ . '/../../../public/uploads/aula/correcciones/' . $entrega['archivoCorreccion'],
+                        '../../../public/uploads/aula/correcciones/' . $entrega['archivoCorreccion'],
+                        'aula/correcciones/' . $entrega['archivoCorreccion']
+                    );
+                ?>
                 <div style="margin-top: 20px; padding: 15px; background: var(--naranja-suave); border-left: 4px solid var(--naranja); border-radius: 3px;">
                     <strong><i class="fas fa-comment"></i> Retroalimentación del Profesor:</strong><br>
                     <?= Security::escapeHtml($entrega['comentarioCalificacion']) ?><br><br>
-                    <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml($entrega['archivoCorreccion']) ?>"
+                    <a href="<?= Security::escapeHtml($correccionUrl) ?>"
                        class="boton-secundario btn-pequeno" download>
                         <i class="fas fa-file-pdf"></i> Ver Corrección
                     </a>

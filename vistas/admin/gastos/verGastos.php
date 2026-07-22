@@ -9,6 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/gastos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $anyoActual   = (int)date('Y');
 $anyo         = isset($_GET['anyo']) ? (int)$_GET['anyo'] : $anyoActual;
@@ -214,17 +215,27 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </td>
                     <td><b><?= number_format($gasto['importe'], 2, ',', '.') ?> €</b></td>
                     <td>
-                        <?php if (!empty($gasto['archivoJustificante'])): 
+                        <?php if (!empty($gasto['archivoJustificante'])):
                             $archivos = json_decode($gasto['archivoJustificante'], true);
                             if (is_array($archivos)):
-                                foreach ($archivos as $indice => $archivo): ?>
-                                    <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($archivo) ?>"
+                                foreach ($archivos as $indice => $archivo):
+                                    $archivoUrl = R2Client::documentoUrl(
+                                        __DIR__ . '/../../../public/uploads/justificantes/' . $archivo,
+                                        '../../../public/uploads/justificantes/' . $archivo,
+                                        'justificantes/' . $archivo
+                                    ); ?>
+                                    <a href="<?= Security::escapeHtml($archivoUrl) ?>"
                                        target="_blank" rel="noopener" class="boton-secundario boton-pequeno" style="margin-bottom:2px; display:inline-block;">
                                         <i class="fas fa-file-alt"></i> Ver <?= count($archivos)>1 ? ($indice+1) : '' ?>
                                     </a>
                                 <?php endforeach;
-                            else: ?>
-                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($gasto['archivoJustificante']) ?>"
+                            else:
+                                $archivoUrl = R2Client::documentoUrl(
+                                    __DIR__ . '/../../../public/uploads/justificantes/' . $gasto['archivoJustificante'],
+                                    '../../../public/uploads/justificantes/' . $gasto['archivoJustificante'],
+                                    'justificantes/' . $gasto['archivoJustificante']
+                                ); ?>
+                                <a href="<?= Security::escapeHtml($archivoUrl) ?>"
                                    target="_blank" rel="noopener" class="boton-secundario boton-pequeno">
                                     <i class="fas fa-file-alt"></i> Ver
                                 </a>

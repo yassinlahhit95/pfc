@@ -44,13 +44,26 @@ if ($method === 'POST') {
     foreach ($candidates as $type => [$tabla, $idCol, $emailCol]) {
         // Los estudiantes en la papelera (soft-delete) no pueden autenticarse
         $filtroEliminado = ($tabla === 'estudiantes') ? ' AND eliminado = 0' : '';
+        // Solo tutores/secretarias tienen must_change_password; el resto de tablas no,
+        // así que se reporta 0 literal para no romper la consulta (columna inexistente).
+        $colMustChange = in_array($tabla, ['tutores', 'secretarias'], true)
+            ? '`must_change_password`'
+            : '0 AS must_change_password';
         $st = mysqli_prepare($con,
-            "SELECT `$idCol` AS uid, `password`, `must_change_password`
+            "SELECT `$idCol` AS uid, `password`, $colMustChange
              FROM `$tabla` WHERE `$emailCol` = ?$filtroEliminado LIMIT 1");
         mysqli_stmt_bind_param($st, 's', $email);
         mysqli_stmt_execute($st);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-        if ($row && password_verify($password, (string)$row['password'])) {
+        // Siempre se llama a password_verify(), exista o no la fila: si se
+        // omitiera por completo cuando el email no aparece en esta tabla, el
+        // tiempo de respuesta variaría según en qué tabla (o en ninguna)
+        // existe el email — un canal lateral por tiempos que permite
+        // enumerar cuentas sin necesidad de acertar la contraseña. El hash
+        // ficticio es constante y nunca corresponde a un usuario real.
+        $hashAComprobar = $row ? (string)$row['password'] : V1_DUMMY_HASH;
+        $passwordOk     = password_verify($password, $hashAComprobar);
+        if ($row && $passwordOk) {
             $match     = $row;
             $matchType = $type;
             break;
@@ -63,7 +76,6 @@ if ($method === 'POST') {
     }
 
     AccountLockout::clear($con, $email);
-    v1EnsureTokenTable();
 
     // Purge expired tokens: this user's stale tokens + a global batch on each login
     $del = mysqli_prepare($con,
@@ -104,7 +116,6 @@ if ($method === 'DELETE') {
     if ($header && stripos($header, 'Bearer ') === 0) {
         $token = trim(substr($header, 7));
         if (strlen($token) === 64 && ctype_xdigit($token)) {
-            v1EnsureTokenTable();
             $con = obtenerConexion();
             $del = mysqli_prepare($con, 'DELETE FROM api_tokens WHERE token = ?');
             mysqli_stmt_bind_param($del, 's', $token);

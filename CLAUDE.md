@@ -38,7 +38,7 @@ public/js/core/            ← globals used across pages (filtros.js, paginacion
 public/js/features/        ← one file per feature (chat.js, mensajes.js, horario.js, blog-editor.js, ...)
 public/js/firebase/        ← Firebase web SDK config + notifications UI
 landing-system/            ← public landing page: templates, sections, themes — see own section below
-migrate_db.php             ← the only place new tables/columns get created (see DB Migrations below)
+noDeploy/database.sql      ← schema source of truth (see DB Migrations below)
 ```
 
 Note: `core/analytics.js` and `features/aula-recursos.js` compute their own root path via `document.currentScript`/`import.meta.url` and a hardcoded `../../../` — they must stay exactly 3 directories below the project root (i.e. directly under `public/js/core/` or `public/js/features/`, not nested deeper) or that path math breaks.
@@ -86,12 +86,11 @@ Shared helper functions (e.g. image-upload helpers) live in the `admin` copy; th
 
 ## DB Migrations
 
-New tables/columns are added to `migrate_db.php` as a new numbered section, appended right before the `FIN` block at the end of the file. It's idempotent and safe to re-run — use the existing helpers, never a raw `CREATE TABLE IF NOT EXISTS` inline in a model file on every request:
-- `crearTabla($con, $nombre, $sqlCreateTableIfNotExists)`
-- `agregarColumna($con, $tabla, $columna, $definicionSql)`
-- `agregarIndice($con, $tabla, $indice, $columnas)`
+`noDeploy/database.sql` is the schema source of truth (the old `migrate_db.php` incremental-migration file was removed — don't reference it in new code or comments). New tables/columns for a **fresh install** go directly into the relevant `CREATE TABLE` statement in `noDeploy/database.sql`.
 
-Also drop a static reference copy of new `CREATE TABLE` statements under `landing-system/sql/` (or an equivalent docs location) mirroring the pattern in `migrate_db.php` — it's never executed, just documentation for manual production setup.
+For an **existing** database (production, or any dev DB created before the change), also add a standalone SQL file under `noDeploy/migrations/`, named with the next incremented 3-digit number (e.g. `noDeploy/migrations/007_whatever_you_added.sql` following `006_add_saas_control_columns.sql`) containing just the `ALTER TABLE`/`CREATE TABLE IF NOT EXISTS` statements needed to bring an existing schema up to date. All prior reference-only migration SQL (including what used to live under `landing-system/sql/`) has been consolidated here under this same numbering — don't scatter new ones elsewhere. These files are never executed automatically; they're applied manually, in numeric order, and should say up top which existing-DB scenario they're for. `noDeploy/migrations/aplicar_todas_produccion.sql` is a maintained concatenation of every numbered migration in order — update it too whenever you add a new one, so it stays a valid single-command way to bring an existing DB fully up to date.
+
+Never use a raw `CREATE TABLE IF NOT EXISTS` inline in a model file on every request (this bit us once already — `registrarAccionSecretaria()` in `modelos/log.php` did this for `historial_secretarias` long after that table was already guaranteed by the schema, silently paying a metadata-query cost on every secretaría action for no reason). If a table might not exist yet on some deployments, that's what a `noDeploy/migrations/*.sql` file is for, not per-request runtime DDL.
 
 **Naming**: if a new table is conceptually close to an existing one (e.g. a landing/marketing table vs. an internal academic table), give it a distinct table name **and** a distinct primary key name up front (`landing_ciclos.idLandingCiclo`, not `idCiclo`) — don't let two unrelated entities share an ambiguous name/column just because they're topically similar. It's cheap to get right on day one and expensive to rename later.
 

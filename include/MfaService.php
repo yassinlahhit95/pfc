@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/Crypto.php';
+
 // Generaliza el 2FA (antes solo admin) a los 5 roles. Las tablas/columnas
 // vienen siempre de este mapa fijo, nunca de $_GET/$_POST — el nombre de
 // tabla dinámico en las consultas de abajo es seguro por eso.
@@ -36,20 +38,28 @@ class MfaService {
         $stmt = mysqli_prepare($con, "SELECT mfa_enabled, mfa_secret, mfa_backup_codes FROM `$tabla` WHERE `$idCol` = ?");
         mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
-        return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
+        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
+        if ($fila) {
+            $fila['mfa_secret']        = Crypto::decrypt($fila['mfa_secret']);
+            $fila['mfa_backup_codes']  = Crypto::decrypt($fila['mfa_backup_codes']);
+        }
+        return $fila;
     }
 
     public static function activar($tabla, $idCol, $id, $secret, $backupCodesJson) {
         $con  = obtenerConexion();
+        $secretCifrado = Crypto::encrypt($secret);
+        $backupCifrado = Crypto::encrypt($backupCodesJson);
         $stmt = mysqli_prepare($con, "UPDATE `$tabla` SET mfa_enabled = 1, mfa_secret = ?, mfa_backup_codes = ? WHERE `$idCol` = ?");
-        mysqli_stmt_bind_param($stmt, "ssi", $secret, $backupCodesJson, $id);
+        mysqli_stmt_bind_param($stmt, "ssi", $secretCifrado, $backupCifrado, $id);
         return mysqli_stmt_execute($stmt);
     }
 
     public static function actualizarBackupCodes($tabla, $idCol, $id, $backupCodesJson) {
         $con  = obtenerConexion();
+        $backupCifrado = Crypto::encrypt($backupCodesJson);
         $stmt = mysqli_prepare($con, "UPDATE `$tabla` SET mfa_backup_codes = ? WHERE `$idCol` = ?");
-        mysqli_stmt_bind_param($stmt, "si", $backupCodesJson, $id);
+        mysqli_stmt_bind_param($stmt, "si", $backupCifrado, $id);
         return mysqli_stmt_execute($stmt);
     }
 

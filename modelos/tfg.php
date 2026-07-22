@@ -118,7 +118,7 @@ function listarTFGsPorProfesor($idProfesor) {
 // a diferencia de la recuperación de módulos (que solo sustituye si es
 // mayor), una convocatoria extraordinaria de TFG es un intento deliberado y
 // su resultado es el que cuenta. Antes de añadir la columna `convocatoria`
-// (ver migrate_db.php sección 12) solo podía existir una fila por alumno, así
+// (ver noDeploy/database.sql) solo podía existir una fila por alumno, así
 // que esto no cambia nada para los datos ya existentes.
 function obtenerCalificacionTFG($idEstudiante) {
     $con = obtenerConexion();
@@ -158,6 +158,8 @@ function eliminarArchivoTFG($idEstudiante) {
         if (file_exists($rutaFisica)) {
             unlink($rutaFisica);
         }
+        require_once __DIR__ . '/../include/R2Client.php';
+        R2Client::deleteObject('pfc/' . $fila['archivoTFG']);
     }
 
     $sql = "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = ?";

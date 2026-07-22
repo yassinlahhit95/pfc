@@ -19,21 +19,38 @@ if (!defined('USE_XSENDFILE')) {
     define('USE_XSENDFILE', false);
 }
 
-function servirArchivo(string $rutaAbsoluta, string $nombreDescarga, string $mime, bool $inline = false): void {
-    $disposition = $inline ? 'inline' : 'attachment';
-    header("Content-Type: $mime");
-    header("Content-Disposition: $disposition; filename=\"" . rawurlencode($nombreDescarga) . "\"");
-    header("X-Content-Type-Options: nosniff");
+// $r2Key: clave del objeto en Cloudflare R2 (p.ej. "pfc/abc123.pdf") — usada
+// solo si el fichero YA NO está en disco local (ficheros nuevos, subidos
+// después de la migración a R2; ver plan de migración, no hay backfill de
+// los ficheros que ya existían en public/uploads/ antes de esto).
+function servirArchivo(string $rutaAbsoluta, string $r2Key, string $nombreDescarga, string $mime, bool $inline = false): void {
+    $disposition = ($inline ? 'inline' : 'attachment') . '; filename="' . rawurlencode($nombreDescarga) . '"';
 
-    if (USE_XSENDFILE) {
-        // LiteSpeed intercepta esta cabecera y sirve el fichero directamente;
-        // no debe llamarse a readfile() ni fijar Content-Length manualmente,
-        // el servidor calcula el suyo propio a partir del fichero real.
-        header("X-Sendfile: $rutaAbsoluta");
+    if (is_file($rutaAbsoluta)) {
+        // Fichero heredado, previo a R2, todavía en disco local — se sirve
+        // exactamente igual que siempre.
+        header("Content-Type: $mime");
+        header("Content-Disposition: $disposition");
+        header("X-Content-Type-Options: nosniff");
+
+        if (USE_XSENDFILE) {
+            // LiteSpeed intercepta esta cabecera y sirve el fichero directamente;
+            // no debe llamarse a readfile() ni fijar Content-Length manualmente,
+            // el servidor calcula el suyo propio a partir del fichero real.
+            header("X-Sendfile: $rutaAbsoluta");
+            exit;
+        }
+
+        header("Content-Length: " . filesize($rutaAbsoluta));
+        readfile($rutaAbsoluta);
         exit;
     }
 
-    header("Content-Length: " . filesize($rutaAbsoluta));
-    readfile($rutaAbsoluta);
+    // No está en disco local — se asume que es un objeto de R2 (subido
+    // después de la migración). Redirige a una URL firmada de corta
+    // duración; R2 sirve los bytes directamente (sin coste de ancho de
+    // banda en el hosting compartido, R2 no cobra egreso).
+    require_once __DIR__ . '/R2Client.php';
+    header('Location: ' . R2Client::presignedGetUrl($r2Key, 300, $mime, $disposition));
     exit;
 }

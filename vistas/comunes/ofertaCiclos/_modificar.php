@@ -5,6 +5,12 @@
 // $ciclo, $errores y $rolBase ('admin' | 'secretaria') antes de incluir
 // este archivo.
 // ══════════════════════════════════════════════════════════════════════
+require_once __DIR__ . '/../../../include/R2Client.php';
+$imagenPortadaUrl = !empty($ciclo['imagen']) ? R2Client::imagenUrl(
+    __DIR__ . '/../../../public/uploads/ofertaCiclos/' . basename($ciclo['imagen']),
+    '/public/uploads/ofertaCiclos/' . basename($ciclo['imagen']),
+    'ofertaCiclos/' . basename($ciclo['imagen'])
+) : '';
 ?>
 
 <div class="cabecera">
@@ -69,8 +75,8 @@
 
                 <div class="campo<?= fieldClass($errores, 'imagen') ?>">
                     <label for="imagen">Imagen de portada</label>
-                    <?php if (!empty($ciclo['imagen'])) { ?>
-                    <img src="/public/uploads/ofertaCiclos/<?= Security::escapeHtml(basename($ciclo['imagen'])) ?>" alt=""
+                    <?php if ($imagenPortadaUrl) { ?>
+                    <img src="<?= Security::escapeHtml($imagenPortadaUrl) ?>" alt=""
                          style="max-height:90px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
                     <?php } ?>
                     <label class="zona-subida" for="imagen">

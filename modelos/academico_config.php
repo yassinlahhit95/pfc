@@ -4,9 +4,9 @@
 // ══════════════════════════════════════════════════════════════════════
 // Lee la configuración académica (períodos, tipos de evaluación, políticas
 // de calificación, reglas de promoción, FCT, TFG, retos) desde las tablas
-// creadas en migrate_db.php sección 12. Mientras feature_academico_config
-// esté desactivado (por defecto), estas funciones no se usan en el cálculo
-// de notas — ver modelos/calificaciones.php.
+// academic_config/academic_periods/assessment_types/etc. (noDeploy/database.sql).
+// Mientras feature_academico_config esté desactivado (por defecto), estas
+// funciones no se usan en el cálculo de notas — ver modelos/calificaciones.php.
 require_once __DIR__ . "/conectar.php";
 require_once __DIR__ . "/../include/FeatureGuard.php";
 
@@ -117,7 +117,7 @@ function existeNombreCursoEnCiclo(int $idCiclo, string $nombre): bool {
 
 // Crea una configuración nueva (vacía, sin activar) y sus 6 tablas hijas de
 // 1 fila con los valores por defecto que hoy reproducen el comportamiento
-// hardcodeado (igual que el sembrado inicial de migrate_db.php sección 12).
+// hardcodeado (igual que el sembrado inicial en noDeploy/database.sql).
 function crearConfigAcademicaVacia(string $nombre, string $tipoEducacion, ?string $anioAcademico = null): int|false {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);

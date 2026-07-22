@@ -109,7 +109,7 @@ function storeLicenseToken(PDO $pdo, string $token): bool {
         )->execute([$token, $expDatetime]);
         return true;
     } catch (PDOException) {
-        // license_token column not yet created — migration 003 not run
+        // license_token column not yet created — noDeploy/migrations/006_add_saas_control_columns.sql not run
         return false;
     }
 }
@@ -197,7 +197,7 @@ switch ($action) {
         }
 
         // Column name validated via regex + DB check — safe to interpolate
-        $pdo->prepare("UPDATE configuracion_centro SET `{$feature}` = ?")->execute([(int)$value]);
+        $pdo->prepare("UPDATE configuracion_centro SET `{$feature}` = ? WHERE idConfig = 1")->execute([(int)$value]);
         apiOk(['feature' => $feature, 'value' => $value]);
 
     // POST — body: {"action":"suspend","message":"Suscripción expirada."}
@@ -250,9 +250,9 @@ switch ($action) {
     // Renews the license token. token_exp is extended by SaaS.
     case 'heartbeat':
         if (!$licenseToken) apiError('Missing license_token in heartbeat.', 400);
-        if (!$licenseTokenStored) apiError('license_token column missing — run migration 003 on this AulaPro database.', 500);
+        if (!$licenseTokenStored) apiError('license_token column missing — run noDeploy/migrations/006_add_saas_control_columns.sql on this AulaPro database.', 500);
         $stored = $licenseTokenStored; // already stored by the pre-switch block
-        // Use SELECT * so the query works even if migration 003 columns don't exist yet
+        // Use SELECT * so the query works even if the migration 006 columns don't exist yet
         $row = $pdo->query("SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1")->fetch() ?: [];
         apiOk([
             'heartbeat'         => $stored ? 'accepted' : 'accepted_pending_migration',

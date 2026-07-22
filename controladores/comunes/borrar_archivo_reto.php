@@ -63,6 +63,9 @@ if ($archivo) {
     if (file_exists($rutaFisica)) {
         unlink($rutaFisica);
     }
+    require_once __DIR__ . '/../../include/R2Client.php';
+    $r2Key = ltrim(preg_replace('#^public/uploads/#', '', $archivo['rutaArchivo']), '/');
+    R2Client::deleteObject($r2Key);
 
     if (eliminarArchivoReto($idArchivo)) {
         if ($isAjax) {

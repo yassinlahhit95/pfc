@@ -1,7 +1,7 @@
 -- ══════════════════════════════════════════════════════════════════════
 -- CATÁLOGO DE CICLOS (landing) — tabla landing_ciclos
 -- Fichas públicas de ciclos formativos (marketing), independiente de la
--- tabla académica `ciclos`. Se crea vía migrate_db.php (sección 13);
+-- tabla académica `ciclos`. Se crea vía noDeploy/database.sql;
 -- este archivo queda como referencia / para creación manual en producción.
 -- ══════════════════════════════════════════════════════════════════════
 

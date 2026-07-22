@@ -62,6 +62,21 @@ class Config {
         // El secreto del QR del boletín debe estar en .env; nunca hardcodeado
         $this->config['BOLETIN_SECRET'] = $this->env('BOLETIN_SECRET', '');
 
+        // Clave maestra de cifrado de datos personales (RGPD Art. 32). Nunca hardcodeada.
+        // A diferencia de APP_KEY, NO tiene fallback aleatorio: si falta, Crypto debe fallar
+        // fuerte en vez de cifrar con una clave distinta en cada request.
+        $this->config['PII_ENCRYPTION_KEY'] = $this->env('PII_ENCRYPTION_KEY', '');
+
+        // Cloudflare R2 (almacenamiento de ficheros subidos, S3-compatible).
+        // Sin valor por defecto: la app debe seguir funcionando con estos vacíos
+        // (los ficheros ya existentes en public/uploads/ siguen sirviéndose desde
+        // disco local) — R2Client falla fuerte solo cuando de verdad se invoca.
+        $this->config['R2_ACCOUNT_ID']        = $this->env('R2_ACCOUNT_ID', '');
+        $this->config['R2_ACCESS_KEY_ID']     = $this->env('R2_ACCESS_KEY_ID', '');
+        $this->config['R2_SECRET_ACCESS_KEY'] = $this->env('R2_SECRET_ACCESS_KEY', '');
+        $this->config['R2_BUCKET_NAME']       = $this->env('R2_BUCKET_NAME', '');
+        $this->config['R2_PUBLIC_URL']        = rtrim($this->env('R2_PUBLIC_URL', ''), '/');
+
         // Application
         // URL pública canónica (p. ej. https://aulapro.yassin.agency). Se usa para
         // construir enlaces en emails y evitar inyección de cabecera Host.

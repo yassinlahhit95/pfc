@@ -13,6 +13,7 @@ header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
 
 require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Crypto.php';
 
 $q = trim(strip_tags($_GET['q'] ?? ''));
 if (mb_strlen($q) < 2 || mb_strlen($q) > 100) { echo json_encode([]); exit; }
@@ -23,23 +24,27 @@ $con  = obtenerConexion();
 $results = [];
 
 // ── Estudiantes (por nombre o DNI) ──
-$stmt = mysqli_prepare($con,
-    "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes
-     WHERE nombreEstudiante LIKE ? OR dniEstudiante LIKE ?
-     ORDER BY nombreEstudiante LIMIT 6");
-mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
+// dniEstudiante está cifrado (determinista, RGPD Art. 32) — se filtra en PHP
+// tras descifrar en vez de con LIKE sobre el cifrado.
+$stmt = mysqli_prepare($con, "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes ORDER BY nombreEstudiante");
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
-while ($row = mysqli_fetch_assoc($res)) {
+$numEst = 0;
+while ($numEst < 6 && ($row = mysqli_fetch_assoc($res))) {
+    $dniPlano = Crypto::decrypt($row['dniEstudiante']);
+    $nombreMatch = stripos($row['nombreEstudiante'], $q) !== false;
+    $dniMatch = !empty($dniPlano) && stripos($dniPlano, $q) !== false;
+    if (!$nombreMatch && !$dniMatch) continue;
     $label = $row['nombreEstudiante'];
-    if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
-        $label .= ' (' . $row['dniEstudiante'] . ')';
+    if ($dniMatch) {
+        $label .= ' (' . $dniPlano . ')';
     }
     $results[] = [
         'type'  => 'estudiante',
         'label' => $label,
         'url'   => '/vistas/secretaria/estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
     ];
+    $numEst++;
 }
 
 // ── Anuncios activos ──

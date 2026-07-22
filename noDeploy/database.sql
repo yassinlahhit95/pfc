@@ -165,6 +165,38 @@ LOCK TABLES `anuncios` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `api_tokens`
+--
+
+DROP TABLE IF EXISTS `api_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `api_tokens` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_type` enum('estudiante','profesor','director','tutor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `token` char(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `device_info` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires_at` datetime NOT NULL,
+  `last_used_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_token` (`token`),
+  KEY `idx_user` (`user_type`,`user_id`),
+  KEY `idx_expires` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `api_tokens`
+--
+
+LOCK TABLES `api_tokens` WRITE;
+/*!40000 ALTER TABLE `api_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `api_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `asistencias`
 --
 
@@ -1256,6 +1288,34 @@ LOCK TABLES `configuracion_centro` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `consentimientos`
+--
+
+DROP TABLE IF EXISTS `consentimientos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consentimientos` (
+  `idConsentimiento` int NOT NULL AUTO_INCREMENT,
+  `idEstudiante` int NOT NULL,
+  `tipo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idConsentimiento`),
+  KEY `idx_consentimiento_estudiante` (`idEstudiante`),
+  CONSTRAINT `fk_consentimiento_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consentimientos`
+--
+
+LOCK TABLES `consentimientos` WRITE;
+/*!40000 ALTER TABLE `consentimientos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `consentimientos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `criterios_evaluacion`
 --
 
@@ -1321,17 +1381,17 @@ CREATE TABLE `directores` (
   `nombreDirector` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `emailDirector` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',
-  `telefonoDirector` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `dniDirector` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fechaNacimientoDirector` date DEFAULT NULL,
+  `telefonoDirector` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `dniDirector` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `fechaNacimientoDirector` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fechaAltaDirector` date DEFAULT NULL,
-  `direccionDirector` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `direccionDirector` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `ciudadDirector` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `codigoPostalDirector` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `observacionesDirector` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `fcm_token` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `mfa_secret` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mfa_secret` text COLLATE utf8mb4_unicode_ci,
   `mfa_backup_codes` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`idDirector`),
   UNIQUE KEY `uk_email_dir` (`emailDirector`),
@@ -1413,11 +1473,11 @@ CREATE TABLE `estudiantes` (
   `nombreEstudiante` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `emailEstudiante` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',
-  `telefonoEstudiante` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `dniEstudiante` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fechaNacimientoEstudiante` date DEFAULT NULL,
+  `telefonoEstudiante` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `dniEstudiante` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `fechaNacimientoEstudiante` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fechaAltaEstudiante` date DEFAULT NULL,
-  `direccionEstudiante` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `direccionEstudiante` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `ciudadEstudiante` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `codigoPostalEstudiante` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `observacionesEstudiante` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -1432,7 +1492,7 @@ CREATE TABLE `estudiantes` (
   `eliminado` tinyint(1) NOT NULL DEFAULT '0',
   `fecha_eliminacion` datetime DEFAULT NULL,
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `mfa_secret` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mfa_secret` text COLLATE utf8mb4_unicode_ci,
   `mfa_backup_codes` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`idEstudiante`),
   UNIQUE KEY `uk_email_est` (`emailEstudiante`),
@@ -1493,9 +1553,9 @@ CREATE TABLE `fct` (
   `idCiclo` int NOT NULL,
   `empresa` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `idEmpresa` int DEFAULT NULL,
-  `tutorEmpresa` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `emailTutorEmpresa` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telefonoEmpresa` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tutorEmpresa` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `emailTutorEmpresa` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `telefonoEmpresa` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `ciudadEmpresa` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fechaInicio` date DEFAULT NULL,
   `fechaFin` date DEFAULT NULL,
@@ -1905,6 +1965,38 @@ LOCK TABLES `landing_secciones` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `log_acciones`
+--
+
+DROP TABLE IF EXISTS `log_acciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `log_acciones` (
+  `idLog` int NOT NULL AUTO_INCREMENT,
+  `idAdmin` int DEFAULT NULL,
+  `accion` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tabla` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idRegistro` int DEFAULT NULL,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idLog`),
+  KEY `idx_log_admin` (`idAdmin`),
+  KEY `idx_log_fecha` (`fecha`),
+  CONSTRAINT `fk_log_admin` FOREIGN KEY (`idAdmin`) REFERENCES `directores` (`idDirector`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_acciones`
+--
+
+LOCK TABLES `log_acciones` WRITE;
+/*!40000 ALTER TABLE `log_acciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_acciones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `login_intentos`
 --
 
@@ -2228,7 +2320,7 @@ CREATE TABLE `profesores` (
   `esTutor` tinyint(1) DEFAULT '0',
   `idCicloTutor` int DEFAULT NULL,
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `mfa_secret` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mfa_secret` text COLLATE utf8mb4_unicode_ci,
   `mfa_backup_codes` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`idProfesor`),
   UNIQUE KEY `uk_email_prof` (`emailProfesor`),
@@ -2504,7 +2596,7 @@ CREATE TABLE `secretarias` (
   `pwd_changed_at` datetime DEFAULT NULL,
   `fechaAltaSecretaria` datetime DEFAULT CURRENT_TIMESTAMP,
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `mfa_secret` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mfa_secret` text COLLATE utf8mb4_unicode_ci,
   `mfa_backup_codes` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`idSecretaria`),
   UNIQUE KEY `uq_email_sec` (`emailSecretaria`)
@@ -2572,7 +2664,7 @@ CREATE TABLE `tutores` (
   `idEstudiante` int DEFAULT NULL,
   `fechaAltaTutor` datetime DEFAULT CURRENT_TIMESTAMP,
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `mfa_secret` varchar(64) DEFAULT NULL,
+  `mfa_secret` text,
   `mfa_backup_codes` text,
   PRIMARY KEY (`idTutor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

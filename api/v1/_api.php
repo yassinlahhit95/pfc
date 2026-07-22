@@ -13,6 +13,13 @@ require_once __DIR__ . '/../../include/AccountLockout.php';
 
 const V1_TOKEN_TTL_DAYS = 30;
 
+// Hash ficticio constante para igualar el tiempo de password_verify() cuando
+// un email no existe en una tabla — nunca es el hash de un usuario real, solo
+// necesita tener formato bcrypt válido para que password_verify() haga el
+// mismo trabajo que con un hash genuino (mitiga enumeración de cuentas por
+// tiempos de respuesta en el login).
+const V1_DUMMY_HASH = '$2y$10$t1LHvm11cHG/09pxM/HpOuNHOGR0q4ZSuanwHhgS6bxAZ3soIh8.m';
+
 // [table, idCol, emailCol, nameCol]
 const V1_USER_MAP = [
     'estudiante' => ['estudiantes', 'idEstudiante', 'emailEstudiante', 'nombreEstudiante'],
@@ -50,29 +57,6 @@ function v1Strip(array $row): array {
     return $row;
 }
 
-// ── Token table ───────────────────────────────────────────────────────────────
-
-function v1EnsureTokenTable(): void {
-    static $done = false;
-    if ($done) return;
-    $con = obtenerConexion();
-    mysqli_query($con, "CREATE TABLE IF NOT EXISTS api_tokens (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        user_type ENUM('estudiante','profesor','director','tutor') NOT NULL,
-        user_id   INT UNSIGNED NOT NULL,
-        token     CHAR(64) NOT NULL,
-        device_info VARCHAR(200) DEFAULT NULL,
-        created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        expires_at  DATETIME NOT NULL,
-        last_used_at DATETIME DEFAULT NULL,
-        PRIMARY KEY (id),
-        UNIQUE KEY uq_token (token),
-        KEY idx_user    (user_type, user_id),
-        KEY idx_expires (expires_at)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
-    $done = true;
-}
-
 // ── Auth middleware ───────────────────────────────────────────────────────────
 
 // Validates Bearer token; returns ['user_type'=>string, 'user_id'=>int].
@@ -87,7 +71,6 @@ function v1Auth(): array {
         v1Error('Invalid token format.', 401, 'unauthenticated');
     }
 
-    v1EnsureTokenTable();
     $con = obtenerConexion();
     $st = mysqli_prepare($con,
         'SELECT id, user_type, user_id FROM api_tokens

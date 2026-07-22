@@ -3,7 +3,7 @@
 // MOTOR DE CÁLCULO DE NOTAS — configurable, sustituye las reglas
 // hardcodeadas de modelos/calificaciones.php cuando feature_academico_config
 // está activo. Ver modelos/academico_config.php para el acceso a la
-// configuración y migrate_db.php sección 12 para el esquema.
+// configuración y noDeploy/database.sql para el esquema.
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/conectar.php";
 require_once __DIR__ . "/academico_config.php";

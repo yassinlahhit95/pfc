@@ -5,6 +5,7 @@ FeatureGuard::requirePage('feature_gastos');
 require_once __DIR__ . "/../../../modelos/gastos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
@@ -99,14 +100,15 @@ if (!empty($_FILES['archivoJustificante']['name'][0])) {
             $ext         = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
             $ext         = preg_replace('/[^a-z0-9]/', '', strtolower($ext));
             $nuevoNombre = bin2hex(random_bytes(16)) . '.' . $ext;
-            $directorio  = __DIR__ . "/../../../public/uploads/justificantes/";
+            $tmpName     = $archivos['tmp_name'][$i];
 
-            if (!is_dir($directorio)) {
-                mkdir($directorio, 0755, true);
-            }
+            if ($mime !== 'application/pdf') ImageOptimizer::optimize($tmpName, $mime); // optimizar el temporal ANTES de subir a R2
 
-            if (move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nuevoNombre)) {
-                if ($mime !== 'application/pdf') ImageOptimizer::optimize($directorio . $nuevoNombre, $mime);
+            $bytes   = file_get_contents($tmpName);
+            $subioOk = $bytes !== false && R2Client::putObject('justificantes/' . $nuevoNombre, $bytes, $mime);
+            @unlink($tmpName);
+
+            if ($subioOk) {
                 $nombresArchivos[] = $nuevoNombre;
             } else {
                 $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";
@@ -138,12 +140,10 @@ if (actualizarGasto($idGasto, $idCategoria, $idCiclo, $concepto, $importe, $fech
                     $tipoJust, $numRef ?: null, $nombreArchivo, $observ ?: null)) {
     if (!empty($archivosAntiguos)) {
         $viejos = json_decode($archivosAntiguos, true);
-        if (is_array($viejos)) {
-            foreach ($viejos as $nombreViejo) {
-                if (file_exists($directorio . $nombreViejo)) { @unlink($directorio . $nombreViejo); }
-            }
-        } elseif (file_exists($directorio . $archivosAntiguos)) {
-            @unlink($directorio . $archivosAntiguos);
+        $viejos = is_array($viejos) ? $viejos : [$archivosAntiguos];
+        foreach ($viejos as $nombreViejo) {
+            if (file_exists($directorio . $nombreViejo)) { @unlink($directorio . $nombreViejo); }
+            R2Client::deleteObject('justificantes/' . $nombreViejo);
         }
     }
     registrarAccion('actualizar', 'gastos', $idGasto, $concepto);

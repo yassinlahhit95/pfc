@@ -1,10 +1,13 @@
 <?php
 // Helpers compartidos de los controladores del catálogo de ciclos.
 require_once __DIR__ . '/../../../include/ImageOptimizer.php';
+require_once __DIR__ . '/../../../include/R2Client.php';
 
-// Sube la imagen de portada de un ciclo a public/uploads/ofertaCiclos/.
-// Devuelve el nombre de archivo, '' si no se envió nada, o null si el
-// archivo no es válido (en ese caso deja el motivo en $msgError).
+// Sube la imagen de portada de un ciclo a Cloudflare R2 (URL pública
+// permanente, sin firma — mismo motivo que blogSubirImagen(): contenido
+// público sin control de acceso hoy). Devuelve el nombre de archivo, ''
+// si no se envió nada, o null si el archivo no es válido (en ese caso
+// deja el motivo en $msgError).
 function cicloSubirImagen(&$msgError) {
     if (empty($_FILES['imagen']) || $_FILES['imagen']['error'] === UPLOAD_ERR_NO_FILE) return '';
     $file = $_FILES['imagen'];
@@ -15,14 +18,16 @@ function cicloSubirImagen(&$msgError) {
     $mime = mime_content_type($file['tmp_name']);
     if (!isset($mimeExtMap[$mime])) { $msgError = 'Formato no permitido. Usa JPG, PNG o WebP.'; return null; }
 
-    $dir = __DIR__ . '/../../../public/uploads/ofertaCiclos/';
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
-
     $nombre = 'ciclo_' . bin2hex(random_bytes(6)) . '.' . $mimeExtMap[$mime];
-    if (!move_uploaded_file($file['tmp_name'], $dir . $nombre)) {
+
+    ImageOptimizer::optimize($file['tmp_name'], $mime); // optimizar el temporal ANTES de subir a R2
+    $bytes = file_get_contents($file['tmp_name']);
+    $subioOk = $bytes !== false && R2Client::putObject('ofertaCiclos/' . $nombre, $bytes, $mime);
+    @unlink($file['tmp_name']);
+
+    if (!$subioOk) {
         $msgError = 'No se pudo guardar la imagen.';
         return null;
     }
-    ImageOptimizer::optimize($dir . $nombre, $mime);
     return $nombre;
 }

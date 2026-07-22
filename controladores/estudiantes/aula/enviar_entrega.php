@@ -6,6 +6,7 @@ require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../include/Logger.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 
@@ -61,13 +62,14 @@ if ($archivo['size'] > 10 * 1024 * 1024) {
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $extension;
-$ruta          = __DIR__ . "/../../../public/uploads/aula/entregas/$nombreArchivo";
+$tmpName       = $archivo['tmp_name'];
 
-if (!file_exists(dirname($ruta))) {
-    mkdir(dirname($ruta), 0755, true);
-}
+$mimeReal = @mime_content_type($tmpName) ?: 'application/octet-stream';
+$bytes    = file_get_contents($tmpName);
+$subioOk  = $bytes !== false && R2Client::putObject('aula/entregas/' . $nombreArchivo, $bytes, $mimeReal);
+@unlink($tmpName);
 
-if (!move_uploaded_file($archivo['tmp_name'], $ruta)) {
+if (!$subioOk) {
     $_SESSION['errores'] = 'Error al subir el archivo.';
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");
     exit;
@@ -84,7 +86,7 @@ if ($idEntrega) {
 
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");
 } else {
-    @unlink($ruta); // el archivo fue movido pero el registro en BD falló — eliminar huérfano
+    R2Client::deleteObject('aula/entregas/' . $nombreArchivo); // el archivo se subió pero el registro en BD falló — eliminar huérfano
     $_SESSION['errores'] = 'Error al registrar la entrega. Inténtalo de nuevo.';
     Logger::error('Error enviando entrega', ['estudiante' => $idEstudiante, 'tarea' => $idTarea]);
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");

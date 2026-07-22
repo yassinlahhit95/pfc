@@ -20,6 +20,7 @@ header('Cache-Control: no-store');
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/estudiantes.php';
+require_once __DIR__ . '/../../include/Crypto.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -86,24 +87,32 @@ while ($row = mysqli_fetch_assoc($res)) {
 }
 
 // ── Estudiantes (del mismo ciclo) ──
+// dniEstudiante está cifrado (determinista, RGPD Art. 32) — se mantiene el
+// scope de ciclo/auto-exclusión en SQL, filtro de nombre/DNI en PHP.
 if ($idCiclo > 0) {
     $stmt = mysqli_prepare($con,
         "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes
-         WHERE idCiclo = ? AND idEstudiante != ? AND (nombreEstudiante LIKE ? OR dniEstudiante LIKE ?)
-         ORDER BY nombreEstudiante LIMIT 3");
-    mysqli_stmt_bind_param($stmt, 'iiss', $idCiclo, $idEstudiante, $like, $like);
+         WHERE idCiclo = ? AND idEstudiante != ?
+         ORDER BY nombreEstudiante");
+    mysqli_stmt_bind_param($stmt, 'ii', $idCiclo, $idEstudiante);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    while ($row = mysqli_fetch_assoc($res)) {
+    $numEst = 0;
+    while ($numEst < 3 && ($row = mysqli_fetch_assoc($res))) {
+        $dniPlano = Crypto::decrypt($row['dniEstudiante']);
+        $nombreMatch = stripos($row['nombreEstudiante'], $q) !== false;
+        $dniMatch = !empty($dniPlano) && stripos($dniPlano, $q) !== false;
+        if (!$nombreMatch && !$dniMatch) continue;
         $label = $row['nombreEstudiante'];
-        if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
-            $label .= ' (' . $row['dniEstudiante'] . ')';
+        if ($dniMatch) {
+            $label .= ' (' . $dniPlano . ')';
         }
         $results[] = [
             'type'  => 'estudiante',
             'label' => $label,
             'url'   => '../chat/index.php', // Assuming direct chat access
         ];
+        $numEst++;
     }
 }
 

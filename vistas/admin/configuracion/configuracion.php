@@ -13,6 +13,7 @@ unset($_SESSION['datos_configuracion']);
 
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/directores.php';
+require_once __DIR__ . '/../../../include/R2Client.php';
 $cfg         = obtenerConfiguracionCentro();
 $adminActual = obtenerDirectorPorId((int)$_SESSION['idAdmin']);
 $mfaActivo   = !empty($adminActual['mfa_enabled']);
@@ -232,6 +233,11 @@ include_once __DIR__ . '/../comunes/nav.php';
             ];
             foreach ($logoConfig as $field => $meta):
                 $tieneActual = !empty($cfg[$field]);
+                $logoPreviewUrl = $tieneActual ? R2Client::imagenUrl(
+                    __DIR__ . '/../../../public/uploads/configuracion/' . basename($cfg[$field]),
+                    '../../../public/uploads/configuracion/' . basename($cfg[$field]),
+                    'configuracion/' . basename($cfg[$field])
+                ) : '';
             ?>
             <div class="campo">
                 <!-- Sin "for": describe todo el widget compuesto (preview +
@@ -244,7 +250,7 @@ include_once __DIR__ . '/../comunes/nav.php';
                 <!-- Current logo preview -->
                 <?php if ($tieneActual): ?>
                 <div class="logo-actual" id="logo-actual-<?= $field ?>">
-                    <img src="../../../public/uploads/configuracion/<?= Security::escapeHtml(basename($cfg[$field])) ?>"
+                    <img src="<?= Security::escapeHtml($logoPreviewUrl) ?>"
                          alt="<?= $meta['label'] ?>" class="logo-preview-img">
                     <button type="button" class="boton-peligro btn-xs"
                             onclick="marcarBorrarLogo('<?= $field ?>')">

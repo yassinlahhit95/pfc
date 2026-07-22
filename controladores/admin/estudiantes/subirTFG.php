@@ -42,13 +42,8 @@ if (isset($_POST['subirTFG'])) {
     }
 
     if (empty($errores)) {
-        $extension     = 'pdf'; // se fuerza siempre PDF
+        $extension       = 'pdf'; // se fuerza siempre PDF
         $nombreAleatorio = bin2hex(random_bytes(16)) . '.' . $extension;
-        $rutaDestino   = __DIR__ . "/../../../public/uploads/pfc/" . $nombreAleatorio;
-
-        if (!is_dir(dirname($rutaDestino))) {
-            mkdir(dirname($rutaDestino), 0755, true);
-        }
 
         // El archivo anterior (si existe) solo se borra tras confirmar que el
         // nuevo se ha subido y guardado correctamente: borrarlo antes arriesga
@@ -56,18 +51,24 @@ if (isset($_POST['subirTFG'])) {
         $tfgAnterior = obtenerTFGporEstudiante($idEstudiante);
         $archivoAnterior = $tfgAnterior['archivoTFG'] ?? '';
 
-        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+        require_once __DIR__ . "/../../../include/R2Client.php";
+        $bytes = file_get_contents($archivo['tmp_name']);
+        $subioOk = $bytes !== false && R2Client::putObject('pfc/' . $nombreAleatorio, $bytes, 'application/pdf');
+        @unlink($archivo['tmp_name']);
+
+        if ($subioOk) {
             if (actualizarTFG($idEstudiante, $nombreAleatorio)) {
                 if ($archivoAnterior) {
                     $rutaAnterior = __DIR__ . "/../../../public/uploads/pfc/" . $archivoAnterior;
                     if (file_exists($rutaAnterior)) unlink($rutaAnterior);
+                    R2Client::deleteObject('pfc/' . $archivoAnterior);
                 }
                 registrarAccion('subir_tfg', 'estudiantes', $idEstudiante);
                 $_SESSION['exito'] = "El TFG ha sido subido correctamente.";
                 header("Location: ../../../vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$idEstudiante");
                 exit;
             }
-            unlink($rutaDestino); // revertir subida si falla la BD
+            R2Client::deleteObject('pfc/' . $nombreAleatorio); // revertir subida si falla la BD
             $errores[] = "Error al actualizar el registro en la base de datos.";
         } else {
             $errores[] = "Error al guardar el archivo en el servidor.";

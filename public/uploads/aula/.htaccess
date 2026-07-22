@@ -1,11 +1,9 @@
-# Direct HTTP access to classroom files is DENIED.
-# Files are served exclusively through controladores/aula/verArchivo.php
-# which enforces session auth + IDOR checks.
-# PHP's readfile() is a filesystem op and is NOT subject to these Apache rules.
-<IfModule mod_authz_core.c>
-    Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-    Order allow,deny
-    Deny from all
-</IfModule>
+# No hay una política de acceso única para toda /aula: solo archivos/ está
+# detrás de un controlador autenticado (controladores/aula/verArchivo.php),
+# así que SU "Require all denied" vive en public/uploads/aula/archivos/.htaccess,
+# no aquí. Las demás subcarpetas (entregas/, tareas/, correcciones/) no tienen
+# controlador dedicado — se enlazan directamente y dependen únicamente de que
+# la página que las enlaza ya esté protegida por su propio Guard de rol
+# (mismo modelo que public/uploads/justificantes/ y .../comprobantes).
+# Esta carpeta hereda igualmente las protecciones base de
+# public/uploads/.htaccess (sin ejecución de PHP, sin listado de directorio).

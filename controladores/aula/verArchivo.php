@@ -44,10 +44,14 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 $uploadDir = realpath(__DIR__ . "/../../public/uploads/aula/archivos");
-$ruta      = ($uploadDir !== false)
-    ? realpath($uploadDir . DIRECTORY_SEPARATOR . $archivo['nombreArchivo'])
-    : false;
-if (!$ruta || !$uploadDir || strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0 || !is_file($ruta)) {
+$candidato = $uploadDir !== false ? $uploadDir . DIRECTORY_SEPARATOR . $archivo['nombreArchivo'] : false;
+$ruta      = $candidato !== false ? realpath($candidato) : false;
+
+// El guard de path-traversal solo aplica cuando realpath() SÍ resuelve algo
+// (fichero heredado en disco local); que no resuelva ya no es un error — el
+// fichero puede ser un objeto nuevo que solo existe en R2 (sin backfill de
+// lo que ya había en public/uploads/), y servirArchivo() decide ese caso.
+if (!$uploadDir || ($ruta !== false && strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0)) {
     http_response_code(404); exit('El fichero ya no existe.');
 }
 
@@ -78,4 +82,4 @@ $mime = $mimes[$ext] ?? 'application/octet-stream';
 $inlineOk    = in_array($ext, ['pdf','txt','csv','jpg','jpeg','png','gif','webp']);
 $disposition = ($modo === 'ver' && $inlineOk) ? 'inline' : 'attachment';
 
-servirArchivo($ruta, $archivo['nombreOriginal'], $mime, $disposition === 'inline');
+servirArchivo($ruta !== false ? $ruta : $candidato, 'aula/archivos/' . $archivo['nombreArchivo'], $archivo['nombreOriginal'], $mime, $disposition === 'inline');

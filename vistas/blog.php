@@ -11,6 +11,7 @@ require_once __DIR__ . '/../modelos/landing.php';
 require_once __DIR__ . '/../modelos/blog.php';
 require_once __DIR__ . '/../include/landing/secciones.php';
 require_once __DIR__ . '/../include/landing/plantillas.php';
+require_once __DIR__ . '/../include/R2Client.php';
 
 $cfg = obtenerConfiguracionCentro();
 
@@ -48,7 +49,11 @@ if ($post) {
     $ajustes['tituloSeo']      = $post['titulo'] . ' — ' . $cfg['nombreCentro'];
     $ajustes['descripcionSeo'] = $post['resumen'] ?: mb_substr(strip_tags($post['contenido']), 0, 155);
 
-    $imgPost    = $post['imagen'] !== '' ? '/public/uploads/blog/' . basename($post['imagen']) : '';
+    $imgPost    = R2Client::imagenUrl(
+        __DIR__ . '/../public/uploads/blog/' . basename($post['imagen']),
+        $post['imagen'] !== '' ? '/public/uploads/blog/' . basename($post['imagen']) : '',
+        'blog/' . basename($post['imagen'])
+    );
     $contenidoEsHtml = (bool)preg_match('/<[a-z][\s\S]*>/i', $post['contenido']);
     $parrafos   = $contenidoEsHtml ? [] : (preg_split('/\n{2,}/', trim($post['contenido'])) ?: []);
     $palabras   = str_word_count(strip_tags($post['contenido']));
@@ -117,7 +122,11 @@ if ($post) {
         </div>
         <div class="lp-blog-grid">
           <?php foreach ($relacionados as $rel):
-              $imgRel = $rel['imagen'] !== '' ? '/public/uploads/blog/' . basename($rel['imagen']) : ''; ?>
+              $imgRel = R2Client::imagenUrl(
+                  __DIR__ . '/../public/uploads/blog/' . basename($rel['imagen']),
+                  $rel['imagen'] !== '' ? '/public/uploads/blog/' . basename($rel['imagen']) : '',
+                  'blog/' . basename($rel['imagen'])
+              ); ?>
           <article class="lp-blog-card">
             <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($rel['slug']) ?>">
               <?php if ($imgRel): ?>
@@ -210,7 +219,11 @@ include __DIR__ . '/landing/_nav.php';
       <?php else: ?>
       <div class="lp-blog-grid">
         <?php foreach ($posts as $i => $postItem):
-            $img = $postItem['imagen'] !== '' ? '/public/uploads/blog/' . basename($postItem['imagen']) : '';
+            $img = R2Client::imagenUrl(
+                __DIR__ . '/../public/uploads/blog/' . basename($postItem['imagen']),
+                $postItem['imagen'] !== '' ? '/public/uploads/blog/' . basename($postItem['imagen']) : '',
+                'blog/' . basename($postItem['imagen'])
+            );
             $destacada = $pagina === 1 && $i === 0 && $categoria === ''; ?>
         <article class="lp-blog-card<?= $destacada ? ' lp-blog-card-destacada' : '' ?>">
           <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($postItem['slug']) ?>">

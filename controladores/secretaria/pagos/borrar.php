@@ -17,10 +17,13 @@ if (isset($_POST['idPago'])) {
     $idPago = (int)($_POST['idPago'] ?? 0);
     $pago = obtenerPagoPorId($idPago);
     if ($pago && eliminarPago($idPago)) {
-        // El comprobante deja de usarse: se elimina del disco
+        // El comprobante deja de usarse: se elimina de ambos almacenamientos
         if (!empty($pago['comprobante'])) {
-            $ruta = __DIR__ . '/../../../public/uploads/comprobantes/' . basename($pago['comprobante']);
+            $nombreComprobante = basename($pago['comprobante']);
+            $ruta = __DIR__ . '/../../../public/uploads/comprobantes/' . $nombreComprobante;
             if (is_file($ruta)) @unlink($ruta);
+            require_once __DIR__ . '/../../../include/R2Client.php';
+            R2Client::deleteObject('comprobantes/' . $nombreComprobante);
         }
         registrarAccionSecretaria('borrar', 'pagos', $idPago);
         $ok = true; $msg = "Pago eliminado.";

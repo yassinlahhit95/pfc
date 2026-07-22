@@ -170,16 +170,13 @@ function borrarGasto($idGasto) {
     mysqli_stmt_bind_param($stmt2, "i", $idGasto);
     if (mysqli_stmt_execute($stmt2)) {
         if ($archivo) {
+            require_once __DIR__ . "/../include/R2Client.php";
             $archivos = json_decode($archivo, true);
-            if (is_array($archivos)) {
-                foreach ($archivos as $nombreArchivo) {
-                    $ruta = __DIR__ . "/../public/uploads/justificantes/" . $nombreArchivo;
-                    if (file_exists($ruta)) { @unlink($ruta); }
-                }
-            } else {
-                // Backward compatibility
-                $ruta = __DIR__ . "/../public/uploads/justificantes/" . $archivo;
+            $archivos = is_array($archivos) ? $archivos : [$archivo]; // compatibilidad con el formato anterior (string suelto)
+            foreach ($archivos as $nombreArchivo) {
+                $ruta = __DIR__ . "/../public/uploads/justificantes/" . $nombreArchivo;
                 if (file_exists($ruta)) { @unlink($ruta); }
+                R2Client::deleteObject('justificantes/' . $nombreArchivo);
             }
         }
         return true;

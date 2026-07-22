@@ -3,12 +3,12 @@ require_once __DIR__ . "/conectar.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // BLOG / NOTICIAS DEL CENTRO — modelos/blog.php
-// Tabla: blog_posts (ver landing-system/sql/blog_posts.sql)
+// Tabla: blog_posts (ver noDeploy/migrations/001_blog_posts.sql)
 // ══════════════════════════════════════════════════════════════════════
 
-// La tabla blog_posts se crea una vez en migrate_db.php (no en cada request:
-// antes se comprobaba con CREATE TABLE IF NOT EXISTS en cada llamada, una
-// sentencia DDL costosa e innecesaria después de la primera vez).
+// La tabla blog_posts se crea una vez vía noDeploy/database.sql (no en cada
+// request: antes se comprobaba con CREATE TABLE IF NOT EXISTS en cada
+// llamada, una sentencia DDL costosa e innecesaria después de la primera vez).
 
 // ══════════════════════════════════════════════════════════════════════
 // CONSULTAS PÚBLICAS (solo posts publicados)

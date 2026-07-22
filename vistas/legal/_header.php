@@ -19,10 +19,16 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
     <link rel="stylesheet" href="/public/css/features/legal.css">
-    <?php if (!empty($extra_css)) foreach ((array)$extra_css as $_css): ?>
-    <link rel="stylesheet" href="<?= htmlspecialchars($_css) ?>">
+    <?php if (!empty($extra_css)) foreach ((array)$extra_css as $_css):
+        // Cada entrada puede ser una URL simple (recurso propio) o
+        // ['url' => ..., 'integrity' => ...] para un CDN externo (SRI).
+        $_cssUrl  = is_array($_css) ? ($_css['url'] ?? '') : $_css;
+        $_cssIntg = is_array($_css) ? ($_css['integrity'] ?? '') : '';
+        if ($_cssUrl === '') continue;
+    ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars($_cssUrl) ?>"<?= $_cssIntg ? ' integrity="' . htmlspecialchars($_cssIntg) . '" crossorigin="anonymous"' : '' ?>>
     <?php endforeach; ?>
 </head>
 <body>

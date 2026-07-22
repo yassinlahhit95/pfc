@@ -1,12 +1,15 @@
 <?php
 // Página mínima cuando la landing no está publicada o el módulo está desactivado.
 // Espera: $cfg (de index.php)
+require_once __DIR__ . '/../../../include/R2Client.php';
 $logoUrl = '';
 if (!empty($cfg['logoCentro'])) {
     $logoFichero = basename($cfg['logoCentro']);
-    if (file_exists(__DIR__ . '/../../public/uploads/configuracion/' . $logoFichero)) {
-        $logoUrl = 'public/uploads/configuracion/' . $logoFichero;
-    }
+    $logoUrl = R2Client::imagenUrl(
+        __DIR__ . '/../../../public/uploads/configuracion/' . $logoFichero,
+        'public/uploads/configuracion/' . $logoFichero,
+        'configuracion/' . $logoFichero
+    );
 }
 $prematriculaOn = FeatureGuard::check('feature_prematricula');
 ?>
@@ -22,7 +25,7 @@ $prematriculaOn = FeatureGuard::check('feature_prematricula');
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Plus Jakarta Sans',sans-serif; min-height:100vh; display:flex; align-items:center;

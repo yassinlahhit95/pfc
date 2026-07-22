@@ -15,7 +15,10 @@ $ciclos         = listarTodosLosCiclos();
 $legal_titulo = 'Pre-Matrícula';
 $legal_pagina = 'prematricula';
 $extra_css    = [
-    'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css',
+    [
+        'url'       => 'https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.min.css',
+        'integrity' => 'sha384-dCW5imOdApH6OwpFau8cZNKjqVbJYnCA5q+8YsMYP3XwXKsV6Jfz1u6MZLnXaBsS',
+    ],
     '/public/css/features/admisiones.css',
 ];
 

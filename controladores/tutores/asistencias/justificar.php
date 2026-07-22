@@ -69,10 +69,12 @@ if (!empty($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK)
         $_SESSION['errores'] = "Formato no permitido. Sube un PDF o una imagen (JPG/PNG).";
         header("Location: $_back"); exit;
     }
-    $dir = __DIR__ . '/../../../public/uploads/justificantes/';
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    require_once __DIR__ . '/../../../include/R2Client.php';
     $archivo = 'just_' . $idEstudiante . '_' . bin2hex(random_bytes(6)) . '.' . $mimeExtMap[$mime];
-    if (!move_uploaded_file($file['tmp_name'], $dir . $archivo)) {
+    $bytes   = file_get_contents($file['tmp_name']);
+    $subioOk = $bytes !== false && R2Client::putObject('justificantes/' . $archivo, $bytes, $mime);
+    @unlink($file['tmp_name']);
+    if (!$subioOk) {
         $_SESSION['errores'] = "Error al subir el archivo.";
         header("Location: $_back"); exit;
     }

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../include/landing/plantillas.php';
 require_once __DIR__ . '/../../../include/ImageOptimizer.php';
+require_once __DIR__ . '/../../../include/R2Client.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -46,6 +47,8 @@ if (empty($datosCentro['emailCentro'])) {
 }
 if (empty($datosCentro['telefonoCentro'])) {
     $errores['telefonoCentro'] = 'El teléfono es obligatorio.';
+} elseif (!Security::validatePhone($datosCentro['telefonoCentro'])) {
+    $errores['telefonoCentro'] = 'El número de teléfono no es válido (debe contener entre 9 y 15 dígitos).';
 }
 
 if (!empty($errores)) {
@@ -58,22 +61,20 @@ guardarConfiguracionCentro($datosCentro);
 // 2. Procesar subida de logo si se adjuntó
 if (isset($_FILES['logoCentro']) && $_FILES['logoCentro']['error'] === UPLOAD_ERR_OK) {
     $file = $_FILES['logoCentro'];
-    $uploadDir  = __DIR__ . '/../../../public/uploads/configuracion/';
     $mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
     $mime = mime_content_type($file['tmp_name']);
     
     if ($file['size'] <= 2 * 1024 * 1024 && isset($mimeExtMap[$mime])) {
         $ext = $mimeExtMap[$mime];
         $filename = 'logoCentro_' . bin2hex(random_bytes(6)) . '.' . $ext;
-        
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        
-        if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-            ImageOptimizer::optimize($uploadDir . $filename, $mime);
+        $tmpName = $file['tmp_name'];
+
+        ImageOptimizer::optimize($tmpName, $mime); // optimizar el temporal antes de subir a R2
+        $bytes = file_get_contents($tmpName);
+        if ($bytes !== false && R2Client::putObject('configuracion/' . $filename, $bytes, $mime)) {
             actualizarLogoCentro('logoCentro', $filename);
         }
+        @unlink($tmpName);
     }
 }
 

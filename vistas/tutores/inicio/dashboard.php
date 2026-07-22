@@ -154,7 +154,7 @@ if (FeatureGuard::check('feature_chat') && $totalChatNoLeidos_menu > 0) {
 .asist-dot--warn { background: var(--naranja); }
 </style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
 <script>
 if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   var factor = ((window.TWEAK_DEFAULTS && window.TWEAK_DEFAULTS.animation) || 7) / 10;

@@ -15,6 +15,7 @@ header('Cache-Control: no-store');
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Crypto.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -29,29 +30,36 @@ $con        = obtenerConexion();
 $results    = [];
 
 // Estudiantes asignados al profesor (por nombre o DNI)
+// dniEstudiante está cifrado (determinista, RGPD Art. 32) — se mantiene el
+// scope por ciclo en SQL, pero el filtro de nombre/DNI se hace en PHP tras
+// descifrar (ya acotado a los estudiantes del profesor, no toda la tabla).
 $stmt = mysqli_prepare($con,
     "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.dniEstudiante
      FROM estudiantes e
-     WHERE (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+     WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
         OR  e.idCiclo IN (SELECT m.idCiclo FROM modulos m
                           JOIN modulo_profesor pm ON m.idModulo = pm.idModulo
-                          WHERE pm.idProfesor = ?))
-       AND (e.nombreEstudiante LIKE ? OR e.dniEstudiante LIKE ?)
-     ORDER BY e.nombreEstudiante
-     LIMIT 4");
-mysqli_stmt_bind_param($stmt, 'iiss', $idProfesor, $idProfesor, $like, $like);
+                          WHERE pm.idProfesor = ?)
+     ORDER BY e.nombreEstudiante");
+mysqli_stmt_bind_param($stmt, 'ii', $idProfesor, $idProfesor);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
-while ($row = mysqli_fetch_assoc($res)) {
+$numEst = 0;
+while ($numEst < 4 && ($row = mysqli_fetch_assoc($res))) {
+    $dniPlano = Crypto::decrypt($row['dniEstudiante']);
+    $nombreMatch = stripos($row['nombreEstudiante'], $q) !== false;
+    $dniMatch = !empty($dniPlano) && stripos($dniPlano, $q) !== false;
+    if (!$nombreMatch && !$dniMatch) continue;
     $label = $row['nombreEstudiante'];
-    if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
-        $label .= ' (' . $row['dniEstudiante'] . ')';
+    if ($dniMatch) {
+        $label .= ' (' . $dniPlano . ')';
     }
     $results[] = [
         'type'  => 'estudiante',
         'label' => $label,
         'url'   => '../estudiantes/lista.php',
     ];
+    $numEst++;
 }
 
 // Retos del profesor

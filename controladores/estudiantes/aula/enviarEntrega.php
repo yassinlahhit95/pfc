@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../include/Logger.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
@@ -54,10 +55,13 @@ if (!empty($_FILES['archivoEntrega']['name'])) {
         $_SESSION['errores'] = "El archivo supera el límite de 20 MB.";
         header("Location: ../../../vistas/estudiantes/aula/tarea.php?id=$idTarea"); exit;
     }
-    $dir = __DIR__ . "/../../../public/uploads/aula/entregas/";
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
     $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
-    if (move_uploaded_file($archivo['tmp_name'], $dir . $nombreArchivo)) {
+    $tmpName  = $archivo['tmp_name'];
+    $mimeReal = @mime_content_type($tmpName) ?: 'application/octet-stream';
+    $bytes    = file_get_contents($tmpName);
+    $subioOk  = $bytes !== false && R2Client::putObject('aula/entregas/' . $nombreArchivo, $bytes, $mimeReal);
+    @unlink($tmpName);
+    if ($subioOk) {
         $archivoEntrega = $nombreArchivo;
     } else {
         $_SESSION['errores'] = "Error al guardar el archivo en el servidor.";

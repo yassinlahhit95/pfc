@@ -1,9 +1,11 @@
 # AulaPro — Sistema de Gestión Académica SaaS
 
 [![PHP Version](https://img.shields.io/badge/php-8.3-blue.svg)](https://www.php.net/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-proprietary-lightgrey.svg)]()
 
 **AulaPro** es una plataforma web SaaS de gestión integral para centros de Formación Profesional. Combina admisiones, calificaciones, pagos, comunicación en tiempo real e inventario en un único panel por roles.
+
+Software propietario — todos los derechos reservados. No se distribuye bajo licencia de código abierto.
 
 ---
 
@@ -36,6 +38,8 @@ Todos los módulos son activables/desactivables por el administrador desde Confi
 - **Email:** Brevo API (transaccional + cola asíncrona)
 - **Push:** Firebase Cloud Messaging v1 (FCM)
 - **PDF/ZIP:** `mpdf/mpdf`, extensión `zip` de PHP
+- **Almacenamiento de ficheros:** Cloudflare R2 (S3-compatible, capa gratuita) para todas las subidas nuevas — TFG, recursos de aula, justificantes, comprobantes, retos, imágenes de blog/landing/ofertaCiclos. Cliente propio (`include/R2Client.php`, firma AWS SigV4 manual vía curl, sin SDK). Los ficheros ya existentes en disco local antes de la migración siguen sirviéndose desde ahí (no hay backfill) — ver `include/FileServer.php` y `R2Client::imagenUrl()`/`documentoUrl()`
+- **Cifrado de datos personales:** AES-256-GCM (`include/Crypto.php`) sobre campos PII sensibles (DNI, datos de directores/FCT, secretos MFA) conforme RGPD/LOPDGDD
 - **Caché:** APCu (feature flags compartidos entre workers) + caché de sesión (fallback)
 - **Servidor local:** Laragon — Apache 2.4, PHP 8.3, MySQL — dominio `pfc.test`
 - **Producción:** `aulapro.yassin.agency` — Apache en cPanel, despliegue FTP manual
@@ -72,18 +76,32 @@ DB_PASS=tu_password
 
 BREVO_API_KEY=xkeysib-...
 FIREBASE_PROJECT_ID=pfc1-xxxxx
+
+# Cloudflare R2 (opcional en local — sin configurar, todo sigue sirviéndose
+# desde disco local; ver .env.example para los pasos de creación del bucket)
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET_NAME=
+R2_PUBLIC_URL=
 ```
 
 Copia `config/service-account.json` del panel de Firebase (tampoco se sube a git).
 
 ### 3. Base de datos
-Importa el esquema y ejecuta las migraciones en orden:
+Importa el esquema (instalación nueva — ya incluye todas las tablas al día):
 
 ```bash
-mysql -u root -p aulapro < database.sql
-mysql -u root -p aulapro < config/migrations/001_cola_emails.sql
-mysql -u root -p aulapro < config/migration_perf_indexes.sql
+mysql -u root -p aulapro < noDeploy/database.sql
 ```
+
+Si en cambio partes de una base de datos **existente** (más antigua que alguno de los archivos en `noDeploy/migrations/`), aplica ahí las que falten, en orden numérico:
+
+```bash
+mysql -u root -p aulapro < noDeploy/migrations/aplicar_todas_produccion.sql
+```
+
+(Ese archivo concatena, en orden, todas las migraciones numeradas — o aplícalas una a una si prefieres control fino: `001_blog_posts.sql` → `006_add_saas_control_columns.sql`.)
 
 ### 4. Permisos
 ```bash
@@ -130,6 +148,8 @@ Endpoints bajo `/api/v1/`:
 
 Autenticación: `Authorization: Bearer <token>`. Rate limit: 120 req/min por token.
 
+Documentación completa de request/response de cada endpoint: **[API_DOCS.md](API_DOCS.md)**.
+
 ---
 
 ## Estructura de directorios
@@ -142,11 +162,15 @@ controladores/chat/       — Endpoints de chat (AJAX)
 controladores/comunes/    — email_helper.php, notificaciones_grades.php
 cron/                     — Scripts de cron (solo CLI/localhost)
 include/                  — AdminGuard, ProfesorGuard, Security, FeatureGuard,
-                            RateLimiter, AccountLockout, CircuitBreaker, Logger
+                            RateLimiter, AccountLockout, CircuitBreaker, Logger,
+                            R2Client (Cloudflare R2), Crypto (cifrado PII)
 modelos/                  — Funciones de consulta DB (un fichero por entidad)
 api/v1/                   — API REST para la app móvil
 config/                   — Config.php, .env (ignorado en git)
-config/migrations/        — Migraciones SQL (ignoradas en git)
+noDeploy/database.sql     — Esquema completo (fuente de verdad, instalación nueva)
+noDeploy/migrations/      — Migraciones SQL numeradas, para bases de datos existentes
+landing-system/           — Sitio público de aterrizaje (landing): plantillas,
+                            secciones editables, temas — ver landing-system/README.md
 public/css/               — dashboard.css (tokens), estilo.css (contenido)
 public/js/                — paginacion.js, filtros.js, toast.js, chat.js
 vistas/admin/             — Vistas PHP del panel de administrador
@@ -169,6 +193,8 @@ logs/                     — Logs de errores (ignorados en git)
 - CSP + HSTS + CORP + COOP + X-Frame-Options en `.htaccess` raíz
 - `Options -Indexes` en todas las carpetas
 - Carpetas internas (`config/`, `include/`, `modelos/`, `logs/`, `cron/`) bloqueadas vía `.htaccess`
+- Acceso directo a `public/uploads/aula/archivos/` bloqueado por completo (`Require all denied`) — solo servible vía `controladores/aula/verArchivo.php`, que aplica control de acceso por rol antes de servir el fichero (local o R2)
+- Cifrado AES-256-GCM en reposo para campos PII sensibles (RGPD/LOPDGDD) — ver `include/Crypto.php`
 
 ---
 
@@ -184,4 +210,5 @@ Despliegue manual por FTP a `aulapro.yassin.agency`. Nunca subir:
 ---
 
 **Autor:** Yassin Lahhit  
-**Año:** 2026
+**Año:** 2026  
+**Licencia:** Propietaria — todos los derechos reservados

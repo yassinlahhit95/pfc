@@ -34,6 +34,10 @@ public/uploads/justificantes/*
 public/uploads/aula/*
 !public/uploads/aula/.htaccess
 
+!public/uploads/aula/archivos/
+public/uploads/aula/archivos/*
+!public/uploads/aula/archivos/.htaccess
+
 !public/uploads/pfc/
 public/uploads/pfc/*
 !public/uploads/pfc/.htaccess

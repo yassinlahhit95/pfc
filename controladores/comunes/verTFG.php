@@ -46,12 +46,15 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
 }
 
 $uploadDir = realpath(__DIR__ . "/../../public/uploads/pfc");
-$ruta      = ($uploadDir !== false)
-    ? realpath($uploadDir . DIRECTORY_SEPARATOR . $tfg['archivoTFG'])
-    : false;
+$candidato = $uploadDir !== false ? $uploadDir . DIRECTORY_SEPARATOR . $tfg['archivoTFG'] : false;
+$ruta      = $candidato !== false ? realpath($candidato) : false;
 
-if (!$ruta || !$uploadDir || strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0 || !is_file($ruta)) {
-    http_response_code(404); exit('El fichero f�sico no se encuentra en el servidor.');
+// El guard de path-traversal solo aplica cuando realpath() SÍ resuelve algo
+// (fichero heredado en disco local); que no resuelva ya no es un error — el
+// fichero puede ser un objeto nuevo que solo existe en R2 (sin backfill de
+// lo que ya había en public/uploads/), y servirArchivo() decide ese caso.
+if (!$uploadDir || ($ruta !== false && strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0)) {
+    http_response_code(404); exit('El fichero físico no se encuentra en el servidor.');
 }
 
 $ext  = strtolower(pathinfo($tfg['archivoTFG'], PATHINFO_EXTENSION));
@@ -67,4 +70,4 @@ $mime = $mimes[$ext] ?? 'application/octet-stream';
 $inlineOk    = in_array($ext, ['pdf']);
 $disposition = ($modo === 'ver' && $inlineOk) ? 'inline' : 'attachment';
 
-servirArchivo($ruta, $tfg['archivoTFG'], $mime, $disposition === 'inline');
+servirArchivo($ruta !== false ? $ruta : $candidato, 'pfc/' . $tfg['archivoTFG'], $tfg['archivoTFG'], $mime, $disposition === 'inline');

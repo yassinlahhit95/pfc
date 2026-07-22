@@ -23,9 +23,11 @@ $datosTFG      = obtenerTFGporEstudiante($idEstudiante);
 $nombreArchivo = is_array($datosTFG) ? ($datosTFG['archivoTFG'] ?? '') : '';
 
 if (eliminarTFG($idEstudiante)) {
-    $rutaArchivo = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
-    if (!empty($nombreArchivo) && file_exists($rutaArchivo)) {
-        unlink($rutaArchivo);
+    if (!empty($nombreArchivo)) {
+        $rutaArchivo = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
+        if (file_exists($rutaArchivo)) unlink($rutaArchivo);
+        require_once __DIR__ . "/../../../include/R2Client.php";
+        R2Client::deleteObject('pfc/' . $nombreArchivo);
     }
     if ($isAjax) { echo json_encode(['ok'=>true,'msg'=>'TFG eliminado']); exit; }
     $_SESSION['exito'] = "TFG eliminado.";

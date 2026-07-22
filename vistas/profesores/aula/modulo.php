@@ -153,7 +153,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
           <?php else: ?>
             <div style="padding:var(--space-2) 0;">
-              <?php foreach ($archsEnCarpeta as $arch): ?>
+              <?php foreach ($archsEnCarpeta as $arch):
+                $archUrl = '../../../controladores/aula/verArchivo.php?id=' . (int)$arch['idArchivo'];
+              ?>
               <div class="archivo-card-modern">
                 <div class="archivo-icono-modern <?= Security::escapeHtml($arch['extension'] ) ?>">
                   <i class="fas fa-file-<?= Security::escapeHtml($arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt')) ?>"></i>
@@ -163,8 +165,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                   <div class="archivo-meta-modern"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?> · <?= Security::escapeHtml($arch['tamanio'] > 1048576 ? round($arch['tamanio']/1048576,1).'MB' : round($arch['tamanio']/1024,1).'KB') ?></div>
                 </div>
                 <div class="archivo-acciones-modern">
-                  <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>" title="Ver"><i class="fas fa-eye"></i></button>
-                  <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
+                  <button class="btn-ghost-modern btn-small" data-ver-archivo="<?= Security::escapeHtml($archUrl . '&modo=ver') ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>" title="Ver"><i class="fas fa-eye"></i></button>
+                  <a href="<?= Security::escapeHtml($archUrl . '&modo=descarga') ?>" class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
                   <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(addslashes($arch['nombreOriginal'])) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
                   <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('archivo', <?= Security::escapeHtml($arch['idArchivo'] ) ?>, <?= Security::escapeHtml($arch['idModulo'] ) ?>, '¿Eliminar este archivo?')"><i class="fas fa-trash"></i></button>
                 </div>
@@ -186,7 +188,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="carpeta-contenido">
           <div style="padding:var(--space-2) 0;">
-            <?php foreach ($archivosSueltos as $arch): ?>
+            <?php foreach ($archivosSueltos as $arch):
+              $archUrl = '../../../controladores/aula/verArchivo.php?id=' . (int)$arch['idArchivo'];
+            ?>
             <div class="archivo-card-modern">
               <div class="archivo-icono-modern <?= Security::escapeHtml($arch['extension'] ) ?>">
                 <i class="fas fa-file-<?= Security::escapeHtml($arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt')) ?>"></i>
@@ -196,8 +200,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="archivo-meta-modern"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?></div>
               </div>
               <div class="archivo-acciones-modern">
-                <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>" title="Ver"><i class="fas fa-eye"></i></button>
-                <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
+                <button class="btn-ghost-modern btn-small" data-ver-archivo="<?= Security::escapeHtml($archUrl . '&modo=ver') ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>" title="Ver"><i class="fas fa-eye"></i></button>
+                <a href="<?= Security::escapeHtml($archUrl . '&modo=descarga') ?>" class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
                 <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(addslashes($arch['nombreOriginal'])) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
                 <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('archivo', <?= Security::escapeHtml($arch['idArchivo'] ) ?>, <?= Security::escapeHtml($arch['idModulo'] ) ?>, '¿Eliminar este archivo?')"><i class="fas fa-trash"></i></button>
               </div>

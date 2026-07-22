@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../include/AdminGuard.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Crypto.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
@@ -25,23 +26,29 @@ $results = [];
 // ══════════════════════════════════════════════════════════════════════
 
 // ── Estudiantes (por nombre o DNI) ──
-$stmt = mysqli_prepare($con,
-    "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes
-     WHERE nombreEstudiante LIKE ? OR dniEstudiante LIKE ?
-     ORDER BY nombreEstudiante LIMIT 5");
-mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
+// dniEstudiante está cifrado (determinista, RGPD Art. 32) — un LIKE sobre el
+// cifrado no tiene sentido, así que se trae el candidato completo ordenado
+// por nombre y se filtra en PHP tras descifrar el DNI. Aceptable a escala de
+// un solo centro (cientos de alumnos), se corta en cuanto hay 5 resultados.
+$stmt = mysqli_prepare($con, "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes ORDER BY nombreEstudiante");
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
-while ($row = mysqli_fetch_assoc($res)) {
+$numEst = 0;
+while ($numEst < 5 && ($row = mysqli_fetch_assoc($res))) {
+    $dniPlano = Crypto::decrypt($row['dniEstudiante']);
+    $nombreMatch = stripos($row['nombreEstudiante'], $q) !== false;
+    $dniMatch = !empty($dniPlano) && stripos($dniPlano, $q) !== false;
+    if (!$nombreMatch && !$dniMatch) continue;
     $label = $row['nombreEstudiante'];
-    if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
-        $label .= ' (' . $row['dniEstudiante'] . ')';
+    if ($dniMatch) {
+        $label .= ' (' . $dniPlano . ')';
     }
     $results[] = [
         'type'  => 'estudiante',
         'label' => $label,
         'url'   => '/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
     ];
+    $numEst++;
 }
 
 // ── Profesores (por nombre o DNI) ──
@@ -132,22 +139,26 @@ while ($row = mysqli_fetch_assoc($res)) {
 }
 
 // ── Directores ──
-$stmt = mysqli_prepare($con,
-    "SELECT idDirector, nombreDirector, dniDirector FROM directores
-     WHERE nombreDirector LIKE ? OR dniDirector LIKE ? ORDER BY nombreDirector LIMIT 2");
-mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
+// dniDirector está cifrado (determinista) — mismo enfoque que estudiantes arriba.
+$stmt = mysqli_prepare($con, "SELECT idDirector, nombreDirector, dniDirector FROM directores ORDER BY nombreDirector");
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
-while ($row = mysqli_fetch_assoc($res)) {
+$numDir = 0;
+while ($numDir < 2 && ($row = mysqli_fetch_assoc($res))) {
+    $dniPlano = Crypto::decrypt($row['dniDirector']);
+    $nombreMatch = stripos($row['nombreDirector'], $q) !== false;
+    $dniMatch = !empty($dniPlano) && stripos($dniPlano, $q) !== false;
+    if (!$nombreMatch && !$dniMatch) continue;
     $label = $row['nombreDirector'];
-    if (!empty($row['dniDirector']) && stripos($row['dniDirector'], $q) !== false) {
-        $label .= ' (' . $row['dniDirector'] . ')';
+    if ($dniMatch) {
+        $label .= ' (' . $dniPlano . ')';
     }
     $results[] = [
         'type'  => 'director',
         'label' => $label,
         'url'   => '/vistas/admin/directores/verDetallesDirectores.php?idDirector=' . (int)$row['idDirector'],
     ];
+    $numDir++;
 }
 
 // ── Secretarias ──

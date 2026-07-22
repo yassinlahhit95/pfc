@@ -17,7 +17,7 @@ class Security {
             header('X-XSS-Protection: 1; mode=block');
             header('X-Content-Type-Options: nosniff');
             header('Referrer-Policy: strict-origin-when-cross-origin');
-            // No añadimos un CSP estricto aquí para evitar dañar estilos/scripts en línea existentes
+            header('Content-Security-Policy: ' . self::buildCsp());
         }
 
         if (session_status() === PHP_SESSION_NONE) {
@@ -44,6 +44,41 @@ class Security {
             session_start();
         }
         self::enforceSessionSecurity();
+    }
+
+    // 'unsafe-inline' en script-src/style-src es deliberado: el código usa
+    // onclick="" y <script>/<style> en línea de forma extensa y consistente
+    // en todas las vistas — sustituirlo por nonces requeriría tocar cientos
+    // de archivos. Aun con 'unsafe-inline', esta política sigue aportando
+    // defensa real: bloquea cargar un <script src>/<img>/fetch() hacia un
+    // dominio no listado aquí, que es la vía de exfiltración/inyección que
+    // más importa si alguna vez se cuela un XSS.
+    private static function buildCsp(): string {
+        $imgHosts = "'self' data: https://www.gravatar.com";
+        // La URL pública de R2 (si está configurada) vive en un dominio que
+        // elige quien despliega la app — no se puede fijar en una lista
+        // estática, así que se añade en tiempo de ejecución si existe.
+        require_once __DIR__ . '/../config/Config.php';
+        $r2Public = Config::getInstance()->get('R2_PUBLIC_URL', '');
+        if ($r2Public !== '') {
+            $scheme = parse_url($r2Public, PHP_URL_SCHEME);
+            $host   = parse_url($r2Public, PHP_URL_HOST);
+            if ($scheme && $host) $imgHosts .= " {$scheme}://{$host}";
+        }
+
+        return implode('; ', [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com",
+            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
+            "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+            "img-src {$imgHosts}",
+            "connect-src 'self' https://*.googleapis.com",
+            "frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "frame-ancestors 'self'",
+        ]);
     }
 
     // Defensa de sesión para usuarios autenticados:

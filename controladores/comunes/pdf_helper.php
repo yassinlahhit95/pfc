@@ -114,15 +114,16 @@ function generarPDFAceptacion($datos, array $cfg) {
         $mpdf->WriteHTML($html);
 
         // ══════════════════════════════════════════════════════════════════════
-        // SALIDA
+        // SALIDA — sube directamente a R2 (documento generado en el servidor,
+        // sin fichero temporal de por medio que optimizar ni mover).
         // ══════════════════════════════════════════════════════════════════════
-        $destDir = __DIR__ . '/../../public/uploads/admisiones/documentos/';
-        if (!is_dir($destDir)) mkdir($destDir, 0755, true);
-
         $fileName = 'aceptacion_' . preg_replace('/[^A-Za-z0-9]/', '', $datos['dni']) . '_' . time() . '.pdf';
-        $filePath = $destDir . $fileName;
+        $pdfBytes = $mpdf->Output('', 'S');
 
-        $mpdf->Output($filePath, 'F');
+        require_once __DIR__ . '/../../include/R2Client.php';
+        if (!R2Client::putObject('admisiones/documentos/' . $fileName, $pdfBytes, 'application/pdf')) {
+            return false;
+        }
 
         return '/public/uploads/admisiones/documentos/' . $fileName;
 

@@ -4,6 +4,7 @@ require_once __DIR__ . "/../../../include/FeatureGuard.php";
 FeatureGuard::requirePage('feature_gastos');
 require_once __DIR__ . "/../../../modelos/gastos.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/gastos/agregarGasto.php");
@@ -62,16 +63,17 @@ if (!empty($_FILES['archivoJustificante']['name'][0])) {
             $ext           = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
             $ext           = preg_replace('/[^a-z0-9]/', '', strtolower($ext));
             $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $ext;
-            $directorio    = __DIR__ . "/../../../public/uploads/justificantes/";
+            $tmpName       = $archivos['tmp_name'][$i];
 
-            if (!is_dir($directorio)) {
-                mkdir($directorio, 0755, true);
-            }
+            if ($mime !== 'application/pdf') ImageOptimizer::optimize($tmpName, $mime); // optimizar el temporal ANTES de subir a R2
 
-            if (!move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nombreArchivo)) {
+            $bytes   = file_get_contents($tmpName);
+            $subioOk = $bytes !== false && R2Client::putObject('justificantes/' . $nombreArchivo, $bytes, $mime);
+            @unlink($tmpName);
+
+            if (!$subioOk) {
                 $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";
             } else {
-                if ($mime !== 'application/pdf') ImageOptimizer::optimize($directorio . $nombreArchivo, $mime);
                 $nombresArchivos[] = $nombreArchivo;
             }
         }
@@ -107,6 +109,7 @@ if ($ok) {
     if (!empty($nombresArchivos)) {
         foreach ($nombresArchivos as $na) {
             @unlink(__DIR__ . "/../../../public/uploads/justificantes/" . $na);
+            R2Client::deleteObject('justificantes/' . $na);
         }
     }
     if ($isAjax) {

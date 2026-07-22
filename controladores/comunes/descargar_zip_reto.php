@@ -72,18 +72,46 @@ if (!is_file($zipPath)) {
 
     $zip = new ZipArchive();
     if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        $tmpDescargados = [];
         foreach ($archivos as $arch) {
             $filePath = realpath(__DIR__ . "/../../" . ltrim($arch['rutaArchivo'], '/'));
             // Contención: solo se incluyen ficheros dentro de /public/uploads
             if ($filePath && $baseDir && strpos($filePath, $baseDir . DIRECTORY_SEPARATOR) === 0 && is_file($filePath)) {
                 $zip->addFile($filePath, $arch['nombreArchivo']);
+                continue;
+            }
+
+            // No está en disco local — puede ser un fichero nuevo que solo
+            // existe en R2 (sin backfill de lo anterior a la migración).
+            // ZipArchive::addFile() necesita una ruta local real, así que se
+            // descarga a un temporal vía una URL firmada de muy corta
+            // duración (llamada servidor→R2, no expuesta al navegador).
+            require_once __DIR__ . "/../../include/R2Client.php";
+            $r2Key = ltrim(preg_replace('#^public/uploads/#', '', $arch['rutaArchivo']), '/');
+            try {
+                $url = R2Client::presignedGetUrl($r2Key, 60);
+                $h = curl_init($url);
+                curl_setopt($h, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($h, CURLOPT_TIMEOUT, 30);
+                $bytes = curl_exec($h);
+                $code  = curl_getinfo($h, CURLINFO_HTTP_CODE);
+                curl_close($h);
+                if ($bytes !== false && $code === 200) {
+                    $tmpPath = $cacheDir . '/_tmp_' . bin2hex(random_bytes(8));
+                    file_put_contents($tmpPath, $bytes);
+                    $zip->addFile($tmpPath, $arch['nombreArchivo']);
+                    $tmpDescargados[] = $tmpPath;
+                }
+            } catch (\Throwable $e) {
+                // Fichero no disponible en ningún lado — se omite del ZIP en vez de romper la descarga completa.
             }
         }
         $zip->close();
+        foreach ($tmpDescargados as $tmpPath) { @unlink($tmpPath); }
     } else {
         http_response_code(500);
         die("No se pudo crear el archivo ZIP.");
     }
 }
 
-servirArchivo($zipPath, $zipName, 'application/zip');
+servirArchivo($zipPath, '', $zipName, 'application/zip');

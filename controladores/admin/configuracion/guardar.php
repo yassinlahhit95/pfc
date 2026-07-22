@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../include/ImageOptimizer.php';
+require_once __DIR__ . '/../../../include/R2Client.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
@@ -48,8 +49,10 @@ $cfgActual = obtenerConfiguracionCentro();
 foreach ($logoFields as $field) {
     if (!empty($_POST['borrar_' . $field])) {
         if (!empty($cfgActual[$field])) {
-            $ruta = $uploadDir . basename($cfgActual[$field]);
+            $nombreViejo = basename($cfgActual[$field]);
+            $ruta = $uploadDir . $nombreViejo;
             if (is_file($ruta)) @unlink($ruta);
+            R2Client::deleteObject('configuracion/' . $nombreViejo);
         }
         actualizarLogoCentro($field, '');
         continue;
@@ -61,20 +64,21 @@ foreach ($logoFields as $field) {
     if (!isset($mimeExtMap[$mime])) continue;
     $ext      = $mimeExtMap[$mime];
     $filename = $field . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+    $tmpName  = $file['tmp_name'];
 
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
-    if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-        ImageOptimizer::optimize($uploadDir . $filename, $mime);
-        // El logo anterior deja de usarse: se elimina del disco
+    ImageOptimizer::optimize($tmpName, $mime); // optimizar el temporal antes de subir a R2
+    $bytes = file_get_contents($tmpName);
+    if ($bytes !== false && R2Client::putObject('configuracion/' . $filename, $bytes, $mime)) {
+        // El logo anterior deja de usarse: se elimina de ambos almacenamientos
         if (!empty($cfgActual[$field])) {
-            $rutaAnterior = $uploadDir . basename($cfgActual[$field]);
+            $nombreAnterior = basename($cfgActual[$field]);
+            $rutaAnterior = $uploadDir . $nombreAnterior;
             if (is_file($rutaAnterior)) @unlink($rutaAnterior);
+            R2Client::deleteObject('configuracion/' . $nombreAnterior);
         }
         actualizarLogoCentro($field, $filename);
     }
+    @unlink($tmpName);
 }
 
 registrarAccion('actualizar', 'configuracion', null, 'Configuración del centro guardada');

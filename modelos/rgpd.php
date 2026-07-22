@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/estudiantes.php";
+require_once __DIR__ . "/directores.php";
 
 /**
  * Collects all personal data for a student (RGPD Art. 20 – portability).
@@ -15,6 +17,7 @@ function exportarDatosEstudiante(int $idEstudiante): array {
     $perfil = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     if (!$perfil) return [];
     unset($perfil['password']); // never export password hash
+    $perfil = descifrarFilaEstudiante($perfil);
 
     // Grades – modules
     $stmt = mysqli_prepare($con,
@@ -123,10 +126,12 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
             if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException("delete $tabla");
         }
 
-        // Delete physical TFG file if present
+        // Delete physical TFG file if present (local disk and R2, whichever holds it)
         if (!empty($backup['perfil']['archivoTFG'])) {
             $tfgPath = __DIR__ . "/../public/uploads/pfc/" . $backup['perfil']['archivoTFG'];
             if (file_exists($tfgPath)) { @unlink($tfgPath); }
+            require_once __DIR__ . '/../include/R2Client.php';
+            R2Client::deleteObject('pfc/' . $backup['perfil']['archivoTFG']);
         }
 
         // Delete main student record
@@ -202,6 +207,7 @@ function exportarDatosPropios(string $tabla, string $idCol, int $id): array {
     $perfil = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     if (!$perfil) return [];
     unset($perfil['password'], $perfil['mfa_secret'], $perfil['mfa_backup_codes']);
+    if ($tabla === 'directores') $perfil = descifrarFilaDirector($perfil);
 
     return [
         'exportado_en' => date('c'),

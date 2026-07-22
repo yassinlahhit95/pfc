@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -105,8 +106,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if (!empty($fila['archivoEntrega'])): ?>
-                            <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($fila['archivoEntrega']) ?>"
+                        <?php if (!empty($fila['archivoEntrega'])):
+                            $archivoEntregaUrl = R2Client::documentoUrl(
+                                __DIR__ . '/../../../public/uploads/aula/entregas/' . $fila['archivoEntrega'],
+                                '../../../public/uploads/aula/entregas/' . $fila['archivoEntrega'],
+                                'aula/entregas/' . $fila['archivoEntrega']
+                            );
+                        ?>
+                            <a href="<?= Security::escapeHtml($archivoEntregaUrl) ?>"
                                target="_blank" class="boton-secundario btn-pequeno">
                                 <i class="fas fa-file-download"></i> Archivo
                             </a>

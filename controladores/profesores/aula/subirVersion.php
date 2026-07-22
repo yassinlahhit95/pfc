@@ -5,6 +5,7 @@
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
@@ -53,17 +54,23 @@ if (!in_array($ext, $permitidos)) {
 } elseif ($tamanio > 20 * 1024 * 1024) {
     $_SESSION['errores'] = "El archivo supera el límite de 20 MB.";
 } else {
-    $dir = __DIR__ . "/../../../public/uploads/aula/archivos/";
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
     $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
-    if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir . $nombreArchivo)) {
-        $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
-        if (isset($imgMimes[$ext])) ImageOptimizer::optimize($dir . $nombreArchivo, $imgMimes[$ext]);
+    $tmpName       = $_FILES['archivo']['tmp_name'];
+
+    $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+    if (isset($imgMimes[$ext])) ImageOptimizer::optimize($tmpName, $imgMimes[$ext]); // optimizar el temporal ANTES de subir a R2
+
+    $mimeReal = @mime_content_type($tmpName) ?: 'application/octet-stream';
+    $bytes    = file_get_contents($tmpName);
+    $subioOk  = $bytes !== false && R2Client::putObject('aula/archivos/' . $nombreArchivo, $bytes, $mimeReal);
+    @unlink($tmpName);
+
+    if ($subioOk) {
         $nuevaVersion = actualizarArchivoConVersionAula($idArchivo, $nombreArchivo, $nombreOrig, $ext, $tamanio, $idProfesor);
         if ($nuevaVersion) {
             $_SESSION['exito'] = "Nueva versión (v$nuevaVersion) guardada.";
         } else {
-            @unlink($dir . $nombreArchivo); // el archivo fue movido pero el registro en BD falló — eliminar huérfano
+            R2Client::deleteObject('aula/archivos/' . $nombreArchivo); // el archivo se subió pero el registro en BD falló — eliminar huérfano
             $_SESSION['errores'] = "No se pudo registrar la nueva versión.";
         }
     } else {

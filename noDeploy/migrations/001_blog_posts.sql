@@ -1,7 +1,7 @@
 -- ══════════════════════════════════════════════════════════════════════
 -- BLOG DEL CENTRO — tabla blog_posts
--- El modelo (modelos/blog.php) la crea automáticamente si no existe,
--- este archivo queda como referencia / para creación manual en producción.
+-- Ya incluida en noDeploy/database.sql para instalaciones nuevas. Aplica
+-- esto solo a una base de datos EXISTENTE creada antes de esa tabla.
 -- ══════════════════════════════════════════════════════════════════════
 
 CREATE TABLE IF NOT EXISTS blog_posts (

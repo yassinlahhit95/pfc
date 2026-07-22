@@ -3,7 +3,7 @@ require_once __DIR__ . "/conectar.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // CATÁLOGO DE CICLOS (landing) — modelos/landingCiclos.php
-// Tabla: landing_ciclos (ver landing-system/sql/landing_ciclos.sql).
+// Tabla: landing_ciclos (ver noDeploy/migrations/002_landing_ciclos.sql).
 // Contenido de marketing gestionado desde admin/secretaría; independiente
 // de la tabla académica `ciclos` (gestión de alumnos/notas/profesores).
 // ══════════════════════════════════════════════════════════════════════

@@ -1,5 +1,24 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Crypto.php";
+
+// ── Cifrado de datos personales (RGPD Art. 32) ──────────────────────────
+// dniEstudiante usa cifrado determinista (mismo texto → mismo cifrado) para
+// que UNIQUE KEY y las búsquedas exactas (checkEstudianteExistente) sigan
+// funcionando. El resto usa cifrado aleatorio (más fuerte, sin necesidad de
+// igualdad exacta).
+function _descifrarFilaEstudiante(?array $fila): ?array {
+    if (!$fila) return $fila;
+    foreach (['dniEstudiante', 'telefonoEstudiante', 'fechaNacimientoEstudiante', 'direccionEstudiante', 'observacionesEstudiante'] as $c) {
+        if (array_key_exists($c, $fila)) $fila[$c] = Crypto::decrypt($fila[$c]);
+    }
+    return $fila;
+}
+
+// Público (con "descifrar" en vez de "_") para que modelos/rgpd.php pueda reutilizarlo.
+function descifrarFilaEstudiante(?array $fila): ?array {
+    return _descifrarFilaEstudiante($fila);
+}
 
 // ── Auto-migration: soft-delete columns ──────────────────────────────
 (function() {
@@ -29,7 +48,7 @@ function listarEstudiantes() {
     $res = mysqli_query($con, $sql);
     $rows = [];
     while ($fila = mysqli_fetch_assoc($res)) {
-        $rows[] = $fila;
+        $rows[] = _descifrarFilaEstudiante($fila);
     }
     return $rows;
 }
@@ -49,7 +68,7 @@ function listarEstudiantesDeProfesor($idProfesor) {
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+        $lista[] = _descifrarFilaEstudiante($fila);
     }
     return $lista;
 }
@@ -67,7 +86,7 @@ function listarEstudiantesPorCiclo($idCiclo) {
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+        $lista[] = _descifrarFilaEstudiante($fila);
     }
     return $lista;
 }
@@ -82,7 +101,7 @@ function obtenerEstudiantePorId($idEstudiante) {
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_assoc($resultado);
+    return _descifrarFilaEstudiante(mysqli_fetch_assoc($resultado));
 }
 
 function obtenerTokensEstudiantes() {
@@ -108,9 +127,14 @@ function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, 
     $con = obtenerConexion();
     require_once __DIR__ . '/../include/credenciales.php';
     [$pass] = generarCredencialesTemporales($email, $nombre, 'Estudiante');
+    $telefonoC        = Crypto::encrypt($telefono);
+    $fechaNacimientoC = Crypto::encrypt($fechaNacimiento);
+    $dniC             = Crypto::encryptDeterministic($dni);
+    $direccionC       = Crypto::encrypt($direccion);
+    $observacionesC   = Crypto::encrypt($observaciones);
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso, anioEstudio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssisss", $nombre, $email, $pass, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio);
+    mysqli_stmt_bind_param($stmt, "ssssssssssisss", $nombre, $email, $pass, $telefonoC, $fechaNacimientoC, $dniC, $fechaAlta, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idCiclo, $curso, $anioEstudio);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -120,17 +144,26 @@ function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, 
 
 function actualizarEstudiante($id, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null) {
     $con = obtenerConexion();
+    $telefonoC        = Crypto::encrypt($telefono);
+    $fechaNacimientoC = Crypto::encrypt($fechaNacimiento);
+    $dniC             = Crypto::encryptDeterministic($dni);
+    $direccionC       = Crypto::encrypt($direccion);
+    $observacionesC   = Crypto::encrypt($observaciones);
     $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=?, anioEstudio=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssissi", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio, $id);
+    mysqli_stmt_bind_param($stmt, "ssssssssssissi", $nombre, $email, $telefonoC, $fechaNacimientoC, $dniC, $fechaAlta, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idCiclo, $curso, $anioEstudio, $id);
     return mysqli_stmt_execute($stmt);
 }
 
 function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono, $dni = null, $fechaNacimiento = null, $direccion = null, $ciudad = null, $codigoPostal = null) {
     $con = obtenerConexion();
+    $telefonoC        = Crypto::encrypt($telefono);
+    $dniC             = Crypto::encryptDeterministic($dni);
+    $fechaNacimientoC = Crypto::encrypt($fechaNacimiento);
+    $direccionC       = Crypto::encrypt($direccion);
     $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, dniEstudiante=?, fechaNacimientoEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssi", $nombre, $email, $telefono, $dni, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $idEstudiante);
+    mysqli_stmt_bind_param($stmt, "ssssssssi", $nombre, $email, $telefonoC, $dniC, $fechaNacimientoC, $direccionC, $ciudad, $codigoPostal, $idEstudiante);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -181,7 +214,7 @@ function listarEstudiantesEliminados() {
     $res = mysqli_query($con, $sql);
     $rows = [];
     while ($fila = mysqli_fetch_assoc($res)) {
-        $rows[] = $fila;
+        $rows[] = _descifrarFilaEstudiante($fila);
     }
     return $rows;
 }
@@ -205,7 +238,7 @@ function validarLoginEstudiante($email, $password) {
     $datos = mysqli_fetch_assoc($resultado);
     if ($datos && password_verify($password, $datos['password'])) {
         if (class_exists('Security')) Security::rehashOnLogin($con, 'estudiantes', 'idEstudiante', $datos['idEstudiante'], $password, $datos['password']);
-        return $datos;
+        return _descifrarFilaEstudiante($datos);
     }
     return null;
 }
@@ -239,9 +272,10 @@ function estudiantePerteneceAProfesor($idEstudiante, $idProfesor) {
 
 function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     $con = obtenerConexion();
+    $dniC = Crypto::encryptDeterministic($dni);
     $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
+    mysqli_stmt_bind_param($stmt, "ssi", $dniC, $email, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resultado) > 0;

@@ -2,7 +2,7 @@
 // ══════════════════════════════════════════════════════════════════════
 // VERIFICACIÓN: el motor configurable debe reproducir EXACTAMENTE el
 // cálculo hardcodeado actual cuando se siembra con la configuración por
-// defecto (ver migrate_db.php sección 12). Compara, para cada estudiante,
+// defecto (ver noDeploy/database.sql). Compara, para cada estudiante,
 // la nota de módulo calculada por el código antiguo (modelos/calificaciones.php,
 // sin tocar) frente al motor nuevo (modelos/motor_calificaciones.php).
 // Solo lectura — no modifica ningún dato. CLI únicamente.
@@ -18,7 +18,7 @@ require_once __DIR__ . '/modelos/motor_calificaciones.php';
 
 $config = obtenerConfigAcademicaActiva();
 if (!$config) {
-    exit("No hay ninguna configuración académica sembrada. Ejecuta migrate_db.php primero.\n");
+    exit("No hay ninguna configuración académica sembrada. Importa noDeploy/database.sql primero.\n");
 }
 $idConfig = (int)$config['idConfig'];
 

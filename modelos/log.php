@@ -21,18 +21,6 @@ function registrarAccionSecretaria(string $accion, string $tabla, ?int $idRegist
     try {
         $con          = obtenerConexion();
         $idSecretaria = isset($_SESSION['idSecretaria']) ? (int)$_SESSION['idSecretaria'] : null;
-        
-        // Auto-create table if missing
-        mysqli_query($con, "CREATE TABLE IF NOT EXISTS `historial_secretarias` (
-          `idHistorial` int(11) NOT NULL AUTO_INCREMENT,
-          `idSecretaria` int(11) NOT NULL,
-          `accion` varchar(255) NOT NULL,
-          `entidad` varchar(100) NOT NULL,
-          `detalles` text,
-          `fecha` datetime DEFAULT CURRENT_TIMESTAMP,
-          PRIMARY KEY (`idHistorial`),
-          KEY `idx_secretaria` (`idSecretaria`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
         $detalles = $descripcion;
         if ($idRegistro) $detalles = "ID: $idRegistro " . $detalles;

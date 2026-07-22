@@ -79,7 +79,7 @@ function actualizarFeatureToggle($feature, $estado) {
     if ($stmt === false) {
         return 'Error al preparar la consulta SQL: ' . mysqli_error($con)
              . ' — Es posible que la columna "' . $feature . '" no exista en la base de datos. '
-             . 'Ejecuta la migración config/migrations/002_feature_flags.sql en producción.';
+             . 'Actualiza el esquema de configuracion_centro (ver noDeploy/database.sql) en producción.';
     }
     $val = ($estado == 1) ? 1 : 0;
     mysqli_stmt_bind_param($stmt, 'i', $val);
@@ -103,11 +103,20 @@ function actualizarLogoCentro($campo, $ruta) {
 // UTILIDADES
 // ══════════════════════════════════════════════════════════════════════
 
-// Convierte un logo de disco a Data URI para incrustar en PDF sin rutas absolutas.
+// Convierte un logo de disco (o R2 si ya no está en local) a Data URI para incrustar en PDF sin rutas absolutas.
 function logoParaPdf($ruta) {
     if (empty($ruta)) return '';
-    $path = __DIR__ . '/../public/uploads/configuracion/' . basename($ruta);
-    if (!file_exists($path)) return '';
-    $mime = mime_content_type($path) ?: 'image/png';
-    return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($path));
+    $nombre = basename($ruta);
+    $path = __DIR__ . '/../public/uploads/configuracion/' . $nombre;
+    if (file_exists($path)) {
+        $mime  = mime_content_type($path) ?: 'image/png';
+        $bytes = file_get_contents($path);
+    } else {
+        require_once __DIR__ . '/../include/R2Client.php';
+        $bytes = R2Client::fetchPublicBytes('configuracion/' . $nombre);
+        if ($bytes === '') return '';
+        $ext = strtolower(pathinfo($nombre, PATHINFO_EXTENSION));
+        $mime = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'][$ext] ?? 'image/png';
+    }
+    return 'data:' . $mime . ';base64,' . base64_encode($bytes);
 }

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/justificacionesFalta.php";
+require_once __DIR__ . "/../../../include/R2Client.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -51,8 +52,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td><?= Security::escapeHtml($j['nombreEstudiante']) ?></td>
                     <td style="max-width:280px;white-space:normal;"><?= Security::escapeHtml($j['motivo']) ?></td>
                     <td>
-                        <?php if (!empty($j['archivo'])): ?>
-                        <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml(basename($j['archivo'])) ?>" target="_blank" rel="noopener">
+                        <?php if (!empty($j['archivo'])):
+                            $archivoNombre = basename($j['archivo']);
+                            $archivoUrl = R2Client::documentoUrl(
+                                __DIR__ . '/../../../public/uploads/justificantes/' . $archivoNombre,
+                                '../../../public/uploads/justificantes/' . $archivoNombre,
+                                'justificantes/' . $archivoNombre
+                            ); ?>
+                        <a href="<?= Security::escapeHtml($archivoUrl) ?>" target="_blank" rel="noopener">
                             <i class="fas fa-paperclip"></i> Ver
                         </a>
                         <?php else: ?>

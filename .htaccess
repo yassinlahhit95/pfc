@@ -52,3 +52,11 @@
 
 # Disable directory listing
 Options -Indexes
+
+<IfModule mod_headers.c>
+    # HSTS — solo se envía en respuestas HTTPS reales (env=HTTPS, puesto por
+    # mod_ssl). En local (pfc.test, normalmente HTTP) esta cabecera nunca se
+    # envía, así que no hay riesgo de "atascar" el navegador en HTTPS para
+    # un host de desarrollo sin TLS.
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+</IfModule>

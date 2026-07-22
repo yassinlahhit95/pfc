@@ -8,13 +8,17 @@ if (!preg_match('/^#[0-9a-f]{6}$/i', $acento)) {
 }
 $tituloSeo = trim($ajustes['tituloSeo'] ?? '') ?: ($cfg['nombreCentro'] . ' — Formación Profesional');
 $descSeo   = trim($ajustes['descripcionSeo'] ?? '') ?: ('Centro de Formación Profesional. Ciclos formativos oficiales, admisiones online y prácticas en empresas. ' . $cfg['nombreCentro'] . '.');
+require_once __DIR__ . '/../../../include/R2Client.php';
 $logoUrl = '';
 if (!empty($cfg['logoCentro'])) {
     $logoFichero = basename($cfg['logoCentro']);
-    if (file_exists(__DIR__ . '/../../public/uploads/configuracion/' . $logoFichero)) {
-        $logoUrl = 'public/uploads/configuracion/' . $logoFichero;
-    }
+    $logoUrl = R2Client::imagenUrl(
+        __DIR__ . '/../../../public/uploads/configuracion/' . $logoFichero,
+        'public/uploads/configuracion/' . $logoFichero,
+        'configuracion/' . $logoFichero
+    );
 }
+$logoUrlAbsoluta = $logoUrl !== '' && preg_match('#^https?://#i', $logoUrl);
 
 // Plus Jakarta Sans es la fuente de cuerpo en todos los temas (base.css --lp-fuente)
 // y también la de titulares en "institucional" y "universidad", así que se
@@ -44,8 +48,8 @@ $orgSchema = [
     'description' => $descSeo,
 ];
 if ($logoUrl) {
-    $orgSchema['logo']  = $_urlSitio . $logoUrl;
-    $orgSchema['image'] = $_urlSitio . $logoUrl;
+    $orgSchema['logo']  = $logoUrlAbsoluta ? $logoUrl : $_urlSitio . '/' . $logoUrl;
+    $orgSchema['image'] = $orgSchema['logo'];
 }
 if (!empty($cfg['telefonoCentro'])) $orgSchema['telephone'] = $cfg['telefonoCentro'];
 if (!empty($cfg['emailCentro']))    $orgSchema['email']     = $cfg['emailCentro'];
@@ -81,7 +85,7 @@ if (!empty($cfg['direccionCentro']) || !empty($cfg['ciudadCentro'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="<?= Security::escapeHtml($googleFontsUrl) ?>" rel="stylesheet">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
 <link rel="stylesheet" href="landing-system/temas/base.css">
 <link rel="stylesheet" href="landing-system/temas/tema-<?= Security::escapeHtml($tema) ?>.css">
 <style>:root{--lp-acento:<?= Security::escapeHtml($acento) ?>;}</style>
