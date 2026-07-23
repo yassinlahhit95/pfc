@@ -15,16 +15,65 @@
 -- previo a esta fecha). Una instalación nueva ya las recibe directamente
 -- desde noDeploy/database.sql.
 --
+-- IMPORTANTE — `ADD COLUMN IF NOT EXISTS` es una extensión de MariaDB, NO
+-- sintaxis estándar de MySQL: en MySQL 8.x real (que este proyecto declara
+-- soportar, README.md) esa cláusula da un error de sintaxis y el ALTER
+-- entero falla, incluso las columnas que sí no existen. Este archivo usaba
+-- esa sintaxis y por eso nunca llegó a ejecutarse correctamente contra un
+-- MySQL real — las columnas de producción se añadieron alguna vez por otra
+-- vía. Se sustituye por el patrón portable de siempre (information_schema +
+-- sentencia preparada), que funciona igual en MySQL 8.x y en MariaDB.
+--
 -- Nunca se ejecuta automáticamente — se aplica manualmente, en orden, junto
 -- con el resto de noDeploy/migrations/*.sql.
 -- ══════════════════════════════════════════════════════════════════════
 
-ALTER TABLE `configuracion_centro`
-  ADD COLUMN IF NOT EXISTS `instance_status` enum('active','suspended','pending') NOT NULL DEFAULT 'active',
-  ADD COLUMN IF NOT EXISTS `suspension_message` text,
-  ADD COLUMN IF NOT EXISTS `saas_lock_features` tinyint(1) NOT NULL DEFAULT '0',
-  ADD COLUMN IF NOT EXISTS `saas_message` text,
-  ADD COLUMN IF NOT EXISTS `saas_message_type` varchar(20) NOT NULL DEFAULT 'info',
-  ADD COLUMN IF NOT EXISTS `saas_last_sync` datetime DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS `license_token` text,
-  ADD COLUMN IF NOT EXISTS `license_token_exp` datetime DEFAULT NULL;
+SET @db := DATABASE();
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='instance_status') > 0,
+  'SELECT 1', "ALTER TABLE `configuracion_centro` ADD COLUMN `instance_status` enum('active','suspended','pending') NOT NULL DEFAULT 'active'"
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='suspension_message') > 0,
+  'SELECT 1', 'ALTER TABLE `configuracion_centro` ADD COLUMN `suspension_message` text'
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='saas_lock_features') > 0,
+  'SELECT 1', "ALTER TABLE `configuracion_centro` ADD COLUMN `saas_lock_features` tinyint(1) NOT NULL DEFAULT '0'"
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='saas_message') > 0,
+  'SELECT 1', 'ALTER TABLE `configuracion_centro` ADD COLUMN `saas_message` text'
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='saas_message_type') > 0,
+  'SELECT 1', "ALTER TABLE `configuracion_centro` ADD COLUMN `saas_message_type` varchar(20) NOT NULL DEFAULT 'info'"
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='saas_last_sync') > 0,
+  'SELECT 1', 'ALTER TABLE `configuracion_centro` ADD COLUMN `saas_last_sync` datetime DEFAULT NULL'
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='license_token') > 0,
+  'SELECT 1', 'ALTER TABLE `configuracion_centro` ADD COLUMN `license_token` text'
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @s := (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='configuracion_centro' AND COLUMN_NAME='license_token_exp') > 0,
+  'SELECT 1', 'ALTER TABLE `configuracion_centro` ADD COLUMN `license_token_exp` datetime DEFAULT NULL'
+));
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;

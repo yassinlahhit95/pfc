@@ -12,9 +12,9 @@ if (php_sapi_name() !== 'cli') {
     exit("Solo se puede ejecutar desde CLI.\n");
 }
 
-require_once __DIR__ . '/modelos/calificaciones.php';
-require_once __DIR__ . '/modelos/academico_config.php';
-require_once __DIR__ . '/modelos/motor_calificaciones.php';
+require_once __DIR__ . '/../modelos/calificaciones.php';
+require_once __DIR__ . '/../modelos/academico_config.php';
+require_once __DIR__ . '/../modelos/motor_calificaciones.php';
 
 $config = obtenerConfigAcademicaActiva();
 if (!$config) {

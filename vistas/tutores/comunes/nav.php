@@ -4,10 +4,12 @@ require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
+require_once __DIR__ . "/../../../modelos/tours.php";
 
 $datosTutor_menu        = obtenerTutorPorId($_SESSION['idTutor']);
 $nombreUsuario_menu     = $datosTutor_menu['nombreTutor'] ?? 'Tutor';
 $estudiantes_menu       = listarEstudiantesPorTutor($_SESSION['idTutor']);
+$tourPendiente_menu     = !tourEstaCompletado((int)$_SESSION['idTutor'], 'tutor', 'primeros_pasos_v1');
 
 $totalChatNoLeidos_menu = 0;
 if (FeatureGuard::check('feature_chat')) {
@@ -30,9 +32,15 @@ function _nav_active_tutor($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <?php if (is_file($__bundleCss)): ?>
+  <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
+  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
+  <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
+  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
@@ -40,6 +48,7 @@ function _nav_active_tutor($check) {
   <script>window.TWEAK_DEFAULTS={accent:"#10B981",dark:false,animation:7,density:"regular"};</script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 <?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
@@ -75,7 +84,7 @@ function _nav_active_tutor($check) {
 
       <span class="nav-section-title">MIS HIJOS</span>
       <?php foreach ($estudiantes_menu as $estudianteMenu): ?>
-        <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" class="nav-item">
+        <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" data-tour="hijo" class="nav-item">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
           <span class="nav-label"><?= Security::escapeHtml(explode(' ', $estudianteMenu['nombreEstudiante'])[0]) ?></span>
         </a>
@@ -100,14 +109,14 @@ function _nav_active_tutor($check) {
 
       <span class="nav-section-title">GESTIÓN</span>
       <?php if (FeatureGuard::check('feature_pagos')): ?>
-      <a href="../pagos/misPagos.php" class="nav-item<?= _nav_active_tutor('pagos') ?>">
+      <a href="../pagos/misPagos.php" data-tour="pagos" class="nav-item<?= _nav_active_tutor('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos y Recibos</span>
       </a>
       <?php endif; ?>
 
       <?php if (FeatureGuard::check('feature_chat')) { ?>
-      <a href="../mensajes/chat.php" class="nav-item<?= _nav_active_tutor('chat') ?>">
+      <a href="../mensajes/chat.php" data-tour="mensajeria" class="nav-item<?= _nav_active_tutor('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Mensajería Centro</span>
       </a>
@@ -134,7 +143,7 @@ function _nav_active_tutor($check) {
 
   <main class="main" data-screen-label="<?= Security::escapeHtml($titulo_pagina ?? 'Tutor') ?>">
     <header class="topbar">
-      <button class="icon-btn menu-btn" id="menu">
+      <button class="icon-btn menu-btn" id="menu" aria-label="Menú">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
       </button>
       <div class="topbar-user">
@@ -143,6 +152,26 @@ function _nav_active_tutor($check) {
       </div>
 
       <div class="topbar-actions" style="margin-left: auto">
+        <!-- Mobile Trigger -->
+        <button class="icon-btn mobile-search-trigger" id="mobile-search-trigger" aria-label="Buscar">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+        </button>
+        <!-- Desktop Input / Mobile Modal -->
+        <div class="search-backdrop" id="search-backdrop" hidden></div>
+        <div class="search-wrapper" id="search-wrapper" data-tour="busqueda">
+          <label class="search-modal-bar">
+            <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+            <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   data-url="../../../controladores/tutores/buscar.php" />
+            <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+            <kbd class="search-kbd">⌘K</kbd>
+          </label>
+          <ul class="search-results" id="search-results" hidden></ul>
+        </div>
         <button class="icon-btn theme-btn" id="theme">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>
@@ -182,7 +211,23 @@ function _nav_active_tutor($check) {
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
 
-    <div class="content">
+    <div class="content" id="main-content" tabindex="-1">
+      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
+      <?php if ($tourPendiente_menu): ?>
+      <script>
+      window.AULAPRO_TOUR = {
+        tourKey: 'primeros_pasos_v1',
+        completeUrl: 'controladores/comunes/tour/completar.php',
+        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        steps: [
+          { selector: '[data-tour="hijo"]', title: 'Mis Hijos', text: 'Accede al expediente académico de cada hijo o hija vinculado a tu cuenta.', placement: 'right' },
+          { selector: '[data-tour="pagos"]', title: 'Pagos y Recibos', text: 'Consulta los recibos y sube el comprobante cuando realices un pago.', placement: 'right' },
+          { selector: '[data-tour="mensajeria"]', title: 'Mensajería Centro', text: 'Habla directamente con el centro sobre cualquier duda.', placement: 'right' },
+          { selector: '[data-tour="busqueda"]', title: 'Búsqueda global', text: 'Pulsa aquí (o Ctrl/Cmd+K) para buscar pagos, anuncios y más.', placement: 'bottom' }
+        ]
+      };
+      </script>
+      <?php endif; ?>
       <?php
           $configFB = Config::getInstance();
       ?>

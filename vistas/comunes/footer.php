@@ -45,13 +45,28 @@ $(document).ajaxError(function(event, xhr) {
     if (xhr.status >= 500)  { Toast.show('Error del servidor (' + xhr.status + '). Contacta con soporte si persiste.', 'error'); return; }
 });
 </script>
+<?php
+// Bundle de los core/*.js que carga TODA página (dashboard-shell, onboarding-tour,
+// filtros, paginacion, modal-borrar, modal-confirm, toast, upload-overlay, tooltip),
+// generado por `npm run build:assets` (noDeploy/build-assets.js) — un solo <script>
+// minificado en vez de varios sueltos. Si el bundle no existe (build no ejecutado
+// en este entorno todavía) cae de vuelta a los ficheros sueltos sin minificar,
+// para que un `git pull` sin `npm install` no rompa nada.
+$__bundleJs = __DIR__ . '/../../public/js/core/bundle.min.js';
+if (is_file($__bundleJs)):
+?>
+<script src="../../../public/js/core/bundle.min.js?v=<?= filemtime($__bundleJs) ?>"></script>
+<?php else: ?>
 <script src="../../../public/js/core/dashboard-shell.js?v=<?= filemtime(__DIR__.'/../../public/js/core/dashboard-shell.js') ?>"></script>
+<script src="../../../public/js/core/onboarding-tour.js?v=<?= filemtime(__DIR__.'/../../public/js/core/onboarding-tour.js') ?>"></script>
 <script src="../../../public/js/core/filtros.js"></script>
 <script src="../../../public/js/core/paginacion.js"></script>
 <script src="../../../public/js/core/modal-borrar.js"></script>
 <script src="../../../public/js/core/modal-confirm.js"></script>
 <script src="../../../public/js/core/toast.js"></script>
 <script src="../../../public/js/core/upload-overlay.js"></script>
+<script src="../../../public/js/core/tooltip.js"></script>
+<?php endif; ?>
 <?php
 $__err = $errores ?? null;
 $__ok  = $exito  ?? '';

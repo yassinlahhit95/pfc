@@ -6,81 +6,109 @@ require_once __DIR__ . "/../include/Cache.php";
 // CONTADORES PARA EL PANEL DE CONTROL
 // ══════════════════════════════════════════════════════════════════════
 
+// Contadores de portada del dashboard — leídos en cada visita a
+// inicio/dashboard.php, escritos rarísima vez (dar de alta/baja un
+// estudiante, etc.): candidatos ideales para el mismo patrón de caché
+// de 60s que ya usa obtenerContadoresNavAdmin() más abajo.
 function contarEstudiantes(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0")['total'] ?? 0);
+    return Cache::remember('panel_total_estudiantes', 60, function () {
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0")['total'] ?? 0);
+    });
 }
 
 function contarProfesores(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM profesores")['total'] ?? 0);
+    return Cache::remember('panel_total_profesores', 60, function () {
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM profesores")['total'] ?? 0);
+    });
 }
 
 function contarSecretarias(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM secretarias")['total'] ?? 0);
+    return Cache::remember('panel_total_secretarias', 60, function () {
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM secretarias")['total'] ?? 0);
+    });
 }
 
 
 
 function contarCiclos(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM ciclos")['total'] ?? 0);
+    return Cache::remember('panel_total_ciclos', 60, function () {
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM ciclos")['total'] ?? 0);
+    });
 }
 
 function contarEstudiantesDeProfesor(int $idProfesor): int {
-    // Los paréntesis son necesarios: sin ellos, "AND ... OR ..." aplicaría el filtro
-    // eliminado=0 solo a la primera mitad y contaría estudiantes dados de baja
-    // llegados por la vía "profesor de módulo".
-    $row = dbFetchOne(
-        "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e
-         WHERE e.eliminado = 0 AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-            OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))",
-        "ii", $idProfesor, $idProfesor
-    );
-    return (int)($row['total'] ?? 0);
+    return Cache::remember("panel_estudiantes_profesor_{$idProfesor}", 60, function () use ($idProfesor) {
+        // Los paréntesis son necesarios: sin ellos, "AND ... OR ..." aplicaría el filtro
+        // eliminado=0 solo a la primera mitad y contaría estudiantes dados de baja
+        // llegados por la vía "profesor de módulo".
+        $row = dbFetchOne(
+            "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e
+             WHERE e.eliminado = 0 AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))",
+            "ii", $idProfesor, $idProfesor
+        );
+        return (int)($row['total'] ?? 0);
+    });
 }
 
 function contarCiclosDeProfesor(int $idProfesor): int {
-    $row = dbFetchOne(
-        "SELECT COUNT(DISTINCT c.idCiclo) as total FROM ciclos c
-         WHERE c.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-            OR c.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)",
-        "ii", $idProfesor, $idProfesor
-    );
-    return (int)($row['total'] ?? 0);
+    return Cache::remember("panel_ciclos_profesor_{$idProfesor}", 60, function () use ($idProfesor) {
+        $row = dbFetchOne(
+            "SELECT COUNT(DISTINCT c.idCiclo) as total FROM ciclos c
+             WHERE c.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                OR c.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)",
+            "ii", $idProfesor, $idProfesor
+        );
+        return (int)($row['total'] ?? 0);
+    });
 }
 
 function contarModulos(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM modulos")['total'] ?? 0);
+    return Cache::remember('panel_total_modulos', 60, function () {
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM modulos")['total'] ?? 0);
+    });
 }
 
 function contarRetos(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM retos")['total'] ?? 0);
+    return Cache::remember('panel_total_retos', 60, function () {
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM retos")['total'] ?? 0);
+    });
 }
 
 
 
 function obtenerTotalRecaudado(): float {
-    return (float)(dbFetchOne("SELECT SUM(monto) as acumulado FROM pagos")['acumulado'] ?? 0);
+    return Cache::remember('panel_total_recaudado', 60, function () {
+        return (float)(dbFetchOne("SELECT SUM(monto) as acumulado FROM pagos")['acumulado'] ?? 0);
+    });
 }
 
 function contarEstudiantesNuevos(int $dias = 7): int {
-    $row = dbFetchOne(
-        "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
-        "i", $dias
-    );
-    return (int)($row['total'] ?? 0);
+    return Cache::remember("panel_estudiantes_nuevos_{$dias}", 60, function () use ($dias) {
+        $row = dbFetchOne(
+            "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
+            "i", $dias
+        );
+        return (int)($row['total'] ?? 0);
+    });
 }
 
 function contarProfesoresNuevos(int $dias = 7): int {
-    $row = dbFetchOne(
-        "SELECT COUNT(*) as total FROM profesores WHERE fechaAltaProfesor >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
-        "i", $dias
-    );
-    return (int)($row['total'] ?? 0);
+    return Cache::remember("panel_profesores_nuevos_{$dias}", 60, function () use ($dias) {
+        $row = dbFetchOne(
+            "SELECT COUNT(*) as total FROM profesores WHERE fechaAltaProfesor >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
+            "i", $dias
+        );
+        return (int)($row['total'] ?? 0);
+    });
 }
 
 function contarTFGsEntregados(): int {
-    return (int)(dbFetchOne(
-        "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND archivoTFG != '' AND archivoTFG IS NOT NULL"
-    )['total'] ?? 0);
+    return Cache::remember('panel_tfgs_entregados', 60, function () {
+        return (int)(dbFetchOne(
+            "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND archivoTFG != '' AND archivoTFG IS NOT NULL"
+        )['total'] ?? 0);
+    });
 }
 
 // Obtiene todos los contadores del nav de admin. Los contadores globales

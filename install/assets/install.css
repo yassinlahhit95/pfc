@@ -1,0 +1,67 @@
+:root { --primary: #4f46e5; --primary-strong: #3730a3; --ok: #16a34a; --error: #dc2626; --warn: #d97706; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: #f3f5fb; color: #0f172a;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.install-card {
+  background: #fff; width: 100%; max-width: 560px; border-radius: 16px;
+  padding: 32px 34px; box-shadow: 0 10px 40px rgba(15, 23, 42, .08);
+}
+.install-brand { font-weight: 800; font-size: 18px; color: var(--primary); margin-bottom: 18px; }
+.install-brand b { color: var(--primary-strong); }
+
+.install-steps { display: flex; gap: 8px; margin-bottom: 22px; }
+.install-step-dot {
+  width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: #eef1f8; color: #9aa6bc; font-size: 12px; font-weight: 700;
+}
+.install-step-dot.activo { background: var(--primary); color: #fff; }
+.install-step-dot.hecho { background: var(--ok); color: #fff; }
+
+h1 { font-size: 20px; margin: 0 0 14px; }
+
+.install-intro { color: #51607a; font-size: 14px; margin: 0 0 18px; line-height: 1.5; }
+.install-nota { color: #9aa6bc; font-size: 12.5px; margin-top: 10px; }
+
+.install-alerta-error {
+  background: #fef2f2; color: #991b1b; border-left: 4px solid var(--error);
+  padding: 12px 14px; border-radius: 8px; font-size: 13.5px; margin-bottom: 16px;
+}
+
+form label {
+  display: block; font-size: 13px; font-weight: 600; color: #51607a; margin-bottom: 14px;
+}
+form label small { font-weight: 400; color: #9aa6bc; }
+form input[type="text"], form input[type="email"], form input[type="password"] {
+  display: block; width: 100%; margin-top: 6px; padding: 10px 12px;
+  border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: inherit;
+}
+form input:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+.install-btn {
+  width: 100%; padding: 12px; border: none; border-radius: 9px; margin-top: 6px;
+  background: var(--primary); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.install-btn:hover:not(:disabled) { background: var(--primary-strong); }
+.install-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.install-checklist { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.install-checklist li {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px;
+  background: #f7f8fc;
+}
+.install-checklist li.ok { background: #ecfdf5; }
+.install-checklist li.error { background: #fef2f2; }
+.install-checklist li.aviso { background: #fffbeb; }
+.install-check-icono { font-weight: 800; flex-shrink: 0; }
+.install-checklist li.ok .install-check-icono { color: var(--ok); }
+.install-checklist li.error .install-check-icono { color: var(--error); }
+.install-checklist li.aviso .install-check-icono { color: var(--warn); }
+.install-checklist strong { display: block; }
+.install-checklist small { color: #718096; }
+
+.install-features { max-height: 340px; overflow-y: auto; }
+.install-feature-toggle { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #0f172a; cursor: pointer; }
+.install-feature-toggle input { width: 16px; height: 16px; }

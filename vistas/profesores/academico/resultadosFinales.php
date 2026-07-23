@@ -90,10 +90,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Estudiante</th>
-                    <th title="Media de la nota definitiva por módulo (mejor convocatoria)">Media Módulos</th>
-                    <th title="Media de calificaciones de retos">Media Retos</th>
-                    <th title="Nota del Proyecto Final / TFG">TFG / Proyecto</th>
-                    <th title="Promedio global ponderado: módulos 75 % · retos 25 % · TFG incluido si calificado">Promedio Global</th>
+                    <th>Media Módulos <button type="button" class="ap-tip-trigger" data-tooltip="Media de la nota definitiva por módulo (mejor de convocatoria ordinaria y extraordinaria)" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button></th>
+                    <th>Media Retos <button type="button" class="ap-tip-trigger" data-tooltip="Media de calificaciones de retos" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button></th>
+                    <th>TFG / Proyecto <button type="button" class="ap-tip-trigger" data-tooltip="Nota del Proyecto Final / TFG" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button></th>
+                    <th>Promedio Global <button type="button" class="ap-tip-trigger" data-tooltip="Promedio global ponderado: módulos 75% + retos 25%, TFG incluido si está calificado" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button></th>
                     <th>Estado</th>
                 </tr>
             </thead>
@@ -157,9 +157,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <thead>
                     <tr>
                         <th>Módulo</th>
-                        <th title="Media de notas de exámenes (nota definitiva = mejor convocatoria)">Media Exámenes</th>
+                        <th>Media Exámenes <button type="button" class="ap-tip-trigger" data-tooltip="Nota definitiva = mejor de convocatoria ordinaria y extraordinaria" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button></th>
                         <th>Media Retos</th>
-                        <th title="Nota final del módulo: 75 % exámenes + 25 % retos">Nota Final</th>
+                        <th>Nota Final <button type="button" class="ap-tip-trigger" data-tooltip="Nota final del módulo: 75% exámenes + 25% retos" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button></th>
                         <th>Estado</th>
                     </tr>
                 </thead>

@@ -78,4 +78,45 @@ while ($row = mysqli_fetch_assoc($res)) {
     ];
 }
 
+// ── Tutores/Familias ──
+$stmt = mysqli_prepare($con,
+    "SELECT nombreTutor, emailTutor FROM tutores
+     WHERE nombreTutor LIKE ? OR emailTutor LIKE ? ORDER BY nombreTutor LIMIT 3");
+mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'tutor',
+        'label' => $row['nombreTutor'] . ' (' . $row['emailTutor'] . ')',
+        'url'   => '/vistas/secretaria/tutores/verTutores.php',
+    ];
+}
+
+// ── Profesores ──
+$stmt = mysqli_prepare($con,
+    "SELECT nombreProfesor FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = ['type' => 'profesor', 'label' => $row['nombreProfesor'], 'url' => '/vistas/secretaria/mensajes/chat.php'];
+}
+
+// ── Pagos (por nombre de alumno) ──
+$stmt = mysqli_prepare($con,
+    "SELECT p.monto, p.fechaPago, e.idEstudiante, e.nombreEstudiante
+     FROM pagos p JOIN estudiantes e ON e.idEstudiante = p.idEstudiante
+     WHERE e.nombreEstudiante LIKE ? ORDER BY p.fechaPago DESC LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'pago',
+        'label' => 'Pago ' . $row['monto'] . '€ — ' . $row['nombreEstudiante'] . ' (' . date('d/m/Y', strtotime($row['fechaPago'])) . ')',
+        'url'   => '/vistas/secretaria/estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
+    ];
+}
+
 echo json_encode($results, JSON_UNESCAPED_UNICODE);

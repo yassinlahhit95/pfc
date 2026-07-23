@@ -6,7 +6,7 @@
 // borra y reinstala la carpeta — de ahí el hook post-autoload-dump en
 // composer.json, para que esta protección nunca dependa de un paso manual.
 // ══════════════════════════════════════════════════════════════════════
-$destino = __DIR__ . '/vendor/.htaccess';
+$destino = __DIR__ . '/../vendor/.htaccess';
 
 $contenido = <<<'HTACCESS'
 # Bloquear acceso directo a este directorio (dependencias de Composer:
@@ -20,7 +20,7 @@ $contenido = <<<'HTACCESS'
 </IfModule>
 HTACCESS;
 
-if (is_dir(__DIR__ . '/vendor')) {
+if (is_dir(__DIR__ . '/../vendor')) {
     file_put_contents($destino, $contenido);
     echo "vendor/.htaccess generado.\n";
 }

@@ -1,0 +1,60 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../storage/secure_storage.dart';
+import 'session.dart';
+
+final secureStorageProvider = Provider<SecureStorage>((ref) => SecureStorage());
+
+/// Holds the current session (or null when logged out). Hydrated from
+/// [SecureStorage] on first read; every write is mirrored to storage so a
+/// force-killed app restores the session on next launch.
+class SessionController extends AsyncNotifier<Session?> {
+  @override
+  Future<Session?> build() async {
+    final storage = ref.read(secureStorageProvider);
+    final token = await storage.readToken();
+    final userTypeRaw = await storage.readUserType();
+    final userId = await storage.readUserId();
+    if (token == null || userTypeRaw == null || userId == null) return null;
+
+    // expires_at isn't re-validated here — an expired-but-present token is
+    // still handed to me.php on boot; a 401 there triggers the normal
+    // ApiClient 401 handler, which clears the session and routes to login.
+    return Session(
+      token: token,
+      expiresAt: DateTime.now().add(const Duration(days: 30)),
+      role: userRoleFromApi(userTypeRaw),
+      userId: userId,
+    );
+  }
+
+  Future<void> setSession({
+    required String token,
+    required DateTime expiresAt,
+    required UserRole role,
+    required int userId,
+  }) async {
+    final storage = ref.read(secureStorageProvider);
+    await storage.saveSession(
+      token: token,
+      expiresAt: expiresAt.toIso8601String(),
+      userType: userRoleToApi(role),
+      userId: userId,
+    );
+    state = AsyncData(Session(
+      token: token,
+      expiresAt: expiresAt,
+      role: role,
+      userId: userId,
+    ));
+  }
+
+  Future<void> clear() async {
+    final storage = ref.read(secureStorageProvider);
+    await storage.clear();
+    state = const AsyncData(null);
+  }
+}
+
+final sessionControllerProvider =
+    AsyncNotifierProvider<SessionController, Session?>(SessionController.new);

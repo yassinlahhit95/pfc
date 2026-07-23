@@ -173,7 +173,7 @@ DROP TABLE IF EXISTS `api_tokens`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `api_tokens` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_type` enum('estudiante','profesor','director','tutor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_type` enum('estudiante','profesor','director','tutor','secretaria') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` int unsigned NOT NULL,
   `token` char(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `device_info` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -2677,6 +2677,33 @@ CREATE TABLE `tutores` (
 LOCK TABLES `tutores` WRITE;
 /*!40000 ALTER TABLE `tutores` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tutores` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tours_completados`
+--
+
+DROP TABLE IF EXISTS `tours_completados`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tours_completados` (
+  `idTourCompletado` int NOT NULL AUTO_INCREMENT,
+  `idUsuario` int NOT NULL,
+  `tipoUsuario` enum('admin','profesor','secretaria','estudiante','tutor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tour_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `completado_en` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idTourCompletado`),
+  UNIQUE KEY `uniq_usuario_tour` (`idUsuario`,`tipoUsuario`,`tour_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tours_completados`
+--
+
+LOCK TABLES `tours_completados` WRITE;
+/*!40000 ALTER TABLE `tours_completados` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tours_completados` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

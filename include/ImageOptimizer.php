@@ -1,8 +1,8 @@
 <?php
-// Redimensiona y recomprime imágenes subidas (landing, blog) para reducir
-// el peso servido a visitantes públicos de las páginas de landing. No toca
-// vídeo. Se degrada de forma segura si la extensión GD no está disponible:
-// deja el archivo original tal cual.
+// Redimensiona y recomprime imágenes subidas en cualquier punto de la app
+// (landing, blog, recursos de aula, comprobantes de pago, justificantes...)
+// para reducir el peso servido. No toca vídeo. Se degrada de forma segura
+// si la extensión GD no está disponible: deja el archivo original tal cual.
 class ImageOptimizer
 {
     public static function optimize(string $path, string $mime, int $maxEdge = 1920, int $quality = 82): void

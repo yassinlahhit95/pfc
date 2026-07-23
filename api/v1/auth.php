@@ -112,7 +112,7 @@ if ($method === 'POST') {
 
 // ── LOGOUT ────────────────────────────────────────────────────────────────────
 if ($method === 'DELETE') {
-    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $header = v1AuthHeader();
     if ($header && stripos($header, 'Bearer ') === 0) {
         $token = trim(substr($header, 7));
         if (strlen($token) === 64 && ctype_xdigit($token)) {

@@ -38,10 +38,24 @@ public/js/core/            ← globals used across pages (filtros.js, paginacion
 public/js/features/        ← one file per feature (chat.js, mensajes.js, horario.js, blog-editor.js, ...)
 public/js/firebase/        ← Firebase web SDK config + notifications UI
 landing-system/            ← public landing page: templates, sections, themes — see own section below
-noDeploy/database.sql      ← schema source of truth (see DB Migrations below)
+noDeploy/                  ← never FTP'd to the server — schema/seed SQL (see DB Migrations below),
+                              plus dev/build/setup-only scripts (build-assets.js, generar_htaccess_vendor.php,
+                              install-check.php, smoke_test.php, verificar_motor_academico.php) and
+                              supplementary docs (API_DOCS.md, CLOUDFLARE_R2_SETUP.md).
+                              See noDeploy/DO_NOT_UPLOAD.md for the full "what never leaves this machine" list.
 ```
 
 Note: `core/analytics.js` and `features/aula-recursos.js` compute their own root path via `document.currentScript`/`import.meta.url` and a hardcoded `../../../` — they must stay exactly 3 directories below the project root (i.e. directly under `public/js/core/` or `public/js/features/`, not nested deeper) or that path math breaks.
+
+### Core asset bundle (`npm run build:assets`)
+
+`package.json` stays at the project root (npm convention — every `npm install`/`npm run` expects its manifest there), but the actual build script lives at `noDeploy/build-assets.js` (never needs deploying — only runs on a dev machine before committing its output). `npm run build:assets` invokes it via `node noDeploy/build-assets.js`; the script uses paths relative to the invocation directory (root), not `__dirname`, so it doesn't matter where it physically lives as long as it's run from root.
+
+The always-loaded `core/*.js` files (wired in `vistas/comunes/footer.php`: `dashboard-shell.js`, `onboarding-tour.js`, `filtros.js`, `paginacion.js`, `modal-borrar.js`, `modal-confirm.js`, `toast.js`, `upload-overlay.js`, `tooltip.js`) and the always-loaded CSS files (`dashboard.css`, `estilo.css`, `notificaciones.css`, `onboarding-tour.css`, `aula-digital.css`) get bundled + minified into `public/js/core/bundle.min.js` / `public/css/bundle.min.css`. `footer.php` and every `nav.php` load the bundle if it exists and fall back to the individual unminified files if it doesn't — so a missing/unbuilt bundle never breaks the site, it just serves the slower unbundled path. The exact lists live in `noDeploy/build-assets.js`'s `CORE_JS`/`CORE_CSS` arrays — check there before trusting this description, it will drift.
+
+Feature CSS/JS that loads **conditionally** (behind a `FeatureGuard` check or only on specific pages — `chat-widget.css`, `mensajes.css`, `horario-admin.css`, `login.css`, `legal.css`, `chat.css` and their JS equivalents) is minified individually as `.min.` siblings instead (same script's `FEATURE_FILES` array), since bundling conditionally-loaded code together would ship it to pages that don't need it. `include/AssetMin.php` serves the `.min.` sibling if present, else the original, at each file's real `<link>`/`<script>` call sites.
+
+**Whenever you edit any core or feature source file, run `npm run build:assets` and commit the regenerated output** — this project has no CI/CD (manual FTP deploy, see bottom of this file), so nothing rebuilds it automatically.
 
 ---
 
@@ -95,6 +109,20 @@ Never use a raw `CREATE TABLE IF NOT EXISTS` inline in a model file on every req
 **Naming**: if a new table is conceptually close to an existing one (e.g. a landing/marketing table vs. an internal academic table), give it a distinct table name **and** a distinct primary key name up front (`landing_ciclos.idLandingCiclo`, not `idCiclo`) — don't let two unrelated entities share an ambiguous name/column just because they're topically similar. It's cheap to get right on day one and expensive to rename later.
 
 **Slugs**: reuse the transliteration + uniqueness-loop pattern already established (`generarSlugBlog` in `modelos/blog.php`, `generarSlugCiclo` in `modelos/landingCiclos.php`) for any new sluggable content type — lowercase, strip accents, `[^a-z0-9]+` → `-`, then loop-query for uniqueness against the table, excluding the current row's own id on update.
+
+---
+
+## Installation
+
+A guided setup wizard lives at `install/` (5 steps: environment check → DB connection + schema import → first admin account → center identity → feature selection). It is **self-locking** via two independent guards, both checked before rendering any screen (`install/lib/helpers.php::installIsLocked()`):
+1. `install/.installed` lock file, written on successful completion.
+2. `directores` table already has ≥1 row — a belt-and-suspenders guard so the wizard stays blocked even if the lock file is ever missing (not deployed, deleted, etc.).
+
+**`.env` is the one canonical config mechanism** — the wizard only ever writes `.env`, never `config/db.php`. `config/db.php` support in `config/Config.php` is kept as an untouched, undocumented-going-forward legacy fallback for whatever existing deployment may still rely on it; don't point any new install at it.
+
+**Two seed paths, don't confuse them**: `noDeploy/seed_minimal.sql` is the minimal starter (one admin account with a one-time placeholder password, default center row) for a manual/no-wizard install — a fresh schema import leaves `directores` and `configuracion_centro` genuinely empty (verified), so this file is required before anyone can log in without the wizard. `noDeploy/demo_data.sql` is unrelated — rich fake data (students, teachers, cycles) for local development only. Never point a real deployment at `demo_data.sql`.
+
+`noDeploy/install-check.php` (mirrors `noDeploy/generar_htaccess_vendor.php`'s plain-script-no-framework pattern) runs via `composer.json`'s existing `post-install-cmd`/`post-update-cmd` hooks — checks PHP version/required extensions and prints the `/install/` URL as the next step.
 
 ---
 

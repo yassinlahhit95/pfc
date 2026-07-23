@@ -8,6 +8,19 @@ FeatureGuard::requirePage('feature_mensajes');
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../controladores/firebase/firebase_helper.php";
 
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+function responder_est_salir($ok, $msg, $idReclamacion, $isAjax, $extra = []) {
+    if ($isAjax) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(array_merge(['ok' => $ok, 'msg' => $msg], $extra));
+        exit;
+    }
+    if ($ok) { $_SESSION['exito'] = $msg; } else { $_SESSION['errores'] = $msg; }
+    header("Location: ../../../vistas/estudiantes/mensajes/detalles.php?id=$idReclamacion");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
@@ -17,23 +30,20 @@ if (!isset($_POST['enviarRespuesta'])) {
 }
 
 if (!Security::validateCSRFToken()) {
-    $_SESSION['errores'] = "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.";
-    header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
-    exit;
+    responder_est_salir(false, "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.", (int)($_POST['idReclamacion'] ?? 0), $isAjax);
 }
 
 $idReclamacion = (int)($_POST['idReclamacion'] ?? 0);
 $respuesta     = trim($_POST['respuesta'] ?? '');
 
 if ($idReclamacion <= 0 || $respuesta === '') {
-    $_SESSION['errores'] = "El contenido de la respuesta no puede estar vacío.";
-    header("Location: ../../../vistas/estudiantes/mensajes/detalles.php?id=$idReclamacion");
-    exit;
+    responder_est_salir(false, "El contenido de la respuesta no puede estar vacío.", $idReclamacion, $isAjax);
 }
 
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje || (int)$mensaje['idEstudiante'] !== (int)$_SESSION['idEstudiante']) {
+    if ($isAjax) { http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'No tienes permiso para responder a este mensaje.']); exit; }
     $_SESSION['errores'] = "No tienes permiso para responder a este mensaje.";
     header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
     exit;
@@ -57,13 +67,9 @@ if (insertarRespuestaMensaje($idReclamacion, (int)$_SESSION['idEstudiante'], nul
         }
     }
 
-    $_SESSION['exito'] = "La respuesta ha sido enviada correctamente.";
+    responder_est_salir(true, "La respuesta ha sido enviada correctamente.", $idReclamacion, $isAjax, [
+        'respuesta' => Security::escapeHtml($respuesta),
+    ]);
 } else {
-    $_SESSION['errores'] = "No se pudo enviar la respuesta. Inténtalo de nuevo.";
+    responder_est_salir(false, "No se pudo enviar la respuesta. Inténtalo de nuevo.", $idReclamacion, $isAjax);
 }
-
-// ══════════════════════════════════════════════════════════════════════
-// RESPUESTA
-// ══════════════════════════════════════════════════════════════════════
-header("Location: ../../../vistas/estudiantes/mensajes/detalles.php?id=$idReclamacion");
-exit;

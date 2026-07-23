@@ -225,7 +225,7 @@ require_once __DIR__ . "/../comunes/nav.php";
 <?php else: ?>
 
 <div class="panel">
-  <form method="POST" action="/controladores/profesores/asistencias/guardar.php">
+  <form method="POST" action="/controladores/profesores/asistencias/guardar.php" id="form-asistencia">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
     <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
     <input type="hidden" name="fecha"    value="<?= Security::escapeHtml($fecha) ?>">
@@ -362,7 +362,7 @@ require_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="acciones">
-      <button type="submit" class="boton-primario">
+      <button type="submit" class="boton-primario" id="btn-guardar-asist">
         <i class="fas fa-save"></i> Guardar Asistencia
       </button>
     </div>
@@ -397,4 +397,33 @@ document.querySelectorAll('.r-estado').forEach(function(r) {
 });
 
 actualizarResumen();
+
+// ── Guardado por AJAX (evita recargar la página completa) ──
+var formAsist = document.getElementById('form-asistencia');
+if (formAsist) {
+    formAsist.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = document.getElementById('btn-guardar-asist');
+        var textoOriginal = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+        fetch(formAsist.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(formAsist)
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            btn.disabled = false;
+            btn.innerHTML = textoOriginal;
+            if (window.Toast) Toast.show(data.msg, data.ok ? 'success' : 'error');
+        })
+        .catch(function () {
+            btn.disabled = false;
+            btn.innerHTML = textoOriginal;
+            if (window.Toast) Toast.show('Error de red al guardar la asistencia.', 'error');
+        });
+    });
+}
 </script>

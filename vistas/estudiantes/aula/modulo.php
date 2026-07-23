@@ -61,6 +61,8 @@ foreach ($archivosPaginados as $arch) {
 
 $tituloDelPagina = "AULAPRO | " . strtoupper($modulo['nombreModulo']);
 $seccionActual   = 'aula_sesiones';
+$breadcrumbSectionUrl = 'recursos.php';
+$breadcrumbExtra = [ ['label' => $modulo['nombreModulo'], 'url' => null] ];
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
@@ -70,13 +72,6 @@ include_once __DIR__ . "/../comunes/nav.php";
   const tipoUsuario = 'estudiante';
   const idModulo = <?= Security::escapeHtml($idModulo ) ?>;
 </script>
-
-<!-- BREADCRUMB -->
-<nav class="breadcrumb-modern">
-  <a href="recursos.php"><i class="fas fa-chalkboard"></i> Aula</a>
-  <span class="breadcrumb-sep">/</span>
-  <span class="breadcrumb-actual"><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
-</nav>
 
 <!-- HEADER -->
 <div class="header-modern">

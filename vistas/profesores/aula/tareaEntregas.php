@@ -96,7 +96,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php foreach ($filas as $fila): ?>
                 <tr>
                     <td><strong><?= Security::escapeHtml($fila['nombreEstudiante']) ?></strong></td>
-                    <td>
+                    <td class="estado-entrega-celda">
                         <?php if (empty($fila['idEntrega'])): ?>
                             <span class="texto-estado gris">Sin entregar</span>
                         <?php elseif ($fila['estado'] === 'corregida'): ?>
@@ -136,6 +136,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td>
                         <?php if (!empty($fila['idEntrega'])): ?>
                         <form method="POST" action="../../../controladores/profesores/aula/calificarEntrega.php"
+                              class="form-calificar"
                               style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                             <input type="hidden" name="idEntrega" value="<?= (int)$fila['idEntrega'] ?>">
@@ -160,6 +161,42 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
     <?php endif; ?>
 </div>
+
+<script>
+document.querySelectorAll('.form-calificar').forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type="submit"]');
+        var iconoOriginal = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(form)
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            btn.disabled = false;
+            btn.innerHTML = iconoOriginal;
+            if (window.Toast) Toast.show(data.msg, data.ok ? 'success' : 'error');
+            if (data.ok) {
+                var fila = form.closest('tr');
+                var celdaEstado = fila ? fila.querySelector('.estado-entrega-celda') : null;
+                if (celdaEstado) {
+                    celdaEstado.innerHTML = '<span class="texto-estado verde">Corregida</span>';
+                }
+            }
+        })
+        .catch(function () {
+            btn.disabled = false;
+            btn.innerHTML = iconoOriginal;
+            if (window.Toast) Toast.show('Error de red al guardar la calificación.', 'error');
+        });
+    });
+});
+</script>
 
 <?php include_once __DIR__ . "/../comunes/footer.php"; ?>
 <script>

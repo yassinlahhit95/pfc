@@ -6,7 +6,7 @@ declare(strict_types=1);
 // estudiante → schedule for their enrolled cycle
 // profesor   → their personal teaching schedule
 // tutor      → schedule for their tutored students' cycles
-// director   → 403
+// director / secretaria → 403
 
 require_once __DIR__ . '/_api.php';
 
@@ -100,4 +100,4 @@ if ($type === 'tutor') {
     v1Ok(['schedule' => mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC)]);
 }
 
-v1Error('This endpoint is not available for directors.', 403, 'forbidden');
+v1Error('This endpoint is not available for this role.', 403, 'forbidden');

@@ -168,6 +168,41 @@ while ($row = mysqli_fetch_assoc($res)) {
     ];
 }
 
+// ── Sus propios pagos ──
+$stmt = mysqli_prepare($con,
+    "SELECT monto, fechaPago FROM pagos WHERE idEstudiante = ? ORDER BY fechaPago DESC LIMIT 3");
+mysqli_stmt_bind_param($stmt, 'i', $idEstudiante);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'pago',
+        'label' => 'Pago ' . $row['monto'] . '€ (' . date('d/m/Y', strtotime($row['fechaPago'])) . ')',
+        'url'   => '../pagos/lista.php',
+    ];
+}
+
+// ── Su TFG ──
+if (stripos('tfg trabajo fin de grado', $q) !== false) {
+    $stmtTfg = mysqli_prepare($con, "SELECT nota FROM calificaciones_tfg WHERE idEstudiante = ? LIMIT 1");
+    mysqli_stmt_bind_param($stmtTfg, 'i', $idEstudiante);
+    mysqli_stmt_execute($stmtTfg);
+    $resTfg = mysqli_stmt_get_result($stmtTfg);
+    if (mysqli_fetch_assoc($resTfg)) {
+        $results[] = ['type' => 'tfg', 'label' => 'Mi TFG', 'url' => '../academico/resultadosFinales.php'];
+    }
+}
+
+// ── Eventos ──
+$stmt = mysqli_prepare($con,
+    "SELECT tituloEvento FROM eventos WHERE tituloEvento LIKE ? ORDER BY fechaEvento DESC LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '../eventos/lista.php'];
+}
+
 // ── Archivos (recursos.php) de su ciclo ──
 if ($idCiclo > 0) {
     $stmt = mysqli_prepare($con,

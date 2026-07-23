@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../include/BotGuard.php';
+require_once __DIR__ . '/../include/AssetMin.php';
 Security::initSession();
 
 if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard.php");      exit; }
@@ -27,7 +28,7 @@ $csrfToken = Security::generateCSRFToken();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../public/css/features/login.css">
+    <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../public/css/features/login.css') ?>">
 </head>
 <body>
 

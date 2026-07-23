@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Cache.php";
 
 // ══════════════════════════════════════════════════════════════════════
 //  AUTENTICACIÓN
@@ -200,10 +201,12 @@ function obtenerTutorPorDni(string $dni): ?array {
  * Cuenta el total de tutores en el sistema
  */
 function contarTutores() {
-    $con = obtenerConexion();
-    $res = mysqli_query($con, "SELECT COUNT(*) as total FROM tutores");
-    $fila = mysqli_fetch_assoc($res);
-    return intval($fila['total']);
+    return Cache::remember('panel_total_tutores', 60, function () {
+        $con = obtenerConexion();
+        $res = mysqli_query($con, "SELECT COUNT(*) as total FROM tutores");
+        $fila = mysqli_fetch_assoc($res);
+        return intval($fila['total']);
+    });
 }
 
 /**

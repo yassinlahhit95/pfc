@@ -169,6 +169,34 @@ while ($row = mysqli_fetch_assoc($res)) {
     ];
 }
 
+// ── Eventos ──
+$stmt = mysqli_prepare($con,
+    "SELECT tituloEvento FROM eventos WHERE tituloEvento LIKE ? ORDER BY fechaEvento DESC LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '../eventos/lista.php'];
+}
+
+// ── TFG de sus alumnos (calificaciones) ──
+$stmt = mysqli_prepare($con,
+    "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante
+     FROM calificaciones_tfg c
+     JOIN estudiantes e ON e.idEstudiante = c.idEstudiante
+     WHERE e.nombreEstudiante LIKE ?
+       AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+         OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m
+                           JOIN modulo_profesor pm ON m.idModulo = pm.idModulo
+                           WHERE pm.idProfesor = ?))
+     LIMIT 3");
+mysqli_stmt_bind_param($stmt, 'sii', $like, $idProfesor, $idProfesor);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = ['type' => 'tfg', 'label' => 'TFG — ' . $row['nombreEstudiante'], 'url' => '../academico/resultadosFinales.php'];
+}
+
 // ── Archivos (recursos.php) subidos por el profesor ──
 $stmt = mysqli_prepare($con,
     "SELECT a.idArchivo, a.nombreOriginal, a.idModulo, m.nombreModulo

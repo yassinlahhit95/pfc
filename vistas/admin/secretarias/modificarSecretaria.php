@@ -83,6 +83,17 @@ include_once __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
+<div class="panel" style="margin-top:20px;">
+    <h3 style="margin:0 0 16px;"><i class="fas fa-route" style="color:var(--accent);"></i> Tour de bienvenida</h3>
+    <form method="POST" action="/controladores/admin/tours/reiniciar.php"
+          data-ajax-confirm="¿Reiniciar el tour de bienvenida de esta secretaría? Volverá a verlo en su próximo inicio de sesión.">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idUsuario" value="<?= $idSecretaria ?>">
+        <input type="hidden" name="tipoUsuario" value="secretaria">
+        <button type="submit" class="boton-secundario"><i class="fas fa-route"></i> Reiniciar tour</button>
+    </form>
+</div>
+
 <script>
 function cambiarPassSec() {
     var pass    = document.getElementById('nueva-pass-sec').value.trim();

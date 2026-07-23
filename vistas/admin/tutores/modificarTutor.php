@@ -166,6 +166,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
+<div class="panel" style="margin-top:20px;">
+    <h3 style="margin:0 0 16px;"><i class="fas fa-route" style="color:var(--accent);"></i> Tour de bienvenida</h3>
+    <form method="POST" action="/controladores/admin/tours/reiniciar.php"
+          data-ajax-confirm="¿Reiniciar el tour de bienvenida de este tutor/familia? Volverá a verlo en su próximo inicio de sesión.">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idUsuario" value="<?= $idTutor ?>">
+        <input type="hidden" name="tipoUsuario" value="tutor">
+        <button type="submit" class="boton-secundario"><i class="fas fa-route"></i> Reiniciar tour</button>
+    </form>
+</div>
+
 <script>
 function filtrarEstudiantes() {
     var texto = document.getElementById('buscarEstudiante').value.toLowerCase().trim();

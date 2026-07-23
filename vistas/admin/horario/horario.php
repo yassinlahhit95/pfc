@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 FeatureGuard::requirePage('feature_horario');
 
 $exito   = $_SESSION['exito'] ?? '';
@@ -88,7 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 
-<link rel="stylesheet" href="../../../public/css/features/horario-admin.css?v=<?= @filemtime(__DIR__."/../../../public/css/features/horario-admin.css") ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/horario-admin.css') ?>">
 
 <?php if (empty($ciclosFiltrados)) { ?>
     <div class="panel"><p class="vacio">No hay ciclos para el nivel seleccionado.</p></div>
@@ -193,5 +194,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 window.HORARIO_AULAS     = <?= json_encode($aulasParaJs, JSON_UNESCAPED_UNICODE) ?>;
 window.HORARIO_END_SLOTS = <?= json_encode($endSlots) ?>;
 </script>
-<script src="../../../public/js/features/horario.js?v=<?= @filemtime(__DIR__."/../../../public/js/features/horario.js") ?>"></script>
+<script src="<?= AssetMin::url(__DIR__, '../../../public/js/features/horario.js') ?>"></script>
 <?php include '../comunes/footer.php'; ?>

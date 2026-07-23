@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
@@ -12,10 +13,12 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/chat.php";
 require_once __DIR__ . "/../../../modelos/justificacionesFalta.php";
 require_once __DIR__ . "/../../../include/Cache.php";
+require_once __DIR__ . "/../../../modelos/tours.php";
 
 $idProfesor             = $_SESSION['idProfesor'];
 $datosProfesor_menu     = obtenerProfesorPorId($idProfesor);
 $nombreUsuario_menu     = $datosProfesor_menu['nombreProfesor'] ?? 'Profesor';
+$tourPendiente_menu     = !tourEstaCompletado((int)$idProfesor, 'profesor', 'primeros_pasos_v1');
 
 // _menu suffix avoids collisions with variables in pages that include this nav
 // contarMensajesNoLeidosProfesor() y chatContarNoLeidos() ya se cachean 10s
@@ -75,14 +78,20 @@ function _nav_active_prof($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <?php if (is_file($__bundleCss)): ?>
+  <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
+  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
+  <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
+  <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
+  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
-  <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
   <?php if (FeatureGuard::check('feature_chat')): ?>
-  <link rel="stylesheet" href="../../../public/css/features/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/chat-widget.css') ?>" />
+  <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
   <?php endif; ?>
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
@@ -91,6 +100,7 @@ function _nav_active_prof($check) {
   <script defer src="../../../public/js/core/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/menu-contextual.js') ?>"></script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 <?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
@@ -158,7 +168,7 @@ function _nav_active_prof($check) {
       </a>
       <?php endif; ?>
 
-      <a href="../calificaciones/lista.php" class="nav-item<?= _nav_active_prof('calificaciones') ?>">
+      <a href="../calificaciones/lista.php" data-tour="calificaciones" class="nav-item<?= _nav_active_prof('calificaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
         <span class="nav-label">Notas Módulos</span>
         <?php if (_nav_active_prof('calificaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -198,7 +208,7 @@ function _nav_active_prof($check) {
         <?php if (_nav_active_prof('horario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <a href="../asistencias/registrar.php" class="nav-item<?= _nav_active_prof('asistencias') ?>">
+      <a href="../asistencias/registrar.php" data-tour="asistencias" class="nav-item<?= _nav_active_prof('asistencias') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <span class="nav-label">Asistencia</span>
         <?php if (_nav_active_prof('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -226,7 +236,7 @@ function _nav_active_prof($check) {
         <?php if (_nav_active_prof('aula_recursos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <a href="../aula/tareas.php" class="nav-item<?= _nav_active_prof('aula_tareas') ?>">
+      <a href="../aula/tareas.php" data-tour="tareas" class="nav-item<?= _nav_active_prof('aula_tareas') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
         <span class="nav-label">Tareas</span>
         <?php if (_nav_active_prof('aula_tareas') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -306,7 +316,7 @@ function _nav_active_prof($check) {
         </button>
         <!-- Desktop Input / Mobile Modal -->
         <div class="search-backdrop" id="search-backdrop" hidden></div>
-        <div class="search-wrapper" id="search-wrapper">
+        <div class="search-wrapper" id="search-wrapper" data-tour="busqueda">
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
@@ -361,8 +371,24 @@ function _nav_active_prof($check) {
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
 
-    <div class="content">
-      <?php if (isset($_SESSION['idProfesor'])) { 
+    <div class="content" id="main-content" tabindex="-1">
+      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
+      <?php if ($tourPendiente_menu): ?>
+      <script>
+      window.AULAPRO_TOUR = {
+        tourKey: 'primeros_pasos_v1',
+        completeUrl: 'controladores/comunes/tour/completar.php',
+        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        steps: [
+          { selector: '[data-tour="asistencias"]', title: 'Asistencia', text: 'Pasa lista por módulo y fecha en pocos clics.', placement: 'right' },
+          { selector: '[data-tour="tareas"]', title: 'Tareas', text: 'Publica tareas y corrige las entregas de tus alumnos.', placement: 'right' },
+          { selector: '[data-tour="calificaciones"]', title: 'Calificaciones', text: 'Registra las notas de módulos y retos.', placement: 'right' },
+          { selector: '[data-tour="busqueda"]', title: 'Búsqueda global', text: 'Pulsa aquí (o Ctrl/Cmd+K) para buscar alumnos, módulos, mensajes y más.', placement: 'bottom' }
+        ]
+      };
+      </script>
+      <?php endif; ?>
+      <?php if (isset($_SESSION['idProfesor'])) {
           $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data" 

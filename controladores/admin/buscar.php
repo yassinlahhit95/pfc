@@ -180,6 +180,63 @@ while ($row = mysqli_fetch_assoc($res)) {
     ];
 }
 
+// ── Tutores/Familias ──
+$stmt = mysqli_prepare($con,
+    "SELECT idTutor, nombreTutor, emailTutor FROM tutores
+     WHERE nombreTutor LIKE ? OR emailTutor LIKE ? ORDER BY nombreTutor LIMIT 3");
+mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'tutor',
+        'label' => $row['nombreTutor'] . ' (' . $row['emailTutor'] . ')',
+        'url'   => '/vistas/admin/tutores/modificarTutor.php?idTutor=' . (int)$row['idTutor'],
+    ];
+}
+
+// ── Pagos (por nombre de alumno) ──
+$stmt = mysqli_prepare($con,
+    "SELECT p.idPago, p.monto, p.fechaPago, e.idEstudiante, e.nombreEstudiante
+     FROM pagos p JOIN estudiantes e ON e.idEstudiante = p.idEstudiante
+     WHERE e.nombreEstudiante LIKE ? ORDER BY p.fechaPago DESC LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'pago',
+        'label' => 'Pago ' . $row['monto'] . '€ — ' . $row['nombreEstudiante'] . ' (' . date('d/m/Y', strtotime($row['fechaPago'])) . ')',
+        'url'   => '/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
+    ];
+}
+
+// ── TFG (calificaciones por alumno) ──
+$stmt = mysqli_prepare($con,
+    "SELECT c.idEstudiante, e.nombreEstudiante FROM calificaciones_tfg c
+     JOIN estudiantes e ON e.idEstudiante = c.idEstudiante
+     WHERE e.nombreEstudiante LIKE ? LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'tfg',
+        'label' => 'TFG — ' . $row['nombreEstudiante'],
+        'url'   => '/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
+    ];
+}
+
+// ── Eventos ──
+$stmt = mysqli_prepare($con,
+    "SELECT tituloEvento FROM eventos WHERE tituloEvento LIKE ? ORDER BY fechaEvento DESC LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '/vistas/admin/eventos/gestionEventos.php'];
+}
+
 // ── Archivos (recursos.php) ──
 $stmt = mysqli_prepare($con,
     "SELECT a.idArchivo, a.nombreOriginal, a.idModulo, m.nombreModulo

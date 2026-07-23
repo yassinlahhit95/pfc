@@ -160,10 +160,10 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <!-- Formulario de respuesta -->
-        <form method="POST" action="../../../controladores/profesores/mensajes/actualizar.php" class="msg-thread-reply">
+        <form method="POST" action="../../../controladores/profesores/mensajes/actualizar.php" class="msg-thread-reply" id="form-responder">
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
-            <textarea name="respuesta" placeholder="Escribe tu respuesta…" maxlength="1000" required></textarea>
+            <textarea name="respuesta" id="respuesta-input" placeholder="Escribe tu respuesta…" maxlength="1000" required></textarea>
             <button type="submit" name="guardarRespuesta" class="msg-thread-send" title="Enviar respuesta">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -177,5 +177,47 @@ include_once __DIR__ . "/../comunes/nav.php";
 (function () {
     var body = document.getElementById('thread-body');
     if (body) body.scrollTop = body.scrollHeight;
+
+    var form = document.getElementById('form-responder');
+    var textarea = document.getElementById('respuesta-input');
+    if (!form || !textarea) return;
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var texto = textarea.value.trim();
+        if (!texto) return;
+        var btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+
+        var fd = new FormData(form);
+        fd.append('guardarRespuesta', '1');
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            btn.disabled = false;
+            if (window.Toast) Toast.show(data.msg, data.ok ? 'success' : 'error');
+            if (data.ok && data.respuesta) {
+                var row = document.createElement('div');
+                row.className = 'msg-thread-row mine';
+                row.innerHTML = '<div class="msg-thread-ava ava-yo">YO</div>'
+                    + '<div class="msg-thread-bubble-wrap">'
+                    + '<div class="msg-thread-bubble">' + data.respuesta + '</div>'
+                    + '<div class="msg-thread-time">Ahora</div>'
+                    + '</div>';
+                body.appendChild(row);
+                body.scrollTop = body.scrollHeight;
+                textarea.value = '';
+            }
+        })
+        .catch(function () {
+            btn.disabled = false;
+            if (window.Toast) Toast.show('Error de red al enviar la respuesta.', 'error');
+        });
+    });
 })();
 </script>

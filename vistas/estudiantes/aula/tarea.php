@@ -24,16 +24,13 @@ $gravEstHash = md5(strtolower(trim($estudiante['emailEstudiante'] ?? '')));
 
 $tituloDelPagina = "AULAPRO | " . mb_strtoupper($tarea['titulo'], 'UTF-8');
 $seccionActual   = 'aula_sesiones';
+$breadcrumbSectionUrl = 'recursos.php';
+$breadcrumbExtra = [
+    ['label' => $tarea['nombreModulo'], 'url' => 'modulo.php?id=' . (int)$tarea['idModulo']],
+    ['label' => $tarea['titulo'], 'url' => null],
+];
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
-
-<div class="aula-breadcrumb">
-  <a href="recursos.php"><i class="fas fa-chalkboard"></i> Aula</a>
-  <span class="sep">/</span>
-  <a href="modulo.php?id=<?= Security::escapeHtml($tarea['idModulo']) ?>"><?= Security::escapeHtml($tarea['nombreModulo']) ?></a>
-  <span class="sep">/</span>
-  <span class="actual"><?= Security::escapeHtml($tarea['titulo']) ?></span>
-</div>
 
 
 <!-- ENUNCIADO -->
@@ -187,7 +184,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <?php endif; ?>
 
   <!-- FORMULARIO ENVÍO -->
-  <form action="../../../controladores/estudiantes/aula/enviarEntrega.php" method="POST" enctype="multipart/form-data" class="formulario">
+  <form action="../../../controladores/estudiantes/aula/enviarEntrega.php" method="POST" enctype="multipart/form-data" class="formulario" id="form-entrega">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
     <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea) ?>">
     <div class="campo ancho-total">
@@ -220,4 +217,32 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+(function () {
+    var form = document.getElementById('form-entrega');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (window.UploadOverlay) UploadOverlay.show('Enviando entrega...');
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(form)
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (window.UploadOverlay) UploadOverlay.hide();
+            if (window.Toast) Toast.show(data.msg, data.ok ? 'success' : 'error');
+            if (data.ok) {
+                setTimeout(function () { window.location.reload(); }, 600);
+            }
+        })
+        .catch(function () {
+            if (window.UploadOverlay) UploadOverlay.hide();
+            if (window.Toast) Toast.show('Error de red al enviar la entrega.', 'error');
+        });
+    });
+})();
+</script>
 

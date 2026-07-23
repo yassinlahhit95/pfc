@@ -69,7 +69,11 @@ if (!empty($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK)
         $_SESSION['errores'] = "Formato no permitido. Sube un PDF o una imagen (JPG/PNG).";
         header("Location: $_back"); exit;
     }
+    require_once __DIR__ . '/../../../include/ImageOptimizer.php';
     require_once __DIR__ . '/../../../include/R2Client.php';
+    if (in_array($mime, ['image/jpeg', 'image/png'], true)) {
+        ImageOptimizer::optimize($file['tmp_name'], $mime); // optimizar el temporal ANTES de subir a R2
+    }
     $archivo = 'just_' . $idEstudiante . '_' . bin2hex(random_bytes(6)) . '.' . $mimeExtMap[$mime];
     $bytes   = file_get_contents($file['tmp_name']);
     $subioOk = $bytes !== false && R2Client::putObject('justificantes/' . $archivo, $bytes, $mime);

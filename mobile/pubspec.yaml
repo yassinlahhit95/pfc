@@ -1,0 +1,38 @@
+name: aulapro_mobile
+description: AulaPro mobile app — Flutter client for all 5 roles (admin, profesor, secretaria, estudiante, tutor), synced via api/v1.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+
+  # Networking
+  dio: ^5.4.3+1
+
+  # Routing
+  go_router: ^14.2.0
+
+  # Secure token storage (Keystore-backed on Android)
+  flutter_secure_storage: ^9.2.2
+
+  # Light local cache for last-fetched JSON blobs (instant cold-start display)
+  shared_preferences: ^2.2.3
+
+  intl: ^0.19.0
+  cupertino_icons: ^1.0.8
+  url_launcher: ^6.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

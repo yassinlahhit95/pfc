@@ -13,7 +13,7 @@
         "platform-check": false
     },
     "scripts": {
-        "post-install-cmd": ["php generar_htaccess_vendor.php"],
-        "post-update-cmd": ["php generar_htaccess_vendor.php"]
+        "post-install-cmd": ["php noDeploy/generar_htaccess_vendor.php", "php noDeploy/install-check.php"],
+        "post-update-cmd": ["php noDeploy/generar_htaccess_vendor.php", "php noDeploy/install-check.php"]
     }
 }

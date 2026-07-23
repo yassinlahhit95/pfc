@@ -58,6 +58,8 @@ Todos los módulos son activables/desactivables por el administrador desde Confi
 
 ## Instalación local
 
+> **Recomendado:** tras `composer install`, visita `/install/` en el navegador — el asistente guiado comprueba los requisitos del servidor, conecta con la base de datos, importa el esquema, genera el `.env` y crea la primera cuenta de administrador en 5 pantallas. Los pasos manuales de aquí abajo son la alternativa sin asistente (o para producción, vía manual FTP).
+
 ### 1. Dependencias
 ```bash
 git clone https://github.com/tu-usuario/pfc.git
@@ -66,7 +68,7 @@ composer install
 ```
 
 ### 2. Configuración de entorno
-Crea `config/db.php` y `.env` a partir de los ejemplos (nunca se suben a git):
+Crea `.env` a partir de `.env.example` (nunca se sube a git) — es la única vía soportada para instalaciones nuevas. `config/db.php` sigue funcionando como alternativa heredada si ya la usas en un despliegue existente, pero no la uses para una instalación nueva.
 
 ```
 DB_HOST=localhost
@@ -95,13 +97,21 @@ Importa el esquema (instalación nueva — ya incluye todas las tablas al día):
 mysql -u root -p aulapro < noDeploy/database.sql
 ```
 
+Después, crea la primera cuenta de administrador y la fila de configuración del centro — **sin esto no se puede entrar a la aplicación**:
+
+```bash
+mysql -u root -p aulapro < noDeploy/seed_minimal.sql
+```
+
+`seed_minimal.sql` es un seed mínimo (un admin con contraseña de un solo uso a cambiar, datos de centro por defecto) — distinto de `noDeploy/demo_data.sql`, que son datos ficticios solo para desarrollo local (alumnos, profesores, ciclos de ejemplo).
+
 Si en cambio partes de una base de datos **existente** (más antigua que alguno de los archivos en `noDeploy/migrations/`), aplica ahí las que falten, en orden numérico:
 
 ```bash
 mysql -u root -p aulapro < noDeploy/migrations/aplicar_todas_produccion.sql
 ```
 
-(Ese archivo concatena, en orden, todas las migraciones numeradas — o aplícalas una a una si prefieres control fino: `001_blog_posts.sql` → `006_add_saas_control_columns.sql`.)
+(Ese archivo concatena, en orden, todas las migraciones numeradas — o aplícalas una a una si prefieres control fino: `001_blog_posts.sql` → `007_tours_completados.sql`.)
 
 ### 4. Permisos
 ```bash
@@ -148,7 +158,7 @@ Endpoints bajo `/api/v1/`:
 
 Autenticación: `Authorization: Bearer <token>`. Rate limit: 120 req/min por token.
 
-Documentación completa de request/response de cada endpoint: **[API_DOCS.md](API_DOCS.md)**.
+Documentación completa de request/response de cada endpoint: **[noDeploy/API_DOCS.md](noDeploy/API_DOCS.md)**.
 
 ---
 

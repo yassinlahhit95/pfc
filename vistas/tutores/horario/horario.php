@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../include/TutorGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . '/../../../include/AssetMin.php';
 FeatureGuard::requirePage('feature_horario');
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -32,7 +33,7 @@ $seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
-<link rel="stylesheet" href="../../../public/css/features/horario-admin.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/horario-admin.css') ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/horario-admin.css') ?>">
 
 <div class="cabecera">
   <div>

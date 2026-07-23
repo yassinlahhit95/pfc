@@ -22,7 +22,7 @@ $roleFilter = match($type) {
     'estudiante' => 'estudiantes',
     'profesor'   => 'profesores',
     'tutor'      => 'tutores',
-    default      => null, // director sees all
+    default      => null, // director / secretaria see all, unfiltered
 };
 
 $con = obtenerConexion();

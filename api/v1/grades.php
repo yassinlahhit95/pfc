@@ -6,7 +6,7 @@ declare(strict_types=1);
 // estudiante → own module grades + reto grades
 // profesor   → grades for modules they teach, grouped by student
 // tutor      → grades for their tutored students
-// director   → 403 (use the web interface)
+// director / secretaria → 403 (use the web interface)
 
 require_once __DIR__ . '/_api.php';
 
@@ -139,5 +139,5 @@ if ($type === 'tutor') {
     v1Ok(['students' => array_values($byStudent)]);
 }
 
-// director — grades are managed on the web dashboard
-v1Error('This endpoint is not available for directors.', 403, 'forbidden');
+// director / secretaria — grades are managed on the web dashboard
+v1Error('This endpoint is not available for this role.', 403, 'forbidden');

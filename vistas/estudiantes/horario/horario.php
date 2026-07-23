@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -22,7 +23,7 @@ $seccionActual = 'horario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<link rel="stylesheet" href="../../../public/css/features/horario-admin.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/horario-admin.css') ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/horario-admin.css') ?>">
 
 <div class="cabecera">
     <h1>MI HORARIO</h1>

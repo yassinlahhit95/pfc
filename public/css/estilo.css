@@ -22,6 +22,45 @@ ul { list-style-position: inside; }
 .panel ul  { margin: 15px 0; padding-left: 20px; list-style-type: disc; }
 .panel li  { margin-bottom: 8px; font-size: 14px; color: var(--dim, #4a5568); }
 
+/* ── Global keyboard focus ring ──
+   :focus-visible only fires for keyboard/AT navigation, never a mouse click,
+   so this is a pure accessibility addition with zero visual effect on mouse
+   users. Components that already ship their own clearly-visible focus
+   treatment (checkboxes, the toggle switch, tooltip triggers) override this
+   with their own :focus-visible rule elsewhere — this is just the default
+   for everything else that had none. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent, #4F46E5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Skip link ── WCAG 2.4.1: lets keyboard/screen-reader users jump past
+   the sidebar straight to the page content instead of tabbing through every
+   nav item on every single page load. Hidden until it receives focus. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 10000;
+  background: var(--accent, #4F46E5);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  transition: top .15s ease;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* ── 2. LAYOUT ───────────────────────────────────────────────────────────────── */
 
 .cabecera {
@@ -68,6 +107,116 @@ ul { list-style-position: inside; }
 /* Constrain forms to a comfortable reading width */
 .contenedor-formulario-mediano { max-width: 680px; }
 .contenedor-formulario-pequeno { max-width: 480px; }
+
+/* ── Breadcrumb bar (vistas/comunes/breadcrumb.php) ── */
+.breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: var(--mut, #64748b);
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mut, #64748b);
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+a.breadcrumb-item:hover,
+button.breadcrumb-item:hover {
+  color: var(--accent, #4f46e5);
+}
+
+.breadcrumb-item.breadcrumb-current {
+  color: var(--text, #0f172a);
+  font-weight: 600;
+  cursor: default;
+}
+
+.breadcrumb-item.breadcrumb-home i { font-size: 12px; }
+
+.breadcrumb-sep {
+  font-size: 9px;
+  color: var(--border-2, #cbd5e1);
+}
+
+@media (max-width: 640px) {
+  .breadcrumb-bar { font-size: 12px; gap: 6px; }
+}
+
+/* ── Contextual tooltips (public/js/core/tooltip.js) ──
+   <button class="ap-tip-trigger" data-tooltip="texto" aria-label="Ayuda"><i class="fas fa-circle-question"></i></button>
+   Text comes from the data-tooltip attribute itself (content: attr(...)) so
+   no separate bubble element is needed — tooltip.js only toggles a class for
+   touch devices, where :hover never fires. */
+.ap-tip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 5px;
+  color: var(--mut, #94a3b8);
+  font-size: 13px;
+  cursor: help;
+  position: relative;
+  vertical-align: middle;
+}
+
+.ap-tip-trigger:hover,
+.ap-tip-trigger:focus-visible,
+.ap-tip-trigger.ap-tip-open {
+  color: var(--accent, #4f46e5);
+}
+
+.ap-tip-trigger::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 240px;
+  background: var(--ink, #0f172a);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md, 0 8px 20px rgba(0,0,0,.18));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease;
+  z-index: 40;
+  text-align: left;
+  white-space: normal;
+}
+
+.ap-tip-trigger:hover::after,
+.ap-tip-trigger:focus-visible::after,
+.ap-tip-trigger.ap-tip-open::after {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .ap-tip-trigger::after { max-width: 70vw; }
+}
 
 
 /* ── 3. PANELS / CARDS ──────────────────────────────────────────────────────── */

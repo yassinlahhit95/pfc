@@ -1,9 +1,17 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/Paginator.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 
-$historial = listarHistorialSecretarias(null, 100); // Muestra las últimas 100 acciones
+// Paginación servidor (LIMIT/OFFSET) — esta tabla crece indefinidamente
+// (una fila por cada acción de cada secretaría), así que nunca se trae
+// todo a la vez como hace la paginación cliente en el resto del panel.
+$porPagina      = 20;
+$totalHistorial = contarHistorialSecretarias();
+$totalPaginas   = max(1, (int)ceil($totalHistorial / $porPagina));
+$pagina         = max(1, min($totalPaginas, (int)($_GET['pagina'] ?? 1)));
+$historial      = listarHistorialSecretarias(null, $porPagina, ($pagina - 1) * $porPagina);
 
 $titulo_pagina = 'AULAPRO | HISTORIAL DE SECRETARIAS';
 $seccion = 'secretarias'; // Mantener activa la pestaña de secretarias
@@ -52,10 +60,10 @@ include __DIR__ . '/../comunes/nav.php';
             </tbody>
         </table>
     </div>
+    <?= Paginator::render($pagina, $totalHistorial, $porPagina, function ($p) {
+        return '?pagina=' . $p;
+    }) ?>
     <?php endif; ?>
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-<script>
-    iniciarPaginacion('tablaHistorial', 20);
-</script>

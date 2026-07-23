@@ -1,0 +1,11 @@
+{
+  "name": "aulapro-assets",
+  "private": true,
+  "description": "Build step for bundling/minifying AulaPro's always-loaded core CSS/JS. No runtime Node dependency — this only produces committed static files. Run `npm run build:assets` and commit the result whenever a public/js/core or public/css core file changes, same as any other manually-deployed asset.",
+  "scripts": {
+    "build:assets": "node noDeploy/build-assets.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}

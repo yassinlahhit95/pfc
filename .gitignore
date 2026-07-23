@@ -8,6 +8,7 @@ config/service-account.json
 
 # Dependencies
 vendor/
+node_modules/
 
 # Uploads — ignore content but track security .htaccess files.
 # NOTE: git cannot re-include a file whose parent directory is excluded by an

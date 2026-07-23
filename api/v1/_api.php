@@ -26,10 +26,13 @@ const V1_USER_MAP = [
     'profesor'   => ['profesores',  'idProfesor',   'emailProfesor',   'nombreProfesor'],
     'director'   => ['directores',  'idDirector',   'emailDirector',   'nombreDirector'],
     'tutor'      => ['tutores',     'idTutor',       'emailTutor',      'nombreTutor'],
+    'secretaria' => ['secretarias', 'idSecretaria',  'emailSecretaria', 'nombreSecretaria'],
 ];
 
-// Columns that must never be sent to clients
-const V1_STRIP = ['password', 'fcm_token', 'pwd_changed_at', 'mfa_secret', 'mfa_backup_codes'];
+// Columns that must never be sent to clients.
+// NOTE: `secretarias` names its FCM column `token_fcm`, not `fcm_token` like
+// every other role table — both must be listed here or me.php would leak it.
+const V1_STRIP = ['password', 'fcm_token', 'token_fcm', 'pwd_changed_at', 'mfa_secret', 'mfa_backup_codes'];
 
 // ── Response helpers ──────────────────────────────────────────────────────────
 
@@ -59,10 +62,30 @@ function v1Strip(array $row): array {
 
 // ── Auth middleware ───────────────────────────────────────────────────────────
 
+// Reads the raw Authorization header value (e.g. "Bearer abc123..."), or ''
+// if absent. Some Apache/mod_php configs (confirmed on local Laragon) strip
+// the Authorization header from $_SERVER before PHP sees it even though it
+// was actually sent — getallheaders() still has it in that case.
+// REDIRECT_HTTP_AUTHORIZATION covers the mod_rewrite/CGI variant.
+function v1AuthHeader(): string {
+    $header = $_SERVER['HTTP_AUTHORIZATION']
+        ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+        ?? '';
+    if (!$header && function_exists('getallheaders')) {
+        foreach (getallheaders() as $name => $value) {
+            if (strcasecmp($name, 'Authorization') === 0) {
+                $header = $value;
+                break;
+            }
+        }
+    }
+    return $header;
+}
+
 // Validates Bearer token; returns ['user_type'=>string, 'user_id'=>int].
 // Terminates with 401 on failure.
 function v1Auth(): array {
-    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $header = v1AuthHeader();
     if (!$header || stripos($header, 'Bearer ') !== 0) {
         v1Error('Missing or malformed Authorization header.', 401, 'unauthenticated');
     }

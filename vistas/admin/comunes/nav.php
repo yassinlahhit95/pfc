@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -8,8 +9,11 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
+require_once __DIR__ . "/../../../modelos/tours.php";
 
 $datosAdmin_menu    = obtenerDirectorPorId($_SESSION['idAdmin']);
+
+$tourPendiente_menu = !tourEstaCompletado((int)$_SESSION['idAdmin'], 'admin', 'primeros_pasos_v1');
 $nombreUsuario_menu = $datosAdmin_menu['nombreDirector'] ?? 'Administrador';
 
 $navCounts = obtenerContadoresNavAdmin((int)($_SESSION['idAdmin'] ?? 0));
@@ -47,14 +51,20 @@ function _nav_active_admin($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <?php if (is_file($__bundleCss)): ?>
+  <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
+  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
+  <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
+  <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
+  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
-  <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
   <?php if (FeatureGuard::check('feature_chat')): ?>
-  <link rel="stylesheet" href="../../../public/css/features/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/chat-widget.css') ?>" />
+  <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
   <?php endif; ?>
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
@@ -63,6 +73,7 @@ function _nav_active_admin($check) {
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 <?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
@@ -103,7 +114,7 @@ function _nav_active_admin($check) {
       <!-- ACADÉMICO -->
       <span class="nav-section-title">ACADÉMICO</span>
 
-      <a href="../estudiantes/verEstudiantes.php" class="nav-item<?= _nav_active_admin('estudiantes') ?>">
+      <a href="../estudiantes/verEstudiantes.php" data-tour="estudiantes" class="nav-item<?= _nav_active_admin('estudiantes') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Estudiantes</span>
         <?php if (_nav_active_admin('estudiantes') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -268,7 +279,7 @@ function _nav_active_admin($check) {
       <span class="nav-section-title">FINANZAS</span>
 
       <?php if (FeatureGuard::check('feature_pagos')): ?>
-      <a href="../pagos/verPagosGeneral.php" class="nav-item<?= _nav_active_admin('pagos') ?>">
+      <a href="../pagos/verPagosGeneral.php" data-tour="pagos" class="nav-item<?= _nav_active_admin('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
         <?php if (_nav_active_admin('pagos') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -338,7 +349,7 @@ function _nav_active_admin($check) {
       </a>
       <?php endif; ?>
 
-      <a href="../configuracion/configuracion.php" class="nav-item<?= _nav_active_admin('configuracion') ?>">
+      <a href="../configuracion/configuracion.php" data-tour="configuracion" class="nav-item<?= _nav_active_admin('configuracion') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <span class="nav-label">Configuración</span>
         <?php if (_nav_active_admin('configuracion') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -388,7 +399,7 @@ function _nav_active_admin($check) {
         </button>
         <!-- Desktop Input / Mobile Modal -->
         <div class="search-backdrop" id="search-backdrop" hidden></div>
-        <div class="search-wrapper" id="search-wrapper">
+        <div class="search-wrapper" id="search-wrapper" data-tour="busqueda">
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..." 
@@ -442,7 +453,23 @@ function _nav_active_admin($check) {
         $cw_basePath = '../../../';
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
-    <div class="content">
+    <div class="content" id="main-content" tabindex="-1">
+      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
+      <?php if ($tourPendiente_menu): ?>
+      <script>
+      window.AULAPRO_TOUR = {
+        tourKey: 'primeros_pasos_v1',
+        completeUrl: 'controladores/comunes/tour/completar.php',
+        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        steps: [
+          { selector: '[data-tour="estudiantes"]', title: 'Estudiantes', text: 'Gestiona el alumnado del centro: fichas, matrículas y documentación.', placement: 'right' },
+          { selector: '[data-tour="pagos"]', title: 'Pagos', text: 'Controla los recibos y comprobantes de pago de cada estudiante.', placement: 'right' },
+          { selector: '[data-tour="configuracion"]', title: 'Configuración', text: 'Activa o desactiva funciones del centro y personaliza los datos generales.', placement: 'right' },
+          { selector: '[data-tour="busqueda"]', title: 'Búsqueda global', text: 'Pulsa aquí (o Ctrl/Cmd+K) para buscar estudiantes, pagos, mensajes y más desde cualquier página.', placement: 'bottom' }
+        ]
+      };
+      </script>
+      <?php endif; ?>
       <?php
       // SaaS platform message banner — shown on every admin page
       if (class_exists('FeatureGuard')) {

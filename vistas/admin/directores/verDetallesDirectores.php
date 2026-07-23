@@ -52,6 +52,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <a href="modificarDirectores.php?id=<?= $idDirector ?>" class="boton-primario">
                 <i class="fas fa-edit"></i> Editar
             </a>
+            <form method="POST" action="/controladores/admin/tours/reiniciar.php" style="display:inline;"
+                  data-ajax-confirm="¿Reiniciar el tour de bienvenida de este director/a? Volverá a verlo en su próximo inicio de sesión.">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                <input type="hidden" name="idUsuario" value="<?= $idDirector ?>">
+                <input type="hidden" name="tipoUsuario" value="admin">
+                <button type="submit" class="boton-secundario">
+                    <i class="fas fa-route"></i> Reiniciar tour
+                </button>
+            </form>
             <a href="verDirectores.php" class="boton-secundario">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>

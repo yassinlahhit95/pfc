@@ -1,14 +1,17 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../include/Cache.php";
+require_once __DIR__ . "/../../../modelos/tours.php";
 
 $datosSecretaria     = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $nombreUsuario_menu = $datosSecretaria['nombreSecretaria'] ?? 'Secretaria';
+$tourPendiente_menu = !tourEstaCompletado((int)$_SESSION['idSecretaria'], 'secretaria', 'primeros_pasos_v1');
 
 // Badges. total_admisiones_pendientes es idéntico al que ya cachea
 // obtenerContadoresNavAdmin(), así que lo reutilizamos; total_sin_leer aquí
@@ -36,13 +39,19 @@ function _nav_active_sec($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <?php if (is_file($__bundleCss)): ?>
+  <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
+  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
+  <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
+  <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
+  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
-  <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
-  <link rel="stylesheet" href="../../../public/css/features/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/chat-widget.css') ?>" />
+  <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
   <script defer src="../../../public/js/core/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/aula-digital.js') ?>"></script>
@@ -50,6 +59,7 @@ function _nav_active_sec($check) {
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
@@ -106,7 +116,7 @@ function _nav_active_sec($check) {
 
       <span class="nav-section-title">GESTIÓN</span>
 
-      <a href="../estudiantes/verEstudiantes.php" class="nav-item<?= _nav_active_sec('estudiantes') ?>">
+      <a href="../estudiantes/verEstudiantes.php" data-tour="estudiantes" class="nav-item<?= _nav_active_sec('estudiantes') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Estudiantes</span>
         <?php if (_nav_active_sec('estudiantes') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -118,7 +128,7 @@ function _nav_active_sec($check) {
         <?php if (_nav_active_sec('papelera') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_sec('tutores') ?>">
+      <a href="../tutores/verTutores.php" data-tour="tutores" class="nav-item<?= _nav_active_sec('tutores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Sistema Parental</span>
         <?php if (_nav_active_sec('tutores') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -136,7 +146,7 @@ function _nav_active_sec($check) {
       <span class="nav-section-title">FINANZAS</span>
 
       <?php if (FeatureGuard::check('feature_pagos')): ?>
-      <a href="../pagos/verPagos.php" class="nav-item<?= _nav_active_sec('pagos') ?>">
+      <a href="../pagos/verPagos.php" data-tour="pagos" class="nav-item<?= _nav_active_sec('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
         <?php if (_nav_active_sec('pagos') !== '') { ?><span class="nav-rail"></span><?php } ?>
@@ -248,7 +258,7 @@ function _nav_active_sec($check) {
         </button>
         <!-- Desktop Input / Mobile Modal -->
         <div class="search-backdrop" id="search-backdrop" hidden></div>
-        <div class="search-wrapper" id="search-wrapper">
+        <div class="search-wrapper" id="search-wrapper" data-tour="busqueda">
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
@@ -278,4 +288,20 @@ function _nav_active_sec($check) {
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
 
-    <div class="content">
+    <div class="content" id="main-content" tabindex="-1">
+      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
+      <?php if ($tourPendiente_menu): ?>
+      <script>
+      window.AULAPRO_TOUR = {
+        tourKey: 'primeros_pasos_v1',
+        completeUrl: 'controladores/comunes/tour/completar.php',
+        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        steps: [
+          { selector: '[data-tour="estudiantes"]', title: 'Estudiantes', text: 'Gestiona fichas y matrículas del alumnado.', placement: 'right' },
+          { selector: '[data-tour="tutores"]', title: 'Sistema Parental', text: 'Administra las cuentas de las familias vinculadas a cada alumno.', placement: 'right' },
+          { selector: '[data-tour="pagos"]', title: 'Pagos', text: 'Revisa y registra los pagos de cada estudiante.', placement: 'right' },
+          { selector: '[data-tour="busqueda"]', title: 'Búsqueda global', text: 'Pulsa aquí (o Ctrl/Cmd+K) para buscar estudiantes, pagos, tutores y más.', placement: 'bottom' }
+        ]
+      };
+      </script>
+      <?php endif; ?>

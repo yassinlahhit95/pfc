@@ -85,6 +85,19 @@ if ($carpetaActual) {
     }));
 }
 
+// Breadcrumb dinámico: módulo + cadena de carpetas (renderizado por el
+// componente global vistas/comunes/breadcrumb.php, incluido dentro de nav.php)
+$breadcrumbSectionUrl = 'recursos.php';
+$breadcrumbExtra = [
+    ['label' => $modulo['nombreModulo'], 'url' => 'recursos.php?id=' . (int)$idModulo],
+];
+foreach ($ruta as $carpetaMiga) {
+    $breadcrumbExtra[] = [
+        'label' => $carpetaMiga['nombre'],
+        'url'   => 'recursos.php?id=' . (int)$idModulo . '&carpeta=' . (int)$carpetaMiga['idCarpeta'],
+    ];
+}
+
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
@@ -94,25 +107,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo-encabezado">Materiales del módulo</p>
   </div>
   <a href="favoritos.php" class="boton-secundario"><i class="fas fa-star"></i> Favoritos</a>
-</div>
-
-<!-- Migas de pan (Breadcrumbs) -->
-<div class="recurso-breadcrumbs" style="margin: 16px 0; padding: 12px 16px; background:var(--surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; font-size: 0.9rem;" data-csrf="<?= Security::generateCSRFToken() ?>">
-  <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>" style="color: var(--dim); text-decoration: none; font-weight: 500;">
-    <i class="fas fa-home"></i> Raíz
-  </a>
-  <?php if (!empty($ruta)): ?>
-    <?php foreach ($ruta as $n => $carpetaMiga): ?>
-      <span style="color: var(--border-2);"><i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i></span>
-      <?php if ($n === count($ruta) - 1): ?>
-        <span style="color: var(--text); font-weight: 600;"><?= Security::escapeHtml($carpetaMiga['nombre']) ?></span>
-      <?php else: ?>
-        <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($carpetaMiga['idCarpeta']) ?>" style="color: var(--azul); text-decoration: none; font-weight: 500;">
-          <?= Security::escapeHtml($carpetaMiga['nombre']) ?>
-        </a>
-      <?php endif; ?>
-    <?php endforeach; ?>
-  <?php endif; ?>
 </div>
 
 <?php if (!empty($carpetas)): ?>

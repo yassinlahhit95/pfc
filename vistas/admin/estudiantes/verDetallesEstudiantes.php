@@ -68,6 +68,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <a href="/controladores/admin/rgpd/exportar.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-secundario" title="RGPD Art. 20 – Exportar datos personales">
                 <i class="fas fa-file-export"></i> Exportar datos
             </a>
+            <form method="POST" action="/controladores/admin/tours/reiniciar.php" style="display:inline;"
+                  data-ajax-confirm="¿Reiniciar el tour de bienvenida de este estudiante? Volverá a verlo en su próximo inicio de sesión.">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                <input type="hidden" name="idUsuario" value="<?= $idDelEstudiante ?>">
+                <input type="hidden" name="tipoUsuario" value="estudiante">
+                <button type="submit" class="boton-secundario">
+                    <i class="fas fa-route"></i> Reiniciar tour
+                </button>
+            </form>
             <a href="verEstudiantes.php" class="boton-secundario">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>

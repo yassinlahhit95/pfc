@@ -58,6 +58,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <a href="modificarProfesores.php?idProfesor=<?= $idProfesor ?>" class="boton-primario">
                 <i class="fas fa-edit"></i> Editar
             </a>
+            <form method="POST" action="/controladores/admin/tours/reiniciar.php" style="display:inline;"
+                  data-ajax-confirm="¿Reiniciar el tour de bienvenida de este profesor? Volverá a verlo en su próximo inicio de sesión.">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                <input type="hidden" name="idUsuario" value="<?= $idProfesor ?>">
+                <input type="hidden" name="tipoUsuario" value="profesor">
+                <button type="submit" class="boton-secundario">
+                    <i class="fas fa-route"></i> Reiniciar tour
+                </button>
+            </form>
             <a href="verProfesores.php" class="boton-secundario">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>

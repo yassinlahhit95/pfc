@@ -46,6 +46,7 @@
     var cleanRel = relPath.replace(/^(\.\.\/)+/, '');
     return base + '/' + cleanRel;
   }
+  window.AulaProResolveAppPath = resolveAppPath;
 
   function syncThemeBtn() {
     var knob = getEl("#theme .theme-knob");
@@ -123,7 +124,7 @@
     var url = resolveAppPath(rawUrl);
 
     var timer;
-    var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo", "modulo-asignar": "Módulo", ciclo: "Ciclo", evento: "Evento", director: "Director", secretaria: "Secretaría", archivo: "Archivo", pago: "Pago", entrega: "Entrega", tarea: "Tarea" };
+    var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo", "modulo-asignar": "Módulo", ciclo: "Ciclo", evento: "Evento", director: "Director", secretaria: "Secretaría", archivo: "Archivo", pago: "Pago", entrega: "Entrega", tarea: "Tarea", tutor: "Tutor/Familia", tfg: "TFG", calificacion: "Calificación" };
 
     function escHtml(s) {
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
@@ -205,6 +206,19 @@
       if (!document.body.classList.contains("search-open") && wrapper && !e.target.closest("#search-wrapper")) {
         clearResults();
       }
+    });
+  }
+
+  /* ── Breadcrumb "back" button — used when a crumb has no known parent URL ── */
+  function initBreadcrumb() {
+    document.querySelectorAll("[data-breadcrumb-back]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = resolveAppPath(btn.dataset.breadcrumbBack);
+        }
+      });
     });
   }
 
@@ -422,6 +436,9 @@
 
     /* Search */
     initSearch();
+
+    /* Breadcrumb back-button fallback */
+    initBreadcrumb();
 
     /* Notifications */
     initNotifications();
