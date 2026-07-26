@@ -623,9 +623,15 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 .lp-prematricula-accion { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
 .lp-prematricula .lp-boton-primario {
-  background: #fff; color: var(--lp-acento); box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+  background: #fff !important;
+  color: var(--lp-acento) !important;
+  border-color: #fff !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
 }
-.lp-prematricula .lp-boton-primario:hover { box-shadow: 0 16px 36px rgba(0, 0, 0, .24); }
+.lp-prematricula .lp-boton-primario:hover {
+  color: var(--lp-acento-2) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .24);
+}
 .lp-prematricula .lp-enlace-suave { color: rgba(255, 255, 255, .82); }
 .lp-prematricula .lp-enlace-suave:hover { color: #fff; }
 
