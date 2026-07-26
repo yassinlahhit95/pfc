@@ -1,0 +1,111 @@
+[
+  {
+    "codigoModulo": "DWES",
+    "nombreModulo": "Desarrollo Web en Entorno Servidor",
+    "ras": [
+      {
+        "codigo": "RA1",
+        "descripcion": "Desarrolla aplicaciones web de servidor analizando tecnologías y lenguajes adecuados.",
+        "porcentaje": 25,
+        "ces": [
+          { "codigo": "CE1.a", "descripcion": "Identifica las tecnologías y arquitecturas de ejecución del lado del servidor." },
+          { "codigo": "CE1.b", "descripcion": "Instala y configura entornos de desarrollo y servidores de aplicaciones." },
+          { "codigo": "CE1.c", "descripcion": "Escribe bloques de código y funciones básicas integrándolas en documentos." }
+        ]
+      },
+      {
+        "codigo": "RA2",
+        "descripcion": "Gestiona información en bases de datos relacionales desde lenguajes de servidor.",
+        "porcentaje": 35,
+        "ces": [
+          { "codigo": "CE2.a", "descripcion": "Establece conexiones seguras con servidores de bases de datos." },
+          { "codigo": "CE2.b", "descripcion": "Realiza consultas de inserción, actualización, borrado y lectura de registros." },
+          { "codigo": "CE2.c", "descripcion": "Utiliza transacciones y captura excepciones de conexión." }
+        ]
+      },
+      {
+        "codigo": "RA3",
+        "descripcion": "Mantiene el estado de las aplicaciones del lado del servidor utilizando sesiones y cookies.",
+        "porcentaje": 20,
+        "ces": [
+          { "codigo": "CE3.a", "descripcion": "Diseña mecanismos de autenticación y control de accesos." },
+          { "codigo": "CE3.b", "descripcion": "Configura la persistencia de cookies temporales y seguras." }
+        ]
+      },
+      {
+        "codigo": "RA4",
+        "descripcion": "Desarrolla servicios web analizando protocolos y formatos estructurados.",
+        "porcentaje": 20,
+        "ces": [
+          { "codigo": "CE4.a", "descripcion": "Diseña endpoints RESTful con respuestas JSON." },
+          { "codigo": "CE4.b", "descripcion": "Implementa mecanismos de seguridad con tokens JWT." }
+        ]
+      }
+    ]
+  },
+  {
+    "codigoModulo": "DWEC",
+    "nombreModulo": "Desarrollo Web en Entorno Cliente",
+    "ras": [
+      {
+        "codigo": "RA1",
+        "descripcion": "Desarrolla scripts interactivos del lado del cliente utilizando JavaScript estructurado.",
+        "porcentaje": 40,
+        "ces": [
+          { "codigo": "CE1.a", "descripcion": "Define variables, tipos de datos and operadores." },
+          { "codigo": "CE1.b", "descripcion": "Implementa estructuras de control y funciones con callbacks." }
+        ]
+      },
+      {
+        "codigo": "RA2",
+        "descripcion": "Manipula el DOM (Document Object Model) respondiendo a eventos de usuario.",
+        "porcentaje": 40,
+        "ces": [
+          { "codigo": "CE2.a", "descripcion": "Selecciona y modifica dinámicamente elementos del árbol DOM." },
+          { "codigo": "CE2.b", "descripcion": "Crea escuchadores de eventos y gestiona la propagación." }
+        ]
+      },
+      {
+        "codigo": "RA3",
+        "descripcion": "Consume APIs externas de forma asíncrona utilizando AJAX.",
+        "porcentaje": 20,
+        "ces": [
+          { "codigo": "CE3.a", "descripcion": "Realiza peticiones GET/POST usando Fetch API y Promises." },
+          { "codigo": "CE3.b", "descripcion": "Controla errores de conexión y carga estados asíncronos en la UI." }
+        ]
+      }
+    ]
+  },
+  {
+    "codigoModulo": "PRG",
+    "nombreModulo": "Programación",
+    "ras": [
+      {
+        "codigo": "RA1",
+        "descripcion": "Escribe programas estructurados utilizando entornos y lenguajes orientados a objetos.",
+        "porcentaje": 30,
+        "ces": [
+          { "codigo": "CE1.a", "descripcion": "Identifica los tipos de datos simples y estructurados." },
+          { "codigo": "CE1.b", "descripcion": "Compila y depura código corrigiendo errores sintácticos." }
+        ]
+      },
+      {
+        "codigo": "RA2",
+        "descripcion": "Diseña clases e instancias encapsulando lógica y comportamientos.",
+        "porcentaje": 45,
+        "ces": [
+          { "codigo": "CE2.a", "descripcion": "Instancia objetos definiendo atributos, constructores y métodos." },
+          { "codigo": "CE2.b", "descripcion": "Implementa relaciones de herencia, polimorfismo e interfaces." }
+        ]
+      },
+      {
+        "codigo": "RA3",
+        "descripcion": "Realiza operaciones de entrada y salida de datos a través de ficheros.",
+        "porcentaje": 25,
+        "ces": [
+          { "codigo": "CE3.a", "descripcion": "Lee y escribe datos secuenciales y binarios en archivos locales." }
+        ]
+      }
+    ]
+  }
+]

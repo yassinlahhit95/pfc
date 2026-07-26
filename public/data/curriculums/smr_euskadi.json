@@ -1,0 +1,37 @@
+[
+  {
+    "codigoModulo": "MME",
+    "nombreModulo": "Montaje y Mantenimiento de Equipos",
+    "ras": [
+      {
+        "codigo": "RA1",
+        "descripcion": "Selecciona los componentes de un equipo informático analizando su compatibilidad y rendimiento.",
+        "porcentaje": 30,
+        "ces": [
+          { "codigo": "CE1.a", "descripcion": "Identifica los bloques funcionales de un sistema informático." },
+          { "codigo": "CE1.b", "descripcion": "Describe las características técnicas de procesadores, placas y memorias." },
+          { "codigo": "CE1.c", "descripcion": "Verifica la compatibilidad física y eléctrica de los componentes." }
+        ]
+      },
+      {
+        "codigo": "RA2",
+        "descripcion": "Ensambla un equipo informático aplicando técnicas de montaje y seguridad.",
+        "porcentaje": 40,
+        "ces": [
+          { "codigo": "CE2.a", "descripcion": "Instala el procesador, disipador, memoria y tarjetas de expansión." },
+          { "codigo": "CE2.b", "descripcion": "Conecta el cableado interno de alimentación y señal." },
+          { "codigo": "CE2.c", "descripcion": "Realiza las pruebas de arranque inicial (POST) configurando la BIOS." }
+        ]
+      },
+      {
+        "codigo": "RA3",
+        "descripcion": "Realiza tareas de mantenimiento preventivo y correctivo en sistemas informáticos.",
+        "porcentaje": 30,
+        "ces": [
+          { "codigo": "CE3.a", "descripcion": "Ejecuta utilidades de diagnóstico para comprobar el estado del hardware." },
+          { "codigo": "CE3.b", "descripcion": "Identifica y resuelve fallos de funcionamiento sustituyendo componentes defectuosos." }
+        ]
+      }
+    ]
+  }
+]
