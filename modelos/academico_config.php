@@ -297,3 +297,16 @@ function eliminarCursoAcademico(int $idCiclo, int $idCurso): bool {
     mysqli_stmt_bind_param($stmt, "ii", $idCurso, $idCiclo);
     return mysqli_stmt_execute($stmt);
 }
+
+// Devuelve todas las configuraciones académicas del centro (activas e inactivas)
+function listarTodasConfiguracionesAcademicas(): array {
+    $con = obtenerConexion();
+    $res = mysqli_query($con, "SELECT idConfig, nombre, activo, tipoEducacion, anioAcademico FROM academic_config ORDER BY idConfig DESC");
+    $out = [];
+    if ($res) {
+        while ($fila = mysqli_fetch_assoc($res)) {
+            $out[] = $fila;
+        }
+    }
+    return $out;
+}

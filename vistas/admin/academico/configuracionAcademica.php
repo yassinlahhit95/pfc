@@ -4,8 +4,16 @@ require_once __DIR__ . '/../../../modelos/academico_config.php';
 require_once __DIR__ . '/../../../modelos/plantillas_academicas.php';
 require_once __DIR__ . '/../../../modelos/ciclos.php';
 
-$configActiva = obtenerConfigAcademicaActiva();
-$idConfig = $configActiva['idConfig'] ?? null;
+$idConfig = intval($_GET['idConfig'] ?? 0);
+if ($idConfig > 0) {
+    $configActiva = obtenerConfigAcademicaPorId($idConfig);
+} else {
+    $configActiva = obtenerConfigAcademicaActiva();
+    if (!$configActiva) {
+        $configActiva = dbFetchOne("SELECT * FROM academic_config ORDER BY idConfig DESC LIMIT 1");
+    }
+    $idConfig = $configActiva['idConfig'] ?? null;
+}
 $motorActivo = motorAcademicoActivo();
 
 $periodos = $idConfig ? listarPeriodosAcademicos((int)$idConfig) : [];
@@ -43,6 +51,26 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <input type="hidden" id="aw-csrf" value="<?= Security::escapeHtml(Security::generateCSRFToken()) ?>">
 <input type="hidden" id="aw-idConfig" value="<?= (int)($idConfig ?? 0) ?>">
+
+<?php
+$todasConfigs = listarTodasConfiguracionesAcademicas();
+if (!empty($todasConfigs)):
+?>
+<div class="caja-seleccion-config" style="margin-bottom: 20px; display: flex; align-items: center; gap: 12px; background: var(--surface); padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border);">
+    <label for="aw-select-config" style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);"><i class="fas fa-sliders" style="color:var(--accent);margin-right:6px;"></i> Configuración académica en edición:</label>
+    <select id="aw-select-config" onchange="window.location.href = '?idConfig=' + this.value" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; background: var(--surface-2); color: var(--text);">
+        <?php foreach ($todasConfigs as $cfg): ?>
+            <option value="<?= $cfg['idConfig'] ?>" <?= (int)$cfg['idConfig'] === (int)$idConfig ? 'selected' : '' ?>>
+                <?= Security::escapeHtml($cfg['nombre']) ?> <?= !empty($cfg['anioAcademico']) ? '('.Security::escapeHtml($cfg['anioAcademico']).')' : '' ?>
+                <?= $cfg['activo'] ? ' [ACTIVA]' : '' ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <?php if ($configActiva && !$configActiva['activo']): ?>
+        <span style="font-size: 0.8rem; color: var(--naranja-ink); background: var(--naranja-suave); padding: 4px 10px; border-radius: 999px; font-weight: 600;"><i class="fas fa-pen-ruler"></i> Borrador</span>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
 
 <div class="panel aw-wizard">
 

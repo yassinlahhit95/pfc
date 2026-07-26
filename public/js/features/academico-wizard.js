@@ -192,7 +192,10 @@
         var nombrePlantilla = $(this).closest('tr').find('td').first().text().trim();
         var nombre = 'Copia de ' + (nombrePlantilla || 'plantilla') + ' — ' + new Date().toLocaleDateString('es-ES');
         post('aplicar_plantilla', { idPlantilla: $(this).data('id'), nombre: nombre }).done(function (res) {
-            if (res.ok) { toast('Plantilla aplicada. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
+            if (res.ok) {
+                toast('Plantilla aplicada. Cargando configuración…', 'success');
+                setTimeout(function () { window.location.href = '?idConfig=' + res.idConfig + '#general'; }, 600);
+            }
             else toast(res.msg || 'Error', 'error');
         }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
