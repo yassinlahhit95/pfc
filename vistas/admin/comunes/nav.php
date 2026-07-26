@@ -142,31 +142,23 @@ function _nav_active_admin($check) {
       </a>
       <?php endif; ?>
 
-      <a href="../academico/calificacionesModulos.php" class="nav-item<?= _nav_active_admin('notas_modulos') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
-        <span class="nav-label">Notas Módulos</span>
-        <?php if (_nav_active_admin('notas_modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-
-      <?php if (FeatureGuard::check('feature_retos')): ?>
-      <a href="../academico/calificacionesRetos.php" class="nav-item<?= _nav_active_admin('notas_retos') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
-        <span class="nav-label">Notas Retos</span>
-        <?php if (_nav_active_admin('notas_retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-      <?php endif; ?>
-
-      <a href="../academico/calificacionesTFG.php" class="nav-item<?= _nav_active_admin('notas_tfg') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
-        <span class="nav-label">Notas TFG</span>
-        <?php if (_nav_active_admin('notas_tfg') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-
-      <a href="../academico/resultadosFinales.php" class="nav-item<?= _nav_active_admin('resultados_modulos') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-11 11-2-2"/></svg></span>
-        <span class="nav-label">Resultados Finales</span>
-        <?php if (_nav_active_admin('resultados_modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
+      <?php $notasFlyoutActivo = in_array($seccion, ['notas_modulos', 'notas_retos', 'notas_tfg', 'resultados_modulos'], true); ?>
+      <div class="nav-flyout-wrap">
+        <button type="button" class="nav-item nav-flyout-btn<?= $notasFlyoutActivo ? ' active' : '' ?>" aria-haspopup="true" aria-expanded="false">
+          <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+          <span class="nav-label">Notas</span>
+          <span class="nav-flyout-caret"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          <?php if ($notasFlyoutActivo) { ?><span class="nav-rail"></span><?php } ?>
+        </button>
+        <div class="nav-flyout-menu">
+          <a href="../academico/calificacionesModulos.php" class="nav-flyout-item<?= _nav_active_admin('notas_modulos') ?>"><i class="fas fa-chart-simple"></i> Notas Módulos</a>
+          <?php if (FeatureGuard::check('feature_retos')): ?>
+          <a href="../academico/calificacionesRetos.php" class="nav-flyout-item<?= _nav_active_admin('notas_retos') ?>"><i class="fas fa-trophy"></i> Notas Retos</a>
+          <?php endif; ?>
+          <a href="../academico/calificacionesTFG.php" class="nav-flyout-item<?= _nav_active_admin('notas_tfg') ?>"><i class="fas fa-graduation-cap"></i> Notas TFG</a>
+          <a href="../academico/resultadosFinales.php" class="nav-flyout-item<?= _nav_active_admin('resultados_modulos') ?>"><i class="fas fa-flag-checkered"></i> Resultados Finales</a>
+        </div>
+      </div>
 
       <?php if (FeatureGuard::check('feature_fct')): ?>
       <a href="../fct/lista.php" class="nav-item<?= _nav_active_admin('fct') ?>">
@@ -325,40 +317,29 @@ function _nav_active_admin($check) {
       <!-- PLATAFORMA -->
       <span class="nav-section-title">PLATAFORMA</span>
 
-      <?php if (FeatureGuard::check('feature_landing')): ?>
-      <a href="../landing/builder.php" class="nav-item<?= _nav_active_admin('landing') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-        <span class="nav-label">Página Web</span>
-        <?php if (_nav_active_admin('landing') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-      <a href="../blog/gestionBlog.php" class="nav-item<?= _nav_active_admin('blog') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span>
-        <span class="nav-label">Blog</span>
-        <?php if (_nav_active_admin('blog') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-      <a href="../ofertaCiclos/gestion.php" class="nav-item<?= _nav_active_admin('ofertaCiclos') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
-        <span class="nav-label">Catálogo de ciclos</span>
-        <?php if (_nav_active_admin('ofertaCiclos') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-      <?php endif; ?>
+      <?php $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rgpd', 'saas_estado'], true); ?>
+      <div class="nav-flyout-wrap">
+        <button type="button" class="nav-item nav-flyout-btn<?= $configFlyoutActivo ? ' active' : '' ?>" aria-haspopup="true" aria-expanded="false">
+          <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span>
+          <span class="nav-label">Configuración</span>
+          <span class="nav-flyout-caret"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          <?php if ($configFlyoutActivo) { ?><span class="nav-rail"></span><?php } ?>
+        </button>
+        <div class="nav-flyout-menu">
+          <?php if (FeatureGuard::check('feature_landing')): ?>
+          <a href="../landing/builder.php" class="nav-flyout-item<?= _nav_active_admin('landing') ?>"><i class="fas fa-earth-americas"></i> Página Web</a>
+          <a href="../blog/gestionBlog.php" class="nav-flyout-item<?= _nav_active_admin('blog') ?>"><i class="fas fa-newspaper"></i> Blog</a>
+          <a href="../ofertaCiclos/gestion.php" class="nav-flyout-item<?= _nav_active_admin('ofertaCiclos') ?>"><i class="fas fa-layer-group"></i> Catálogo de ciclos</a>
+          <?php endif; ?>
+          <a href="../rgpd/index.php" class="nav-flyout-item<?= _nav_active_admin('rgpd') ?>"><i class="fas fa-shield-halved"></i> RGPD</a>
+          <a href="../saas/estado.php" class="nav-flyout-item<?= _nav_active_admin('saas_estado') ?>"><i class="fas fa-server"></i> Estado SaaS</a>
+        </div>
+      </div>
 
       <a href="../configuracion/configuracion.php" data-tour="configuracion" class="nav-item<?= _nav_active_admin('configuracion') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-        <span class="nav-label">Configuración</span>
+        <span class="nav-label">Configuración del Centro</span>
         <?php if (_nav_active_admin('configuracion') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-
-      <a href="../rgpd/index.php" class="nav-item<?= _nav_active_admin('rgpd') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-        <span class="nav-label">RGPD</span>
-        <?php if (_nav_active_admin('rgpd') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-
-      <a href="../saas/estado.php" class="nav-item<?= _nav_active_admin('saas_estado') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg></span>
-        <span class="nav-label">Estado SaaS</span>
-        <?php if (_nav_active_admin('saas_estado') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
     </nav>

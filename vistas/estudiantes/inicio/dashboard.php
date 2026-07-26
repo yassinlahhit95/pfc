@@ -102,7 +102,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 </section>
 
 <!-- Progreso de Tareas (Aula Digital) -->
-<div class="panel" style="margin-top:24px; padding: 24px; display:flex; align-items:center; gap:32px; background:linear-gradient(to right, var(--surface), var(--surface-2)); border-left:4px solid var(--azul);">
+<div class="panel task-progress-panel" style="margin-top:24px; border-left:4px solid var(--azul);">
   <div style="position:relative; width:80px; height:80px;">
     <svg viewBox="0 0 36 36" style="width:100%; height:100%;">
       <!-- Background Circle -->
@@ -153,7 +153,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
         <?php endforeach; ?>
     </div>
     
-    <div style="display:flex; gap:16px; margin-top:16px; font-size:0.8rem; color:var(--dim);">
+    <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; font-size:0.8rem; color:var(--dim);">
         <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--verde);"></div> Presente</span>
         <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--rojo);"></div> Ausente</span>
         <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--naranja);"></div> Retraso</span>

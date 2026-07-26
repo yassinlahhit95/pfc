@@ -378,41 +378,81 @@
     });
   }
 
-  /* ── Collapsible nav sub-groups (e.g. "Configuración" > Página Web, Blog…) ── */
-  function initNavGroups() {
+  /* ── Nav flyout sub-menu (e.g. "Configuración" > Página Web, Blog…) ──────
+     Opens on click or hover, positioned beside the sidebar item — moved to
+     <body> like .recurso-menu (menu-contextual.js) since the scrollable
+     sidebar nav would otherwise clip anything overflowing its right edge. */
+  function initNavFlyout() {
     var nav = getEl("#sidebar-nav");
     if (!nav) return;
-    var KEY = "aulapro_nav_groups";
-    var saved = {};
-    try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+    var wraps = nav.querySelectorAll(".nav-flyout-wrap");
+    if (!wraps.length) return;
+    var closeTimer = null;
 
-    var toggles = nav.querySelectorAll(".nav-group-toggle");
-    Array.prototype.forEach.call(toggles, function (toggle) {
-      var group = toggle.closest(".nav-group");
-      var submenu = group ? group.querySelector(".nav-submenu") : null;
-      if (!submenu) return;
-      var name = (toggle.textContent || "").trim();
-      var items = Array.prototype.slice.call(submenu.querySelectorAll(".nav-item"));
-      if (!items.length) return;
+    function closeAll() {
+      clearTimeout(closeTimer);
+      document.querySelectorAll(".nav-flyout-menu.abierto").forEach(function (menu) {
+        menu.classList.remove("abierto");
+        if (menu._wrap) {
+          menu._wrap.classList.remove("open");
+          var btn = menu._wrap.querySelector(".nav-flyout-btn");
+          if (btn) btn.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
 
-      function apply(collapsed) {
-        toggle.classList.toggle("collapsed", collapsed);
-        toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
-        items.forEach(function (it) { it.classList.toggle("nav-collapsed", collapsed); });
-      }
+    function openMenu(wrap, btn, menu) {
+      clearTimeout(closeTimer);
+      if (menu.classList.contains("abierto")) return;
+      closeAll();
+      if (menu.parentNode !== document.body) document.body.appendChild(menu);
+      menu._wrap = wrap;
+      menu.classList.add("abierto");
+      wrap.classList.add("open");
+      btn.setAttribute("aria-expanded", "true");
 
-      // Never start collapsed if the active page lives inside this group.
-      var hasActive = items.some(function (it) { return it.classList.contains("active"); });
-      var collapsed = !hasActive && saved[name] === true;
-      apply(collapsed);
+      var rect = btn.getBoundingClientRect();
+      var left = rect.right + 8;
+      var top = rect.top;
+      var altura = menu.offsetHeight || 200;
+      if (top + altura > window.innerHeight - 8) top = Math.max(8, window.innerHeight - altura - 8);
+      menu.style.left = left + "px";
+      menu.style.top = top + "px";
+    }
 
-      toggle.addEventListener("click", function () {
-        collapsed = !collapsed;
-        apply(collapsed);
-        saved[name] = collapsed;
-        try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+    function scheduleClose() {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(closeAll, 220);
+    }
+
+    Array.prototype.forEach.call(wraps, function (wrap) {
+      var btn = wrap.querySelector(".nav-flyout-btn");
+      var menu = wrap.querySelector(".nav-flyout-menu");
+      if (!btn || !menu) return;
+
+      wrap.addEventListener("mouseenter", function () { openMenu(wrap, btn, menu); });
+      wrap.addEventListener("mouseleave", scheduleClose);
+      menu.addEventListener("mouseenter", function () { clearTimeout(closeTimer); });
+      menu.addEventListener("mouseleave", scheduleClose);
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        openMenu(wrap, btn, menu);
+      });
+      btn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openMenu(wrap, btn, menu); }
       });
     });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.closest(".nav-flyout-wrap") || e.target.closest(".nav-flyout-menu")) return;
+      closeAll();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeAll();
+    });
+    nav.addEventListener("scroll", closeAll);
+    window.addEventListener("resize", closeAll);
   }
 
   /* ── Sidebar Scroll Persistence ───────────────────────────────────────── */
@@ -523,7 +563,9 @@
 
     /* Collapsible nav categories (+/-) */
     initNavSections();
-    initNavGroups();
+
+    /* Flyout nav sub-menu ("Configuración" > Página Web, Blog…) */
+    initNavFlyout();
 
     /* Search */
     initSearch();
