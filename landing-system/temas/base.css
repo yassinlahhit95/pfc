@@ -1102,10 +1102,15 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 .lp-footer-cta-texto p { color: rgba(255, 255, 255, .85); font-size: 16.5px; max-width: 520px; }
 .lp-footer-cta-botones { display: flex; gap: 14px; flex-wrap: wrap; }
 .lp-footer-cta .lp-boton-primario {
-  background: #fff; color: var(--lp-acento);
+  background: #fff !important;
+  color: var(--lp-acento) !important;
+  border-color: #fff !important;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
 }
-.lp-footer-cta .lp-boton-primario:hover { box-shadow: 0 16px 36px rgba(0, 0, 0, .25); }
+.lp-footer-cta .lp-boton-primario:hover {
+  color: var(--lp-acento-2) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .25);
+}
 .lp-footer-cta .lp-boton-borde {
   border-color: rgba(255, 255, 255, .45); color: #fff;
   background: rgba(255, 255, 255, .1);
