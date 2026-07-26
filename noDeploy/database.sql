@@ -27,7 +27,7 @@ CREATE TABLE `academic_config` (
   `idCentro` int DEFAULT NULL,
   `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Configuración académica',
   `anioAcademico` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tipoEducacion` enum('grado_medio','grado_superior','otro') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
+  `tipoEducacion` enum('grado_basico','grado_medio','grado_superior','colegio','otro') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
   `activo` tinyint(1) NOT NULL DEFAULT '1',
   `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

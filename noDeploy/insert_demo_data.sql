@@ -63,7 +63,9 @@ INSERT INTO `configuracion_centro` (
 -- ---------------------------------------------------------------------
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES 
 (1, 'Grado Superior'), 
-(2, 'Grado Medio');
+(2, 'Grado Medio'),
+(3, 'Grado Básico'),
+(4, 'Colegio (Primaria/ESO/Bachillerato)');
 
 -- ---------------------------------------------------------------------
 -- 4. CYCLES / DEGREES
