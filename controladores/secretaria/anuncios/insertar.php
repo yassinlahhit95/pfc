@@ -53,8 +53,12 @@ if ($ok) {
         $tokens = array_merge($tokens, obtenerTokensTutores());
     }
     $tokensUnicos = array_unique($tokens);
-    foreach ($tokensUnicos as $token) {
-        enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($mensaje), 0, 100) . "...", 'announcement');
+    if (function_exists('enviarNotificacionesFirebaseSimultaneas')) {
+        enviarNotificacionesFirebaseSimultaneas($tokensUnicos, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($mensaje), 0, 100) . "...", 'announcement');
+    } else {
+        foreach ($tokensUnicos as $token) {
+            enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($mensaje), 0, 100) . "...", 'announcement');
+        }
     }
 
     $_SESSION['exito'] = "El anuncio ha sido publicado y notificado correctamente a " . count($tokensUnicos) . " dispositivos.";

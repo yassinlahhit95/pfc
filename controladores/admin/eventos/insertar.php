@@ -58,8 +58,13 @@ if (isset($_POST['guardarEvento'])) {
         $tokens = array_unique(array_merge(
             obtenerTokensEstudiantes(), obtenerTokensProfesores(), obtenerTokensTutores()
         ));
-        foreach ($tokens as $token) {
-            enviarNotificacionFirebase($token, "NUEVO EVENTO: $titulo", $mensajeNotif, 'evento_nuevo');
+        require_once __DIR__ . "/../../../controladores/firebase/firebase_helper.php";
+        if (function_exists('enviarNotificacionesFirebaseSimultaneas')) {
+            enviarNotificacionesFirebaseSimultaneas($tokens, "NUEVO EVENTO: $titulo", $mensajeNotif, 'evento_nuevo');
+        } else {
+            foreach ($tokens as $token) {
+                enviarNotificacionFirebase($token, "NUEVO EVENTO: $titulo", $mensajeNotif, 'evento_nuevo');
+            }
         }
 
         $_SESSION['exito'] = "El evento ha sido creado correctamente.";

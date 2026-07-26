@@ -55,8 +55,12 @@ if ($ok) {
     $tokens = array_unique(array_merge(
         obtenerTokensEstudiantes(), obtenerTokensProfesores(), obtenerTokensTutores()
     ));
-    foreach ($tokens as $token) {
-        enviarNotificacionFirebase($token, "NUEVO EVENTO: $titulo", $mensajeNotif, 'evento_nuevo');
+    if (function_exists('enviarNotificacionesFirebaseSimultaneas')) {
+        enviarNotificacionesFirebaseSimultaneas($tokens, "NUEVO EVENTO: $titulo", $mensajeNotif, 'evento_nuevo');
+    } else {
+        foreach ($tokens as $token) {
+            enviarNotificacionFirebase($token, "NUEVO EVENTO: $titulo", $mensajeNotif, 'evento_nuevo');
+        }
     }
 
     $_SESSION['exito'] = "Evento creado correctamente.";

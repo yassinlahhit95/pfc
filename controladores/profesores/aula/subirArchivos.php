@@ -18,8 +18,9 @@ require_once __DIR__ . "/../../../include/R2Client.php";
 // Si se supera post_max_size, PHP vacía $_POST — detectarlo antes de continuar
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     if (ob_get_level() > 0) ob_end_clean();
-    $_SESSION['errores'] = "Los archivos superan el tamaño máximo que admite el servidor. Prueba a subirlos de uno en uno o más pequeños.";
-    header("Location: ../../../vistas/profesores/aula/index.php");
+    $_SESSION['errores'] = "Los archivos superan el tamaño máximo que admite el servidor (post_max_size). Prueba a subirlos de uno en uno o más pequeños.";
+    $ref = $_SERVER['HTTP_REFERER'] ?? '../../../vistas/profesores/aula/index.php';
+    header("Location: $ref");
     exit;
 }
 
@@ -191,12 +192,11 @@ try {
             $firebaseHelper = __DIR__ . "/../../firebase/firebase_helper.php";
             if (file_exists($firebaseHelper)) {
                 require_once $firebaseHelper;
-                if (function_exists('enviarNotificacionFirebase')) {
+                if (function_exists('enviarNotificacionesFirebaseSimultaneas')) {
+                    $tokens = obtenerTokensFCMPorCicloAula($modulo['idCiclo']);
                     $tituloPush  = 'Nuevos recursos · ' . $modulo['nombreModulo'];
                     $mensajePush = $subidos . ' recurso(s) publicado(s) el ' . date('d/m/Y H:i');
-                    foreach (obtenerTokensFCMPorCicloAula($modulo['idCiclo']) as $token) {
-                        @enviarNotificacionFirebase($token, $tituloPush, $mensajePush, 'aula_archivo_nuevo', ['idModulo' => (int)$modulo['idModulo']]);
-                    }
+                    enviarNotificacionesFirebaseSimultaneas($tokens, $tituloPush, $mensajePush, 'aula_archivo_nuevo', ['idModulo' => (int)$modulo['idModulo']]);
                 }
             }
         } catch (\Throwable $e) { /* el push es opcional, se ignora cualquier fallo */ }

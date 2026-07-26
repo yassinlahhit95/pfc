@@ -56,8 +56,13 @@ if (isset($_POST['guardarAnuncio'])) {
             }
 
             $tokens = array_unique($tokens);
-            foreach ($tokens as $token) {
-                enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...", 'announcement');
+            require_once __DIR__ . "/../../../controladores/firebase/firebase_helper.php";
+            if (function_exists('enviarNotificacionesFirebaseSimultaneas')) {
+                enviarNotificacionesFirebaseSimultaneas($tokens, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...", 'announcement');
+            } else {
+                foreach ($tokens as $token) {
+                    enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...", 'announcement');
+                }
             }
 
             $_SESSION['exito'] = "El anuncio ha sido publicado y notificado correctamente a " . count($tokens) . " dispositivos.";

@@ -52,13 +52,31 @@ if (isset($_POST['enviarMensaje'])) {
         $estudiantesDelCiclo = listarEstudiantesPorCiclo($idCicloMasivo);
         $mensajesEnviados = 0;
 
+        $enviosFCM = [];
         foreach ($estudiantesDelCiclo as $est) {
             $idMensajeMasivo = insertarNuevoMensaje($est['idEstudiante'], '', $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje);
             if ($idMensajeMasivo) {
                 $mensajesEnviados++;
                 $tokenDispositivo = obtenerTokenUsuario($est['idEstudiante'], 'estudiante');
                 if ($tokenDispositivo) {
-                    enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje, 'message', ['idReclamacion' => $idMensajeMasivo]);
+                    $enviosFCM[] = [
+                        'token' => $tokenDispositivo,
+                        'titulo' => "Nuevo Mensaje: " . $asuntoMensaje,
+                        'mensaje' => $descripcionMensaje,
+                        'tipo' => 'message',
+                        'extra' => ['idReclamacion' => $idMensajeMasivo]
+                    ];
+                }
+            }
+        }
+
+        if (!empty($enviosFCM)) {
+            require_once __DIR__ . "/../../firebase/firebase_helper.php";
+            if (function_exists('enviarNotificacionesFirebasePersonalizadasSimultaneas')) {
+                enviarNotificacionesFirebasePersonalizadasSimultaneas($enviosFCM);
+            } else {
+                foreach ($enviosFCM as $envio) {
+                    enviarNotificacionFirebase($envio['token'], $envio['titulo'], $envio['mensaje'], $envio['tipo'], $envio['extra']);
                 }
             }
         }
