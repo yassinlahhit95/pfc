@@ -29,8 +29,9 @@ if (isset($_POST['actualizarEstudiante'])) {
     $codigoPostal    = trim($_POST['codigoPostalEstudiante']);
     $observaciones   = trim($_POST['observacionesEstudiante']);
     $idCiclo         = (int)($_POST['idCiclo'] ?? 0);
-    $cursosPermitidos = ['Grado Medio', 'Grado Superior'];
-    $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : 'Grado Medio';
+    require_once __DIR__ . "/../../../modelos/niveles.php";
+    $cursosPermitidos = array_column(listarNiveles(), 'nombreNivel');
+    $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
     $anioEstudioPost  = trim($_POST['anioEstudio'] ?? '');
     $anioEstudio      = existeNombreCursoEnCiclo($idCiclo, $anioEstudioPost) && $anioEstudioPost !== '' ? $anioEstudioPost : null;
 

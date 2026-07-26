@@ -65,6 +65,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
+
+$con = obtenerConexion();
+$resCursosUnicos = mysqli_query($con, "SELECT DISTINCT nombre FROM cursos_academicos ORDER BY orden ASC, nombre ASC");
+$aniosDisponibles = [];
+if ($resCursosUnicos) {
+    while ($fila = mysqli_fetch_assoc($resCursosUnicos)) {
+        $aniosDisponibles[] = $fila['nombre'];
+    }
+}
 ?>
 <div class="panel margen-abajo">
     <div class="caja caja-libre espacio-grande">
@@ -94,8 +103,11 @@ $listaNiveles = listarNiveles();
             <label for="selectFiltroAnio">FILTRAR POR AÑO:</label>
             <select id="selectFiltroAnio" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Años --</option>
-                <option value="1º">1º Año</option>
-                <option value="2º">2º Año</option>
+                <?php foreach ($aniosDisponibles as $anioFiltro): ?>
+                    <option value="<?= Security::escapeHtml($anioFiltro) ?>">
+                        <?= Security::escapeHtml($anioFiltro) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>

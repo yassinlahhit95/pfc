@@ -8,6 +8,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $idEstudiante = (int)($_GET['idEstudiante'] ?? 0);
 $estudiante = obtenerEstudiantePorId($idEstudiante);
@@ -25,6 +26,7 @@ if ($datosSesion) {
 
 $listaCiclos = listarTodosLosCiclos();
 $todosLosCursos = listarTodosLosCursosAcademicos();
+$listaNiveles = listarNiveles();
 
 $titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
 $seccion = 'estudiantes';
@@ -64,8 +66,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="campo<?= fieldClass($errores, 'curso') ?>">
                     <label for="curso">Nivel</label>
                     <select name="curso" id="curso" onchange="filtrarCiclos()">
-                        <option value="Grado Medio" <?php if ($estudiante['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
-                        <option value="Grado Superior" <?php if ($estudiante['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
+                        <option value="">-- Selecciona un nivel --</option>
+                        <?php foreach ($listaNiveles as $nivel): ?>
+                            <option value="<?= Security::escapeHtml($nivel['nombreNivel']) ?>" <?php if ($estudiante['curso'] == $nivel['nombreNivel']) { echo 'selected'; } ?>>
+                                <?= Security::escapeHtml($nivel['nombreNivel']) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                     <?= fieldError($errores, 'curso') ?>
                 </div>

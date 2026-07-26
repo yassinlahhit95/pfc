@@ -73,8 +73,10 @@ include_once __DIR__ . '/../comunes/nav.php';
         <div class="campo">
           <label for="awc-tipoEducacion">Tipo de educación</label>
           <select id="awc-tipoEducacion" name="tipoEducacion">
+            <option value="grado_basico">FP Grado Básico</option>
             <option value="grado_medio">FP Grado Medio</option>
             <option value="grado_superior">FP Grado Superior</option>
+            <option value="colegio">Colegio (Primaria/ESO/Bachillerato)</option>
             <option value="otro">Otro</option>
           </select>
         </div>
@@ -95,8 +97,10 @@ include_once __DIR__ . '/../comunes/nav.php';
         <div class="campo">
           <label for="awg-tipoEducacion">Tipo de educación</label>
           <select id="awg-tipoEducacion" name="tipoEducacion">
+            <option value="grado_basico" <?= $configActiva['tipoEducacion']==='grado_basico'?'selected':'' ?>>FP Grado Básico</option>
             <option value="grado_medio" <?= $configActiva['tipoEducacion']==='grado_medio'?'selected':'' ?>>FP Grado Medio</option>
             <option value="grado_superior" <?= $configActiva['tipoEducacion']==='grado_superior'?'selected':'' ?>>FP Grado Superior</option>
+            <option value="colegio" <?= $configActiva['tipoEducacion']==='colegio'?'selected':'' ?>>Colegio (Primaria/ESO/Bachillerato)</option>
             <option value="otro" <?= $configActiva['tipoEducacion']==='otro'?'selected':'' ?>>Otro</option>
           </select>
         </div>
