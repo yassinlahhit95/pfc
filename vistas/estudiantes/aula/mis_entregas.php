@@ -126,7 +126,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         ?>
                     </td>
                     <td>
-                        <a href="tarea_detalle.php?id=<?= Security::escapeHtml($entrega['idTarea']) ?>" class="boton-secundario btn-pequeno">
+                        <a href="tarea.php?id=<?= Security::escapeHtml($entrega['idTarea']) ?>" class="boton-secundario btn-pequeno">
                             <i class="fas fa-eye"></i> VER
                         </a>
                     </td>

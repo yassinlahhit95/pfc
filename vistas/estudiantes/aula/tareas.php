@@ -185,7 +185,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <span class="mod"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
                 <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
                 <p><?= Security::escapeHtml(substr(strip_tags($tarea['descripcion']), 0, 80)) ?>...</p>
-                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver detalles</a>
+                <a href="tarea.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver detalles</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -200,7 +200,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <span class="mod"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
                 <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
                 <p><?= Security::escapeHtml(substr(strip_tags($tarea['descripcion']), 0, 80)) ?>...</p>
-                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver detalles</a>
+                <a href="tarea.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver detalles</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -213,7 +213,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <span class="mod" style="background:color-mix(in oklab, var(--accent) 12%, var(--surface)); color:var(--accent);"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
                 <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
                 <p style="color:var(--verde); font-weight:600; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Esperando corrección</p>
-                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Revisar entrega</a>
+                <a href="tarea.php?id=<?= $tarea['idTarea'] ?>" class="btn">Revisar entrega</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -226,7 +226,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <span class="mod" style="background:var(--verde-suave); color:var(--verde-ink);"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
                 <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
                 <p style="color:var(--text); font-weight:700; font-size:1.1rem; margin-bottom:8px;">Nota: <?= number_format($tarea['nota'], 1) ?></p>
-                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver feedback</a>
+                <a href="tarea.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver feedback</a>
             </div>
         <?php endforeach; ?>
     </div>
