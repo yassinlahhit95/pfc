@@ -65,7 +65,18 @@ if (!empty($_FILES['archivoAdjunto']['name'])) {
         $errores[] = "Error al subir el archivo adjunto.";
     } else {
         $ext = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, ['pdf', 'docx', 'txt', 'zip', 'png', 'jpg', 'jpeg'])) {
+        $mimeAllowedAdjunto = [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'application/zip',
+            'image/png',
+            'image/jpeg',
+            'application/octet-stream',
+        ];
+        $mimeAdjunto = @mime_content_type($archivo['tmp_name']);
+        if (!in_array($ext, ['pdf', 'docx', 'txt', 'zip', 'png', 'jpg', 'jpeg'])
+            || ($mimeAdjunto && !in_array($mimeAdjunto, $mimeAllowedAdjunto))) {
             $errores[] = "Adjunto: solo se permiten PDF, DOCX, TXT, ZIP o imágenes.";
         } elseif ($archivo['size'] > 20 * 1024 * 1024) {
             $errores[] = "El adjunto supera el límite de 20 MB.";

@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/premium.dart';
 import '../data/grades_repository.dart';
 
 class GradesScreen extends ConsumerWidget {
@@ -16,18 +18,21 @@ class GradesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Notas')),
-      body: AsyncView<Map<String, dynamic>>(
-        value: gradesAsync,
-        onRetry: () => ref.invalidate(gradesProvider),
-        data: (context, data) => switch (role) {
-          UserRole.estudiante => _EstudianteGrades(data: data),
-          UserRole.profesor => _ProfesorGrades(data: data),
-          UserRole.tutor => _TutorGrades(data: data),
-          _ => const EmptyState(
-              icon: Icons.grade_outlined,
-              title: 'No disponible para este rol',
-            ),
-        },
+      body: RefreshIndicator(
+        onRefresh: () async => ref.invalidate(gradesProvider),
+        child: AsyncView<Map<String, dynamic>>(
+          value: gradesAsync,
+          onRetry: () => ref.invalidate(gradesProvider),
+          data: (context, data) => switch (role) {
+            UserRole.estudiante => _EstudianteGrades(data: data),
+            UserRole.profesor => _ProfesorGrades(data: data),
+            UserRole.tutor => _TutorGrades(data: data),
+            _ => const EmptyState(
+                icon: Icons.grade_outlined,
+                title: 'No disponible para este rol',
+              ),
+          },
+        ),
       ),
     );
   }
@@ -35,11 +40,12 @@ class GradesScreen extends ConsumerWidget {
 
 String _fmtNota(dynamic n) => n == null ? '—' : n.toString();
 
-// Matches the web app's .texto-estado convention: verde >=5, rojo <5, gris sin nota.
-Color _notaColor(dynamic raw) {
+Color _notaColor(BuildContext context, dynamic raw) {
   final n = double.tryParse(raw?.toString() ?? '');
-  if (n == null) return const Color(0xFF9AA6BC);
-  return n >= 5 ? const Color(0xFF10B981) : const Color(0xFFEF4444);
+  if (n == null) return Theme.of(context).colorScheme.onSurfaceVariant;
+  final dark = Theme.of(context).brightness == Brightness.dark;
+  if (n >= 5) return dark ? AppColors.verdeDark : AppColors.verdeLight;
+  return dark ? AppColors.rojoDark : AppColors.rojoLight;
 }
 
 class _ModuloCard extends StatelessWidget {
@@ -48,28 +54,24 @@ class _ModuloCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(m['nombreModulo'] as String? ?? '',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 10,
-              runSpacing: 8,
-              children: [
-                _NotaChip('1ª ev.', m['nota_1ev']),
-                _NotaChip('1ª final', m['nota_1final']),
-                _NotaChip('2ª ev.', m['nota_2ev']),
-                _NotaChip('2ª final', m['nota_2final']),
-              ],
-            ),
-          ],
-        ),
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: Space.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(m['nombreModulo'] as String? ?? '', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: Space.md),
+          Wrap(
+            spacing: Space.sm,
+            runSpacing: Space.sm,
+            children: [
+              _NotaChip('1ª ev.', m['nota_1ev']),
+              _NotaChip('1ª final', m['nota_1final']),
+              _NotaChip('2ª ev.', m['nota_2ev']),
+              _NotaChip('2ª final', m['nota_2final']),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -82,21 +84,19 @@ class _NotaChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _notaColor(rawValue);
+    final color = _notaColor(context, rawValue);
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(Radii.sm),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('$label ', style: Theme.of(context).textTheme.bodySmall),
-          Text(
-            _fmtNota(rawValue),
-            style: TextStyle(color: color, fontWeight: FontWeight.bold),
-          ),
+          Text('$label  ', style: Theme.of(context).textTheme.bodySmall),
+          Text(_fmtNota(rawValue), style: TextStyle(color: color, fontWeight: FontWeight.w700)),
         ],
       ),
     );
@@ -118,22 +118,35 @@ class _EstudianteGrades extends StatelessWidget {
       );
     }
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
       children: [
         if (modulos.isNotEmpty) ...[
-          const _SectionHeader('Módulos'),
+          const SectionLabel('Módulos'),
           for (final m in modulos) _ModuloCard(m: m),
+          const SizedBox(height: Space.md),
         ],
         if (retos.isNotEmpty) ...[
-          const _SectionHeader('Retos'),
-          for (final r in retos)
-            Card(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: ListTile(
-                title: Text(r['nombreReto'] as String? ?? ''),
-                trailing: Text(_fmtNota(r['nota'])),
-              ),
+          const SectionLabel('Retos'),
+          AppCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < retos.length; i++) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(retos[i]['nombreReto'] as String? ?? '')),
+                        Text(_fmtNota(retos[i]['nota']), style: const TextStyle(fontWeight: FontWeight.w700)),
+                      ],
+                    ),
+                  ),
+                  if (i != retos.length - 1)
+                    Divider(height: 1, indent: Space.lg, color: Theme.of(context).colorScheme.outlineVariant),
+                ],
+              ],
             ),
+          ),
         ],
       ],
     );
@@ -154,33 +167,38 @@ class _ProfesorGrades extends StatelessWidget {
       );
     }
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
       children: [
         for (final m in modulos) ...[
-          _SectionHeader(m['nombreModulo'] as String? ?? ''),
-          for (final e
-              in (m['estudiantes'] as List).cast<Map<String, dynamic>>())
-            Card(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: ExpansionTile(
-                title: Text(e['nombreEstudiante'] as String? ?? ''),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 8,
+          SectionLabel(m['nombreModulo'] as String? ?? ''),
+          AppCard(
+            padding: EdgeInsets.zero,
+            margin: const EdgeInsets.only(bottom: Space.xxl),
+            child: Column(
+              children: [
+                for (final e in (m['estudiantes'] as List).cast<Map<String, dynamic>>())
+                  Theme(
+                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      title: Text(e['nombreEstudiante'] as String? ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
+                      childrenPadding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.lg),
                       children: [
-                        _NotaChip('1ª ev.', e['nota_1ev']),
-                        _NotaChip('1ª final', e['nota_1final']),
-                        _NotaChip('2ª ev.', e['nota_2ev']),
-                        _NotaChip('2ª final', e['nota_2final']),
+                        Wrap(
+                          spacing: Space.sm,
+                          runSpacing: Space.sm,
+                          children: [
+                            _NotaChip('1ª ev.', e['nota_1ev']),
+                            _NotaChip('1ª final', e['nota_1final']),
+                            _NotaChip('2ª ev.', e['nota_2ev']),
+                            _NotaChip('2ª final', e['nota_2final']),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
+          ),
         ],
       ],
     );
@@ -201,27 +219,14 @@ class _TutorGrades extends StatelessWidget {
       );
     }
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
       children: [
         for (final s in students) ...[
-          _SectionHeader('${s['nombreEstudiante']} (${s['parentesco'] ?? ''})'),
-          for (final m in (s['modulos'] as List).cast<Map<String, dynamic>>())
-            _ModuloCard(m: m),
+          SectionLabel('${s['nombreEstudiante']} · ${s['parentesco'] ?? ''}'),
+          for (final m in (s['modulos'] as List).cast<Map<String, dynamic>>()) _ModuloCard(m: m),
+          const SizedBox(height: Space.md),
         ],
       ],
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader(this.title);
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-      child: Text(title, style: Theme.of(context).textTheme.titleMedium),
     );
   }
 }

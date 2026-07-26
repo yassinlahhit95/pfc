@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required on Android 13+ (API 33+) for the app to be allowed to post
+         any notification at all — without this declared, NotificationsService's
+         messaging.requestPermission() call has nothing to actually grant, so
+         push notifications would silently never appear in the tray even with
+         google-services.json in place and FCM tokens registering fine. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:label="AulaPro"
         android:name="${applicationName}"
@@ -31,6 +37,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Channel FCM falls back to for a background/terminated tray
+             notification when no channel_id is specified — kept in sync with
+             the `aulapro_default` channel NotificationsService itself creates
+             for foreground pushes, and with the channel_id firebase_helper.php
+             sends server-side, so every push lands in the same channel
+             regardless of app state. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="aulapro_default" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

@@ -70,6 +70,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="2º">2º Año</option>
                 </select>
             </div>
+            <div class="campo relleno">
+                <label for="buscarResultadoEstudiante">Buscar estudiante:</label>
+                <input type="text" id="buscarResultadoEstudiante"
+                       autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                       data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                       placeholder="Nombre del estudiante…" oninput="filtrarResultadosPorCurso()">
+            </div>
             <?php } ?>
         </form>
 
@@ -194,13 +201,19 @@ $(function() { if (typeof iniciarPaginacion === 'function') iniciarPaginacion('t
 
 function filtrarResultadosPorCurso() {
     var curso = document.getElementById('filtroCursoEstudiante').value;
+    var buscarEl = document.getElementById('buscarResultadoEstudiante');
+    var q = buscarEl ? buscarEl.value.toLowerCase() : '';
     document.querySelectorAll('.fila-curso').forEach(function(fila) {
         var optCurso = fila.getAttribute('data-curso');
-        fila.classList.toggle('fila-filtro-oculta', !(curso === '' || optCurso === curso));
+        var coincideCurso = (curso === '' || optCurso === curso);
+        var coincideTexto = (q === '' || fila.textContent.toLowerCase().indexOf(q) !== -1);
+        fila.classList.toggle('fila-filtro-oculta', !(coincideCurso && coincideTexto));
     });
     document.querySelectorAll('.fila-curso-detalle').forEach(function(det) {
         var optCurso = det.getAttribute('data-curso');
-        det.style.display = (curso === '' || optCurso === curso) ? '' : 'none';
+        var coincideCurso = (curso === '' || optCurso === curso);
+        var coincideTexto = (q === '' || det.textContent.toLowerCase().indexOf(q) !== -1);
+        det.style.display = (coincideCurso && coincideTexto) ? '' : 'none';
     });
     if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaResultados');
 }

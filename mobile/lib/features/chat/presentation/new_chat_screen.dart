@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/premium.dart';
 import '../data/chat_repository.dart';
 import 'chat_detail_screen.dart';
 
@@ -82,33 +85,55 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: TextField(
           controller: _searchController,
           autofocus: true,
           onChanged: _onQueryChanged,
-          decoration: const InputDecoration(
-            hintText: 'Buscar contacto…',
+          style: Theme.of(context).textTheme.bodyLarge,
+          decoration: InputDecoration(
+            hintText: 'Buscar contacto',
+            filled: false,
             border: InputBorder.none,
+            hintStyle: TextStyle(color: scheme.onSurfaceVariant, fontWeight: FontWeight.normal),
+            contentPadding: EdgeInsets.zero,
           ),
         ),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
           : _contacts.isEmpty
-              ? const Center(child: Text('Sin resultados'))
+              ? const EmptyState(icon: Icons.person_search_outlined, title: 'Sin resultados')
               : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: Space.sm),
                   itemCount: _contacts.length,
                   itemBuilder: (context, i) {
                     final c = _contacts[i];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        child: Text(c.nombre.isNotEmpty ? c.nombre[0].toUpperCase() : '?'),
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => _startChat(c),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+                          child: Row(
+                            children: [
+                              InitialsAvatar(name: c.nombre, radius: 20),
+                              const SizedBox(width: Space.md),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(c.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                    Text(_roleLabel(c.rol), style: Theme.of(context).textTheme.bodySmall),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      title: Text(c.nombre),
-                      subtitle: Text(_roleLabel(c.rol)),
-                      onTap: () => _startChat(c),
                     );
                   },
                 ),

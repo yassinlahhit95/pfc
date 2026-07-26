@@ -77,16 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (result.ok) {
                         // Reload the page to reflect changes
                         window.location.reload();
-                    } else {
-                        alert(result.msg || 'Error al mover el recurso');
+                    } else if (window.Toast) {
+                        Toast.show(result.msg || 'Error al mover el recurso', 'error');
                     }
                 })
-                .catch(err => {
-                    console.error(err);
-                    alert('Error de red al mover el recurso');
+                .catch(() => {
+                    if (window.Toast) Toast.show('Error de red al mover el recurso', 'error');
                 });
             } catch (err) {
-                console.error('Drop error:', err);
+                // Payload de drag&drop mal formado (arrastre desde fuera de esta
+                // página, por ejemplo) — no hay nada útil que mostrar al usuario.
             }
         });
     });

@@ -132,8 +132,17 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idModulo" value="<?= (int)$idModuloElegido ?>">
             <input type="hidden" name="idCiclo"  value="<?= Security::escapeHtml($idCicloElegido) ?>">
+            <?php if (!empty($listaEstudiantes)): ?>
+            <div class="campo" style="margin-bottom:14px;max-width:320px;">
+                <input type="text" id="buscarEstudianteCalif" class="buscador"
+                       autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                       data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                       placeholder="Buscar estudiante…"
+                       oninput="filtrarTabla('buscarEstudianteCalif','tablaCalifModulos')">
+            </div>
+            <?php endif; ?>
             <div class="contenedor-tabla">
-                <table class="tabla-datos">
+                <table class="tabla-datos" id="tablaCalifModulos">
                     <thead>
                         <tr>
                             <th>Estudiante</th>
@@ -259,6 +268,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <script>
+$(function() { if (typeof iniciarPaginacion === 'function') iniciarPaginacion('tablaCalifModulos', 30); });
+
 var GL_LABELS = {
     'SB': ['SB — Sobresaliente', 'badge-SB'],
     'NT': ['NT — Notable',       'badge-NT'],

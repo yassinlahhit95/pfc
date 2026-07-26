@@ -94,7 +94,13 @@ if ($resultado) {
     procesarArchivosReto($idReto);
 
     $_SESSION['exito'] = "Reto actualizado correctamente.";
-    header("Location: ../../../vistas/profesores/retos/lista.php");
+    // editar.php, no lista.php — el formulario se envía por AJAX y su
+    // success handler hace window.location.reload() (se queda en la misma
+    // página para que el profesor vea el archivo recién subido en la
+    // lista), así que redirigir a lista.php dejaba el mensaje de éxito
+    // huérfano: se consumía en la respuesta seguida por el XHR, pero esa
+    // respuesta nunca llegaba a mostrarse de verdad.
+    header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
     exit;
 } else {
     $_SESSION['errores'] = "Error al actualizar el reto.";

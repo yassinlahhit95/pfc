@@ -29,7 +29,7 @@ $horarioCeldas  = $idCicloHorario ? listarHorarioPorCiclo($idCicloHorario) : [];
 $puedeEditar    = false;
 
 $titulo_pagina = 'AulaPro Familias — Horario de ' . $estudiante['nombreEstudiante'];
-$seccion       = 'inicio';
+$seccion       = 'hijo';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 

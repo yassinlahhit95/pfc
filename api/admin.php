@@ -109,7 +109,8 @@ function storeLicenseToken(PDO $pdo, string $token): bool {
         )->execute([$token, $expDatetime]);
         return true;
     } catch (PDOException) {
-        // license_token column not yet created — noDeploy/migrations/006_add_saas_control_columns.sql not run
+        // license_token column missing — this DB predates it and needs its schema
+        // brought up to date against the current noDeploy/database.sql
         return false;
     }
 }
@@ -250,7 +251,7 @@ switch ($action) {
     // Renews the license token. token_exp is extended by SaaS.
     case 'heartbeat':
         if (!$licenseToken) apiError('Missing license_token in heartbeat.', 400);
-        if (!$licenseTokenStored) apiError('license_token column missing — run noDeploy/migrations/006_add_saas_control_columns.sql on this AulaPro database.', 500);
+        if (!$licenseTokenStored) apiError('license_token column missing — this AulaPro database predates it; bring its schema up to date against the current noDeploy/database.sql.', 500);
         $stored = $licenseTokenStored; // already stored by the pre-switch block
         // Use SELECT * so the query works even if the migration 006 columns don't exist yet
         $row = $pdo->query("SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1")->fetch() ?: [];

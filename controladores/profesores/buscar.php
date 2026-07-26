@@ -57,7 +57,7 @@ while ($numEst < 4 && ($row = mysqli_fetch_assoc($res))) {
     $results[] = [
         'type'  => 'estudiante',
         'label' => $label,
-        'url'   => '../estudiantes/lista.php',
+        'url'   => '/vistas/profesores/estudiantes/lista.php',
     ];
     $numEst++;
 }
@@ -78,7 +78,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'reto',
         'label' => $row['nombreReto'],
-        'url'   => '../retos/lista.php',
+        'url'   => '/vistas/profesores/retos/lista.php',
     ];
 }
 
@@ -97,7 +97,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'modulo',
         'label' => $row['nombreModulo'],
-        'url'   => '../modulos/lista.php',
+        'url'   => '/vistas/profesores/modulos/lista.php',
     ];
 }
 
@@ -115,7 +115,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'anuncio',
         'label' => $row['titulo'],
-        'url'   => '../anuncios/lista.php',
+        'url'   => '/vistas/profesores/anuncios/lista.php',
     ];
 }
 
@@ -135,7 +135,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'profesor',
         'label' => $label,
-        'url'   => '../chat/index.php',
+        'url'   => '/vistas/profesores/chat/index.php',
     ];
 }
 
@@ -150,7 +150,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'director',
         'label' => $row['nombreDirector'],
-        'url'   => '../chat/index.php',
+        'url'   => '/vistas/profesores/chat/index.php',
     ];
 }
 
@@ -165,7 +165,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'secretaria',
         'label' => $row['nombreSecretaria'],
-        'url'   => '../chat/index.php',
+        'url'   => '/vistas/profesores/chat/index.php',
     ];
 }
 
@@ -176,7 +176,7 @@ mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '../eventos/lista.php'];
+    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '/vistas/profesores/eventos/lista.php'];
 }
 
 // ── TFG de sus alumnos (calificaciones) ──
@@ -194,7 +194,7 @@ mysqli_stmt_bind_param($stmt, 'sii', $like, $idProfesor, $idProfesor);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'tfg', 'label' => 'TFG — ' . $row['nombreEstudiante'], 'url' => '../academico/resultadosFinales.php'];
+    $results[] = ['type' => 'tfg', 'label' => 'TFG — ' . $row['nombreEstudiante'], 'url' => '/vistas/profesores/academico/resultadosFinales.php'];
 }
 
 // ── Archivos (recursos.php) subidos por el profesor ──
@@ -211,7 +211,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'archivo',
         'label' => $row['nombreOriginal'] . ' ('. $row['nombreModulo'] .')',
-        'url'   => '../aula/recursos.php?id=' . (int)$row['idModulo'],
+        'url'   => '/vistas/profesores/aula/recursos.php?id=' . (int)$row['idModulo'],
     ];
 }
 

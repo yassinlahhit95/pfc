@@ -46,7 +46,7 @@ switch ($action) {
             break;
         }
         $id = (int)($_POST['id'] ?? 0);
-        $estadosPermitidos = ['EN_REVISION', 'ADMITIDO', 'RECHAZADO', 'SUBSANACION'];
+        $estadosPermitidos = ['revisando', 'aceptada', 'rechazada', 'subsanacion'];
         $estado = in_array($_POST['estado'] ?? '', $estadosPermitidos, true) ? $_POST['estado'] : '';
         $observaciones = htmlspecialchars(trim($_POST['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8');
 
@@ -68,7 +68,7 @@ switch ($action) {
                 $subject = "Actualización de tu solicitud de admisión - AulaPro";
                 $html = "";
 
-                if ($estado === 'ADMITIDO') {
+                if ($estado === 'aceptada') {
                     // ── Conversión automática a estudiante ──
 
                     // Genera la parte local del email institucional: nombre.apellidos@aulapro.com
@@ -194,12 +194,12 @@ switch ($action) {
                              </div>
                              <p>Ya puedes acceder para consultar tus horarios, materiales y comunicarte con tus profesores.</p>
                              <p>¡Te esperamos!</p>";
-                } else if ($estado === 'RECHAZADO') {
+                } else if ($estado === 'rechazada') {
                     $html = "<h2>Hola $nombre,</h2>
                              <p>Lamentamos informarte que tu solicitud para el ciclo <strong>$ciclo</strong> no ha sido aceptada en esta ocasión.</p>
                              " . ($observaciones ? "<div style='color: #666; font-style: italic; border-left: 4px solid #eee; padding-left: 15px;'><strong>Motivo:</strong> $observaciones</div>" : "") . "
                              <p>Gracias por tu interés en nuestro centro.</p>";
-                } else if ($estado === 'SUBSANACION') {
+                } else if ($estado === 'subsanacion') {
                     $subject = "Acción requerida: Documentación pendiente";
                     $html = "<h2>Hola $nombre,</h2>
                              <p>Hemos revisado tu solicitud para <strong>$ciclo</strong> y necesitamos que realices algunos cambios o aportes documentación adicional.</p>

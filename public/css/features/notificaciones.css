@@ -40,8 +40,8 @@
     background: var(--accent);
 }
 
-.notificacion-toast.exito::before { background: #10b981; }
-.notificacion-toast.error::before { background: #ef4444; }
+.notificacion-toast.exito::before { background: var(--verde); }
+.notificacion-toast.error::before { background: var(--rojo); }
 .notificacion-toast.info::before { background: var(--accent); }
 
 .toast-icono {
@@ -51,8 +51,8 @@
     margin-top: 2px;
 }
 
-.notificacion-toast.exito .toast-icono { color: #10b981; }
-.notificacion-toast.error .toast-icono { color: #ef4444; }
+.notificacion-toast.exito .toast-icono { color: var(--verde); }
+.notificacion-toast.error .toast-icono { color: var(--rojo); }
 
 .toast-contenido {
     flex: 1;
@@ -111,8 +111,8 @@
     animation: toastProgress 6s linear forwards;
 }
 
-.notificacion-toast.exito .toast-progreso-barra { background: #10b981; }
-.notificacion-toast.error .toast-progreso-barra { background: #ef4444; }
+.notificacion-toast.exito .toast-progreso-barra { background: var(--verde); }
+.notificacion-toast.error .toast-progreso-barra { background: var(--rojo); }
 
 @keyframes toastSlideIn {
     from { transform: translateX(120%); opacity: 0; }

@@ -57,7 +57,7 @@ if (!isset($cw_rol, $cw_id, $cw_unreadCount, $cw_basePath)) {
       </div>
       <div class="cw-search-wrap">
         <input class="cw-search-input" id="cw-contact-search" type="search" placeholder="Buscar persona…"
-               autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+               autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                data-lpignore="true" data-1p-ignore="true" data-form-type="other">
       </div>
       <div class="cw-contact-list" id="cw-contacts"></div>

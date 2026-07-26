@@ -6,21 +6,21 @@ if (!$items) return;
 <section class="lp-sec lp-faq lp-faq-<?= Security::escapeHtml($variante) ?>" id="faq"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-faq-inner">
     <div class="lp-sec-cabecera">
-      <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
+      <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
     </div>
     <div class="lp-faq-lista">
-      <?php foreach ($items as $item): ?>
+      <?php foreach ($items as $i => $item): ?>
       <?php if ($variante === 'acordeon'): ?>
       <details class="lp-faq-item">
         <summary>
-          <?= Security::escapeHtml($item['pregunta'] ?? '') ?>
+          <span<?= landing_lb_field($preview, "items.$i.pregunta") ?>><?= Security::escapeHtml($item['pregunta'] ?? '') ?></span>
         </summary>
-        <p><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
+        <p<?= landing_lb_field($preview, "items.$i.respuesta", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
       </details>
       <?php else: ?>
       <div class="lp-faq-item">
-        <h3><?= Security::escapeHtml($item['pregunta'] ?? '') ?></h3>
-        <p><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
+        <h3<?= landing_lb_field($preview, "items.$i.pregunta") ?>><?= Security::escapeHtml($item['pregunta'] ?? '') ?></h3>
+        <p<?= landing_lb_field($preview, "items.$i.respuesta", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
       </div>
       <?php endif; ?>
       <?php endforeach; ?>

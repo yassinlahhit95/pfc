@@ -2,9 +2,7 @@
 require_once __DIR__ . '/../../../include/SecretariaGuard.php';
 header('Content-Type: application/json; charset=utf-8');
 
-if (!Security::validateCSRFToken()) {
-    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
-}
+// CSRF token is already validated in SecretariaGuard.php for all POST requests (with rotate=false to survive AJAX)
 
 $id   = (int)($_POST['id']   ?? 0);
 $pass = $_POST['nuevaPassword'] ?? '';

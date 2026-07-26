@@ -11,15 +11,17 @@
             </form>
         </div>
     </div>
-    <div class="fila-datos" style="flex-direction:column;align-items:stretch;">
-        <div class="nombre-detalle" style="margin-bottom:8px;">Solicitar eliminación de mis datos</div>
-        <form method="POST" action="/controladores/comunes/rgpd/solicitar_baja.php">
-            <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml(Security::generateCSRFToken()) ?>">
-            <textarea name="motivo" rows="2" required placeholder="Motivo de tu solicitud…"
-                      style="width:100%;padding:8px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);color:var(--text);margin-bottom:8px;"></textarea>
-            <button type="submit" class="boton-peligro" style="font-size:.85rem;padding:6px 14px;">
-                <i class="fas fa-user-slash"></i> Solicitar eliminación
-            </button>
-        </form>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Solicitar eliminación de mis datos</div>
+        <div class="valor-detalle">
+            <form method="POST" action="/controladores/comunes/rgpd/solicitar_baja.php">
+                <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml(Security::generateCSRFToken()) ?>">
+                <textarea name="motivo" rows="2" required placeholder="Motivo de tu solicitud…"
+                          style="width:100%;padding:8px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);color:var(--text);margin-bottom:8px;"></textarea>
+                <button type="submit" class="boton-peligro" style="font-size:.85rem;padding:6px 14px;">
+                    <i class="fas fa-user-slash"></i> Solicitar eliminación
+                </button>
+            </form>
+        </div>
     </div>
 </div>

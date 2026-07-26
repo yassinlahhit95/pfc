@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Cache.php";
 
 // ═══════════════════════════════════════
 // CARPETAS
@@ -425,11 +426,19 @@ function obtenerEntregaPorIdAula($idEntrega) {
     return mysqli_fetch_assoc($res);
 }
 
-function calificarEntregaAula($idEntrega, $nota, $comentario) {
+// $archivoCorreccion === null: no se sustituye (igual que actualizarTareaAula
+// con su $archivoAdjunto) — solo se actualiza cuando el profesor adjunta uno nuevo.
+function calificarEntregaAula($idEntrega, $nota, $comentario, $archivoCorreccion = null) {
     $con = obtenerConexion();
-    $sql = "UPDATE aula_entregas SET nota=?, comentarioCalificacion=?, estado='corregida' WHERE idEntrega=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "dsi", $nota, $comentario, $idEntrega);
+    if ($archivoCorreccion !== null) {
+        $sql = "UPDATE aula_entregas SET nota=?, comentarioCalificacion=?, archivoCorreccion=?, estado='corregida' WHERE idEntrega=?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "dssi", $nota, $comentario, $archivoCorreccion, $idEntrega);
+    } else {
+        $sql = "UPDATE aula_entregas SET nota=?, comentarioCalificacion=?, estado='corregida' WHERE idEntrega=?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "dsi", $nota, $comentario, $idEntrega);
+    }
 
     return mysqli_stmt_execute($stmt);
 }
@@ -543,8 +552,73 @@ function insertarNotificacionAula($idUsuario, $tipoUsuario, $tipo, $titulo, $men
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "issssis", $idUsuario, $tipoUsuario, $tipo, $titulo, $mensaje, $idReferencia, $tipoReferencia);
     $ok = mysqli_stmt_execute($stmt);
-    
+
     return $ok;
+}
+
+// ── Lectura de aula_notificaciones (campana de navbar) ──────────────────
+// Esta tabla llevaba tiempo recibiendo escrituras de notificarEstudiantesPorModulo()/
+// notificarEstudiantesCicloAula() de arriba pero nunca se leía en ningún
+// sitio — sin campana ni badge, esas notificaciones eran invisibles para
+// el usuario. Mismo patrón que modelos/notificaciones.php (tabla genérica
+// más reciente): contar/listar no-leídas + marcar leídas por AJAX.
+
+// URL de destino según el tipo de evento — enlaza a la página de lista
+// correspondiente (no al elemento exacto: idReferencia apunta a tablas
+// distintas según el tipo — archivo/tarea/entrega/sesión — y resolver el
+// idModulo de cada una añadiría un JOIN distinto por tipo para un beneficio
+// marginal frente a aterrizar en la sección correcta).
+function _urlNotificacionAula(string $tipoUsuario, string $tipo): string {
+    if ($tipoUsuario === 'profesor') {
+        return '../aula/index.php'; // entrega_enviada
+    }
+    return match ($tipo) {
+        'tarea_nueva'       => '../aula/tareas.php',
+        'entrega_corregida' => '../aula/mis_entregas.php',
+        'sesion_nueva'      => '../aula/sesiones.php',
+        'archivo_subido'    => '../aula/recursos.php',
+        default             => '../inicio/dashboard.php',
+    };
+}
+
+function contarNotificacionesAulaNoLeidas(int $idUsuario, string $tipoUsuario): int {
+    return Cache::remember("aula_notif_no_leidas_{$tipoUsuario}_{$idUsuario}", 10, function () use ($idUsuario, $tipoUsuario) {
+        $con  = obtenerConexion();
+        $stmt = mysqli_prepare($con,
+            "SELECT COUNT(*) AS n FROM aula_notificaciones WHERE idUsuario = ? AND tipoUsuario = ? AND leida = 0");
+        mysqli_stmt_bind_param($stmt, "is", $idUsuario, $tipoUsuario);
+        mysqli_stmt_execute($stmt);
+        return (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))['n'] ?? 0);
+    });
+}
+
+function listarNotificacionesAulaNoLeidas(int $idUsuario, string $tipoUsuario, int $limite = 3): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT * FROM aula_notificaciones WHERE idUsuario = ? AND tipoUsuario = ? AND leida = 0
+         ORDER BY idNotificacion DESC LIMIT ?");
+    mysqli_stmt_bind_param($stmt, "isi", $idUsuario, $tipoUsuario, $limite);
+    mysqli_stmt_execute($stmt);
+    $filas = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+    foreach ($filas as &$fila) {
+        $fila['url'] = _urlNotificacionAula($tipoUsuario, $fila['tipo']);
+    }
+    return $filas;
+}
+
+function marcarNotificacionesAulaLeidas(int $idUsuario, string $tipoUsuario, array $ids): bool {
+    $ids = array_values(array_unique(array_map('intval', $ids)));
+    $ids = array_filter($ids, fn($id) => $id > 0);
+    if (empty($ids)) return true;
+
+    $con          = obtenerConexion();
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $tipos        = str_repeat('i', count($ids));
+    $stmt = mysqli_prepare($con,
+        "UPDATE aula_notificaciones SET leida = 1
+         WHERE idUsuario = ? AND tipoUsuario = ? AND idNotificacion IN ($placeholders)");
+    mysqli_stmt_bind_param($stmt, "is{$tipos}", $idUsuario, $tipoUsuario, ...$ids);
+    return mysqli_stmt_execute($stmt);
 }
 
 // Tokens FCM de los estudiantes de un ciclo (para push en tiempo real)

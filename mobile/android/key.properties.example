@@ -1,0 +1,24 @@
+# Copy this file to android/key.properties (same directory) and fill in the
+# real values — key.properties itself is gitignored (android/.gitignore),
+# this .example file is not, so it's safe to commit as documentation.
+#
+# storeFile is relative to android/app/ (Gradle resolves it from there), or
+# use an absolute path to keep the keystore outside the repo entirely
+# (recommended — e.g. somewhere in your own backed-up secrets folder).
+#
+# Generate the keystore yourself, in your own terminal, so the passwords
+# never pass through anything else:
+#   keytool -genkeypair -v -keystore aulapro-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias aulapro
+#
+# BACK THIS FILE AND THE .jks/.keystore UP SOMEWHERE SAFE, OUTSIDE THIS REPO.
+# If you lose the keystore or its passwords, you can NEVER publish an update
+# to an app already live on the Play Store under this signing identity again
+# (Play App Signing — recommended, and the default for new apps — reduces
+# this risk: Google keeps the actual "app signing key" and you only need to
+# safeguard the "upload key" used here, which Google lets you reset if lost;
+# without Play App Signing there is no recovery path at all).
+
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=aulapro
+storeFile=../aulapro-release.jks

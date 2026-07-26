@@ -13,6 +13,8 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
 $idEstudianteElegido = (int)($_GET['idEstudiante'] ?? 0);
+$gradoElegido = $_GET['grado'] ?? '';
+$anioElegido = $_GET['anio'] ?? '';
 
 $todosLosCiclos = listarTodosLosCiclos();
 
@@ -20,6 +22,13 @@ if (!empty($idCicloElegido)) {
     $todosLosEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 } else {
     $todosLosEstudiantes = listarEstudiantes();
+}
+
+if ($gradoElegido !== '') {
+    $todosLosEstudiantes = array_filter($todosLosEstudiantes, fn($e) => ($e['curso'] ?? '') === $gradoElegido);
+}
+if ($anioElegido !== '') {
+    $todosLosEstudiantes = array_filter($todosLosEstudiantes, fn($e) => ($e['anioEstudio'] ?? '') === $anioElegido);
 }
 
 $infoFinanciera = null;
@@ -62,7 +71,25 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo relleno">
-            <label for="idEstudiante">2. Seleccionar Estudiante:</label>
+            <label for="grado">2. Filtrar por Grado:</label>
+            <select name="grado" id="grado" onchange="this.form.submit()">
+                <option value="">-- Medio y Superior --</option>
+                <option value="Grado Medio" <?= ($gradoElegido === 'Grado Medio') ? 'selected' : '' ?>>Grado Medio</option>
+                <option value="Grado Superior" <?= ($gradoElegido === 'Grado Superior') ? 'selected' : '' ?>>Grado Superior</option>
+            </select>
+        </div>
+
+        <div class="campo relleno">
+            <label for="anio">3. Filtrar por Año:</label>
+            <select name="anio" id="anio" onchange="this.form.submit()">
+                <option value="">-- 1º y 2º --</option>
+                <option value="1º" <?= ($anioElegido === '1º') ? 'selected' : '' ?>>1º</option>
+                <option value="2º" <?= ($anioElegido === '2º') ? 'selected' : '' ?>>2º</option>
+            </select>
+        </div>
+
+        <div class="campo relleno">
+            <label for="idEstudiante">4. Seleccionar Estudiante:</label>
             <select name="idEstudiante" id="idEstudiante" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Estudiante --</option>
                 <?php foreach ($todosLosEstudiantes as $estudiante) { ?>
@@ -73,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <input type="reset" class="boton-secundario" style="margin-bottom: 5px;" value="LIMPIAR">
+        <a href="agregarPagos.php" class="boton-secundario" style="margin-bottom: 5px;">LIMPIAR</a>
     </form>
 </div>
 

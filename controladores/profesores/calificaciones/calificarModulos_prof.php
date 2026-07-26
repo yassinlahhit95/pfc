@@ -5,6 +5,8 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/notificaciones.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (!isset($_POST['guardarNotas'])) {
     header("Location: ../../../vistas/profesores/calificaciones/lista.php");
@@ -59,7 +61,9 @@ $validarVal  = function($v) use ($especiales) {
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 $hayError = false;
+$moduloInfoNotif = obtenerModuloPorId($idModulo);
 for ($i = 0, $n = count($listaIds); $i < $n; $i++) {
+    $idEst   = (int)$listaIds[$i];
     $v1ev    = trim($lista1ev[$i]    ?? '');
     $v1final = trim($lista1final[$i] ?? '');
     $v2ev    = trim($lista2ev[$i]    ?? '');
@@ -71,8 +75,30 @@ for ($i = 0, $n = count($listaIds); $i < $n; $i++) {
         break;
     }
 
-    $ok = actualizarOCrearNotaCompleta((int)$listaIds[$i], $idModulo, $v1ev, $v1final, $v2ev, $v2final, $obs);
+    // Snapshot ANTES de guardar — solo se notifica al estudiante cuando una
+    // nota final pasa de vacía a tener un valor real (primera publicación),
+    // no en cada re-guardado del resto de la clase mientras el profesor
+    // sigue corrigiendo (evitaría spam de notificaciones idénticas).
+    $notasAntes = obtenerNotasModulo($idEst, $idModulo);
+    $teniaFinal = !empty($notasAntes) && (
+        $notasAntes['nota_1final'] !== null || $notasAntes['estado_1final'] !== null ||
+        $notasAntes['nota_2final'] !== null || $notasAntes['estado_2final'] !== null
+    );
+
+    $ok = actualizarOCrearNotaCompleta($idEst, $idModulo, $v1ev, $v1final, $v2ev, $v2final, $obs);
     if (!$ok) { $hayError = true; break; }
+
+    if (!$teniaFinal && ($v1final !== '' || $v2final !== '') && $moduloInfoNotif) {
+        crearNotificacion($idEst, 'estudiante', 'nota_publicada',
+            'Nueva nota publicada en ' . $moduloInfoNotif['nombreModulo'],
+            '../../../vistas/estudiantes/calificaciones/lista.php');
+
+        $tokenEst = obtenerTokenUsuario($idEst, 'estudiante');
+        if ($tokenEst) {
+            enviarNotificacionFirebase($tokenEst, 'Nueva nota publicada',
+                'Se ha publicado una nueva nota en ' . $moduloInfoNotif['nombreModulo'], 'nota_publicada');
+        }
+    }
 }
 
 // ══════════════════════════════════════════════════════════════════════

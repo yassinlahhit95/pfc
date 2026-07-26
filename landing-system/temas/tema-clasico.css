@@ -24,7 +24,7 @@
 /* Paleta clara "papel crema" propia del tema. En modo oscuro NO se aplica,
    de modo que los tokens de base.css [data-theme="dark"] mandan. */
 html:not([data-theme="dark"]) .tema-clasico {
-  --lp-fondo: #fcfbf9; /* Crema muy suave */
+  --lp-fondo: #FAF9F6; /* Crema cálido */
   --lp-fondo-alt: #f4f2ea;
   --lp-borde: #ded8cd;
   --lp-texto: #2a2a2a;
@@ -32,6 +32,7 @@ html:not([data-theme="dark"]) .tema-clasico {
   --lp-nav-texto: #111;
   --lp-nav-fondo: rgba(252, 251, 249, 0.9);
 }
+[data-theme='dark'] .tema-clasico { --lp-fondo: #1A1A18; }
 
 /* Textura sutil en el fondo global */
 .tema-clasico {
@@ -91,25 +92,32 @@ html:not([data-theme="dark"]) .tema-clasico {
   box-shadow: 0 2px 8px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .18);
 }
 
-/* Cifras sobre verde oscuro con textura */
-.tema-clasico .lp-cifras {
-  background: var(--lp-footer-fondo) !important;
-  background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px) !important;
-  background-size: 20px 20px !important;
+/* Cifras sobre verde oscuro con textura (no aplica a la variante "foto":
+   esa lleva su propia imagen de fondo, ver .lp-cifras.lp-variante-foto en
+   base.css). Ya no hace falta !important: la alternancia global ciega que
+   obligaba a usarlo (nth-of-type(even), más específica que ".lp-cifras") se
+   ha eliminado; ".tema-clasico .lp-cifras" (2 clases) gana por especificidad
+   sin más. */
+.tema-clasico .lp-cifras:not(.lp-variante-foto) {
+  background: var(--lp-footer-fondo);
+  background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 .tema-clasico .lp-cifra-numero { font-family: var(--lp-fuente-titulos); color: #e6eee9; }
 .tema-clasico .lp-cifra-etiqueta { color: rgba(255,255,255,0.7); }
 
-/* -- MODERNIZATION: Editorial Warmth -- */
-.tema-clasico {
-  --lp-fondo: #FAF9F6;
-}
-[data-theme='dark'] .tema-clasico {
-  --lp-fondo: #1A1A18;
-}
-.tema-clasico .lp-card img {
+/* Zoom suave en fotos dentro de tarjetas (clase real es .lp-tarjeta, no
+   .lp-card — la mayoría de tarjetas con foto ya tienen su propio zoom más
+   específico en base.css, esto cubre el resto). */
+.tema-clasico .lp-tarjeta img {
   transition: transform 0.6s ease-out;
 }
-.tema-clasico .lp-card:hover img {
+.tema-clasico .lp-tarjeta:hover img {
   transform: scale(1.05);
 }
+
+/* Ritmo de fondo alterno propio: además de las secciones planas ya
+   marcadas en base.css, la franja de empresas/reconocimiento y el equipo
+   docente también llevan el tinte crema — encaja con el tono "trayectoria
+   editorial" de este tema. */
+.tema-clasico .lp-equipo { background: var(--lp-fondo-alt); }

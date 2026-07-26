@@ -10,7 +10,7 @@ $sliderId = 'testimonials-' . uniqid();
     <div class="lp-sec-cabecera lp-testimonios-cabecera">
       <div>
         <span class="lp-eyebrow">Opiniones reales</span>
-        <h2><?= Security::escapeHtml($contenido['titulo'] ?? 'Lo que dicen nuestros alumnos') ?></h2>
+        <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? 'Lo que dicen nuestros alumnos') ?></h2>
       </div>
       
       <?php if ($variante === 'carrusel' && count($items) > 1): ?>
@@ -27,30 +27,23 @@ $sliderId = 'testimonials-' . uniqid();
 
     <div class="lp-testimonios-wrapper">
       <div class="<?= $variante === 'carrusel' ? 'lp-testimonios-slider' : 'lp-testimonios-grid' ?>" id="<?= $sliderId ?>">
-        <?php foreach ($items as $item):
+        <?php foreach ($items as $i => $item):
             $fotoUrl = landing_img_url($item['foto'] ?? ''); ?>
         <article class="lp-testimonio-card">
           <div class="lp-testimonio-top">
             <span class="lp-testimonio-comilla"><i class="fas fa-quote-left"></i></span>
-            <div class="lp-testimonio-estrellas">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </div>
           </div>
-          <p class="lp-testimonio-texto"><?= nl2br(Security::escapeHtml($item['texto'] ?? '')) ?></p>
+          <p class="lp-testimonio-texto"<?= landing_lb_field($preview, "items.$i.texto", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['texto'] ?? '')) ?></p>
           <div class="lp-testimonio-autor">
             <?php if ($fotoUrl): ?>
-            <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-testimonio-foto">
+            <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-testimonio-foto"<?= landing_lb_field($preview, "items.$i.foto", 'imagen') ?>>
             <?php else: ?>
             <span class="lp-testimonio-avatar"><?= Security::escapeHtml(mb_strtoupper(mb_substr($item['nombre'] ?? '?', 0, 1))) ?></span>
             <?php endif; ?>
             <div>
-              <strong><?= Security::escapeHtml($item['nombre'] ?? '') ?></strong>
+              <strong<?= landing_lb_field($preview, "items.$i.nombre") ?>><?= Security::escapeHtml($item['nombre'] ?? '') ?></strong>
               <?php if (!empty($item['rol'])): ?>
-              <span><?= Security::escapeHtml($item['rol']) ?></span>
+              <span<?= landing_lb_field($preview, "items.$i.rol") ?>><?= Security::escapeHtml($item['rol']) ?></span>
               <?php endif; ?>
             </div>
           </div>

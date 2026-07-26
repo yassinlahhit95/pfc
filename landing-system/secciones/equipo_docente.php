@@ -7,30 +7,30 @@ $esCarrusel = $variante === 'carrusel' && count($items) > 1;
 $sliderId = 'equipo-slider-' . uniqid();
 
 // Extraído porque se repite igual dentro de .lp-equipo-grid y .lp-equipo-slider.
-$renderTarjetas = function () use ($items) {
-    foreach ($items as $item):
+$renderTarjetas = function () use ($items, $preview) {
+    foreach ($items as $i => $item):
         $fotoUrl = landing_img_url($item['foto'] ?? '');
         ?>
       <article class="lp-tarjeta lp-equipo-card lp-flip-card">
         <div class="lp-flip-inner">
           <div class="lp-flip-front">
             <?php if ($fotoUrl): ?>
-            <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-equipo-foto">
+            <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-equipo-foto"<?= landing_lb_field($preview, "items.$i.foto", 'imagen') ?>>
             <?php else: ?>
             <div class="lp-equipo-foto lp-equipo-foto-inicial" aria-hidden="true">
               <?= Security::escapeHtml(mb_strtoupper(mb_substr(trim($item['nombre'] ?? ''), 0, 1))) ?>
             </div>
             <?php endif; ?>
-            <h3><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
+            <h3<?= landing_lb_field($preview, "items.$i.nombre") ?>><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
             <?php if (!empty($item['cargo'])): ?>
-            <span class="lp-equipo-cargo"><?= Security::escapeHtml($item['cargo']) ?></span>
+            <span class="lp-equipo-cargo"<?= landing_lb_field($preview, "items.$i.cargo") ?>><?= Security::escapeHtml($item['cargo']) ?></span>
             <?php endif; ?>
           </div>
           <div class="lp-flip-back">
             <h3><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
             <div class="lp-equipo-back-scroll">
               <?php if (!empty($item['bio'])): ?>
-              <p class="lp-equipo-bio"><?= nl2br(Security::escapeHtml($item['bio'])) ?></p>
+              <p class="lp-equipo-bio"<?= landing_lb_field($preview, "items.$i.bio", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['bio'])) ?></p>
               <?php endif; ?>
             </div>
             <a href="#" class="lp-badge"><i class="fab fa-linkedin-in"></i></a>
@@ -45,9 +45,9 @@ $renderTarjetas = function () use ($items) {
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera<?= $esCarrusel ? ' lp-testimonios-cabecera' : '' ?>">
       <div>
-        <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
+        <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
         <?php if (!empty($contenido['subtitulo'])): ?>
-        <p><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+        <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
         <?php endif; ?>
       </div>
       <?php if ($esCarrusel): ?>

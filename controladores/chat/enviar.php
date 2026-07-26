@@ -73,7 +73,7 @@ require_once __DIR__ . '/../firebase/firebase_helper.php';
 $destToken = obtenerTokenUsuario($destId, $destRol);
 if ($destToken) {
     $cuerpoPush = mb_strimwidth($contenido, 0, 120, '…');
-    @enviarNotificacionFirebase($destToken, 'Nuevo mensaje de ' . $emisorNombre, $cuerpoPush);
+    @enviarNotificacionFirebase($destToken, 'Nuevo mensaje de ' . $emisorNombre, $cuerpoPush, 'chat_message', ['conv_id' => $convId]);
 }
 
 // ══════════════════════════════════════════════════════════════════════

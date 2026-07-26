@@ -51,19 +51,25 @@ if ($row) {
     if ($row['intentos'] >= 5) {
         $hasta = date('Y-m-d H:i:s', time() + 600);
         $upd   = mysqli_prepare($con, "UPDATE login_intentos SET bloqueado_hasta=?, intentos=0 WHERE ip=?");
-        mysqli_stmt_bind_param($upd, "ss", $hasta, $ip);
-        mysqli_stmt_execute($upd);
+        if ($upd) {
+            mysqli_stmt_bind_param($upd, "ss", $hasta, $ip);
+            mysqli_stmt_execute($upd);
+        }
         $_SESSION['reset_error'] = "Demasiadas solicitudes. Inténtalo de nuevo en 10 minutos.";
         header("Location: ../../vistas/auth/solicitar_reset.php");
         exit;
     }
     $inc = mysqli_prepare($con, "UPDATE login_intentos SET intentos = intentos + 1, ultimo_intento = NOW() WHERE ip = ?");
-    mysqli_stmt_bind_param($inc, "s", $ip);
-    mysqli_stmt_execute($inc);
+    if ($inc) {
+        mysqli_stmt_bind_param($inc, "s", $ip);
+        mysqli_stmt_execute($inc);
+    }
 } else {
     $ins = mysqli_prepare($con, "INSERT INTO login_intentos (ip, intentos) VALUES (?, 1)");
-    mysqli_stmt_bind_param($ins, "s", $ip);
-    mysqli_stmt_execute($ins);
+    if ($ins) {
+        mysqli_stmt_bind_param($ins, "s", $ip);
+        mysqli_stmt_execute($ins);
+    }
 }
 
 // ══════════════════════════════════════════════════════════════════════

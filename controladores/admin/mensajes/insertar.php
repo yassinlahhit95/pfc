@@ -53,11 +53,12 @@ if (isset($_POST['enviarMensaje'])) {
         $mensajesEnviados = 0;
 
         foreach ($estudiantesDelCiclo as $est) {
-            if (insertarNuevoMensaje($est['idEstudiante'], '', $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje)) {
+            $idMensajeMasivo = insertarNuevoMensaje($est['idEstudiante'], '', $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje);
+            if ($idMensajeMasivo) {
                 $mensajesEnviados++;
                 $tokenDispositivo = obtenerTokenUsuario($est['idEstudiante'], 'estudiante');
                 if ($tokenDispositivo) {
-                    enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje);
+                    enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje, 'message', ['idReclamacion' => $idMensajeMasivo]);
                 }
             }
         }
@@ -70,14 +71,15 @@ if (isset($_POST['enviarMensaje'])) {
     }
 
     // Envío individual a un estudiante o profesor
-    if (insertarNuevoMensaje($idEstudianteDestino, $idProfesorDestino, $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje)) {
+    $idMensajeIndividual = insertarNuevoMensaje($idEstudianteDestino, $idProfesorDestino, $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje);
+    if ($idMensajeIndividual) {
         $idDestinatarioFinal  = !empty($idEstudianteDestino) ? $idEstudianteDestino : $idProfesorDestino;
         $rolDestinatarioFinal = !empty($idEstudianteDestino) ? 'estudiante' : 'profesor';
 
         if (!empty($idDestinatarioFinal)) {
             $tokenDispositivo = obtenerTokenUsuario($idDestinatarioFinal, $rolDestinatarioFinal);
             if ($tokenDispositivo) {
-                enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje);
+                enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje, 'message', ['idReclamacion' => $idMensajeIndividual]);
             }
         }
 

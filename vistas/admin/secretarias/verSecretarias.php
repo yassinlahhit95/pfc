@@ -39,7 +39,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <div class="panel margen-abajo">
     <input type="text" id="buscarSecretaria" class="buscador"
-           autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+           autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
            data-lpignore="true" data-1p-ignore="true" data-form-type="other"
            placeholder="Buscar por nombre o email…"
            oninput="filtrarTabla('buscarSecretaria','tablaSecretarias')">

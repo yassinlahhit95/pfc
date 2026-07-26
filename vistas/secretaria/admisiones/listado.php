@@ -8,8 +8,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/admisiones.php";
 $admisiones = listarPreMatriculas();
 
-$pendientes = array_filter($admisiones, fn($adm) => in_array($adm['estado'], ['PENDIENTE','EN_REVISION']));
-$admitidos  = array_filter($admisiones, fn($adm) => $adm['estado'] === 'ADMITIDO');
+$pendientes = array_filter($admisiones, fn($adm) => in_array($adm['estado'], ['pendiente','revisando']));
+$admitidos  = array_filter($admisiones, fn($adm) => $adm['estado'] === 'aceptada');
 
 $titulo_pagina = 'AULAPRO | ADMISIONES';
 $seccion = 'admisiones';
@@ -74,18 +74,28 @@ include __DIR__ . '/../comunes/nav.php';
                 <?php endif; ?>
                 <?php foreach ($admisiones as $adm):
                     $estadoClase = match($adm['estado']) {
-                        'PENDIENTE'   => 'naranja',
-                        'EN_REVISION' => 'azul',
-                        'ADMITIDO'    => 'verde',
-                        'RECHAZADO'   => 'rojo',
-                        default       => 'gris',
+                        'pendiente'    => 'naranja',
+                        'revisando'    => 'azul',
+                        'aceptada'     => 'verde',
+                        'rechazada'    => 'rojo',
+                        'subsanacion'  => 'naranja',
+                        default        => 'gris',
                     };
                     $estadoIcono = match($adm['estado']) {
-                        'PENDIENTE'   => 'fa-clock',
-                        'EN_REVISION' => 'fa-search',
-                        'ADMITIDO'    => 'fa-check-circle',
-                        'RECHAZADO'   => 'fa-times-circle',
-                        default       => 'fa-question-circle',
+                        'pendiente'    => 'fa-clock',
+                        'revisando'    => 'fa-search',
+                        'aceptada'     => 'fa-check-circle',
+                        'rechazada'    => 'fa-times-circle',
+                        'subsanacion'  => 'fa-file-circle-exclamation',
+                        default        => 'fa-question-circle',
+                    };
+                    $estadoLabel = match($adm['estado']) {
+                        'pendiente'    => 'Pendiente',
+                        'revisando'    => 'En Revisión',
+                        'aceptada'     => 'Admitido',
+                        'rechazada'    => 'Rechazado',
+                        'subsanacion'  => 'Subsanación',
+                        default        => $adm['estado'],
                     };
                 ?>
                 <tr>
@@ -104,7 +114,7 @@ include __DIR__ . '/../comunes/nav.php';
                     <td>
                         <span class="texto-estado <?= $estadoClase ?>">
                             <i class="fas <?= $estadoIcono ?>"></i>
-                            <?= Security::escapeHtml($adm['estado']) ?>
+                            <?= Security::escapeHtml($estadoLabel) ?>
                         </span>
                     </td>
                     <td style="text-align:right;">
@@ -120,11 +130,38 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
+<style>
+/* Mismo fade+scale que .modal-backdrop/.modal-abierto (estilo.css) — ver
+   comentario gemelo en vistas/admin/admisiones/listado.php. */
+.admin-modal-overlay {
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility 0s .2s;
+}
+.admin-modal-overlay.admin-modal-abierto {
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+  transition: opacity .2s ease, visibility 0s 0s;
+}
+.admin-modal-caja {
+  transform: scale(.92) translateY(-16px);
+  opacity: 0;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .2s ease;
+}
+.admin-modal-overlay.admin-modal-abierto .admin-modal-caja {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+</style>
+
 <!-- Modal detalle -->
-<div id="admModal" style="display:none;position:fixed;inset:0;z-index:9000;align-items:center;justify-content:center;">
+<div id="admModal" class="admin-modal-overlay" style="position:fixed;inset:0;z-index:9000;align-items:center;justify-content:center;">
     <div class="modal-backdrop-adm" onclick="cerrarModal()"
-         style="position:absolute;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);"></div>
-    <div style="position:relative;z-index:9001;background:var(--surface);border-radius:16px;width:min(720px,94vw);max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;">
+         style="position:absolute;inset:0;background:rgb(15 23 42 / 55%);backdrop-filter:blur(4px);"></div>
+    <div class="admin-modal-caja" style="position:relative;z-index:9001;background:var(--surface);border-radius:16px;width:min(720px,94vw);max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;">
         <!-- Header -->
         <div style="padding:24px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;">
             <div style="width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1.1rem;flex-shrink:0;">
@@ -164,10 +201,11 @@ include __DIR__ . '/../comunes/nav.php';
                 <div class="campo" style="margin-bottom:12px;">
                     <label>Cambiar estado</label>
                     <select id="admEstado" class="campo-input">
-                        <option value="EN_REVISION">En Revisión</option>
-                        <option value="ADMITIDO">Admitir</option>
-                        <option value="RECHAZADO">Rechazar</option>
-                        <option value="SUBSANACION">Subsanación</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="revisando">En Revisión</option>
+                        <option value="aceptada">Admitir</option>
+                        <option value="rechazada">Rechazar</option>
+                        <option value="subsanacion">Subsanación</option>
                     </select>
                 </div>
                 <div class="campo">
@@ -200,7 +238,7 @@ function verDetalle(id) {
     $('#admId').text(id);
     $('#admArchivos').html('<i class="fas fa-circle-notch fa-spin"></i> Cargando...');
     $('#admTutorWrap').hide();
-    document.getElementById('admModal').style.display = 'flex';
+    document.getElementById('admModal').classList.add('admin-modal-abierto');
 
     $.get('../../../controladores/secretaria/admisiones/acciones.php?action=get_details&id=' + id, function(res) {
         if (res.status !== 'success') {
@@ -245,7 +283,7 @@ function verDetalle(id) {
 }
 
 function cerrarModal() {
-    document.getElementById('admModal').style.display = 'none';
+    document.getElementById('admModal').classList.remove('admin-modal-abierto');
     currentId = null;
 }
 

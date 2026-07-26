@@ -57,7 +57,7 @@ if (isset($_POST['guardarAnuncio'])) {
 
             $tokens = array_unique($tokens);
             foreach ($tokens as $token) {
-                enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...");
+                enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...", 'announcement');
             }
 
             $_SESSION['exito'] = "El anuncio ha sido publicado y notificado correctamente a " . count($tokens) . " dispositivos.";

@@ -1,20 +1,12 @@
-import 'dart:math' as math;
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/api/api_exception.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/premium.dart';
 import '../application/login_controller.dart';
-
-// Same three blob colors as the web app's premium .bg-mesh background
-// (public/css/dashboard.css) — kept in sync deliberately, just pushed
-// further into a dark glassmorphic treatment for the mobile login.
-const _blobIndigo = Color(0xFF4F46E5);
-const _blobCyan = Color(0xFF22D3EE);
-const _blobPink = Color(0xFFF472B6);
-const _bgDeep = Color(0xFF07060F);
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -28,22 +20,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _pageController = PageController();
+
   bool _obscure = true;
-  late final AnimationController _drift;
+  bool _showOnboarding = false;
+  int _onboardingPageIndex = 0;
+
+  late final AnimationController _entrance;
 
   @override
   void initState() {
     super.initState();
-    _drift =
-        AnimationController(vsync: this, duration: const Duration(seconds: 24))
-          ..repeat();
+    _entrance = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _checkOnboarding();
+  }
+
+  Future<void> _checkOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    final completed = prefs.getBool('has_seen_onboarding') ?? false;
+    if (!completed) {
+      setState(() => _showOnboarding = true);
+    } else {
+      _entrance.forward();
+    }
+  }
+
+  Future<void> _completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_seen_onboarding', true);
+    setState(() => _showOnboarding = false);
+    _entrance.forward();
   }
 
   @override
   void dispose() {
-    _drift.dispose();
+    _entrance.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -60,6 +74,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginControllerProvider);
     final isLoading = loginState.isLoading;
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     ref.listen(loginControllerProvider, (previous, next) {
       final error = next.error;
@@ -69,220 +85,300 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             : 'No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.';
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(
-            content: Text(message),
-            backgroundColor: const Color(0xFF1D2638),
-          ));
+          ..showSnackBar(SnackBar(content: Text(message)));
       }
     });
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      // This screen is dark while the rest of the app is light-themed —
-      // force light status bar icons here specifically rather than globally.
-      value: SystemUiOverlayStyle.light,
+      value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: _bgDeep,
+        backgroundColor: scheme.surface,
         body: Stack(
           fit: StackFit.expand,
           children: [
-            AnimatedBuilder(
-              animation: _drift,
-              builder: (context, _) => Stack(
-                children: [
-                  _Blob(
-                      color: _blobIndigo,
-                      t: _drift.value,
-                      phase: 0,
-                      size: 340,
-                      alignX: -0.9,
-                      alignY: -0.8),
-                  _Blob(
-                      color: _blobCyan,
-                      t: _drift.value,
-                      phase: 0.33,
-                      size: 300,
-                      alignX: 1.0,
-                      alignY: -0.5),
-                  _Blob(
-                      color: _blobPink,
-                      t: _drift.value,
-                      phase: 0.66,
-                      size: 280,
-                      alignX: -0.3,
-                      alignY: 1.1),
-                ],
-              ),
+            // A single, restrained glow from the app's own accent — not a
+            // pair of unrelated gradient blobs invented for this screen alone.
+            Positioned(
+              left: -160,
+              top: -160,
+              child: _AccentGlow(color: AppColors.accent, opacity: isDark ? 0.16 : 0.10),
             ),
-            // Subtle dark scrim so text/glass stay legible over bright blobs.
-            Container(color: Colors.black.withValues(alpha: 0.25)),
-            SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 32),
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraints.maxHeight - 64),
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 400),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const _LuxLogo(),
-                              const SizedBox(height: 40),
-                              _GlassCard(
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      const Text(
-                                        'Bienvenido de nuevo',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        'Inicia sesión para continuar',
-                                        style: TextStyle(
-                                            color: Colors.white
-                                                .withValues(alpha: 0.65)),
-                                      ),
-                                      const SizedBox(height: 28),
-                                      _LuxField(
-                                        controller: _emailCtrl,
-                                        label: 'Correo electrónico',
-                                        icon: Icons.email_outlined,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        textInputAction: TextInputAction.next,
-                                        validator: (v) =>
-                                            (v == null || v.trim().isEmpty)
-                                                ? 'Requerido'
-                                                : null,
-                                      ),
-                                      const SizedBox(height: 14),
-                                      _LuxField(
-                                        controller: _passwordCtrl,
-                                        label: 'Contraseña',
-                                        icon: Icons.lock_outline,
-                                        obscureText: _obscure,
-                                        textInputAction: TextInputAction.done,
-                                        onSubmitted: (_) => _submit(),
-                                        validator: (v) =>
-                                            (v == null || v.isEmpty)
-                                                ? 'Requerido'
-                                                : null,
-                                        suffix: IconButton(
-                                          icon: Icon(
-                                            _obscure
-                                                ? Icons.visibility_outlined
-                                                : Icons.visibility_off_outlined,
-                                            color: Colors.white
-                                                .withValues(alpha: 0.6),
-                                          ),
-                                          onPressed: () => setState(
-                                              () => _obscure = !_obscure),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 26),
-                                      _LuxButton(
-                                        loading: isLoading,
-                                        onPressed: isLoading ? null : _submit,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              Text(
-                                'AulaPro · Gestión académica',
-                                style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.45),
-                                    fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            if (_showOnboarding) _buildOnboardingView(scheme) else _buildLoginView(isLoading, scheme),
           ],
         ),
       ),
     );
   }
-}
 
-/// Slow organic drift for a blurred blob, matching the web's `drift1`/
-/// `drift2` keyframes conceptually (translate + scale on a sine cycle).
-class _Blob extends StatelessWidget {
-  const _Blob({
-    required this.color,
-    required this.t,
-    required this.phase,
-    required this.size,
-    required this.alignX,
-    required this.alignY,
-  });
-
-  final Color color;
-  final double t; // 0..1 looping
-  final double phase;
-  final double size;
-  final double alignX;
-  final double alignY;
-
-  @override
-  Widget build(BuildContext context) {
-    final cycle = (t + phase) % 1.0;
-    final angle = cycle * 2 * math.pi;
-    final dx = math.sin(angle) * 24;
-    final dy = math.cos(angle) * 18;
-    final scale = 1.0 + math.sin(angle) * 0.08;
-
-    return Align(
-      alignment: Alignment(alignX, alignY),
-      child: Transform.translate(
-        offset: Offset(dx, dy),
-        child: Transform.scale(
-          scale: scale,
-          child: ImageFiltered(
-            imageFilter: ImageFilter.blur(sigmaX: 70, sigmaY: 70),
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    color.withValues(alpha: 0.9),
-                    color.withValues(alpha: 0.0)
-                  ],
-                ),
+  Widget _buildOnboardingView(ColorScheme scheme) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: Space.lg, top: Space.sm),
+              child: TextButton(
+                onPressed: _completeOnboarding,
+                child: const Text('Saltar'),
               ),
             ),
           ),
-        ),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (idx) => setState(() => _onboardingPageIndex = idx),
+              children: const [
+                _OnboardingSlide(
+                  icon: Icons.auto_stories_rounded,
+                  title: 'Aula Digital Interactiva',
+                  description: 'Accede a tus temas, descarga apuntes y sube tus tareas de forma rápida y sencilla.',
+                ),
+                _OnboardingSlide(
+                  icon: Icons.forum_rounded,
+                  title: 'Comunicación Directa',
+                  description: 'Chatea con tus profesores y compañeros, y recibe avisos en tiempo real.',
+                ),
+                _OnboardingSlide(
+                  icon: Icons.insights_rounded,
+                  title: 'Seguimiento al Día',
+                  description: 'Consulta tu horario de clases, asistencia y notas desde un único portal personalizado.',
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Space.xxl, vertical: Space.xxxl),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _PageIndicator(count: 3, current: _onboardingPageIndex),
+                const SizedBox(height: Space.xxl),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      if (_onboardingPageIndex < 2) {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 320),
+                          curve: Curves.easeOutCubic,
+                        );
+                      } else {
+                        _completeOnboarding();
+                      }
+                    },
+                    child: Text(_onboardingPageIndex == 2 ? 'Comenzar' : 'Siguiente'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginView(bool isLoading, ColorScheme scheme) {
+    final textTheme = Theme.of(context).textTheme;
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: Space.xxl, vertical: Space.xxxl),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight - 64),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 380),
+                  child: AnimatedBuilder(
+                    animation: _entrance,
+                    builder: (context, child) {
+                      final val = CurvedAnimation(parent: _entrance, curve: Curves.easeOutCubic).value;
+                      return Opacity(
+                        opacity: val,
+                        child: Transform.translate(
+                          offset: Offset(0, 20.0 * (1.0 - val)),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const _AppMark(),
+                        const SizedBox(height: Space.xxxl),
+                        AppCard(
+                          padding: const EdgeInsets.all(Space.xxl),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text('Bienvenido de nuevo', style: textTheme.headlineSmall),
+                                const SizedBox(height: Space.xs),
+                                Text(
+                                  'Inicia sesión para continuar',
+                                  style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                                ),
+                                const SizedBox(height: Space.xxl),
+                                TextFormField(
+                                  controller: _emailCtrl,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  autocorrect: false,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Correo electrónico',
+                                    prefixIcon: Icon(Icons.email_outlined),
+                                  ),
+                                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                                ),
+                                const SizedBox(height: Space.lg),
+                                TextFormField(
+                                  controller: _passwordCtrl,
+                                  obscureText: _obscure,
+                                  textInputAction: TextInputAction.done,
+                                  onFieldSubmitted: (_) => _submit(),
+                                  decoration: InputDecoration(
+                                    labelText: 'Contraseña',
+                                    prefixIcon: const Icon(Icons.lock_outline),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                                      onPressed: () => setState(() => _obscure = !_obscure),
+                                    ),
+                                  ),
+                                  validator: (v) => (v == null || v.isEmpty) ? 'Requerido' : null,
+                                ),
+                                const SizedBox(height: Space.xl),
+                                SizedBox(
+                                  height: 50,
+                                  child: FilledButton(
+                                    onPressed: isLoading ? null : _submit,
+                                    child: isLoading
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                                          )
+                                        : const Text('Entrar'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: Space.xxl),
+                        Text(
+                          'AulaPro · Gestión académica',
+                          style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class _LuxLogo extends StatelessWidget {
-  const _LuxLogo();
+/// Soft, single-color radial glow behind the login card — restrained accent
+/// usage (one color, low opacity) instead of a pair of unrelated gradient
+/// blobs with their own invented palette.
+class _AccentGlow extends StatelessWidget {
+  const _AccentGlow({required this.color, required this.opacity});
+  final Color color;
+  final double opacity;
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      width: 480,
+      height: 480,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color.withValues(alpha: opacity), Colors.transparent]),
+      ),
+    );
+  }
+}
+
+class _OnboardingSlide extends StatelessWidget {
+  const _OnboardingSlide({required this.icon, required this.title, required this.description});
+
+  final IconData icon;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Space.xxxl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 132,
+            height: 132,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.accent.withValues(alpha: scheme.brightness == Brightness.dark ? 0.16 : 0.1),
+            ),
+            alignment: Alignment.center,
+            child: Icon(icon, color: AppColors.accent, size: 56),
+          ),
+          const SizedBox(height: Space.xxxl + Space.lg),
+          Text(title, textAlign: TextAlign.center, style: textTheme.headlineSmall),
+          const SizedBox(height: Space.md),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PageIndicator extends StatelessWidget {
+  const _PageIndicator({required this.count, required this.current});
+  final int count;
+  final int current;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(count, (index) {
+        final active = index == current;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: active ? 22 : 7,
+          height: 7,
+          decoration: BoxDecoration(
+            color: active ? scheme.primary : scheme.outlineVariant,
+            borderRadius: BorderRadius.circular(Radii.pill),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _AppMark extends StatelessWidget {
+  const _AppMark();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -290,181 +386,21 @@ class _LuxLogo extends StatelessWidget {
           width: 68,
           height: 68,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white, Color(0xFFE2E8F0)],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: _blobIndigo.withValues(alpha: 0.5),
-                  blurRadius: 28,
-                  offset: const Offset(0, 12)),
-            ],
+            color: AppColors.accent,
+            borderRadius: BorderRadius.circular(Radii.xl),
+            boxShadow: cardShadow(scheme.brightness),
           ),
-          child: Center(
-            child: Transform.rotate(
-              angle: 0.14,
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                    color: _blobIndigo, borderRadius: BorderRadius.circular(7)),
-              ),
-            ),
-          ),
+          alignment: Alignment.center,
+          child: const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 30),
         ),
-        const SizedBox(height: 18),
-        const Text(
-          'AulaPro',
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.2),
+        const SizedBox(height: Space.lg),
+        Text('AulaPro', style: textTheme.headlineSmall),
+        const SizedBox(height: Space.xs),
+        Text(
+          'Tu centro, en el bolsillo',
+          style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
         ),
-        const SizedBox(height: 4),
-        Text('Tu centro, en el bolsillo',
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.7))),
       ],
-    );
-  }
-}
-
-class _GlassCard extends StatelessWidget {
-  const _GlassCard({required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(28),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 40,
-                  offset: const Offset(0, 20)),
-            ],
-          ),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-class _LuxField extends StatelessWidget {
-  const _LuxField({
-    required this.controller,
-    required this.label,
-    required this.icon,
-    this.obscureText = false,
-    this.keyboardType,
-    this.textInputAction,
-    this.onSubmitted,
-    this.validator,
-    this.suffix,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final IconData icon;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final ValueChanged<String>? onSubmitted;
-  final String? Function(String?)? validator;
-  final Widget? suffix;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      onFieldSubmitted: onSubmitted,
-      validator: validator,
-      autocorrect: false,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.65)),
-        prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.65)),
-        suffixIcon: suffix,
-        filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.07),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _blobCyan, width: 1.4),
-        ),
-        errorStyle: const TextStyle(color: Color(0xFFF87171)),
-      ),
-    );
-  }
-}
-
-class _LuxButton extends StatelessWidget {
-  const _LuxButton({required this.loading, required this.onPressed});
-  final bool loading;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        gradient:
-            const LinearGradient(colors: [_blobIndigo, Color(0xFF6D28D9)]),
-        boxShadow: [
-          BoxShadow(
-              color: _blobIndigo.withValues(alpha: 0.45),
-              blurRadius: 20,
-              offset: const Offset(0, 10)),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: onPressed,
-          child: Center(
-            child: loading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white),
-                  )
-                : const Text(
-                    'Entrar',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-          ),
-        ),
-      ),
     );
   }
 }

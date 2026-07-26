@@ -12,7 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!Security::validateCSRFToken()) {
+// rotate=false — see addFranja.php for why (shared token, no-reload page).
+if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
 }
 

@@ -97,21 +97,7 @@ Importa el esquema (instalación nueva — ya incluye todas las tablas al día):
 mysql -u root -p aulapro < noDeploy/database.sql
 ```
 
-Después, crea la primera cuenta de administrador y la fila de configuración del centro — **sin esto no se puede entrar a la aplicación**:
-
-```bash
-mysql -u root -p aulapro < noDeploy/seed_minimal.sql
-```
-
-`seed_minimal.sql` es un seed mínimo (un admin con contraseña de un solo uso a cambiar, datos de centro por defecto) — distinto de `noDeploy/demo_data.sql`, que son datos ficticios solo para desarrollo local (alumnos, profesores, ciclos de ejemplo).
-
-Si en cambio partes de una base de datos **existente** (más antigua que alguno de los archivos en `noDeploy/migrations/`), aplica ahí las que falten, en orden numérico:
-
-```bash
-mysql -u root -p aulapro < noDeploy/migrations/aplicar_todas_produccion.sql
-```
-
-(Ese archivo concatena, en orden, todas las migraciones numeradas — o aplícalas una a una si prefieres control fino: `001_blog_posts.sql` → `007_tours_completados.sql`.)
+La importación deja `directores` y `configuracion_centro` vacíos a propósito: entra en `/install/` y completa el asistente (comprobación de entorno → conexión ya hecha → primera cuenta de administrador → identidad del centro → funcionalidades) para crear tu propia cuenta con tu propia contraseña. No existe ningún fichero de seed aparte — el asistente es el único camino soportado para dejar la instalación lista para usar.
 
 ### 4. Permisos
 ```bash
@@ -177,8 +163,7 @@ include/                  — AdminGuard, ProfesorGuard, Security, FeatureGuard,
 modelos/                  — Funciones de consulta DB (un fichero por entidad)
 api/v1/                   — API REST para la app móvil
 config/                   — Config.php, .env (ignorado en git)
-noDeploy/database.sql     — Esquema completo (fuente de verdad, instalación nueva)
-noDeploy/migrations/      — Migraciones SQL numeradas, para bases de datos existentes
+noDeploy/database.sql     — Esquema completo y único (fuente de verdad, sin sistema de migraciones)
 landing-system/           — Sitio público de aterrizaje (landing): plantillas,
                             secciones editables, temas — ver landing-system/README.md
 public/css/               — dashboard.css (tokens), estilo.css (contenido)

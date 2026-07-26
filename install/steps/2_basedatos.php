@@ -26,6 +26,8 @@ function handlePost(): array {
     ]);
     if (!$env['ok']) return ['ok' => false, 'msg' => $env['msg']];
 
+    updateCorsOrigin($appUrl);
+
     return ['ok' => true];
 }
 

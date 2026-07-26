@@ -1,4 +1,10 @@
 <?php
+// Necesario para leer $_SESSION['idAdmin'] más abajo (el aviso de "faltan
+// datos" solo debe verlo un admin con sesión iniciada) — _header.php no
+// inicia sesión por sí mismo, esta es una página pública sin Guard.
+require_once __DIR__ . '/../../include/Security.php';
+Security::initSession();
+
 $legal_titulo = 'Política de Privacidad';
 $legal_pagina = 'privacidad';
 require __DIR__ . '/_header.php';
@@ -22,6 +28,7 @@ $hoy = date('d/m/Y');
             <li><a href="#destinatarios">Destinatarios y transferencias</a></li>
             <li><a href="#derechos">Tus derechos</a></li>
             <li><a href="#menores">Protección de menores</a></li>
+            <li><a href="#app-movil">Aplicación móvil</a></li>
             <li><a href="#seguridad">Seguridad</a></li>
             <li><a href="#cambios">Cambios en esta política</a></li>
         </ol>
@@ -32,15 +39,43 @@ $hoy = date('d/m/Y');
         <span>Nos comprometemos a tratar tus datos personales con total transparencia, en estricto cumplimiento del <strong>Reglamento (UE) 2016/679 (RGPD)</strong> y la <strong>Ley Orgánica 3/2018 (LOPD-GDD)</strong>.</span>
     </div>
 
+    <?php
+    // Nunca se muestra un placeholder entre corchetes en una página pública:
+    // antes el NIF/CIF era un texto literal fijo (ni siquiera comprobaba si
+    // había dato real) y dirección/teléfono/contacto caían a "[Dirección del
+    // centro]" etc. si configuracion_centro no estaba rellena — inaceptable
+    // como aviso legal real, y en concreto bloqueante para enlazar esta
+    // página como política de privacidad de una ficha de Play Store. Si un
+    // dato no está configurado, esa línea simplemente no se imprime, en vez
+    // de mostrar un placeholder.
+    $direccionCompleta = trim(($cfg['direccionCentro'] ?? '') . ', ' . ($cfg['ciudadCentro'] ?? '') . ' ' . ($cfg['cpCentro'] ?? ''), ", ");
+    $nifCif = trim($cfg['nifCifCentro'] ?? '');
+    ?>
     <section class="legal-section" id="responsable">
         <h2><i class="fas fa-building"></i> 1. Responsable del Tratamiento</h2>
         <ul>
             <li><strong>Identidad:</strong> <?= htmlspecialchars($nombreCentro) ?></li>
-            <li><strong>NIF/CIF:</strong> [Introduce aquí el NIF o CIF del centro]</li>
-            <li><strong>Dirección postal:</strong> <?= htmlspecialchars(trim(($cfg['direccionCentro'] ?? '') . ', ' . ($cfg['ciudadCentro'] ?? '') . ' ' . ($cfg['cpCentro'] ?? ''))) ?: '[Dirección del centro]' ?></li>
-            <li><strong>Teléfono:</strong> <?= !empty($cfg['telefonoCentro']) ? htmlspecialchars($cfg['telefonoCentro']) : '[Teléfono]' ?></li>
-            <li><strong>Contacto:</strong> <?= !empty($emailCentro) ? '<a href="mailto:' . htmlspecialchars($emailCentro) . '">' . htmlspecialchars($emailCentro) . '</a>' : '[email del centro]' ?></li>
+            <?php if ($nifCif !== ''): ?>
+            <li><strong>NIF/CIF:</strong> <?= htmlspecialchars($nifCif) ?></li>
+            <?php endif; ?>
+            <?php if ($direccionCompleta !== ''): ?>
+            <li><strong>Dirección postal:</strong> <?= htmlspecialchars($direccionCompleta) ?></li>
+            <?php endif; ?>
+            <?php if (!empty($cfg['telefonoCentro'])): ?>
+            <li><strong>Teléfono:</strong> <?= htmlspecialchars($cfg['telefonoCentro']) ?></li>
+            <?php endif; ?>
+            <?php if (!empty($emailCentro)): ?>
+            <li><strong>Contacto:</strong> <a href="mailto:<?= htmlspecialchars($emailCentro) ?>"><?= htmlspecialchars($emailCentro) ?></a></li>
+            <?php endif; ?>
         </ul>
+        <?php if (!empty($_SESSION['idAdmin']) && ($nifCif === '' || $direccionCompleta === '' || empty($cfg['telefonoCentro']) || empty($emailCentro))): ?>
+        <!-- Visible solo si ves esta página con sesión de administrador iniciada — un
+             visitante público nunca ve este aviso, solo la ausencia silenciosa de la línea. -->
+        <p class="legal-info-box" style="margin-top:12px;background:var(--naranja-suave,#fffbeb);border-color:var(--naranja,#f59e0b);color:var(--naranja-ink,#92400e);">
+            <i class="fas fa-triangle-exclamation"></i>
+            Solo tú ves este aviso (sesión de administrador): faltan datos de contacto del responsable del tratamiento por configurar en Administración → Configuración del Centro antes de publicar o enlazar esta política públicamente.
+        </p>
+        <?php endif; ?>
         <p style="margin-top:12px;"><strong>Proveedor tecnológico (Encargado del tratamiento):</strong> AulaPro SaaS, responsable del sistema de gestión escolar, actúa como encargado del tratamiento bajo contrato de confidencialidad con el centro, en los términos del Art. 28 RGPD.</p>
     </section>
 
@@ -135,7 +170,7 @@ $hoy = date('d/m/Y');
 
     <section class="legal-section" id="derechos">
         <h2><i class="fas fa-hand-holding-heart"></i> 6. Tus Derechos</h2>
-        <p>En virtud del RGPD y la LOPD-GDD, puedes ejercer los siguientes derechos enviando un escrito a <strong><?= !empty($emailCentro) ? htmlspecialchars($emailCentro) : '[email del centro]' ?></strong> adjuntando copia de tu DNI o documento identificativo equivalente:</p>
+        <p>En virtud del RGPD y la LOPD-GDD, puedes ejercer los siguientes derechos<?= !empty($emailCentro) ? ' enviando un escrito a <strong>' . htmlspecialchars($emailCentro) . '</strong>' : ' contactando con el centro educativo' ?> adjuntando copia de tu DNI o documento identificativo equivalente:</p>
 
         <div class="derechos-grid">
             <div class="derecho-card">
@@ -180,8 +215,19 @@ $hoy = date('d/m/Y');
         <p>Los datos de estudiantes menores se incorporan a la plataforma por el centro educativo, que actúa como responsable del tratamiento conforme a la normativa educativa vigente. Los padres y tutores legales tienen acceso a los datos académicos de sus hijos a través del portal de tutores.</p>
     </section>
 
+    <section class="legal-section" id="app-movil">
+        <h2><i class="fas fa-mobile-screen-button"></i> 8. Aplicación Móvil</h2>
+        <p>Si accedes a través de la aplicación móvil de AulaPro (Android), además de los datos descritos en las secciones anteriores, se tratan los siguientes datos específicos del dispositivo:</p>
+        <ul>
+            <li><strong>Token de notificaciones push (Firebase Cloud Messaging):</strong> un identificador técnico que Google Firebase asigna a la instalación de la app en tu dispositivo, usado exclusivamente para poder enviarte notificaciones (nuevas calificaciones, mensajes, tareas, eventos). No identifica tu ubicación ni se usa con fines publicitarios. Se elimina al cerrar sesión o desinstalar la app. Este envío a Google LLC se rige por las mismas Cláusulas Contractuales Tipo mencionadas en la sección de "Destinatarios y Transferencias".</li>
+            <li><strong>Sesión de acceso (token de autenticación):</strong> se guarda únicamente en el propio dispositivo, cifrado mediante el almacenamiento seguro del sistema operativo (Android Keystore). Nunca se transmite a terceros ni se almacena en nuestros servidores más allá de su validación en cada petición a la API.</li>
+            <li><strong>Permisos del dispositivo solicitados:</strong> conexión a internet y permiso de notificaciones (Android 13 o superior). La app no solicita acceso a cámara, ubicación, contactos, almacenamiento externo ni micrófono.</li>
+        </ul>
+        <p>Puedes revocar el permiso de notificaciones o eliminar el token de tu dispositivo en cualquier momento desde los ajustes de la app o del sistema operativo, o cerrando sesión.</p>
+    </section>
+
     <section class="legal-section" id="seguridad">
-        <h2><i class="fas fa-lock"></i> 8. Seguridad de los Datos</h2>
+        <h2><i class="fas fa-lock"></i> 9. Seguridad de los Datos</h2>
         <p>Aplicamos medidas técnicas y organizativas apropiadas para garantizar la seguridad de tus datos personales (Art. 32 RGPD), entre otras:</p>
         <ul>
             <li>Cifrado de contraseñas mediante algoritmos seguros (bcrypt).</li>
@@ -196,7 +242,7 @@ $hoy = date('d/m/Y');
     </section>
 
     <section class="legal-section" id="cambios">
-        <h2><i class="fas fa-history"></i> 9. Cambios en esta Política</h2>
+        <h2><i class="fas fa-history"></i> 10. Cambios en esta Política</h2>
         <p>Podemos actualizar esta política de privacidad para adaptarla a cambios legislativos o en el funcionamiento de la plataforma. Las modificaciones significativas se comunicarán mediante aviso en la plataforma o por correo electrónico.</p>
         <p style="color:var(--mut);font-size:.85rem;margin-top:16px;">Última actualización: <?= $hoy ?></p>
     </section>

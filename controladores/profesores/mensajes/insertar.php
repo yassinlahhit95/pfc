@@ -51,7 +51,7 @@ $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripc
 if ($resultado) {
     $tokenEstudiante = obtenerTokenUsuario($idEstudiante, "estudiante");
     if ($tokenEstudiante) {
-        enviarNotificacionFirebase($tokenEstudiante, "Mensaje de Profesor: " . $asunto, $descripcion);
+        enviarNotificacionFirebase($tokenEstudiante, "Mensaje de Profesor: " . $asunto, $descripcion, 'message', ['idReclamacion' => $resultado]);
     }
 
     $_SESSION['exito'] = "Mensaje enviado correctamente.";

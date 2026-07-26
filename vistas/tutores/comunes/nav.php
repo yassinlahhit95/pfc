@@ -67,13 +67,7 @@ function _nav_active_tutor($check) {
         }
       } catch (e) {}
     </script>
-    <div class="brand">
-      <div class="brand-mark" style="background: var(--accent)"><span></span></div>
-      <div class="brand-text"><strong>AulaPro</strong><small>Portal Familias</small></div>
-      <button class="collapse-btn" id="collapse">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
-      </button>
-    </div>
+    <?php $navBrandSubtitle = 'Portal Familias'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
 
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
       <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_tutor('inicio') ?>">
@@ -83,10 +77,13 @@ function _nav_active_tutor($check) {
       </a>
 
       <span class="nav-section-title">MIS HIJOS</span>
-      <?php foreach ($estudiantes_menu as $estudianteMenu): ?>
-        <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" data-tour="hijo" class="nav-item">
+      <?php foreach ($estudiantes_menu as $estudianteMenu):
+        $esHijoActivo = ($seccion ?? '') === 'hijo' && (int)($idEstudiante ?? 0) === (int)$estudianteMenu['idEstudiante'];
+      ?>
+        <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" data-tour="hijo" class="nav-item<?= $esHijoActivo ? ' active' : '' ?>">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
           <span class="nav-label"><?= Security::escapeHtml(explode(' ', $estudianteMenu['nombreEstudiante'])[0]) ?></span>
+          <?php if ($esHijoActivo) { ?><span class="nav-rail"></span><?php } ?>
         </a>
       <?php endforeach; ?>
 
@@ -119,6 +116,8 @@ function _nav_active_tutor($check) {
       <a href="../mensajes/chat.php" data-tour="mensajeria" class="nav-item<?= _nav_active_tutor('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Mensajería Centro</span>
+        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
+        <?php if (_nav_active_tutor('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php } ?>
     </nav>
@@ -162,7 +161,7 @@ function _nav_active_tutor($check) {
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    data-url="../../../controladores/tutores/buscar.php" />
             <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">

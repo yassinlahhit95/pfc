@@ -26,20 +26,22 @@ if (!$justificacion) {
     $_SESSION['errores'] = "No tienes permiso sobre esta justificación.";
     header("Location: $_back"); exit;
 }
-if ($justificacion['estado'] !== 'pendiente') {
-    $_SESSION['errores'] = "Esta justificación ya ha sido resuelta.";
-    header("Location: $_back"); exit;
-}
+
+// No se exige estado='pendiente': el profesor puede corregir una decisión
+// anterior desde el historial (ver justificaciones.php), no solo resolver
+// una vez y quedar bloqueado.
+$yaEstabaResuelta = $justificacion['estado'] !== 'pendiente';
 
 $ok = resolverJustificacionFalta(
     $idJustificacion,
     (int)$justificacion['idAsistencia'],
     $decision === 'aprobar',
     $idProfesor,
-    $motivoRechazo
+    $motivoRechazo,
+    $justificacion['estadoOriginal']
 );
 
 $_SESSION[$ok ? 'exito' : 'errores'] = $ok
-    ? ($decision === 'aprobar' ? "Justificación aprobada." : "Justificación rechazada.")
+    ? (($decision === 'aprobar' ? "Justificación aprobada." : "Justificación rechazada.") . ($yaEstabaResuelta ? " Decisión actualizada." : ""))
     : "No se pudo procesar la justificación. Inténtalo de nuevo.";
 header("Location: $_back"); exit;

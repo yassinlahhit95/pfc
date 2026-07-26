@@ -21,7 +21,9 @@
 }
 .lb-panel-titulo h3 i { color: var(--accent); }
 
-.boton-pequeno { padding: 6px 12px; font-size: 12.5px; }
+/* .boton-pequeno: no redeclarada aquí — estilo.css ya la define con
+   !important y carga antes en esta página, así que una copia sin
+   !important aquí nunca podía ganar; era código muerto. */
 
 /* ── Lista de secciones ─────────────────────────────────────────────── */
 .lb-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -29,6 +31,7 @@
     display: flex; align-items: center; gap: 10px;
     background: var(--surface-2); border: 1px solid var(--border);
     border-radius: 10px; padding: 10px 12px; cursor: grab;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 .lb-item:active { cursor: grabbing; }
 .lb-arrastrando { opacity: .45; border-style: dashed; border-color: var(--accent); }
@@ -91,7 +94,7 @@
 .lb-redes .lb-campo { margin-bottom: 10px; }
 
 /* ── Previsualización ───────────────────────────────────────────────── */
-.lb-preview-panel { padding: 0; overflow: hidden; position: sticky; top: 84px; }
+.lb-preview-panel { padding: 0; overflow: hidden; position: sticky; top: 0; }
 .lb-preview-barra {
     display: flex; align-items: center; gap: 12px;
     padding: 10px 14px; border-bottom: 1px solid var(--border);
@@ -120,16 +123,20 @@
 
 /* ── Editor deslizante ──────────────────────────────────────────────── */
 .lb-editor-fondo {
-    display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0, 0, 0, .45);
+    position: fixed; inset: 0; z-index: 900; background: rgba(0, 0, 0, .45);
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
 }
-.lb-editor-fondo.abierto { display: block; }
+.lb-editor-fondo.abierto { opacity: 1; pointer-events: auto; }
 .lb-editor {
-    position: fixed; top: 0; right: -560px; bottom: 0; width: 540px; max-width: 94vw;
+    position: fixed; top: 0; right: 0; bottom: 0; width: 540px; max-width: 94vw;
     z-index: 950; background: var(--surface); border-left: 1px solid var(--border);
     box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
-    transition: right .25s ease;
+    transform: translateX(100%);
+    transition: transform .25s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
 }
-.lb-editor.abierto { right: 0; }
+.lb-editor.abierto { transform: translateX(0); }
 .lb-editor-cabecera {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 20px; border-bottom: 1px solid var(--border);
@@ -163,6 +170,15 @@
 .lb-ecampo input[type="color"] {
     width: 48px; height: 34px; padding: 2px; border: 1px solid var(--border);
     border-radius: 8px; background: var(--surface-2); cursor: pointer;
+}
+
+/* Resalte momentáneo al abrir el panel desde un click de imagen en la
+   previsualización en línea — señala qué control es, sin quedarse fijo. */
+.lb-campo-resaltado {
+    border-radius: 10px;
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    transition: outline-color .2s ease;
 }
 
 /* Campo imagen */
@@ -202,11 +218,19 @@
 
 /* ── Modal añadir sección ───────────────────────────────────────────── */
 .lb-modal {
-    display: none; position: fixed; inset: 0; z-index: 1000;
-    background: rgba(0, 0, 0, .5); align-items: center; justify-content: center; padding: 20px;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0, 0, 0, .5); display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s ease;
 }
-.lb-modal.abierto { display: flex; }
-.lb-modal-caja { max-width: 560px; width: 100%; max-height: 84vh; overflow-y: auto; }
+.lb-modal.abierto { opacity: 1; pointer-events: auto; }
+.lb-modal-caja {
+    transform: scale(0.95);
+    transition: transform .22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.lb-modal.abierto .lb-modal-caja {
+    transform: scale(1);
+}
 .lb-catalogo { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
 .lb-catalogo-item {
     display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -251,4 +275,12 @@
     .lb-catalogo { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
     .lb-biblioteca-grid { grid-template-columns: repeat(3, 1fr); }
     .lb-item-nombre { font-size: 13px; }
+}
+
+/* Collapse sidebar layout */
+.lb-layout.lb-sin-lateral {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+.lb-layout.lb-sin-lateral .lb-lateral {
+    display: none !important;
 }

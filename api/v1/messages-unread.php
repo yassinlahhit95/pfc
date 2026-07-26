@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $auth = v1Auth();
 ['user_type' => $type, 'user_id' => $uid] = $auth;
+v1RequireFeature('feature_mensajes');
 
 $unread = match ($type) {
     'estudiante' => contarMensajesNoLeidosEstudiante($uid),

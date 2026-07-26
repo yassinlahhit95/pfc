@@ -635,7 +635,7 @@ CREATE TABLE `aula_notificaciones` (
   `idNotificacion` int NOT NULL AUTO_INCREMENT,
   `idUsuario` int NOT NULL,
   `tipoUsuario` enum('profesor','estudiante','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipo` enum('archivo_subido','entrega_enviada','correccion','comentario') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` enum('archivo_subido','entrega_enviada','entrega_corregida','tarea_nueva','sesion_nueva','correccion','comentario') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `titulo` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mensaje` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `leida` tinyint(1) NOT NULL DEFAULT '0',
@@ -1236,6 +1236,7 @@ CREATE TABLE `configuracion_centro` (
   `idConfig` int NOT NULL DEFAULT '1',
   `nombreCentro` varchar(200) DEFAULT 'Centro de Formación Profesional',
   `codigoCentro` varchar(50) DEFAULT '',
+  `nifCifCentro` varchar(20) NOT NULL DEFAULT '',
   `direccionCentro` varchar(200) DEFAULT '',
   `ciudadCentro` varchar(100) DEFAULT '',
   `cpCentro` varchar(10) DEFAULT '',
@@ -1848,6 +1849,7 @@ CREATE TABLE `justificaciones_falta` (
   `idEstudiante` int NOT NULL,
   `motivo` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `archivo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estadoOriginal` enum('ausente','retraso') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ausente',
   `estado` enum('pendiente','aprobada','rechazada') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
   `idProfesorResuelve` int DEFAULT NULL,
   `motivoRechazo` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -2090,8 +2092,6 @@ CREATE TABLE `modulos` (
   `idCiclo` int NOT NULL,
   `idCurso` int DEFAULT NULL,
   `tipoModulo` enum('Específico','Transversal','Proyecto','Empresa') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Específico',
-  `pinAsistencia` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pinAsistenciaExpira` datetime DEFAULT NULL,
   `cursoAnio` enum('1º','2º') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '1º',
   `creditosECTS` int DEFAULT '0',
   PRIMARY KEY (`idModulo`),
@@ -2131,6 +2131,36 @@ CREATE TABLE `niveles` (
 LOCK TABLES `niveles` WRITE;
 /*!40000 ALTER TABLE `niveles` DISABLE KEYS */;
 /*!40000 ALTER TABLE `niveles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notificaciones`
+--
+
+DROP TABLE IF EXISTS `notificaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notificaciones` (
+  `idNotificacion` int NOT NULL AUTO_INCREMENT,
+  `idUsuario` int NOT NULL,
+  `tipoUsuario` enum('admin','profesor','secretaria','estudiante','tutor') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mensaje` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `leido` tinyint(1) NOT NULL DEFAULT '0',
+  `fechaCreacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idNotificacion`),
+  KEY `idx_usuario_no_leidas` (`idUsuario`,`tipoUsuario`,`leido`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notificaciones`
+--
+
+LOCK TABLES `notificaciones` WRITE;
+/*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2246,7 +2276,7 @@ CREATE TABLE `pre_matriculas` (
   `emailTutor` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `telefonoTutor` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `parentescoTutor` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estado` enum('pendiente','revisando','aceptada','rechazada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
+  `estado` enum('pendiente','revisando','aceptada','rechazada','subsanacion') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
   `observaciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `fechaSolicitud` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idPreMatricula`),

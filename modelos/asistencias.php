@@ -95,11 +95,13 @@ function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstud
     $sql = "SELECT a.idAsistencia, a.fecha, a.estado, a.observacion, a.fechaRegistro,
                    e.idEstudiante, e.nombreEstudiante,
                    m.idModulo, m.nombreModulo,
-                   c.nombreCiclo
+                   c.nombreCiclo,
+                   p.nombreProfesor
             FROM   asistencias a
             JOIN   estudiantes e ON e.idEstudiante = a.idEstudiante
             JOIN   modulos m     ON m.idModulo     = a.idModulo
             JOIN   ciclos c      ON c.idCiclo      = m.idCiclo
+            JOIN   profesores p  ON p.idProfesor   = a.idProfesor
             WHERE  " . implode(" AND ", $where) . "
             ORDER BY a.fecha DESC, e.nombreEstudiante, m.nombreModulo
             LIMIT 500";

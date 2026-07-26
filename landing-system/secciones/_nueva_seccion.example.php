@@ -18,15 +18,17 @@ $items  = $contenido['items']  ?? [];
 
 <section class="lp-sec lp-galeria" id="galeria"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
-    <h2 class="lp-titulo-sec"><?= Security::escapeHtml($titulo) ?></h2>
+    <h2 class="lp-titulo-sec"<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($titulo) ?></h2>
 
     <?php if (!empty($items)): ?>
     <div class="lp-galeria-grid">
-      <?php foreach ($items as $item): ?>
+      <?php foreach ($items as $i => $item): ?>
       <div class="lp-galeria-item">
         <?php if (!empty($item['imagen'])): ?>
+        <!-- Campo de tipo "imagen" -> kind 'imagen'; los campos de lista usan
+             la ruta "items.<indice>.<subcampo>" para identificar el item. -->
         <img loading="lazy" src="<?= Security::escapeHtml(landing_img_url($item['imagen'])) ?>"
-             alt="<?= Security::escapeHtml($item['alt'] ?? '') ?>">
+             alt="<?= Security::escapeHtml($item['alt'] ?? '') ?>"<?= landing_lb_field($preview, "items.$i.imagen", 'imagen') ?>>
         <?php endif; ?>
       </div>
       <?php endforeach; ?>

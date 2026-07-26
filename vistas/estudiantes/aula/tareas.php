@@ -79,10 +79,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     padding: 16px;
     width: 300px;
     min-width: 300px;
-    min-height: 400px;
+    min-height: 200px;
+    max-height: 60vh;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow-y: auto;
 }
 .kanban-col h3 {
     margin: 0 0 12px 0;
@@ -92,6 +94,19 @@ include_once __DIR__ . "/../comunes/nav.php";
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+/* .kanban-pendientes-grid reúsa .kanban-col para el fondo/scroll pero
+   necesita ganar display/width — va después a propósito (misma
+   especificidad, la última declaración gana). */
+.kanban-pendientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    width: auto;
+    min-width: 0;
+    max-width: none;
+}
+.kanban-pendientes-vacio {
+    grid-column: 1 / -1;
 }
 .kanban-card {
     background:var(--surface);
@@ -152,14 +167,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 </style>
 
 <div class="cabecera" style="margin-bottom:24px;">
-    <h1><i class="fas fa-tasks"></i> TABLERO DE TAREAS</h1>
+    <h1><i class="fas fa-tasks"></i> Tablero de tareas</h1>
     <p class="subtitulo-encabezado">Arrastra las tareas de "Pendientes" a "En Progreso" para organizarte mejor.</p>
 </div>
 
-<div class="kanban-board" data-csrf="<?= Security::generateCSRFToken() ?>">
-    <!-- COLUMNA: PENDIENTES -->
-    <div class="kanban-col" id="col-todo" data-status="todo">
-        <h3>Pendientes <span class="badge badge-azul"><?= count($colDisponibles) ?></span></h3>
+<div class="panel" style="margin-bottom:20px;">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-list-check" style="color:var(--accent);"></i> Pendientes</h3>
+        <span class="badge badge-azul" id="count-todo"><?= count($colDisponibles) ?></span>
+    </div>
+    <div class="kanban-col kanban-pendientes-grid" id="col-todo" data-status="todo">
+        <?php if (empty($colDisponibles)): ?>
+            <p class="texto-suave kanban-pendientes-vacio">No tienes tareas pendientes. ¡Al día!</p>
+        <?php endif; ?>
         <?php foreach($colDisponibles as $tarea): ?>
             <div class="kanban-card" draggable="true" data-id="<?= $tarea['idTarea'] ?>">
                 <span class="mod"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
@@ -169,7 +189,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         <?php endforeach; ?>
     </div>
+</div>
 
+<div class="kanban-board" data-csrf="<?= Security::generateCSRFToken() ?>">
     <!-- COLUMNA: EN PROGRESO (Gestionada en BD) -->
     <div class="kanban-col" id="col-progress" data-status="progress">
         <h3>En Progreso <span class="badge badge-ambar" id="count-progress"><?= count($colProgreso) ?></span></h3>
@@ -217,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const colTodo = document.getElementById('col-todo');
     const colProgress = document.getElementById('col-progress');
+    const countTodo = document.getElementById('count-todo');
     const countProgress = document.getElementById('count-progress');
 
     cards.forEach(card => {
@@ -245,6 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const oldCol = dragged.closest('.kanban-col');
                 if (oldCol !== col) {
                     col.appendChild(dragged);
+                    const vacio = col.querySelector('.kanban-pendientes-vacio');
+                    if (vacio) vacio.remove();
                     guardarEstado(dragged.dataset.id, col.dataset.status);
                     actualizarContadores();
                 }
@@ -269,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function actualizarContadores() {
-        colTodo.querySelector('.badge').innerText = colTodo.querySelectorAll('.kanban-card').length;
+        countTodo.innerText = colTodo.querySelectorAll('.kanban-card').length;
         countProgress.innerText = colProgress.querySelectorAll('.kanban-card').length;
     }
 });

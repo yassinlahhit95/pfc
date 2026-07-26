@@ -7,7 +7,8 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../modelos/horarios.php';
 
-if (!Security::validateCSRFToken()) {
+// rotate=false — shared token reused across this no-reload drag-and-drop page (see controladores/admin/horario/addFranja.php)
+if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
 }
 

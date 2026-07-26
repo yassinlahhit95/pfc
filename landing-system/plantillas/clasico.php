@@ -19,6 +19,13 @@ return [
             'titulo' => 'Un claustro con trayectoria',
             'subtitulo' => 'Profesorado estable que conoce el sector y acompaña a cada alumno.',
         ]],
+        ['tipo' => 'video_presentacion', 'contenido' => [
+            'variante' => 'split', 'orientacion' => 'derecha',
+            'eyebrow' => 'Conócenos', 'titulo' => 'Décadas formando profesionales',
+            'subtitulo' => 'Un vistazo a cómo es estudiar aquí, contado por quienes lo viven cada día.',
+            'parrafo' => 'Aulas y talleres pensados para la práctica real, con el mismo espíritu de trayectoria y seriedad que define a este centro desde 1985.',
+            'botonTexto' => 'Ver instalaciones', 'botonUrl' => '#instalaciones',
+        ]],
         ['tipo' => 'oferta_formativa'],
         ['tipo' => 'instalaciones'],
         ['tipo' => 'fp_dual', 'contenido' => ['variante' => 'split']],

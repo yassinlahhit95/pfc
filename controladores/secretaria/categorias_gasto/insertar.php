@@ -28,7 +28,7 @@ if (isset($_POST['insertarCategoria'])) {
     } else {
         $id = insertarCategoria($nombre, (float)$presupuestoAnual, $color);
         if ($id) {
-            registrarAccion('insertar', 'categorias_gasto', $id, $nombre);
+            registrarAccionSecretaria('insertar', 'categorias_gasto', $id, $nombre);
             $ok   = true;
             $msg  = 'Categoría creada correctamente.';
             $data = ['idCategoria' => $id, 'nombre' => $nombre, 'color' => $color,

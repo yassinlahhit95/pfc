@@ -256,7 +256,7 @@ switch ($action) {
             echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No dispone de los permisos necesarios para realizar esta acción.']);
             break;
         }
-        actualizarEstadoPreMatricula($idPreMatricula, 'EN_REVISION');
+        actualizarEstadoPreMatricula($idPreMatricula, 'revisando');
         unset($_SESSION['admisiones_id']);
         echo json_encode(['status' => 'success']);
         break;

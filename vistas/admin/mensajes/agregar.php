@@ -97,7 +97,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                         3. Estudiante específico
                         <?php if (!empty($idCiclo)): ?><span style="font-weight:500;color:var(--mut);text-transform:none;letter-spacing:0;">(vacío = enviar a todo el ciclo)</span><?php endif; ?>
                     </label>
-                    <select name="idEstudiante" class="compose-select">
+                    <input type="text" id="buscarEstudianteMsg" class="compose-input" style="margin-bottom:8px;"
+                           autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                           data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                           placeholder="Buscar estudiante para filtrar la lista…"
+                           oninput="filtrarSelectEstudiantesMsg(this.value)">
+                    <select name="idEstudiante" id="selectEstudianteMsg" class="compose-select">
                         <option value="">— Todos del ciclo —</option>
                         <?php foreach ($listaDeEstudiantes as $estudiante): ?>
                         <option value="<?= (int)$estudiante['idEstudiante'] ?>"
@@ -152,6 +157,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include '../comunes/footer.php'; ?>
 <script src="../../../public/js/features/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/features/mensajes.js') ?>"></script>
+<script>
+function filtrarSelectEstudiantesMsg(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('#selectEstudianteMsg option').forEach(function (opt) {
+        if (!opt.value) return; // "Todos del ciclo" siempre visible
+        opt.hidden = q !== '' && opt.textContent.toLowerCase().indexOf(q) === -1;
+    });
+}
+</script>
 <style>
 @media(max-width:640px){.compose-cols{grid-template-columns:1fr !important;}}
 </style>

@@ -28,7 +28,7 @@ if (isset($_POST['actualizarCategoria'])) {
         $msg = 'El presupuesto debe ser un número positivo.';
     } else {
         if (actualizarCategoria($idCategoria, $nombre, (float)$presupuestoAnual, $color)) {
-            registrarAccion('actualizar', 'categorias_gasto', $idCategoria, $nombre);
+            registrarAccionSecretaria('actualizar', 'categorias_gasto', $idCategoria, $nombre);
             $ok  = true;
             $msg = 'Categoría actualizada correctamente.';
             $_SESSION['exito'] = $msg;

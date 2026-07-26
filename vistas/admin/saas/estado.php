@@ -46,6 +46,28 @@ function updateEnvFile(array $data): bool {
     return file_put_contents($path, implode("\n", $lines) . "\n") !== false;
 }
 
+// api/.htaccess hardcodea el dominio permitido para CORS (Access-Control-Allow-Origin)
+// a propósito — es la única fuente de verdad, ver el comentario en ese fichero.
+// Si aquí se cambia APP_URL (p.ej. al mover la instancia a su dominio real),
+// hay que mantenerlo sincronizado o un futuro cliente web/PWA en ese dominio
+// quedaría bloqueado. Mejor esfuerzo: no bloquea el guardado de credenciales
+// si falla.
+function updateCorsOrigin(string $appUrl): void {
+    $path = __DIR__ . '/../../../api/.htaccess';
+    if (!is_file($path) || !is_writable($path)) return;
+    $contenido = file_get_contents($path);
+    if ($contenido === false) return;
+    $nuevo = preg_replace(
+        '/Access-Control-Allow-Origin "[^"]*"/',
+        'Access-Control-Allow-Origin "' . rtrim($appUrl, '/') . '"',
+        $contenido,
+        1
+    );
+    if ($nuevo !== null && $nuevo !== $contenido) {
+        file_put_contents($path, $nuevo);
+    }
+}
+
 $error_msg = null;
 $success_msg = null;
 
@@ -70,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'SAAS_LICENSE_SECRET' => $licSecret
             ]);
             if ($updated) {
+                updateCorsOrigin($url);
                 FeatureGuard::clearCache();
                 $success_msg = "Credenciales de conexión actualizadas correctamente.";
             } else {
@@ -151,6 +174,44 @@ if ($expTs && !$expExpired) {
     $expBg    = $expExpired ? 'var(--rojo-suave)' : 'var(--surface-2)';
 }
 $expLabel = $subExpTs ? 'Suscripción válida hasta' : 'Token válido hasta';
+
+// ── Diagnóstico de APCu ──────────────────────────────────────────────────
+// Cache::remember() (include/Cache.php) degrada de forma transparente a un
+// array estático por-request cuando APCu no está disponible — el sitio sigue
+// funcionando, pero pierde el efecto real de la caché compartida (60s TTL
+// entre workers) en todos los contadores de nav, FeatureGuard, etc. Como esto
+// nunca lanza un error visible, es fácil no darse cuenta de que está
+// ocurriendo en producción; esta tarjeta comprueba un round-trip real
+// (no solo si la extensión está cargada) para dar una respuesta definitiva.
+$apcuStatus = 'missing';   // missing | disabled | broken | ok
+$apcuDetail = '';
+if (!function_exists('apcu_fetch')) {
+    $apcuStatus = 'missing';
+    $apcuDetail = 'La extensión apcu no está instalada en este servidor PHP.';
+} elseif (function_exists('apcu_enabled') && !apcu_enabled()) {
+    $apcuStatus = 'disabled';
+    $apcuDetail = 'La extensión está instalada pero deshabilitada (revisa apc.enabled en php.ini).';
+} else {
+    $apcuTestKey = 'aulapro_apcu_diagnostico';
+    $apcuTestVal = 'ok_' . random_int(1000, 9999);
+    apcu_store($apcuTestKey, $apcuTestVal, 30);
+    $found = false;
+    $roundTrip = apcu_fetch($apcuTestKey, $found);
+    if ($found && $roundTrip === $apcuTestVal) {
+        $apcuStatus = 'ok';
+        $apcuDetail = 'Round-trip de escritura/lectura verificado correctamente.';
+    } else {
+        $apcuStatus = 'broken';
+        $apcuDetail = 'La extensión responde pero el round-trip de prueba falló — revisa apc.shm_size / permisos.';
+    }
+}
+$apcuCards = [
+    'ok'       => ['var(--verde)',   'var(--verde-suave)',   'fa-check-circle',        'Activa y funcionando'],
+    'disabled' => ['var(--naranja)', 'var(--naranja-suave)', 'fa-triangle-exclamation','Instalada pero deshabilitada'],
+    'broken'   => ['var(--rojo)',    'var(--rojo-suave)',    'fa-circle-exclamation',  'Falla el round-trip'],
+    'missing'  => ['var(--dim)',     'var(--surface-2)',     'fa-circle-minus',        'No instalada'],
+];
+[$apcuColor, $apcuBg, $apcuIcon, $apcuLabel] = $apcuCards[$apcuStatus];
 ?>
 
 <div class="cabecera">
@@ -278,7 +339,86 @@ $expLabel = $subExpTs ? 'Suscripción válida hasta' : 'Token válido hasta';
     <?php endif; ?>
   </div>
 
+  <!-- Storage card — polled live, see #storage-script below -->
+  <div class="saas-card">
+    <div class="saas-kpi-head">
+      <div class="saas-kpi-icon" id="storage-icon" style="background:var(--surface-2);color:var(--dim);">
+        <i class="fas fa-database"></i>
+      </div>
+      <div>
+        <div class="saas-kpi-label">Almacenamiento (R2)</div>
+        <div class="saas-kpi-val" id="storage-val" style="font-size:16px;">—</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden;">
+      <div id="storage-bar" style="height:100%;width:0%;border-radius:4px;background:var(--dim);transition:width .4s ease, background-color .4s ease;"></div>
+    </div>
+    <p class="saas-kpi-sub" id="storage-sub">Comprobando conexión con Cloudflare R2…</p>
+  </div>
+
+  <!-- APCu cache diagnostic — see PHP block above, real store+fetch round-trip -->
+  <div class="saas-card">
+    <div class="saas-kpi-head">
+      <div class="saas-kpi-icon" style="background:<?= $apcuBg ?>;color:<?= $apcuColor ?>;">
+        <i class="fas <?= $apcuIcon ?>"></i>
+      </div>
+      <div>
+        <div class="saas-kpi-label">Caché compartida (APCu)</div>
+        <div class="saas-kpi-val" style="font-size:16px;color:<?= $apcuColor ?>;"><?= Security::escapeHtml($apcuLabel) ?></div>
+      </div>
+    </div>
+    <p class="saas-kpi-sub"><?= Security::escapeHtml($apcuDetail) ?></p>
+    <?php if ($apcuStatus !== 'ok'): ?>
+    <p class="saas-kpi-sub" style="margin-top:4px;">Sin APCu, los contadores de nav y FeatureGuard siguen funcionando pero sin caché compartida entre workers (cada petición repite la consulta).</p>
+    <?php endif; ?>
+  </div>
+
 </div>
+
+<script>
+(function () {
+  const iconEl = document.getElementById('storage-icon');
+  const valEl  = document.getElementById('storage-val');
+  const barEl  = document.getElementById('storage-bar');
+  const subEl  = document.getElementById('storage-sub');
+  if (!valEl) return;
+
+  function humanBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    const units = ['KB', 'MB', 'GB', 'TB'];
+    let val = bytes, i = -1;
+    do { val /= 1024; i++; } while (val >= 1024 && i < units.length - 1);
+    return val.toFixed(val >= 10 ? 0 : 1) + ' ' + units[i];
+  }
+
+  function refresh() {
+    fetch('/controladores/admin/saas/storageUsage.php', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => r.json())
+      .then(data => {
+        if (!data.ok) {
+          valEl.textContent = 'No configurado';
+          subEl.textContent = 'Rellena las variables R2_* en .env para activar R2 (ver noDeploy/CLOUDFLARE_R2_SETUP.md).';
+          return;
+        }
+        const pct = data.percent;
+        let color = 'var(--verde)', bg = 'var(--verde-suave)';
+        if (pct >= 90)      { color = 'var(--rojo)';    bg = 'var(--rojo-suave)'; }
+        else if (pct >= 70) { color = 'var(--naranja)'; bg = 'var(--naranja-suave)'; }
+
+        valEl.textContent = humanBytes(data.bytes) + ' / ' + humanBytes(data.limitBytes);
+        valEl.style.color = color;
+        barEl.style.width = Math.max(pct, 1) + '%';
+        barEl.style.background = color;
+        if (iconEl) { iconEl.style.background = bg; iconEl.style.color = color; }
+        subEl.textContent = data.objectCount + ' objeto(s) · ' + pct + '% del límite gratuito (10 GB)';
+      })
+      .catch(() => { subEl.textContent = 'No se pudo consultar el uso de almacenamiento.'; });
+  }
+
+  refresh();
+  setInterval(refresh, 30000);
+})();
+</script>
 
 <script>
 (function () {

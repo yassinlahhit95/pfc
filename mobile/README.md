@@ -41,10 +41,28 @@ Without `--dart-define`, the app defaults to the production API
 flutter build apk --dart-define=API_BASE_URL=https://aulapro.yassin.agency
 ```
 
-## Phase 2+ prerequisite (not yet configured)
+**Deploying this project under a different domain (e.g. for a client):** the
+`--dart-define=API_BASE_URL=...` value here, `APP_URL` in `.env` (set by the
+`/install/` wizard or `vistas/admin/saas/estado.php`), and `api/.htaccess`'s
+CORS `Access-Control-Allow-Origin` (auto-synced from `APP_URL` by those same
+two paths, see the comment in `api/.htaccess`) all need to agree on that
+domain. The mobile build is the one piece **not** auto-synced — it's a
+build-time flag, so every `flutter build` for a given deployment must pass
+the matching `API_BASE_URL` explicitly; there's no server-side way to push
+that into an already-built APK/IPA.
 
-Push notifications require a native Android app registered in the existing
-Firebase project (`FIREBASE_PROJECT_ID`, currently `pfc1-5c23c`) via the
-Firebase console, with `google-services.json` placed at
-`android/app/google-services.json`. This is a manual step in the Firebase
-console — not something that can be automated from the repo.
+## Push notifications — one manual step left
+
+The client (`lib/core/notifications/notifications_service.dart`) and backend
+(`api/v1/fcm-token.php`, `controladores/firebase/firebase_helper.php`) are
+both fully built. The only thing missing is registering this app as a native
+Android app in the existing Firebase project (`FIREBASE_PROJECT_ID`,
+currently `pfc1-5c23c`) via the Firebase console (package name
+`com.aulapro.aulapro_mobile`), then placing the downloaded config at
+`android/app/google-services.json`. That's a manual step in the Firebase
+console — not something that can be automated from the repo. Until it's
+done, `NotificationsService.init()` fails at the `Firebase.initializeApp()`
+call and silently no-ops (caught, logged nowhere, doesn't crash the app) —
+everything else keeps working normally via polling, exactly as before.
+`android/app/build.gradle.kts` only applies the `google-services` Gradle
+plugin when the file is present, so its absence never breaks a build either.

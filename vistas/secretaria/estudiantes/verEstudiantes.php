@@ -80,8 +80,8 @@ include __DIR__ . '/../comunes/nav.php';
                     <tr class="fila-nivel-<?= (int)($estudiante['idNivel'] ?? 0) ?>">
                         <td><?= (int)$estudiante['idEstudiante'] ?></td>
                         <td>
-                            <span class="texto-estado <?= ($estudiante['idNivel'] ?? 0) == 1 ? 'azul' : 'verde' ?>">
-                                <?= ($estudiante['idNivel'] ?? 0) == 1 ? 'Grado Medio' : 'Grado Superior' ?>
+                            <span class="texto-estado <?= $estudiante['curso'] === 'Grado Superior' ? 'verde' : 'azul' ?>">
+                                <?= Security::escapeHtml($estudiante['curso'] ?? '-') ?>
                             </span>
                         </td>
                         <td><b><?= mb_strtoupper(Security::escapeHtml($estudiante['nombreEstudiante']), 'UTF-8') ?></b></td>

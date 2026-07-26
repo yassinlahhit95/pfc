@@ -20,6 +20,9 @@ $navCounts = obtenerContadoresNavAdmin((int)($_SESSION['idAdmin'] ?? 0));
 $totalSinLeer_menu              = $navCounts['total_sin_leer']              ?? 0;
 $totalAdmisionesPendientes_menu = $navCounts['total_admisiones_pendientes'] ?? 0;
 $totalChatNoLeidos_menu         = $navCounts['total_chat_no_leidos']        ?? 0;
+$totalInventario_menu           = $navCounts['total_inventario']            ?? 0;
+$totalPrestamos_menu            = $navCounts['total_prestamos']             ?? 0;
+$totalMensajes_menu             = $navCounts['total_mensajes']              ?? 0;
 
 // Notification panel: recent unread messages for admin (max 3)
 $mensajesNotifAdmin = [];
@@ -91,16 +94,7 @@ function _nav_active_admin($check) {
         }
       } catch (e) {}
     </script>
-    <div class="brand">
-      <div class="brand-mark"><span></span></div>
-      <div class="brand-text"><strong>AulaPro</strong><small>Campus Suite</small></div>
-      <button class="collapse-btn" id="collapse" aria-label="Contraer menú">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
-      </button>
-      <button class="mobile-close-btn" id="mobile-close" aria-label="Cerrar menú">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
+    <?php $navBrandSubtitle = 'Campus Suite'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
 
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
@@ -370,7 +364,7 @@ function _nav_active_admin($check) {
     </nav>
 
     <nav class="sidebar-bottom-nav">
-      <a href="../directores/verDirectores.php" class="nav-item">
+      <a href="../directores/verDetallesDirectores.php?id=<?= (int)$_SESSION['idAdmin'] ?>" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
         <span class="nav-label">Mi Perfil</span>
       </a>
@@ -403,7 +397,7 @@ function _nav_active_admin($check) {
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..." 
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    data-url="../../../controladores/admin/buscar.php" />
             <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
@@ -533,3 +527,18 @@ function _nav_active_admin($check) {
             }
         </script>
       <?php } ?>
+
+      <?php if ($tourPendiente_menu): ?>
+      <script>
+      window.AULAPRO_TOUR = {
+        tourKey: 'primeros_pasos_v1',
+        completeUrl: 'controladores/comunes/tour/completar.php',
+        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        steps: [
+          { selector: '[data-tour="estudiantes"]', title: 'Estudiantes', text: 'Gestiona la base de datos de alumnos, expedientes y matrículas.', placement: 'right' },
+          { selector: '[data-tour="pagos"]', title: 'Finanzas y Pagos', text: 'Realiza un seguimiento de los recibos de matrículas, facturación y estados de cuenta.', placement: 'right' },
+          { selector: '[data-tour="configuracion"]', title: 'Ajustes de Plataforma', text: 'Personaliza los parámetros globales de la aplicación y políticas del centro.', placement: 'right' }
+        ]
+      };
+      </script>
+      <?php endif; ?>

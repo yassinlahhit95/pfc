@@ -15,9 +15,9 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
 <section class="lp-sec lp-oferta lp-variante-<?= Security::escapeHtml($variante) ?> lp-oferta-<?= Security::escapeHtml($columnas) ?>" id="oferta_formativa"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
-      <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
+      <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['subtitulo'])): ?>
-      <p><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+      <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
       <?php endif; ?>
     </div>
 
@@ -25,7 +25,7 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
     <p class="lp-vacio">Próximamente publicaremos nuestra oferta de ciclos formativos.</p>
     <?php else: ?>
     <div class="lp-oferta-grid">
-      <?php foreach ($items as $item):
+      <?php foreach ($items as $i => $item):
           $imgUrl = landing_img_url($item['imagen'] ?? '');
           $cicloSlug = trim($item['cicloSlug'] ?? '');
           $enlace = $cicloSlug !== ''
@@ -34,21 +34,21 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
       ?>
       <article class="lp-tarjeta lp-ciclo">
         <?php if ($imgUrl): ?>
-        <div class="lp-ciclo-foto"><img src="<?= Security::escapeHtml($imgUrl) ?>" alt="" loading="lazy"></div>
+        <div class="lp-ciclo-foto"><img src="<?= Security::escapeHtml($imgUrl) ?>" alt="" loading="lazy"<?= landing_lb_field($preview, "items.$i.imagen", 'imagen') ?>></div>
         <?php endif; ?>
         <div class="lp-ciclo-cuerpo">
           <?php if (!empty($item['etiqueta'])): ?>
-          <span class="lp-badge lp-ciclo-nivel"><?= Security::escapeHtml($item['etiqueta']) ?></span>
+          <span class="lp-badge lp-ciclo-nivel"<?= landing_lb_field($preview, "items.$i.etiqueta") ?>><?= Security::escapeHtml($item['etiqueta']) ?></span>
           <?php endif; ?>
-          <h3><?= Security::escapeHtml($item['titulo'] ?? '') ?></h3>
+          <h3<?= landing_lb_field($preview, "items.$i.titulo") ?>><?= Security::escapeHtml($item['titulo'] ?? '') ?></h3>
           <?php if (!empty($item['texto'])): ?>
-          <p class="lp-ciclo-texto"><?= nl2br(Security::escapeHtml($item['texto'])) ?></p>
+          <p class="lp-ciclo-texto"<?= landing_lb_field($preview, "items.$i.texto", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['texto'])) ?></p>
           <?php endif; ?>
           <?php if (!empty($item['precio'])): ?>
-          <p class="lp-ciclo-precio"><?= Security::escapeHtml($item['precio']) ?></p>
+          <p class="lp-ciclo-precio"<?= landing_lb_field($preview, "items.$i.precio") ?>><?= Security::escapeHtml($item['precio']) ?></p>
           <?php endif; ?>
           <a class="lp-boton-primario lp-ciclo-boton" href="<?= Security::escapeHtml($enlace) ?>">
-            <?= Security::escapeHtml($botonTexto) ?>
+            <span<?= landing_lb_field($preview, 'botonTexto') ?>><?= Security::escapeHtml($botonTexto) ?></span>
           </a>
         </div>
       </article>

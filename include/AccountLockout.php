@@ -11,36 +11,23 @@ class AccountLockout {
     const WINDOW       = 900;  // ventana de conteo: 15 min
     const LOCK_SECONDS = 900;  // duración del bloqueo: 15 min
 
-    private static $ensured = false;
-
-    // ══════════════════════════════════════════════════════════════════════
-    // TABLA
-    // ══════════════════════════════════════════════════════════════════════
-
-    // Crea la tabla automáticamente (hosting compartido sin migraciones manuales).
-    private static function ensureTable($con): void {
-        if (self::$ensured) return;
-        @mysqli_query($con, "CREATE TABLE IF NOT EXISTS account_lockout (
-            email VARCHAR(190) NOT NULL,
-            intentos INT UNSIGNED NOT NULL DEFAULT 0,
-            window_start INT UNSIGNED NOT NULL,
-            locked_until INT UNSIGNED NULL,
-            PRIMARY KEY (email)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        self::$ensured = true;
-    }
-
     // ══════════════════════════════════════════════════════════════════════
     // CONSULTAS
     // ══════════════════════════════════════════════════════════════════════
 
+    // account_lockout ya está garantizada por noDeploy/database.sql — sin
+    // CREATE TABLE IF NOT EXISTS en cada request (ver CLAUDE.md: nos costó
+    // caro ya una vez con historial_secretarias, no repetir el patrón).
+
     // Devuelve ['locked' => bool, 'minutes' => int].
     public static function status($con, string $email): array {
         if (!$con) return ['locked' => false, 'minutes' => 0];
-        self::ensureTable($con);
         $email = strtolower(trim($email));
 
         $stmt = mysqli_prepare($con, "SELECT locked_until FROM account_lockout WHERE email = ?");
+        if (!$stmt) {
+            return ['locked' => false, 'minutes' => 0];
+        }
         mysqli_stmt_bind_param($stmt, "s", $email);
         mysqli_stmt_execute($stmt);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -57,7 +44,6 @@ class AccountLockout {
 
     public static function recordFailure($con, string $email): void {
         if (!$con) return;
-        self::ensureTable($con);
         $email = strtolower(trim($email));
         $now   = time();
 
@@ -65,6 +51,10 @@ class AccountLockout {
         try {
             $stmt = mysqli_prepare($con,
                 "SELECT intentos, window_start FROM account_lockout WHERE email = ? FOR UPDATE");
+            if (!$stmt) {
+                mysqli_rollback($con);
+                return;
+            }
             mysqli_stmt_bind_param($stmt, "s", $email);
             mysqli_stmt_execute($stmt);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -72,26 +62,35 @@ class AccountLockout {
             if (!$row) {
                 $ins = mysqli_prepare($con,
                     "INSERT INTO account_lockout (email, intentos, window_start) VALUES (?, 1, ?)");
-                mysqli_stmt_bind_param($ins, "si", $email, $now);
-                mysqli_stmt_execute($ins);
+                if ($ins) {
+                    mysqli_stmt_bind_param($ins, "si", $email, $now);
+                    mysqli_stmt_execute($ins);
+                }
             } elseif ($now - (int)$row['window_start'] > self::WINDOW) {
                 $upd = mysqli_prepare($con,
                     "UPDATE account_lockout SET intentos = 1, window_start = ?, locked_until = NULL WHERE email = ?");
-                mysqli_stmt_bind_param($upd, "is", $now, $email);
-                mysqli_stmt_execute($upd);
+                if ($upd) {
+                    mysqli_stmt_bind_param($upd, "is", $now, $email);
+                    mysqli_stmt_execute($upd);
+                }
             } else {
                 $intentos = (int)$row['intentos'] + 1;
                 if ($intentos >= self::MAX_FAILS) {
                     $until = $now + self::LOCK_SECONDS;
                     $upd   = mysqli_prepare($con,
                         "UPDATE account_lockout SET intentos = ?, locked_until = ? WHERE email = ?");
-                    mysqli_stmt_bind_param($upd, "iis", $intentos, $until, $email);
+                    if ($upd) {
+                        mysqli_stmt_bind_param($upd, "iis", $intentos, $until, $email);
+                        mysqli_stmt_execute($upd);
+                    }
                 } else {
                     $upd = mysqli_prepare($con,
                         "UPDATE account_lockout SET intentos = ? WHERE email = ?");
-                    mysqli_stmt_bind_param($upd, "is", $intentos, $email);
+                    if ($upd) {
+                        mysqli_stmt_bind_param($upd, "is", $intentos, $email);
+                        mysqli_stmt_execute($upd);
+                    }
                 }
-                mysqli_stmt_execute($upd);
             }
             mysqli_commit($con);
         } catch (\Throwable $e) {
@@ -101,10 +100,11 @@ class AccountLockout {
 
     public static function clear($con, string $email): void {
         if (!$con) return;
-        self::ensureTable($con);
         $email = strtolower(trim($email));
         $del = mysqli_prepare($con, "DELETE FROM account_lockout WHERE email = ?");
-        mysqli_stmt_bind_param($del, "s", $email);
-        @mysqli_stmt_execute($del);
+        if ($del) {
+            mysqli_stmt_bind_param($del, "s", $email);
+            @mysqli_stmt_execute($del);
+        }
     }
 }

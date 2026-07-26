@@ -16,6 +16,7 @@ $auth = v1Auth();
 if ($type !== 'director' && $type !== 'secretaria') {
     v1Error('This endpoint is not available for this role.', 403, 'forbidden');
 }
+v1RequireFeature('feature_inventario');
 
 $method = $_SERVER['REQUEST_METHOD'];
 

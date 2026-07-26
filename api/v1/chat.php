@@ -44,9 +44,22 @@ if ($method === 'GET') {
             v1Error('Conversation not found.', 404, 'not_found');
         }
         $after = isset($_GET['after']) ? (int)$_GET['after'] : null;
-        $messages = $after !== null
-            ? chatMensajesDespuesDe($convId, $after)
-            : chatMensajes($convId);
+        if ($after !== null) {
+            $messages = chatMensajesDespuesDe($convId, $after);
+        } else {
+            // NOT chatMensajes() — its `ORDER BY fecha ASC LIMIT 80` returns
+            // the OLDEST 80 messages in a long conversation, hiding recent
+            // ones entirely. Fetch the latest 80 instead, then restore
+            // chronological order for display.
+            $con = obtenerConexion();
+            $st = mysqli_prepare($con,
+                'SELECT * FROM (SELECT * FROM chat_mensajes WHERE conversacion_id = ?
+                    ORDER BY id DESC LIMIT 80) recientes
+                 ORDER BY id ASC');
+            mysqli_stmt_bind_param($st, 'i', $convId);
+            mysqli_stmt_execute($st);
+            $messages = _chatAttachNombres(mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC));
+        }
         chatMarcarLeidos($convId, $rol, $uid);
         v1Ok(['messages' => $messages]);
     }

@@ -58,17 +58,45 @@ if ($mime !== 'video/mp4') {
     ImageOptimizer::optimize($file['tmp_name'], $mime); // optimizar el temporal ANTES de subir a R2
 }
 
-$bytes = file_get_contents($file['tmp_name']);
-$subioOk = $bytes !== false && R2Client::putObject('landing/' . $filename, $bytes, $mime);
-@unlink($file['tmp_name']);
+$subioOk = false;
+$url = '';
+
+// 1. Intenta subir a Cloudflare R2 si está configurado
+try {
+    $bytes = file_get_contents($file['tmp_name']);
+    if ($bytes !== false) {
+        $subioOk = R2Client::putObject('landing/' . $filename, $bytes, $mime);
+        if ($subioOk) {
+            $url = R2Client::publicUrl('landing/' . $filename);
+        }
+    }
+} catch (Throwable $e) {
+    $subioOk = false;
+}
+
+// 2. Si R2 falla o no está configurado, guardamos localmente en el servidor
+if (!$subioOk) {
+    $destDir = __DIR__ . '/../../../public/uploads/landing/';
+    if (!is_dir($destDir)) {
+        @mkdir($destDir, 0755, true);
+    }
+    
+    // Mover el archivo subido al directorio local
+    if (move_uploaded_file($file['tmp_name'], $destDir . $filename)) {
+        $subioOk = true;
+        $url = 'public/uploads/landing/' . $filename;
+    }
+} else {
+    // Si subió a R2, borramos el temporal
+    @unlink($file['tmp_name']);
+}
 
 if (!$subioOk) {
     ob_clean();
-    echo json_encode(['ok' => false, 'msg' => 'No se pudo guardar la imagen.']);
+    echo json_encode(['ok' => false, 'msg' => 'No se pudo guardar la imagen ni en R2 ni en local.']);
     exit;
 }
 
 registrarAccion('insertar', 'landing', null, 'Imagen subida: ' . $filename);
 ob_clean();
-$url = R2Client::publicUrl('landing/' . $filename);
 echo json_encode(['ok' => true, 'msg' => 'Imagen subida.', 'filename' => $url, 'url' => $url]);

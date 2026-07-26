@@ -7,19 +7,19 @@ $items  = $contenido['items'] ?? [];
 <section class="lp-sec lp-fpdual lp-fpdual-<?= Security::escapeHtml($variante) ?>" id="fp_dual"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-fpdual-inner">
     <div class="lp-fpdual-texto">
-      <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
+      <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['texto'])): ?>
-      <p><?= nl2br(Security::escapeHtml($contenido['texto'])) ?></p>
+      <p<?= landing_lb_field($preview, 'texto', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['texto'])) ?></p>
       <?php endif; ?>
       <?php if ($items): ?>
       <ul class="lp-fpdual-lista">
-        <?php foreach ($items as $item): ?>
+        <?php foreach ($items as $i => $item): ?>
         <li>
           <i class="fas fa-circle-check"></i>
           <div>
-            <strong><?= Security::escapeHtml($item['titulo'] ?? '') ?></strong>
+            <strong<?= landing_lb_field($preview, "items.$i.titulo") ?>><?= Security::escapeHtml($item['titulo'] ?? '') ?></strong>
             <?php if (!empty($item['texto'])): ?>
-            <span><?= nl2br(Security::escapeHtml($item['texto'])) ?></span>
+            <span<?= landing_lb_field($preview, "items.$i.texto", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['texto'])) ?></span>
             <?php endif; ?>
           </div>
         </li>
@@ -29,7 +29,7 @@ $items  = $contenido['items'] ?? [];
     </div>
     <?php if ($imgUrl): ?>
     <div class="lp-fpdual-visual">
-      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="">
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt=""<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
     </div>
     <?php endif; ?>
   </div>

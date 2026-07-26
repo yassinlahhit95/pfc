@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  /* â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── State ──────────────────────────────────────────────────────────────── */
   let BASE       = '/';
   let myRol      = null;
   let myId       = 0;
@@ -19,8 +19,13 @@
   let pollTimer     = null;
   let pollInterval  = 3000;
   let contactTimer  = null;
+  // Ids already rendered in #cw-messages for the open conversation — lets
+  // the initial history fetch and an optimistically-appended just-sent
+  // message race safely instead of one wiping the other out (see appendMsg
+  // and renderMessages).
+  let renderedMsgIds = new Set();
 
-  /* â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Helpers ─────────────────────────────────────────────────────────────── */
   const $ = id => document.getElementById(id);
 
   function escHtml(str) {
@@ -78,7 +83,7 @@
     return base + '/' + path.replace(/^(\.\.\/)+/, '');
   }
 
-  /* â”€â”€ Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Badge ───────────────────────────────────────────────────────────────── */
   function updateBadge(count) {
     const badge = $('cw-fab-badge');
     if (!badge) return;
@@ -86,7 +91,7 @@
     badge.hidden = count <= 0;
   }
 
-  /* â”€â”€ Window open/close â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Window open/close ───────────────────────────────────────────────────── */
   function toggleWindow() {
     isOpen ? closeWindow() : openWindow();
   }
@@ -99,7 +104,7 @@
     if (overlay) overlay.hidden = false;
     $('cw-fab')?.classList.add('open');
     if (currentView === 'list') loadConversations();
-    // El sondeo en segundo plano puede estar a 30s: al abrir volvemos al ritmo rÃ¡pido
+    // El sondeo en segundo plano puede estar a 30s: al abrir volvemos al ritmo rápido
     pollInterval = 3000;
     schedulePoll();
   }
@@ -114,7 +119,7 @@
     // We intentionally don't stop poll here, we just change interval/endpoint in fetchNew
   }
 
-  /* â”€â”€ Panels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Panels ──────────────────────────────────────────────────────────────── */
   function showPanel(name) {
     currentView = name;
     ['list', 'conv', 'contacts'].forEach(v => {
@@ -123,7 +128,7 @@
     });
   }
 
-  /* â”€â”€ Conversation list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Conversation list ───────────────────────────────────────────────────── */
   function loadConversations() {
     const list = $('cw-list');
     if (list) list.innerHTML = '<div class="cw-loading"><span class="cw-spinner"></span>Cargando…</div>';
@@ -134,7 +139,7 @@
         else if (list) list.innerHTML = '<div class="cw-empty">Error al cargar conversaciones</div>';
       })
       .catch(() => {
-        if (list) list.innerHTML = '<div class="cw-empty">Sin conexiÃ³n</div>';
+        if (list) list.innerHTML = '<div class="cw-empty">Sin conexión</div>';
       });
   }
 
@@ -142,7 +147,7 @@
     const list = $('cw-list');
     if (!list) return;
     if (!convs || !convs.length) {
-      list.innerHTML = '<div class="cw-empty">Sin conversaciones. Crea una nueva con el botÃ³n +</div>';
+      list.innerHTML = '<div class="cw-empty">Sin conversaciones. Crea una nueva con el botón +</div>';
       return;
     }
     list.innerHTML = '';
@@ -174,12 +179,13 @@
     });
   }
 
-  /* â”€â”€ Open a conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Open a conversation ─────────────────────────────────────────────────── */
   function openConversation(convId, name, rol) {
     stopPoll();
-    currentConvId = convId;
-    lastMsgId     = 0;
-    lastDateLabel = '';
+    currentConvId  = convId;
+    lastMsgId      = 0;
+    lastDateLabel  = '';
+    renderedMsgIds = new Set();
 
     // Update header
     const avaEl = $('cw-conv-ava');
@@ -208,11 +214,15 @@
     setTimeout(() => $('cw-input')?.focus(), 100);
   }
 
-  /* â”€â”€ Messages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Messages ────────────────────────────────────────────────────────────── */
   function renderMessages(messages, initial) {
     const box = $('cw-messages');
     if (!box) return;
-    if (initial) { box.innerHTML = ''; lastDateLabel = ''; }
+    // Only safe to wipe the box when nothing real has been rendered yet —
+    // if a message was already optimistically appended (fast send racing
+    // this fetch), clearing here would erase it even though it's already
+    // saved; just merge instead (appendMsg dedupes by id).
+    if (initial && renderedMsgIds.size === 0) { box.innerHTML = ''; lastDateLabel = ''; }
     messages.forEach(msg => appendMsg(msg));
     if (messages.length) {
       lastMsgId = Math.max(lastMsgId, parseInt(messages[messages.length - 1].id));
@@ -223,6 +233,13 @@
   function appendMsg(msg) {
     const box = $('cw-messages');
     if (!box) return;
+    const msgId = parseInt(msg.id || 0);
+    if (msgId && renderedMsgIds.has(msgId)) return; // already shown (race with initial history fetch)
+    if (msgId) renderedMsgIds.add(msgId);
+    // Whichever of the optimistic send / initial history fetch lands first
+    // clears the "Cargando…" placeholder — renderMessages() no longer does
+    // this unconditionally (see there), so it has to happen here instead.
+    box.querySelector('.cw-loading')?.remove();
     const isMe = (msg.emisor_rol === myRol && parseInt(msg.emisor_id) === myId);
 
     // Date separator
@@ -250,7 +267,6 @@
     wrap.appendChild(time);
     box.appendChild(wrap);
 
-    const msgId = parseInt(msg.id || 0);
     if (!isMe && lastMsgId > 0 && msgId > lastMsgId) {
         if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     }
@@ -263,7 +279,7 @@
     if (box) box.scrollTop = box.scrollHeight;
   }
 
-  /* â”€â”€ Polling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Polling ─────────────────────────────────────────────────────────────── */
   function startPoll() {
     pollInterval = 3000;
     schedulePoll();
@@ -280,7 +296,7 @@
     if (document.hidden) {
       delay = Math.max(pollInterval, 15000);
     } else if (isOpen && currentView === 'conv' && currentConvId > 0) {
-      delay = Math.min(pollInterval, 6000);  // conversaciÃ³n abierta y visible: casi tiempo real
+      delay = Math.min(pollInterval, 6000);  // conversación abierta y visible: casi tiempo real
     } else if (isOpen) {
       delay = Math.min(pollInterval, 10000); // lista abierta: refresco frecuente
     }
@@ -352,7 +368,7 @@
     }
   }
 
-  /* â”€â”€ Send â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Send ────────────────────────────────────────────────────────────────── */
   function sendMessage() {
     const input = $('cw-input');
     const text = (input?.value || '').trim();
@@ -373,7 +389,7 @@
       .catch(() => {});
   }
 
-  /* â”€â”€ Contacts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Contacts ────────────────────────────────────────────────────────────── */
   function showContacts() {
     showPanel('contacts');
     const search = $('cw-contact-search');
@@ -434,6 +450,8 @@
       .then(data => {
         if (data.ok && data.conv_id) {
           openConversation(data.conv_id, contact.nombre, contact.rol);
+        } else if (list) {
+          list.innerHTML = `<div class="cw-empty">${escHtml(data.msg || 'No se pudo iniciar la conversación')}</div>`;
         }
       })
       .catch(() => {
@@ -441,7 +459,7 @@
       });
   }
 
-  /* â”€â”€ Keyboard Adjustments for Mobile (iOS & Android) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Keyboard Adjustments for Mobile (iOS & Android) ───────────────────── */
   function adjustForKeyboard() {
     const win = $('cw-window');
     if (!win || win.hidden) return;
@@ -469,7 +487,7 @@
     }
   }
 
-  /* â”€â”€ Boot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Boot ────────────────────────────────────────────────────────────────── */
   function boot() {
     const fab = $('cw-fab');
     if (!fab) return;
@@ -525,9 +543,19 @@
       window.visualViewport.addEventListener('scroll', adjustForKeyboard);
     }
 
-    // Close on outside click (desktop) or overlay tap (mobile)
+    // Close on outside click (desktop) or overlay tap (mobile).
+    // Uses composedPath() (the ancestor chain captured at dispatch time),
+    // not e.target.closest() — several click handlers in this widget
+    // (startConversation, openConversation) synchronously replace the
+    // clicked row's parent via innerHTML before this listener runs, which
+    // detaches the row from the DOM. closest() on a detached node can never
+    // reach #cw, so it always looked like an "outside" click and closed the
+    // widget the instant a contact/conversation was picked.
     document.addEventListener('click', e => {
-      if (isOpen && !e.target.closest('#cw')) closeWindow();
+      if (!isOpen) return;
+      const cw = $('cw');
+      const path = typeof e.composedPath === 'function' ? e.composedPath() : [];
+      if (cw && !path.includes(cw)) closeWindow();
     });
     $('cw-overlay')?.addEventListener('click', closeWindow);
   }
@@ -538,7 +566,7 @@
     document.addEventListener('DOMContentLoaded', boot);
   }
 
-  /* â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Public API ──────────────────────────────────────────────────────────── */
   window.ChatWidget = {
     init(cfg) {
       myRol      = cfg.myRol;
@@ -578,7 +606,7 @@
           else if (msgBox) msgBox.innerHTML = '<div class="cw-empty">No se pudo iniciar el chat</div>';
         })
         .catch(() => {
-          if (msgBox) msgBox.innerHTML = '<div class="cw-empty">Error de conexiÃ³n</div>';
+          if (msgBox) msgBox.innerHTML = '<div class="cw-empty">Error de conexión</div>';
         });
     },
   };

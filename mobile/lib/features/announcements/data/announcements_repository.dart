@@ -38,6 +38,19 @@ class AnnouncementsRepository {
     final rows = (data['announcements'] as List).cast<Map<String, dynamic>>();
     return rows.map(Announcement.fromJson).toList();
   }
+
+  /// director/secretaria only — mirrors controladores/{admin,secretaria}/anuncios/insertar.php.
+  Future<void> create({
+    required String titulo,
+    required String mensaje,
+    String dirigidoA = 'todos',
+  }) {
+    return _client.post('/announcements.php', data: {
+      'titulo': titulo,
+      'mensaje': mensaje,
+      'dirigidoA': dirigidoA,
+    });
+  }
 }
 
 final announcementsRepositoryProvider = Provider<AnnouncementsRepository>(

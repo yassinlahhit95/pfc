@@ -18,25 +18,25 @@ $sliderId = 'hero-slider-' . uniqid();
       ?>
       <div class="lp-slide <?= $i === 0 ? 'active' : '' ?>" data-index="<?= $i ?>">
         <!-- Imagen de fondo con zoom Ken Burns -->
-        <div class="lp-slide-bg" style="<?= $bgStyle ?>"></div>
+        <div class="lp-slide-bg" style="<?= $bgStyle ?>"<?= landing_lb_field($preview, "slides.$i.imagen", 'imagen') ?>></div>
         <div class="lp-hero-velo"></div>
-        
+
         <div class="lp-contenedor lp-hero-inner lp-slide-inner">
           <div class="lp-hero-texto">
             <?php if (!empty($contenido['eyebrow'])): ?>
-            <span class="lp-eyebrow"><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
+            <span class="lp-eyebrow"<?= landing_lb_field($preview, 'eyebrow') ?>><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
             <?php endif; ?>
-            
-            <h1 class="lp-slide-title"><?= Security::escapeHtml($slide['titulo'] ?? '') ?></h1>
-            
+
+            <h1 class="lp-slide-title"<?= landing_lb_field($preview, "slides.$i.titulo") ?>><?= Security::escapeHtml($slide['titulo'] ?? '') ?></h1>
+
             <?php if (!empty($slide['subtitulo'])): ?>
-            <p class="lp-hero-sub lp-slide-sub"><?= nl2br(Security::escapeHtml($slide['subtitulo'])) ?></p>
+            <p class="lp-hero-sub lp-slide-sub"<?= landing_lb_field($preview, "slides.$i.subtitulo", 'textarea') ?>><?= nl2br(Security::escapeHtml($slide['subtitulo'])) ?></p>
             <?php endif; ?>
-            
+
             <div class="lp-hero-botones lp-slide-btns">
               <?php if (!empty($contenido['botonTexto'])): ?>
               <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#oferta_formativa')) ?>" class="lp-boton-primario lp-boton-grande">
-                <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
+                <span<?= landing_lb_field($preview, 'botonTexto') ?>><?= Security::escapeHtml($contenido['botonTexto']) ?></span> <i class="fas fa-arrow-right"></i>
               </a>
               <?php endif; ?>
             </div>

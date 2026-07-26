@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Cache.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // CONSULTAS
@@ -53,6 +54,20 @@ function obtenerArchivosPreMatricula($idPreMatricula) {
         $archivos[] = $fila;
     }
     return $archivos;
+}
+
+// Vista previa para el panel de notificaciones de secretaría (nav.php) — solo
+// las N más recientes, no la lista completa que ya trae listarPreMatriculas().
+function listarPreMatriculasPendientesRecientes(int $limite = 3): array {
+    return Cache::remember("pre_matriculas_pendientes_recientes_{$limite}", 30, function () use ($limite) {
+        $con = obtenerConexion();
+        $sql = "SELECT p.*, c.nombreCiclo FROM pre_matriculas p JOIN ciclos c ON p.idCiclo = c.idCiclo
+                WHERE p.estado = 'pendiente' ORDER BY p.fechaSolicitud DESC LIMIT ?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $limite);
+        mysqli_stmt_execute($stmt);
+        return mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+    });
 }
 
 function listarPreMatriculas($estado = null) {

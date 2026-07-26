@@ -31,7 +31,12 @@ html:not([data-theme="dark"]) .tema-vocacional {
 .tema-vocacional h1 { letter-spacing: -0.04em; text-transform: uppercase; font-weight: 800; line-height: 1.05; }
 .tema-vocacional .lp-sec-cabecera h2 { font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.02em; }
 
-/* Hero con malla radiante */
+/* Hero con malla radiante en dos capas: un degradado diagonal animado de
+   fondo (mesh) más dos focos radiales fijos en las esquinas para dar
+   profundidad — antes había dos fondos distintos definidos para el mismo
+   .lp-hero (uno con animación, otro con !important añadido después que lo
+   tapaba entero y dejaba la animación como código muerto); aquí se combinan
+   en una sola declaración con varias capas. */
 @keyframes meshGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -39,8 +44,11 @@ html:not([data-theme="dark"]) .tema-vocacional {
 }
 .tema-vocacional .lp-hero {
   padding: 160px 0 140px;
-  background: linear-gradient(-45deg, #0a0a0b, color-mix(in srgb, var(--lp-acento) 12%, #0a0a0b), color-mix(in srgb, var(--lp-acento) 26%, #0a0a0b), #0a0a0b);
-  background-size: 400% 400%;
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--lp-acento) 15%, transparent), transparent 60%),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--lp-acento-2) 15%, transparent), transparent 60%),
+    linear-gradient(-45deg, #0a0a0b, color-mix(in srgb, var(--lp-acento) 12%, #0a0a0b), color-mix(in srgb, var(--lp-acento) 26%, #0a0a0b), #0a0a0b);
+  background-size: 100% 100%, 100% 100%, 400% 400%;
 }
 /* El degradado se ve igual en reposo sin "prefers-reduced-motion" — solo se
    condiciona el movimiento continuo, que antes corría siempre sin ninguna
@@ -94,20 +102,18 @@ html:not([data-theme="dark"]) .tema-vocacional .lp-faq-item {
 }
 .tema-vocacional .lp-boton-primario:hover { box-shadow: 0 15px 35px color-mix(in srgb, var(--lp-acento) 60%, transparent); transform: translateY(-4px); }
 
-/* Cifras impactantes */
-.tema-vocacional .lp-cifras {
-  background: var(--lp-acento) !important;
+/* Cifras impactantes (no aplica a la variante "foto": ver nota sobre
+   !important en tema-clasico.css — ya no hace falta). */
+.tema-vocacional .lp-cifras:not(.lp-variante-foto) {
+  background: var(--lp-acento);
 }
 .tema-vocacional .lp-cifra-numero { font-size: clamp(48px, 6vw, 72px); font-weight: 800; color: #fff; text-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 .tema-vocacional .lp-cifra-etiqueta { color: rgba(255,255,255,0.9); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 
-/* -- MODERNIZATION: Glassmorphism & Mesh -- */
+/* Nav con cristal esmerilado (glassmorphism), coherente con el resto de
+   estética "app móvil" del tema. */
 .tema-vocacional .lp-nav {
-  background: color-mix(in srgb, var(--lp-fondo) 60%, transparent) !important;
+  background: color-mix(in srgb, var(--lp-fondo) 60%, transparent);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-}
-.tema-vocacional .lp-hero {
-  background: radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--lp-acento) 15%, var(--lp-fondo)), var(--lp-fondo) 60%),
-              radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--lp-acento-2) 15%, transparent), transparent 60%) !important;
 }

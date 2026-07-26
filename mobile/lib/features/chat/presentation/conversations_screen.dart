@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/premium.dart';
 import '../data/chat_repository.dart';
 import 'chat_detail_screen.dart';
 import 'new_chat_screen.dart';
@@ -40,6 +42,12 @@ class _ConversationsScreenState extends ConsumerState<ConversationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Any incoming chat push (any conversation) refreshes the list instantly
+    // instead of waiting for the 8s background timer.
+    ref.listen(chatMessagePushProvider, (previous, convId) {
+      if (convId != null) ref.invalidate(chatConversationsProvider);
+    });
+
     final conversationsAsync = ref.watch(chatConversationsProvider);
 
     return Scaffold(
@@ -48,7 +56,8 @@ class _ConversationsScreenState extends ConsumerState<ConversationsScreen> {
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const NewChatScreen()),
         ),
-        child: const Icon(Icons.add_comment_outlined),
+        elevation: 1,
+        child: const Icon(Icons.edit_outlined),
       ),
       body: AsyncView<List<ChatConversation>>(
         value: conversationsAsync,
@@ -58,15 +67,15 @@ class _ConversationsScreenState extends ConsumerState<ConversationsScreen> {
             return const EmptyState(
               icon: Icons.forum_outlined,
               title: 'Sin conversaciones',
-              description: 'Toca + para empezar a chatear con alguien.',
+              description: 'Toca el lápiz para empezar a chatear con alguien.',
             );
           }
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(chatConversationsProvider),
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: Space.sm),
               itemCount: items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 2),
+              separatorBuilder: (_, __) => const SizedBox.shrink(),
               itemBuilder: (context, i) => _ConversationTile(conv: items[i]),
             ),
           );
@@ -96,51 +105,70 @@ class _ConversationTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final hasUnread = conv.unreadCount > 0;
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: CircleAvatar(
-        radius: 24,
-        backgroundColor: scheme.primary.withValues(alpha: 0.12),
-        child: Text(
-          conv.otherNombre.isNotEmpty ? conv.otherNombre[0].toUpperCase() : '?',
-          style: TextStyle(color: scheme.primary, fontWeight: FontWeight.bold),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ChatDetailScreen(convId: conv.id, otherNombre: conv.otherNombre),
+          ),
         ),
-      ),
-      title: Text(
-        conv.otherNombre,
-        style: TextStyle(fontWeight: hasUnread ? FontWeight.bold : FontWeight.w500),
-      ),
-      subtitle: Text(
-        conv.lastPreview ?? '',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: hasUnread ? scheme.onSurface : scheme.onSurfaceVariant,
-          fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
-        ),
-      ),
-      trailing: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(_formatTime(conv.lastMessageAt), style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 6),
-          if (hasUnread)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-              decoration: BoxDecoration(color: scheme.primary, borderRadius: BorderRadius.circular(10)),
-              child: Text(
-                '${conv.unreadCount}',
-                style: TextStyle(color: scheme.onPrimary, fontSize: 11, fontWeight: FontWeight.bold),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+          child: Row(
+            children: [
+              InitialsAvatar(name: conv.otherNombre, radius: 22),
+              const SizedBox(width: Space.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      conv.otherNombre,
+                      style: TextStyle(fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      conv.lastPreview ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: hasUnread ? scheme.onSurface : scheme.onSurfaceVariant,
+                            fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
-      ),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => ChatDetailScreen(
-            convId: conv.id,
-            otherNombre: conv.otherNombre,
+              const SizedBox(width: Space.sm),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    _formatTime(conv.lastMessageAt),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: hasUnread ? scheme.primary : scheme.onSurfaceVariant,
+                          fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                  ),
+                  const SizedBox(height: 6),
+                  if (hasUnread)
+                    Container(
+                      width: 18,
+                      height: 18,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
+                      child: Text(
+                        '${conv.unreadCount}',
+                        style: TextStyle(color: scheme.onPrimary, fontSize: 10, fontWeight: FontWeight.w700),
+                      ),
+                    )
+                  else
+                    const SizedBox(height: 18),
+                ],
+              ),
+            ],
           ),
         ),
       ),

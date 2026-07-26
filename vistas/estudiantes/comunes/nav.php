@@ -11,6 +11,8 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/chat.php";
+require_once __DIR__ . "/../../../modelos/notificaciones.php";
+require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../include/Cache.php";
 require_once __DIR__ . "/../../../modelos/tours.php";
 
@@ -59,6 +61,19 @@ if ($totalSinLeer_menu > 0) {
 $pagosNotif = Cache::remember("nav_estudiante_pagos_{$idEstudiante}", 30, function () use ($idEstudiante) {
     return array_slice(listarPagosPorEstudiante($idEstudiante), 0, 3);
 });
+
+// Notificaciones genéricas (nota publicada, etc.) — mismo patrón que en
+// profesores/comunes/nav.php: se marcan leídas por AJAX al abrir la campana.
+$totalNotifGenericas_menu = contarNotificacionesNoLeidas($idEstudiante, 'estudiante');
+$notifGenericas_menu = $totalNotifGenericas_menu > 0 ? listarNotificacionesNoLeidas($idEstudiante, 'estudiante', 3) : [];
+
+// Notificaciones de Aula Digital (tarea nueva, sesión nueva, archivo subido,
+// entrega corregida) — aula_notificaciones llevaba tiempo recibiendo estos
+// eventos pero nunca se mostraban en ningún sitio (ver modelos/aula.php).
+$totalNotifAula_menu = contarNotificacionesAulaNoLeidas($idEstudiante, 'estudiante');
+$notifAula_menu = $totalNotifAula_menu > 0 ? listarNotificacionesAulaNoLeidas($idEstudiante, 'estudiante', 3) : [];
+
+$totalNotifCampana_menu = $totalSinLeer_menu + $totalNotifGenericas_menu + $totalNotifAula_menu;
 
 // Active-state helper
 function _nav_active_est($check) {
@@ -113,13 +128,7 @@ function _nav_active_est($check) {
         }
       } catch (e) {}
     </script>
-    <div class="brand">
-      <div class="brand-mark"><span></span></div>
-      <div class="brand-text"><strong>AulaPro</strong><small>Campus Suite</small></div>
-      <button class="collapse-btn" id="collapse" aria-label="Contraer menú">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
-      </button>
-    </div>
+    <?php $navBrandSubtitle = 'Campus Suite'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
 
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
@@ -285,7 +294,7 @@ function _nav_active_est($check) {
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    data-url="../../../controladores/estudiantes/buscar.php" />
             <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
@@ -303,10 +312,40 @@ function _nav_active_est($check) {
         <div class="notif-wrap">
           <button class="icon-btn" id="notif-btn" aria-label="Notificaciones">
             <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-            <span class="dot" id="notif-dot" data-msgs="<?= (int)$totalSinLeer_menu ?>"<?= ($totalSinLeer_menu > 0) ? '' : ' hidden' ?>></span>
+            <span class="dot" id="notif-dot" data-msgs="<?= (int)$totalNotifCampana_menu ?>"<?= ($totalNotifCampana_menu > 0) ? '' : ' hidden' ?>></span>
           </button>
-          <div class="notif-panel" id="notif-panel" hidden>
+          <div class="notif-panel" id="notif-panel" hidden
+               data-notif-ids="<?= Security::escapeHtml(implode(',', array_column($notifGenericas_menu, 'idNotificacion'))) ?>"
+               data-aula-notif-ids="<?= Security::escapeHtml(implode(',', array_column($notifAula_menu, 'idNotificacion'))) ?>">
             <div class="notif-panel-head">Notificaciones</div>
+
+            <?php if (!empty($notifGenericas_menu)): ?>
+            <div class="notif-group-title">Novedades</div>
+            <?php foreach ($notifGenericas_menu as $genNotif): ?>
+            <a href="<?= Security::escapeHtml($genNotif['url'] ?: '#') ?>" class="notif-item">
+              <span class="notif-ico"><i class="fas fa-bell"></i></span>
+              <div class="notif-body">
+                <span class="notif-label"><?= Security::escapeHtml($genNotif['mensaje']) ?></span>
+                <span class="notif-time"><?= date('d/m H:i', strtotime($genNotif['fechaCreacion'])) ?></span>
+              </div>
+              <span class="notif-badge-new">Nuevo</span>
+            </a>
+            <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php if (!empty($notifAula_menu)): ?>
+            <div class="notif-group-title">Aula Digital</div>
+            <?php foreach ($notifAula_menu as $aulaNotif): ?>
+            <a href="<?= Security::escapeHtml($aulaNotif['url']) ?>" class="notif-item">
+              <span class="notif-ico"><i class="fas fa-chalkboard"></i></span>
+              <div class="notif-body">
+                <span class="notif-label"><?= Security::escapeHtml($aulaNotif['titulo']) ?></span>
+                <span class="notif-time"><?= date('d/m H:i', strtotime($aulaNotif['fechaCreacion'])) ?></span>
+              </div>
+              <span class="notif-badge-new">Nuevo</span>
+            </a>
+            <?php endforeach; ?>
+            <?php endif; ?>
 
             <?php if (!empty($mensajesNotif)): ?>
             <div class="notif-group-title">Mensajes sin leer</div>
@@ -336,7 +375,7 @@ function _nav_active_est($check) {
             <?php endforeach; ?>
             <?php endif; ?>
 
-            <?php if (empty($mensajesNotif) && empty($pagosNotif)): ?>
+            <?php if (empty($notifGenericas_menu) && empty($notifAula_menu) && empty($mensajesNotif) && empty($pagosNotif)): ?>
             <div class="notif-empty">Sin notificaciones nuevas</div>
             <?php endif; ?>
 

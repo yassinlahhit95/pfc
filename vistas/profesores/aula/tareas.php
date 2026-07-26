@@ -67,16 +67,27 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <!-- Selector de módulo -->
 <div class="panel margen-abajo">
-    <form method="GET" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <label for="idModulo" style="font-weight:600;">Módulo:</label>
-        <select name="idModulo" id="idModulo" onchange="this.form.submit()" style="min-width:280px;">
-            <?php foreach ($modulos as $modulo): ?>
-                <option value="<?= (int)$modulo['idModulo'] ?>" <?= (int)$modulo['idModulo'] === $idModuloSeleccionado ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo'] ?? '') ?>)
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </form>
+    <div class="caja alinear-centro espacio-grande">
+        <form method="GET" class="campo relleno" style="max-width:360px;">
+            <label for="idModulo">Módulo:</label>
+            <select name="idModulo" id="idModulo" onchange="this.form.submit()">
+                <?php foreach ($modulos as $modulo): ?>
+                    <option value="<?= (int)$modulo['idModulo'] ?>" <?= (int)$modulo['idModulo'] === $idModuloSeleccionado ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo'] ?? '') ?>)
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
+        <?php if (!empty($tareas)): ?>
+        <div class="campo relleno">
+            <label for="buscarTarea">Buscar tarea:</label>
+            <input type="text" id="buscarTarea"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   placeholder="Título de la tarea…" oninput="filtrarTabla('buscarTarea','tablaTareas')">
+        </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <?php if ($mostrarForm && $idModuloSeleccionado): ?>

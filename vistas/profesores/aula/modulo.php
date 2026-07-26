@@ -94,7 +94,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="searchContainer" style="margin-bottom:var(--space-4);display:none;">
   <div class="search-modern">
     <input type="text" id="searchInput" placeholder="Buscar..." style="width:100%;"
-    autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+    autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
     data-lpignore="true" data-1p-ignore="true" data-form-type="other">
   </div>
 </div>
@@ -582,7 +582,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
     <div class="modal-footer">
       <button type="button" class="btn-modern btn-secondary-modern" onclick="cerrarModal('modalConfirmar')">Cancelar</button>
-      <button type="button" id="modalConfirmarOk" class="btn-modern" style="background:var(--rojo);color:#fff;">Eliminar</button>
+      <button type="button" id="modalConfirmarOk" class="btn-modern btn-danger-modern">Eliminar</button>
     </div>
   </div>
 </div>

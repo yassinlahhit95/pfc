@@ -38,14 +38,15 @@ public/js/core/            ← globals used across pages (filtros.js, paginacion
 public/js/features/        ← one file per feature (chat.js, mensajes.js, horario.js, blog-editor.js, ...)
 public/js/firebase/        ← Firebase web SDK config + notifications UI
 landing-system/            ← public landing page: templates, sections, themes — see own section below
-noDeploy/                  ← never FTP'd to the server — schema/seed SQL (see DB Migrations below),
-                              plus dev/build/setup-only scripts (build-assets.js, generar_htaccess_vendor.php,
-                              install-check.php, smoke_test.php, verificar_motor_academico.php) and
-                              supplementary docs (API_DOCS.md, CLOUDFLARE_R2_SETUP.md).
+noDeploy/                  ← schema SQL (see Database schema below) plus dev/build/setup-only scripts
+                              (build-assets.js, generar_htaccess_vendor.php, install-check.php) and
+                              supplementary docs (API_DOCS.md, CLOUDFLARE_R2_SETUP.md,
+                              INSTALL_WIZARD_SETUP.md). Everything here stays off production **except**
+                              `database.sql` itself — see the note in DO_NOT_UPLOAD.md.
                               See noDeploy/DO_NOT_UPLOAD.md for the full "what never leaves this machine" list.
 ```
 
-Note: `core/analytics.js` and `features/aula-recursos.js` compute their own root path via `document.currentScript`/`import.meta.url` and a hardcoded `../../../` — they must stay exactly 3 directories below the project root (i.e. directly under `public/js/core/` or `public/js/features/`, not nested deeper) or that path math breaks.
+Note: `core/analytics.js`, `features/aula-recursos.js`, and `firebase/firebase.js` compute their own root path via `document.currentScript`/`import.meta.url` and a hardcoded `../../../` — they must stay exactly 3 directories below the project root (i.e. directly under `public/js/core/`, `public/js/features/`, or `public/js/firebase/`, not nested deeper) or that path math breaks.
 
 ### Core asset bundle (`npm run build:assets`)
 
@@ -98,13 +99,13 @@ Shared helper functions (e.g. image-upload helpers) live in the `admin` copy; th
 
 ---
 
-## DB Migrations
+## Database schema
 
-`noDeploy/database.sql` is the schema source of truth (the old `migrate_db.php` incremental-migration file was removed — don't reference it in new code or comments). New tables/columns for a **fresh install** go directly into the relevant `CREATE TABLE` statement in `noDeploy/database.sql`.
+`noDeploy/database.sql` is the **single source of truth for the schema** — a complete, current `mysqldump` structure (no data). There is no migrations system: every deployment (yours or a client's) always ships the current schema in one file, imported fresh. When you add a table/column, edit the relevant `CREATE TABLE` statement in `noDeploy/database.sql` directly — never write a separate migration file, and never gate a new column behind an `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`-style runtime check.
 
-For an **existing** database (production, or any dev DB created before the change), also add a standalone SQL file under `noDeploy/migrations/`, named with the next incremented 3-digit number (e.g. `noDeploy/migrations/007_whatever_you_added.sql` following `006_add_saas_control_columns.sql`) containing just the `ALTER TABLE`/`CREATE TABLE IF NOT EXISTS` statements needed to bring an existing schema up to date. All prior reference-only migration SQL (including what used to live under `landing-system/sql/`) has been consolidated here under this same numbering — don't scatter new ones elsewhere. These files are never executed automatically; they're applied manually, in numeric order, and should say up top which existing-DB scenario they're for. `noDeploy/migrations/aplicar_todas_produccion.sql` is a maintained concatenation of every numbered migration in order — update it too whenever you add a new one, so it stays a valid single-command way to bring an existing DB fully up to date.
+This project used to carry a numbered-migrations system (`noDeploy/migrations/`, a `schema_migrations` tracking table, `check_migrations.php`) for bringing an already-running database up to date incrementally. It was removed: maintaining two parallel representations of the schema (the dump *and* a growing pile of ALTERs) was the actual source of the "which files do I even need" confusion, and every environment that mattered was already current. If you ever have a genuinely old, already-running database that needs to catch up, the correct move is to diff its schema against `noDeploy/database.sql` and write the specific `ALTER TABLE` statements needed for that one migration by hand — not to resurrect a general migrations folder.
 
-Never use a raw `CREATE TABLE IF NOT EXISTS` inline in a model file on every request (this bit us once already — `registrarAccionSecretaria()` in `modelos/log.php` did this for `historial_secretarias` long after that table was already guaranteed by the schema, silently paying a metadata-query cost on every secretaría action for no reason). If a table might not exist yet on some deployments, that's what a `noDeploy/migrations/*.sql` file is for, not per-request runtime DDL.
+Never use a raw `CREATE TABLE IF NOT EXISTS` inline in a model file on every request (this bit us once already — `registrarAccionSecretaria()` in `modelos/log.php` did this for `historial_secretarias` long after that table was already guaranteed by the schema, silently paying a metadata-query cost on every secretaría action for no reason). A table's existence is guaranteed by `noDeploy/database.sql` alone.
 
 **Naming**: if a new table is conceptually close to an existing one (e.g. a landing/marketing table vs. an internal academic table), give it a distinct table name **and** a distinct primary key name up front (`landing_ciclos.idLandingCiclo`, not `idCiclo`) — don't let two unrelated entities share an ambiguous name/column just because they're topically similar. It's cheap to get right on day one and expensive to rename later.
 
@@ -120,9 +121,11 @@ A guided setup wizard lives at `install/` (5 steps: environment check → DB con
 
 **`.env` is the one canonical config mechanism** — the wizard only ever writes `.env`, never `config/db.php`. `config/db.php` support in `config/Config.php` is kept as an untouched, undocumented-going-forward legacy fallback for whatever existing deployment may still rely on it; don't point any new install at it.
 
-**Two seed paths, don't confuse them**: `noDeploy/seed_minimal.sql` is the minimal starter (one admin account with a one-time placeholder password, default center row) for a manual/no-wizard install — a fresh schema import leaves `directores` and `configuracion_centro` genuinely empty (verified), so this file is required before anyone can log in without the wizard. `noDeploy/demo_data.sql` is unrelated — rich fake data (students, teachers, cycles) for local development only. Never point a real deployment at `demo_data.sql`.
+**The wizard is the one and only install path** — a fresh import of `noDeploy/database.sql` leaves `directores` and `configuracion_centro` genuinely empty on purpose (verified), and `install/steps/3_admin.php` will *refuse* to create an admin account if `directores` already has a row. There is deliberately no seed-data SQL file anymore: don't pre-insert an admin/center row into `database.sql` or any side file, since that silently breaks step 3 of the wizard for every future install. If a manual, no-wizard install is ever genuinely needed, insert the `directores`/`configuracion_centro` rows by hand after importing the schema — don't reintroduce a seed file.
 
 `noDeploy/install-check.php` (mirrors `noDeploy/generar_htaccess_vendor.php`'s plain-script-no-framework pattern) runs via `composer.json`'s existing `post-install-cmd`/`post-update-cmd` hooks — checks PHP version/required extensions and prints the `/install/` URL as the next step.
+
+**Deploying under a new domain (white-label / client handoff)**: `api/.htaccess`'s CORS `Access-Control-Allow-Origin` is auto-synced to `.env`'s `APP_URL` by `install/lib/helpers.php::updateCorsOrigin()`, called from both the wizard's step 2 and `vistas/admin/saas/estado.php`'s credentials form — so it stays correct automatically as long as `APP_URL` is only ever set through one of those two paths, never by hand-editing `.env` directly. The mobile app is the one piece that does *not* auto-sync: `API_BASE_URL` is a Flutter build-time `--dart-define`, baked into the compiled APK/IPA, so every build for a given deployment must pass the matching domain explicitly (see `mobile/README.md`).
 
 ---
 
@@ -189,10 +192,12 @@ Use `filtrarTabla(inputId, tableId)` or `filtrarTablaMulti(tableId)` from `filtr
 ### Search/filter inputs — no browser autocomplete
 **Every single "buscar"/filter `<input>` — topbar search, table filters, chat contact/conversation search, all of them — must carry the full hardened set below, not just `autocomplete="off"`.** `autocomplete="off"` alone does *not* stop Chrome/Edge/password managers on a field it recognizes as a search box (by `id`, `placeholder`, or `type="search"`) — it silently re-enables suggestions. This was tried field-by-field with plain `autocomplete="off"` across ~28 files and the autofill dropdown kept coming back on whichever pages hadn't been touched yet, because the weaker attribute doesn't actually work on this class of input. There is no "simple case" exception anymore — always use:
 ```html
-<input type="search" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+<input type="search" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
        data-lpignore="true" data-1p-ignore="true" data-form-type="other">
 ```
 These are live client-side filters, never form fields meant to be re-submitted, so suggestion dropdowns only ever get in the way — there's no downside to always applying the full set.
+
+**`autocomplete` value is `one-time-code`, not `new-password`.** An earlier version of this convention used `autocomplete="new-password"` specifically because plain `off` failed to suppress the saved-logins dropdown. That traded one bug for another: Chrome (and some password-manager extensions) treat `new-password` as an explicit "the user is creating a new password here" signal *regardless of `type="search"`*, and started showing the "suggest a strong password" chip/popup on these filter inputs — which also showed up visually as a border-in-a-border (the suggestion popup's own bordered box rendering against the search bar's). `one-time-code` is a real, spec-recognized autocomplete token (meant for OTP/2FA fields) that carries no "this is reusable, savable credential" meaning to any password manager, so it suppresses old-value/autofill suggestions the same way `new-password` did, without the strong-password side effect. Do not use `new-password` on any field that isn't an actual `type="password"` credential-creation field (login, change-password, reset-password, admin-account-creation) — those should keep `new-password`, that's the correct, wanted behavior there.
 
 ### Toast notifications
 `Toast.show('message', 'success'|'error'|'info')` — always guard with `if (window.Toast)`.

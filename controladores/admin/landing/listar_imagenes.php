@@ -25,7 +25,7 @@ if (is_dir($uploadDir)) {
         if (!in_array($ext, $extensionesPermitidas, true)) continue;
         $archivos[] = [
             'filename' => $nombre,
-            'url'      => '/public/uploads/landing/' . rawurlencode($nombre),
+            'url'      => 'public/uploads/landing/' . rawurlencode($nombre),
             'mtime'    => filemtime($ruta),
         ];
         $vistos[$nombre] = true;

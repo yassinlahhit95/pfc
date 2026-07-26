@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/theme/app_theme.dart';
 import '../data/messages_repository.dart';
 
 class ThreadDetailScreen extends ConsumerStatefulWidget {
@@ -70,6 +71,7 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
     final myEmisorRol = (role == UserRole.director || role == UserRole.secretaria)
         ? 'admin'
@@ -81,11 +83,11 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
         children: [
           Expanded(
             child: _loading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
                 : (_messages == null || _messages!.isEmpty)
                     ? const Center(child: Text('No se pudo cargar el hilo.'))
                     : ListView.builder(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(Space.lg),
                         itemCount: _messages!.length,
                         itemBuilder: (context, i) {
                           final m = _messages![i];
@@ -94,8 +96,12 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                       ),
           ),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
+            child: Container(
+              decoration: BoxDecoration(
+                color: scheme.surface,
+                border: Border(top: BorderSide(color: scheme.outlineVariant)),
+              ),
+              padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.md, Space.sm),
               child: Row(
                 children: [
                   Expanded(
@@ -104,23 +110,21 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                       minLines: 1,
                       maxLines: 4,
                       decoration: InputDecoration(
-                        hintText: 'Responder…',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        hintText: 'Responder',
+                        contentPadding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(Radii.pill),
                           borderSide: BorderSide.none,
                         ),
-                        filled: true,
-                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: Space.sm),
                   IconButton.filled(
                     onPressed: _sending ? null : _send,
                     icon: _sending
-                        ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Icon(Icons.send),
+                        ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : const Icon(Icons.arrow_upward_rounded),
                   ),
                 ],
               ),
@@ -152,13 +156,12 @@ class _MessageCard extends StatelessWidget {
     return Align(
       alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(vertical: Space.xs),
+        padding: const EdgeInsets.all(Space.md),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
         decoration: BoxDecoration(
-          color: isMine ? scheme.primary.withValues(alpha: 0.12) : scheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: scheme.outlineVariant),
+          color: isMine ? scheme.primary.withValues(alpha: 0.1) : scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(Radii.md),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

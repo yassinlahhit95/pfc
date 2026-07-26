@@ -78,10 +78,10 @@ function copyToClipboard(text) {
     });
 }
 
+// Solo copyToClipboard se llama desde fuera de este archivo (vistas/profesores/
+// aula/sesiones.php) — el resto de funciones (showError/showSuccess/isValidEmail/
+// formatFileSize) solo las usa initFormValidation() internamente, así que no
+// hace falta exponerlas en window.AulaDigital.
 window.AulaDigital = {
-    showError,
-    showSuccess,
-    copyToClipboard,
-    isValidEmail,
-    formatFileSize
+    copyToClipboard
 };

@@ -17,7 +17,8 @@ if ($idCiclo !== $idCicloTutor) {
     echo json_encode(['ok' => false, 'msg' => 'No tienes permiso para editar este ciclo.']); exit;
 }
 
-if (!Security::validateCSRFToken()) {
+// rotate=false — shared token reused across this no-reload drag-and-drop page (see controladores/admin/horario/addFranja.php)
+if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
 }
 

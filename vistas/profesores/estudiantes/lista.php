@@ -75,8 +75,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($estudiantes as $estudiante) { ?>
                         <tr>
                             <td>
-                                <span class="texto-estado <?= Security::escapeHtml($estudiante['idNivel'] == 1 ? 'azul' : 'verde') ?>">
-                                    <?= Security::escapeHtml($estudiante['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?>
+                                <span class="texto-estado <?= $estudiante['curso'] === 'Grado Superior' ? 'verde' : 'azul' ?>">
+                                    <?= Security::escapeHtml($estudiante['curso'] ?? '-') ?>
                                 </span>
                             </td>
                             <td class="texto-negrita"><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></td>

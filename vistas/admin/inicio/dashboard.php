@@ -12,13 +12,8 @@ $landingCfg = obtenerLandingConfig();
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
-require_once __DIR__ . "/../../../modelos/retos.php";
-require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
-require_once __DIR__ . "/../../../modelos/secretarias.php";
-require_once __DIR__ . "/../../../modelos/chat.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 require_once __DIR__ . "/../../../include/Cache.php";
@@ -62,25 +57,19 @@ $seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 
 
-require_once __DIR__ . "/../../../modelos/actualizaciones.php"; // New model for recent updates
+require_once __DIR__ . "/../../../modelos/actualizaciones.php";
 
 try {
-    $convs = chatConversacionesDe('admin', (int)$_SESSION['idAdmin']);
-    // Optionally limit displayed conversations
-    $convs = array_slice($convs, 0, 5);
-    // Fetch recent updates (directors, secretarias, profesores)
-    $actualizaciones = [];
-    if (function_exists('obtenerActualizacionesRecientes')) {
-        $actualizaciones = obtenerActualizacionesRecientes(5);
-    }
+    $actualizaciones = obtenerActualizacionesRecientes(5);
     // Compute seconds until next midnight Spain time (Europe/Madrid)
     $tz = new DateTimeZone('Europe/Madrid');
     $now = new DateTime('now', $tz);
     $midnight = (clone $now)->setTime(0,0,0)->modify('+1 day');
     $secondsToMidnight = $midnight->getTimestamp() - $now->getTimestamp();
 } catch (Throwable $e) {
-    error_log('Error loading conversations on dashboard: ' . $e->getMessage());
-    $convs = [];
+    error_log('Error loading dashboard updates: ' . $e->getMessage());
+    $actualizaciones = [];
+    $secondsToMidnight = 0;
 }
 
 require_once __DIR__ . "/../../../include/dashboard_helpers.php";

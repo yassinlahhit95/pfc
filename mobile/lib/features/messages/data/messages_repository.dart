@@ -84,3 +84,17 @@ final messagesRepositoryProvider = Provider<MessagesRepository>(
 final messageThreadsProvider = FutureProvider.autoDispose<List<MessageThread>>(
   (ref) => ref.read(messagesRepositoryProvider).fetchThreads(),
 );
+
+/// Polls the unread mensajería count for the bottom-nav badge (home_shell.dart) —
+/// same pattern as chatUnreadCountProvider in chat_repository.dart.
+final messagesUnreadCountProvider = StreamProvider.autoDispose<int>((ref) async* {
+  final repo = ref.watch(messagesRepositoryProvider);
+  while (true) {
+    try {
+      yield await repo.fetchUnread();
+    } catch (_) {
+      yield 0;
+    }
+    await Future.delayed(const Duration(seconds: 30));
+  }
+});

@@ -52,7 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+// rotate=false: el widget de chat flotante hace varias llamadas AJAX seguidas
+// (iniciar, enviar, marcar leído...) sobre el mismo token embebido en la
+// página sin recargarla — el rotate=true por defecto invalidaría ese token
+// justo después de la primera conversación iniciada, dejando todo lo que
+// viene después (enviar el primer mensaje, iniciar otra conversación) roto
+// hasta el siguiente recargue de página. Mismo patrón que enviar.php.
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '', false)) {
     header("Location: $back");
     exit;
 }

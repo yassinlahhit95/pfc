@@ -17,9 +17,9 @@ try {
 <section class="lp-sec lp-noticias" id="noticias"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
-      <h2><?= Security::escapeHtml($titulo) ?></h2>
+      <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($titulo) ?></h2>
       <?php if ($subtitulo): ?>
-      <p><?= nl2br(Security::escapeHtml($subtitulo)) ?></p>
+      <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($subtitulo)) ?></p>
       <?php endif; ?>
     </div>
 
@@ -69,7 +69,7 @@ try {
 
     <?php if ($botonTexto): ?>
     <div class="lp-noticias-cta">
-      <a href="/vistas/blog.php" class="lp-boton-borde lp-boton-grande"><?= Security::escapeHtml($botonTexto) ?> <i class="fas fa-arrow-right"></i></a>
+      <a href="/vistas/blog.php" class="lp-boton-borde lp-boton-grande"><span<?= landing_lb_field($preview, 'botonTexto') ?>><?= Security::escapeHtml($botonTexto) ?></span> <i class="fas fa-arrow-right"></i></a>
     </div>
     <?php endif; ?>
     <?php endif; ?>

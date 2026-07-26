@@ -22,17 +22,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <?php if (!empty($listaAnuncios)) { ?>
-    <?php foreach ($listaAnuncios as $anuncio) { ?>
+    <?php foreach ($listaAnuncios as $anuncio) {
+        $esNuevo = strtotime($anuncio['fechaAnuncio']) >= strtotime('-3 days');
+    ?>
         <div class="anuncio-item">
-            <div class="anuncio-contenido">
-                <div class="caja espacio-entre-elementos alinear-centro">
-                    <h3 class="anuncio-titulo" style="margin: 0;"><?= Security::escapeHtml(strtoupper($anuncio['titulo'])) ?></h3>
-                    <span class="texto-suave"><i class="fas fa-calendar-alt"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($anuncio['fechaAnuncio']))) ?></span>
+            <div class="anuncio-cabecera">
+                <span class="anuncio-icono"><i class="fas fa-bullhorn"></i></span>
+                <div class="anuncio-cabecera-texto">
+                    <h3 class="anuncio-titulo"><?= Security::escapeHtml($anuncio['titulo']) ?></h3>
+                    <span class="anuncio-fecha"><i class="fas fa-calendar-alt"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($anuncio['fechaAnuncio']))) ?></span>
                 </div>
-                <div class="margen-arriba">
-                    <p style="line-height: 1.6;"><?= nl2br(Security::escapeHtml($anuncio['mensaje'])) ?></p>
-                </div>
+                <?php if ($esNuevo) { ?><span class="texto-dirigido">NUEVO</span><?php } ?>
             </div>
+            <p class="anuncio-mensaje"><?= nl2br(Security::escapeHtml($anuncio['mensaje'])) ?></p>
         </div>
     <?php } ?>
 <?php } else { ?>

@@ -24,11 +24,11 @@ if (!FeatureGuard::check('feature_prematricula')) {
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; color: #1e293b; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
         .consult-card { background: white; padding: 2.5rem; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); width: 100%; max-width: 500px; }
         .status-badge { padding: 0.5rem 1rem; border-radius: 50rem; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .status-PENDIENTE { background: #fef3c7; color: #92400e; }
-        .status-EN_REVISION { background: #e0f2fe; color: #075985; }
-        .status-ADMITIDO { background: #dcfce7; color: #166534; }
-        .status-RECHAZADO { background: #fee2e2; color: #991b1b; }
-        .status-SUBSANACION { background: #f1f5f9; color: #475569; }
+        .status-pendiente { background: #fef3c7; color: #92400e; }
+        .status-revisando { background: #e0f2fe; color: #075985; }
+        .status-aceptada { background: #dcfce7; color: #166534; }
+        .status-rechazada { background: #fee2e2; color: #991b1b; }
+        .status-subsanacion { background: #f1f5f9; color: #475569; }
     </style>
 </head>
 <body>
@@ -103,14 +103,18 @@ $(document).ready(function() {
                 $('#resFecha').text(data.fecha);
 
                 // Badge de estado
+                const labels = {
+                    pendiente: 'Pendiente', revisando: 'En Revisión', aceptada: 'Admitido',
+                    rechazada: 'Rechazado', subsanacion: 'Subsanación'
+                };
                 let icon = 'fa-clock';
-                if (data.estado === 'ADMITIDO') icon = 'fa-check-circle';
-                if (data.estado === 'RECHAZADO') icon = 'fa-times-circle';
-                if (data.estado === 'SUBSANACION') icon = 'fa-exclamation-triangle';
+                if (data.estado === 'aceptada') icon = 'fa-check-circle';
+                if (data.estado === 'rechazada') icon = 'fa-times-circle';
+                if (data.estado === 'subsanacion') icon = 'fa-exclamation-triangle';
 
                 $('#statusBadge')
                     .attr('class', 'status-badge status-' + data.estado)
-                    .html(`<i class="fas ${icon}"></i> ${data.estado}`);
+                    .html(`<i class="fas ${icon}"></i> ${labels[data.estado] || data.estado}`);
 
                 // Observaciones
                 if (data.observaciones) {

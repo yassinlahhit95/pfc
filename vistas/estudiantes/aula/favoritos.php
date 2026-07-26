@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
-            <button type="button" class="recurso-menu-item peligro" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($archivo['idArchivo']) ?>, this, 'favoritos')"><i class="fas fa-star"></i> Quitar de favoritos</button>
+            <button type="button" class="recurso-menu-item peligro" data-quitar-en-desmarcar onclick="AulaRecursos.favorito(<?= Security::escapeHtml($archivo['idArchivo']) ?>, this)"><i class="fas fa-star"></i> Quitar de favoritos</button>
           </div>
         </div>
       </td>

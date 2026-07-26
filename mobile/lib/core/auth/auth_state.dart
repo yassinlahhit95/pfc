@@ -12,9 +12,15 @@ class SessionController extends AsyncNotifier<Session?> {
   @override
   Future<Session?> build() async {
     final storage = ref.read(secureStorageProvider);
-    final token = await storage.readToken();
-    final userTypeRaw = await storage.readUserType();
-    final userId = await storage.readUserId();
+    final results = await Future.wait([
+      storage.readToken(),
+      storage.readUserType(),
+      storage.readUserId(),
+    ]);
+    final token = results[0] as String?;
+    final userTypeRaw = results[1] as String?;
+    final userId = results[2] as int?;
+    
     if (token == null || userTypeRaw == null || userId == null) return null;
 
     // expires_at isn't re-validated here — an expired-but-present token is

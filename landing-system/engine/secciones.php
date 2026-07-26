@@ -22,7 +22,7 @@ function landing_img_url($nombre): string {
     if (preg_match('#^https?://#i', $nombre) || str_starts_with($nombre, '/')) {
         return $nombre;
     }
-    return '/public/uploads/landing/' . basename($nombre);
+    return 'public/uploads/landing/' . basename($nombre);
 }
 
 // Valida un enlace admin-configurable antes de usarlo en un atributo href:
@@ -38,6 +38,17 @@ function landing_url_segura($url, string $fallback = '#'): string {
     // Ruta relativa, pero no protocolo-relativa ("//dominio-externo.com")
     if ($url[0] === '/' && (!isset($url[1]) || $url[1] !== '/')) return $url;
     return $fallback;
+}
+
+// Marca un nodo como editable en línea desde la previsualización del
+// constructor (click directo en el texto/imagen, sin abrir el panel lateral
+// completo — ver public/js/features/builder-preview.js). Solo se emite en
+// modo preview: en la página pública real nunca hay data-lb-field, así que
+// las reglas CSS/JS que dependen de este atributo quedan inertes fuera del
+// constructor sin necesidad de una clase "modo preview" aparte.
+function landing_lb_field($preview, string $campo, string $kind = 'text'): string {
+    if (!$preview) return '';
+    return ' data-lb-field="' . Security::escapeHtml($campo) . '" data-lb-kind="' . Security::escapeHtml($kind) . '"';
 }
 
 // Iconos Font Awesome permitidos en campos de tipo select 'icono'
@@ -96,7 +107,8 @@ function landing_tipos(): array {
                 'variante' => 'fondo', 'eyebrow' => 'Formación Profesional',
                 'titulo' => 'Tu futuro profesional empieza aquí',
                 'subtitulo' => 'Formación Profesional oficial con prácticas en empresas líderes del sector.',
-                'imagen' => '', 'videoFondo' => '', 'fondoParallax' => '', 'botonTexto' => 'Ver ciclos', 'botonUrl' => '#oferta_formativa',
+                'imagen' => 'https://images.unsplash.com/photo-1741636371995-875bf17ca657?w=1600&q=80&auto=format&fit=crop',
+                'videoFondo' => '', 'fondoParallax' => '', 'botonTexto' => 'Ver ciclos', 'botonUrl' => '#oferta_formativa',
                 'boton2Texto' => 'Contacto', 'boton2Url' => '#contacto',
                 'promoTexto' => '', 'promoUrl' => '',
             ],
@@ -178,8 +190,9 @@ function landing_tipos(): array {
                 'titulo' => 'Una experiencia educativa única',
                 'subtitulo' => 'Descubre en este vídeo cómo preparamos a nuestros estudiantes para los retos profesionales del futuro.',
                 'parrafo' => 'Nuestras instalaciones cuentan con tecnología de vanguardia y espacios diseñados para el aprendizaje práctico y colaborativo.',
-                'videoUrl' => 'https://www.w3schools.com/html/mov_bbb.mp4',
-                'posterUrl' => '', 'botonTexto' => 'Visitar instalaciones', 'botonUrl' => '#instalaciones',
+                'videoUrl' => 'https://videos.pexels.com/video-files/8198511/8198511-hd_1920_1080_25fps.mp4',
+                'posterUrl' => 'https://images.unsplash.com/photo-1758270705290-62b6294dd044?w=1200&q=80&auto=format&fit=crop',
+                'botonTexto' => 'Visitar instalaciones', 'botonUrl' => '#instalaciones',
             ],
         ],
 
@@ -236,7 +249,12 @@ function landing_tipos(): array {
             'defecto' => [
                 'variante' => 'grid', 'columnas' => 'cols-4', 'titulo' => 'Nuestra oferta formativa',
                 'subtitulo' => 'Ciclos formativos oficiales adaptados a las profesiones con más demanda.',
-                'botonTexto' => 'Solicitar plaza', 'items' => [],
+                'botonTexto' => 'Solicitar plaza',
+                'items' => [
+                    ['imagen' => 'https://images.unsplash.com/photo-1758270705290-62b6294dd044?w=900&q=80&auto=format&fit=crop', 'etiqueta' => 'Grado Superior', 'titulo' => 'Desarrollo de Aplicaciones Web', 'texto' => 'Programación, bases de datos y despliegue de aplicaciones modernas, con prácticas reales en empresas del sector.', 'precio' => 'Consulta financiación'],
+                    ['imagen' => 'https://images.unsplash.com/photo-1754607812143-12d421b1db11?w=900&q=80&auto=format&fit=crop', 'etiqueta' => 'Grado Superior', 'titulo' => 'Administración y Finanzas', 'texto' => 'Gestión contable, fiscal y de recursos humanos para incorporarte a cualquier departamento administrativo.', 'precio' => 'Consulta financiación'],
+                    ['imagen' => 'https://images.unsplash.com/photo-1562568068-ea24dcbf3c78?w=900&q=80&auto=format&fit=crop', 'etiqueta' => 'Grado Medio', 'titulo' => 'Producción de Audiovisuales', 'texto' => 'Grabación, edición y sonido para proyectos audiovisuales, eventos en directo y producción musical.', 'precio' => 'Consulta financiación'],
+                ],
             ],
         ],
 
@@ -267,8 +285,11 @@ function landing_tipos(): array {
             'icono'  => 'fa-piggy-bank',
             'menu'   => 'Becas y ayudas',
             'campos' => [
+                'variante'   => ['tipo' => 'select',   'etiqueta' => 'Estilo',
+                                 'opciones' => ['tarjetas' => 'Tarjetas con icono', 'foto' => 'Foto + tarjetas']],
                 'titulo'     => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'subtitulo'  => ['tipo' => 'textarea', 'etiqueta' => 'Introducción', 'max' => 300],
+                'imagen'     => ['tipo' => 'imagen',   'etiqueta' => 'Imagen (solo estilo «Foto + tarjetas»)'],
                 'items'      => ['tipo' => 'lista', 'etiqueta' => 'Opciones', 'max' => 4, 'subcampos' => [
                     'icono'  => ['tipo' => 'select',   'etiqueta' => 'Icono', 'opciones' => $iconos],
                     'titulo' => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 80, 'requerido' => true],
@@ -279,8 +300,10 @@ function landing_tipos(): array {
                 'notaLegal'  => ['tipo' => 'textarea', 'etiqueta' => 'Aviso legal (opcional, letra pequeña al pie)', 'max' => 400],
             ],
             'defecto' => [
+                'variante' => 'tarjetas',
                 'titulo' => 'Becas, ayudas y financiación',
                 'subtitulo' => 'Estudiar aquí es más accesible de lo que piensas.',
+                'imagen' => '',
                 'items' => [
                     ['icono' => 'fa-piggy-bank', 'titulo' => 'Pago fraccionado', 'texto' => 'Divide el importe de la matrícula en cuotas mensuales sin intereses.'],
                     ['icono' => 'fa-money-bill-wave', 'titulo' => 'Becas y ayudas al estudio', 'texto' => 'Consulta si tu ciclo es compatible con las becas del Ministerio de Educación o de tu comunidad autónoma.'],
@@ -298,9 +321,10 @@ function landing_tipos(): array {
             'menu'   => 'El centro',
             'campos' => [
                 'variante'  => ['tipo' => 'select',   'etiqueta' => 'Estilo',
-                                'opciones' => ['grid' => 'Cuadrícula', 'tarjetas' => 'Tarjetas estructuradas', 'lateral' => 'Lista lateral']],
+                                'opciones' => ['grid' => 'Cuadrícula', 'tarjetas' => 'Tarjetas estructuradas', 'lateral' => 'Lista lateral', 'foto' => 'Foto + lista']],
                 'titulo'    => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'subtitulo' => ['tipo' => 'textarea', 'etiqueta' => 'Introducción', 'max' => 300],
+                'imagen'    => ['tipo' => 'imagen',   'etiqueta' => 'Imagen (solo estilo «Foto + lista»)'],
                 'items'     => ['tipo' => 'lista', 'etiqueta' => 'Ventajas', 'max' => 6, 'subcampos' => [
                     'icono'  => ['tipo' => 'select',   'etiqueta' => 'Icono', 'opciones' => $iconos],
                     'titulo' => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 80, 'requerido' => true],
@@ -308,7 +332,7 @@ function landing_tipos(): array {
                 ]],
             ],
             'defecto' => [
-                'variante' => 'grid', 'titulo' => '¿Por qué estudiar con nosotros?', 'subtitulo' => '',
+                'variante' => 'grid', 'titulo' => '¿Por qué estudiar con nosotros?', 'subtitulo' => '', 'imagen' => '',
                 'items' => [
                     ['icono' => 'fa-briefcase', 'titulo' => 'Prácticas garantizadas', 'texto' => 'Convenios con empresas del sector para que hagas prácticas reales desde el primer curso.'],
                     ['icono' => 'fa-chalkboard-teacher', 'titulo' => 'Profesorado experto', 'texto' => 'Docentes con experiencia profesional activa en su especialidad.'],
@@ -339,8 +363,8 @@ function landing_tipos(): array {
                 'titulo' => 'Conoce a nuestro equipo',
                 'subtitulo' => 'Profesionales en activo que acompañan tu formación de principio a fin.',
                 'items' => [
-                    ['foto' => '', 'nombre' => 'Marta Sánchez', 'cargo' => 'Directora del centro', 'bio' => 'Más de 15 años dirigiendo proyectos educativos de Formación Profesional.'],
-                    ['foto' => '', 'nombre' => 'Javier Ruiz', 'cargo' => 'Jefe de estudios', 'bio' => 'Coordina la relación entre el aula y las empresas colaboradoras.'],
+                    ['foto' => 'https://images.unsplash.com/photo-1758685848142-06e158cf64bc?w=400&q=80&auto=format&fit=crop', 'nombre' => 'Marta Sánchez', 'cargo' => 'Directora del centro', 'bio' => 'Más de 15 años dirigiendo proyectos educativos de Formación Profesional.'],
+                    ['foto' => 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&q=80&auto=format&fit=crop', 'nombre' => 'Javier Ruiz', 'cargo' => 'Jefe de estudios', 'bio' => 'Coordina la relación entre el aula y las empresas colaboradoras.'],
                 ],
             ],
         ],
@@ -352,7 +376,8 @@ function landing_tipos(): array {
             'menu'   => null,
             'campos' => [
                 'variante' => ['tipo' => 'select',   'etiqueta' => 'Estilo',
-                               'opciones' => ['horizontal' => 'Lista horizontal', 'tarjetas' => 'Tarjetas', 'minimalista' => 'Minimalista']],
+                               'opciones' => ['horizontal' => 'Lista horizontal', 'tarjetas' => 'Tarjetas', 'minimalista' => 'Minimalista', 'foto' => 'Foto de fondo']],
+                'imagen' => ['tipo' => 'imagen', 'etiqueta' => 'Imagen de fondo (solo estilo «Foto de fondo»)'],
                 'items' => ['tipo' => 'lista', 'etiqueta' => 'Cifras', 'max' => 4, 'subcampos' => [
                     'numero'   => ['tipo' => 'text', 'etiqueta' => 'Número', 'max' => 10, 'requerido' => true],
                     'sufijo'   => ['tipo' => 'text', 'etiqueta' => 'Sufijo (%, +, …)', 'max' => 5],
@@ -360,7 +385,7 @@ function landing_tipos(): array {
                 ]],
             ],
             'defecto' => [
-                'variante' => 'horizontal',
+                'variante' => 'horizontal', 'imagen' => '',
                 'items' => [
                     ['numero' => '95', 'sufijo' => '%', 'etiqueta' => 'Inserción laboral'],
                     ['numero' => '30', 'sufijo' => '+', 'etiqueta' => 'Empresas colaboradoras'],
@@ -390,7 +415,7 @@ function landing_tipos(): array {
                 'variante' => 'split',
                 'titulo' => 'Formación Profesional Dual',
                 'texto' => 'Estudia y trabaja a la vez: la FP Dual combina la formación en el aula con estancias remuneradas en empresas colaboradoras.',
-                'imagen' => '',
+                'imagen' => 'https://images.unsplash.com/photo-1770922809200-1a0d76db60bf?w=900&q=80&auto=format&fit=crop',
                 'items' => [
                     ['titulo' => 'Experiencia real', 'texto' => 'Aprende trabajando en empresas del sector desde el primer año.'],
                     ['titulo' => 'Remuneración', 'texto' => 'Recibe una compensación económica durante tu estancia en la empresa.'],
@@ -417,7 +442,19 @@ function landing_tipos(): array {
             'defecto' => [
                 'variante' => 'grid', 'titulo' => 'Empresas que confían en nosotros',
                 'texto' => 'Nuestros alumnos realizan prácticas y encuentran empleo en empresas líderes.',
-                'items' => [],
+                // Nombres genéricos e inventados a propósito (sin logo, se
+                // renderizan como texto vía el fallback ya existente en
+                // empresas.php) — usar logos reales de empresas de verdad como
+                // "colaboradoras" ficticias sería una tergiversación, no una
+                // simple foto de stock ilustrativa.
+                'items' => [
+                    ['nombre' => 'Grupo Tecnológico Ibérico', 'logo' => '', 'url' => ''],
+                    ['nombre' => 'Innovatech Soluciones', 'logo' => '', 'url' => ''],
+                    ['nombre' => 'Distribuciones Norte S.L.', 'logo' => '', 'url' => ''],
+                    ['nombre' => 'Estudio Creativo Pixel', 'logo' => '', 'url' => ''],
+                    ['nombre' => 'Construcciones Del Vega', 'logo' => '', 'url' => ''],
+                    ['nombre' => 'EcoLogística S.A.', 'logo' => '', 'url' => ''],
+                ],
             ],
         ],
 
@@ -440,7 +477,10 @@ function landing_tipos(): array {
             'defecto' => [
                 'variante' => 'grid', 'titulo' => 'Nuestras instalaciones',
                 'subtitulo' => 'Espacios y equipamiento profesional para aprender con las mismas herramientas que usarás en tu trabajo.',
-                'items' => [],
+                'items' => [
+                    ['imagen' => 'https://images.unsplash.com/photo-1754607812143-12d421b1db11?w=900&q=80&auto=format&fit=crop', 'titulo' => 'Biblioteca y zonas de estudio', 'texto' => ''],
+                    ['imagen' => 'https://images.unsplash.com/photo-1758270705290-62b6294dd044?w=900&q=80&auto=format&fit=crop', 'titulo' => 'Aulas y espacios de trabajo colaborativo', 'texto' => ''],
+                ],
             ],
         ],
 
@@ -464,7 +504,11 @@ function landing_tipos(): array {
                 'variante' => 'tarjetas',
                 'titulo' => 'Lo que dicen nuestros alumnos',
                 'items' => [
-                    ['nombre' => 'Laura G.', 'rol' => 'DAM · Promoción 2024', 'texto' => 'Gracias a las prácticas conseguí contrato en la misma empresa antes de terminar el ciclo.', 'foto' => ''],
+                    ['nombre' => 'Laura G.', 'rol' => 'DAM · Promoción 2024', 'texto' => 'Gracias a las prácticas conseguí contrato en la misma empresa antes de terminar el ciclo.', 'foto' => 'https://images.unsplash.com/photo-1618355776464-8666794d2520?w=200&q=80&auto=format&fit=crop'],
+                    ['nombre' => 'Ana Martínez', 'rol' => 'Administración y Finanzas · Promoción 2025', 'texto' => 'Empecé sin saber muy bien qué esperar y he terminado con un dominio real de herramientas que ya uso en mi trabajo.', 'foto' => 'https://images.unsplash.com/photo-1503676382389-4809596d5290?w=200&q=80&auto=format&fit=crop'],
+                    // Sin foto a propósito: demuestra el estado de respaldo
+                    // (avatar con inicial) en vez de reutilizar la cara de otro
+                    // testimonio o del profesorado bajo un nombre distinto.
                     ['nombre' => 'Carlos M.', 'rol' => 'ASIR · Promoción 2023', 'texto' => 'El profesorado te acompaña de verdad. Salí con un portfolio que me abrió muchas puertas.', 'foto' => ''],
                 ],
             ],
@@ -490,6 +534,8 @@ function landing_tipos(): array {
                 'items' => [
                     ['pregunta' => '¿Qué requisitos necesito para matricularme?', 'respuesta' => 'Depende del ciclo: para grado medio, el título de ESO o equivalente; para grado superior, Bachillerato, un grado medio o prueba de acceso.'],
                     ['pregunta' => '¿Las prácticas en empresa están garantizadas?', 'respuesta' => 'Sí. Todos los ciclos incluyen formación en centros de trabajo con empresas colaboradoras del centro.'],
+                    ['pregunta' => '¿Puedo hacer prácticas en empresas del sector antes de terminar el ciclo?', 'respuesta' => 'Sí, la formación en centros de trabajo (FCT) se organiza con empresas colaboradoras y, en los ciclos con modalidad dual, puede empezar antes de finalizar el último curso.'],
+                    ['pregunta' => '¿Qué salidas profesionales tiene este ciclo?', 'respuesta' => 'Cada ficha de ciclo en nuestra oferta formativa incluye las salidas profesionales más habituales; el equipo de orientación también resuelve dudas específicas sobre tu perfil.'],
                 ],
             ],
         ],

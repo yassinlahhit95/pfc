@@ -22,24 +22,19 @@ Additional root-level files/folders that must also stay off the server (they hav
 
 **`install/` is the one exception that *does* get deployed** — it's the production setup wizard, meant to run once on a fresh server. It self-locks after completion (`install/.installed` + a `directores`-table check, both independent — see `install/lib/helpers.php` and the "Installation" section of `CLAUDE.md`) so it's safe to leave deployed; removing the directory after first use is optional extra caution, not required.
 
+**`noDeploy/database.sql` is the one *file* in this folder that also has to be uploaded** — the wizard's DB step (`install/steps/2_basedatos.php` → `install/lib/helpers.php`) reads it at `noDeploy/database.sql` on the server to import the schema. Upload `noDeploy/database.sql` (just that one file, not the rest of this folder) alongside `install/` for a fresh deploy; deleting it afterward, like `install/` itself, is optional extra caution once setup has completed.
+
 ## Contents of noDeploy/
 
 ```
 noDeploy/
-  database.sql                    ← Schema source of truth for a fresh install (see CLAUDE.md "DB Migrations")
-  demo_data.sql                   ← Rich FAKE data for local dev only (students, teachers, cycles...) — never seed production with this
-  seed_minimal.sql                ← Minimal real seed for a fresh install without the /install/ wizard (one admin + center row)
-  migrations/
-    001_blog_posts.sql .. 007_tours_completados.sql   ← numbered, applied in order to an EXISTING db
-    aplicar_todas_produccion.sql  ← maintained concatenation of all of the above, single-command convenience
+  database.sql                    ← THE schema file — complete, current, no migrations layer (see CLAUDE.md "Database schema").
+                                     The one exception that does get uploaded, see note above.
   build-assets.js                 ← npm run build:assets script (package.json stays at root; this doesn't need to)
   generar_htaccess_vendor.php     ← composer post-install/update hook — regenerates vendor/.htaccess
   install-check.php               ← composer post-install/update hook — checks PHP/extensions, points to /install/
-  smoke_test.php                  ← CLI-only, run against a deployed URL after FTP'ing to catch a broken deploy
-  verificar_motor_academico.php   ← CLI-only, one-off comparison tool (old vs configurable grading engine)
   API_DOCS.md                     ← REST API v1 request/response reference
   CLOUDFLARE_R2_SETUP.md          ← R2 bucket setup walkthrough
+  INSTALL_WIZARD_SETUP.md         ← wizard implementation notes
   DO_NOT_UPLOAD.md                ← this file
 ```
-
-Note: `migrar_cifrado_pii.php` and `optimizar_imagenes.php` stay at the **project root**, not here, despite being one-time maintenance scripts — both are explicitly meant to be deployed and run once *after* an FTP upload (see their own header comments), unlike everything listed above which never needs to touch the server at all.

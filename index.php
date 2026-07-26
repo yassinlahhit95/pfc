@@ -22,6 +22,9 @@ if ($preview) {
     header('X-Robots-Tag: noindex, nofollow');
     header('X-Frame-Options: SAMEORIGIN');
     header("Content-Security-Policy: frame-ancestors 'self'");
+    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+    header("Pragma: no-cache");
+    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 }
 
 $cfg = obtenerConfiguracionCentro();
@@ -97,5 +100,10 @@ foreach ($secciones as $s) {
 include __DIR__ . '/vistas/landing/_footer.php';
 
 if ($preview) {
-    echo '<script src="/public/js/features/builder-preview.js"></script>';
+    // ?v=filemtime, igual que builder.php ya hace para landing-builder.js/css:
+    // sin esto el navegador puede seguir sirviendo una copia en caché de este
+    // script indefinidamente, incluso después de desplegar una versión nueva,
+    // porque el HTML del iframe se pide con cache:'no-store' pero eso no
+    // fuerza a repetir la petición de un <script src> anidado con la misma URL.
+    echo '<script src="public/js/features/builder-preview.js?v=' . filemtime(__DIR__ . '/public/js/features/builder-preview.js') . '"></script>';
 }

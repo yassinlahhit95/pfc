@@ -59,26 +59,27 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cuadricula-estadisticas">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul">
+        <span class="tarjeta-estadistica-icono"><i class="fas fa-file-arrow-up"></i></span>
         <div class="info-estadistica">
             <h3><?= Security::escapeHtml($totalEntregas) ?></h3>
-            <p>Entregas Totales</p>
+            <p>Entregas totales</p>
         </div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-verde">
+        <span class="tarjeta-estadistica-icono"><i class="fas fa-circle-check"></i></span>
         <div class="info-estadistica">
             <h3><?= Security::escapeHtml($totalCalificadas) ?></h3>
             <p>Calificadas</p>
         </div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-morada">
+        <span class="tarjeta-estadistica-icono"><i class="fas fa-chart-line"></i></span>
         <div class="info-estadistica">
             <h3><?= Security::escapeHtml($promedio) ?></h3>
             <p>Promedio</p>
         </div>
     </div>
 </div>
-
-<br>
 
 <?php if (empty($todasLasEntregas)) { ?>
     <div class="alerta-info">
@@ -136,12 +137,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="info-sistema">
-        <h3>Información sobre Calificaciones</h3>
+        <h3><i class="fas fa-circle-info" style="color:var(--accent);margin-right:6px;"></i> Información sobre calificaciones</h3>
         <ul>
-            <li><strong>Sin Calificar:</strong> El profesor aún está revisando tu entrega</li>
-            <li><strong>Aprobada:</strong> Calificación >= 7.0</li>
-            <li><strong>Reprobada:</strong> Calificación < 7.0</li>
-            <li>Puedes descargar la retroalimentación del profesor haciendo click en VER</li>
+            <li><strong>Sin calificar:</strong> el profesor aún está revisando tu entrega.</li>
+            <li><strong>Aprobada:</strong> calificación ≥ 7.0.</li>
+            <li><strong>Reprobada:</strong> calificación &lt; 7.0.</li>
+            <li>Puedes descargar la retroalimentación del profesor haciendo clic en «Ver».</li>
         </ul>
     </div>
 <?php } ?>

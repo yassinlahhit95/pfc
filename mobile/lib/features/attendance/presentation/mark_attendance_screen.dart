@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../classroom/data/classroom_repository.dart';
 import '../data/attendance_repository.dart';
@@ -76,7 +77,7 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
       onRetry: () => ref.invalidate(classroomModulesProvider),
       data: (context, modules) {
         return Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(Space.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -84,8 +85,9 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<ClassroomModule>(
+                      isExpanded: true,
                       initialValue: _selectedModule,
-                      decoration: const InputDecoration(labelText: 'Módulo', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(labelText: 'Módulo'),
                       items: [
                         for (final m in modules) DropdownMenuItem(value: m, child: Text(m.nombre, overflow: TextOverflow.ellipsis)),
                       ],
@@ -95,7 +97,7 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: Space.sm),
                   OutlinedButton.icon(
                     onPressed: () async {
                       final picked = await showDatePicker(
@@ -114,16 +116,18 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: Space.lg),
               Expanded(
                 child: _loading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
                     : _selectedModule == null
                         ? const EmptyState(icon: Icons.checklist_rounded, title: 'Elige un módulo y una fecha')
                         : _roster.isEmpty
                             ? const EmptyState(icon: Icons.people_outline, title: 'Sin alumnos en este módulo')
-                            : ListView.builder(
+                            : ListView.separated(
                                 itemCount: _roster.length,
+                                separatorBuilder: (_, __) =>
+                                    Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
                                 itemBuilder: (context, i) {
                                   final s = _roster[i];
                                   return _StudentRow(
@@ -135,11 +139,11 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                               ),
               ),
               if (_selectedModule != null && _roster.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: Space.lg),
                 FilledButton(
                   onPressed: _saving ? null : _submit,
                   child: _saving
-                      ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                      ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : const Text('Guardar asistencia'),
                 ),
               ],
@@ -160,10 +164,10 @@ class _StudentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: Space.sm),
       child: Row(
         children: [
-          Expanded(child: Text(student.nombre, overflow: TextOverflow.ellipsis)),
+          Expanded(child: Text(student.nombre, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w500))),
           SegmentedButton<String>(
             segments: const [
               ButtonSegment(value: 'presente', label: Text('P')),

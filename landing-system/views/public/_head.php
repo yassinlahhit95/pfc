@@ -1,6 +1,34 @@
 <?php
 // Cabecera del documento de la landing pública.
 // Espera: $cfg, $ajustes, $tema (slug whitelisted), $preview
+// Computed early (not just for the JSON-LD block below) so <base> can use it
+// too — the preview iframe injects this document via `srcdoc` (see
+// landing-builder.js's recargarPreview(), needed to dodge X-Frame-Options/CSP
+// framing restrictions on a normal <iframe src>), which makes every relative
+// URL in this document resolve against the PARENT page's URL
+// (/vistas/admin/landing/builder.php) instead of the site root — breaking
+// every relative CSS/JS/link in this template (base.css, tema-*.css,
+// landing-system/assets/js/landing.js, favicon, nav/footer links, all of
+// them written relative-to-root). <base> pins the resolution root back to
+// the real site regardless of where the srcdoc happens to be embedded.
+$_secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+$_esquemaSitio = $_secure ? 'https://' : 'http://';
+$_urlSitio     = $_esquemaSitio . ($_SERVER['HTTP_HOST'] ?? '');
+
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+$subFolder = '';
+if (strpos($scriptName, '/') !== false) {
+    $parts = explode('/', trim($scriptName, '/'));
+    array_pop($parts); // Remove the script name (e.g., 'index.php')
+    if (!empty($parts)) {
+        $subFolder = '/' . implode('/', $parts);
+    }
+}
+$_urlSitio .= $subFolder;
+
+
+
 $plantillaMeta = landing_obtener_plantilla($tema) ?? [];
 $acento        = $ajustes['colorAcento'] ?? '';
 if (!preg_match('/^#[0-9a-f]{6}$/i', $acento)) {
@@ -38,8 +66,6 @@ $googleFontsUrl = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wg
 
 // Datos estructurados EducationalOrganization — Google recomienda incluir
 // esta marca en todas las páginas del sitio, no solo en la home.
-$_esquemaSitio = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-$_urlSitio     = $_esquemaSitio . ($_SERVER['HTTP_HOST'] ?? '');
 $orgSchema = [
     '@context'    => 'https://schema.org',
     '@type'       => 'EducationalOrganization',
@@ -67,6 +93,9 @@ if (!empty($cfg['direccionCentro']) || !empty($cfg['ciudadCentro'])) {
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<?php if ($preview): ?>
+<base href="<?= Security::escapeHtml($_urlSitio . '/') ?>">
+<?php endif; ?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title><?= Security::escapeHtml($tituloSeo) ?></title>
 <meta name="description" content="<?= Security::escapeHtml($descSeo) ?>">

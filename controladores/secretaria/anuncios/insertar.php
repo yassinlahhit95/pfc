@@ -54,7 +54,7 @@ if ($ok) {
     }
     $tokensUnicos = array_unique($tokens);
     foreach ($tokensUnicos as $token) {
-        enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($mensaje), 0, 100) . "...");
+        enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($mensaje), 0, 100) . "...", 'announcement');
     }
 
     $_SESSION['exito'] = "El anuncio ha sido publicado y notificado correctamente a " . count($tokensUnicos) . " dispositivos.";

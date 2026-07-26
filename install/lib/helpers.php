@@ -202,3 +202,29 @@ function writeEnvFile(array $db): array {
     @chmod($envPath, 0640);
     return ['ok' => true, 'msg' => '.env generado correctamente.'];
 }
+
+// ── Sincroniza el origen CORS de api/.htaccess con APP_URL ─────────────
+// api/.htaccess hardcodea el dominio permitido para Access-Control-Allow-Origin
+// (ver el comentario en ese fichero: es la única fuente de verdad de CORS,
+// a propósito — duplicarlo en PHP mandaba dos cabeceras conflictivas). Las
+// apps móviles nativas ignoran CORS, así que esto no afecta al asistente ni
+// a la app — pero sin esto, un futuro cliente web/PWA en el dominio real del
+// centro quedaría bloqueado por seguir apuntando al dominio de ejemplo.
+// Mejor esfuerzo: si falla o si $appUrl viene vacío (campo opcional del
+// paso 2), no bloquea el resto de la instalación.
+function updateCorsOrigin(string $appUrl): void {
+    if ($appUrl === '') return;
+    $path = __DIR__ . '/../../api/.htaccess';
+    if (!is_file($path) || !is_writable($path)) return;
+    $contenido = file_get_contents($path);
+    if ($contenido === false) return;
+    $nuevo = preg_replace(
+        '/Access-Control-Allow-Origin "[^"]*"/',
+        'Access-Control-Allow-Origin "' . rtrim($appUrl, '/') . '"',
+        $contenido,
+        1
+    );
+    if ($nuevo !== null && $nuevo !== $contenido) {
+        file_put_contents($path, $nuevo);
+    }
+}

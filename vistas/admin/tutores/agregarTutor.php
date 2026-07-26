@@ -101,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo" style="margin-bottom:10px;">
             <input type="text" id="buscarEstudiante" placeholder="Buscar por nombre…" oninput="filtrarEstudiantes()"
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-1);color:var(--text-1);">
         </div>
@@ -121,8 +121,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?= in_array($estudiante['idEstudiante'], (array)($datos['estudiantes'] ?? [])) ? 'checked' : '' ?>>
                         <span style="display:flex;align-items:center;gap:10px;flex:1;">
                             <b><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></b>
-                            <span class="texto-estado <?= $estudiante['idNivel'] == 1 ? 'azul' : 'verde' ?>" style="font-size:.72rem;">
-                                <?= $estudiante['idNivel'] == 1 ? 'G. Medio' : 'G. Superior' ?>
+                            <span class="texto-estado <?= $estudiante['curso'] === 'Grado Superior' ? 'verde' : 'azul' ?>" style="font-size:.72rem;">
+                                <?= $estudiante['curso'] === 'Grado Superior' ? 'G. Superior' : 'G. Medio' ?>
                             </span>
                             <?php if (!empty($estudiante['anioEstudio'])): ?>
                                 <span class="texto-estado gris" style="font-size:.72rem;"><?= Security::escapeHtml($estudiante['anioEstudio']) ?></span>

@@ -18,6 +18,7 @@ require_once __DIR__ . '/../../modelos/asistencias.php';
 require_once __DIR__ . '/../../modelos/justificacionesFalta.php';
 require_once __DIR__ . '/../../modelos/modulos.php';
 require_once __DIR__ . '/../../modelos/tutores.php';
+require_once __DIR__ . '/_attendance_shared.php';
 
 $auth = v1Auth();
 ['user_type' => $type, 'user_id' => $uid] = $auth;
@@ -42,7 +43,12 @@ function attendanceAttachJustifications(array $rows): array {
     $byAsistencia = [];
     foreach (mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC) as $j) {
         $aid = (int)$j['idAsistencia'];
-        if (!isset($byAsistencia[$aid])) $byAsistencia[$aid] = $j; // latest wins (DESC order)
+        if (!isset($byAsistencia[$aid]) ) {
+            if (!empty($j['archivo'])) {
+                $j['archivo_url'] = justificanteUrl($j['archivo']);
+            }
+            $byAsistencia[$aid] = $j; // latest wins (DESC order)
+        }
     }
     foreach ($rows as &$r) {
         $r['justificacion'] = $byAsistencia[(int)$r['idAsistencia']] ?? null;

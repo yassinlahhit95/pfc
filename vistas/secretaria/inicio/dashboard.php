@@ -17,7 +17,7 @@ $stats = Cache::remember('secretaria_dashboard_stats_' . $_SESSION['idSecretaria
     $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
     $totalEstudiantes = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
 
-    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado = 'PENDIENTE'");
+    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado IN ('pendiente', 'revisando')");
     $admisionesPendientes = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
 
     $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido = 0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");

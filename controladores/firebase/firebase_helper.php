@@ -5,6 +5,8 @@
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/directores.php";
+require_once __DIR__ . "/../../modelos/conectar.php";
+require_once __DIR__ . "/../../modelos/secretarias.php";
 require_once __DIR__ . "/../../include/CircuitBreaker.php";
 
 // ══════════════════════════════════════════════════════════════════════
@@ -78,7 +80,7 @@ function obtenerAccessToken() {
 // ══════════════════════════════════════════════════════════════════════
 // ENVÍO DE NOTIFICACIONES PUSH
 // ══════════════════════════════════════════════════════════════════════
-function enviarNotificacionFirebase($token, $titulo, $mensaje) {
+function enviarNotificacionFirebase($token, $titulo, $mensaje, string $tipo = 'chat_message', array $extra = []) {
     if (empty($token)) return false;
 
     // Circuit breaker: don't hammer FCM/Google OAuth when they're returning errors.
@@ -100,6 +102,13 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
 
     $urlLogo = "https://yassin.agency/public/imagenes/aulapro.png";
 
+    // FCM's `data` payload only accepts string values — cast every $extra
+    // entry (may carry ints like idModulo/idTarea) before merging.
+    $dataPayload = array_merge(
+        ['title' => $titulo, 'body' => $mensaje, 'type' => $tipo],
+        array_map('strval', $extra)
+    );
+
     $cuerpoCarga = [
         'message' => [
             'token'        => $token,
@@ -108,10 +117,10 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
                 'body'  => $mensaje,
                 'image' => $urlLogo
             ],
-            'data' => [
-                'title' => $titulo,
-                'body'  => $mensaje,
-                'type'  => 'chat_message'
+            'data' => $dataPayload,
+            'android' => [
+                'priority'     => 'high',
+                'notification' => ['channel_id' => 'aulapro_default']
             ],
             'webpush' => [
                 'notification' => [
@@ -171,7 +180,12 @@ function obtenerTokenUsuario($idUsuario, $rolUsuario) {
         case 'profesor':
             return obtenerTokenFCMProfesor($idUsuario);
         case 'admin':
+        case 'director':
             return obtenerTokenFCMDirector($idUsuario);
+        case 'tutor':
+            return obtenerTokenFCM('tutores', 'idTutor', $idUsuario);
+        case 'secretaria':
+            return obtenerTokenFCMSecretaria($idUsuario);
     }
     return null;
 }

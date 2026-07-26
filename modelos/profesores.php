@@ -92,6 +92,16 @@ function obtenerTokensProfesores() {
     return $lista;
 }
 
+function listarIdsProfesores(): array {
+    $con = obtenerConexion();
+    $resultado = mysqli_query($con, "SELECT idProfesor FROM profesores");
+    $ids = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $ids[] = (int)$fila['idProfesor'];
+    }
+    return $ids;
+}
+
 function obtenerTokenFCMProfesor($id) {
     return obtenerTokenFCM('profesores', 'idProfesor', $id);
 }
@@ -188,6 +198,27 @@ function eliminarProfesor($id) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);
     return mysqli_stmt_execute($stmt);
+}
+
+// Snapshot de asignaciones directas ANTES de limpiarCiclosProfesor()/
+// limpiarModulosProfesor() — controladores/admin/profesores/actualizar.php
+// borra y reinserta todo en cada guardado (incluso si el admin no tocó
+// nada), así que sin este "antes" no hay forma de distinguir una asignación
+// realmente nueva (para notificar al profesor) de un simple re-guardado.
+function obtenerIdsCiclosDirectosProfesor(int $idProf): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idProf);
+    mysqli_stmt_execute($stmt);
+    return array_map('intval', array_column(mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC), 'idCiclo'));
+}
+
+function obtenerIdsModulosDirectosProfesor(int $idProf): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "SELECT idModulo FROM modulo_profesor WHERE idProfesor = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idProf);
+    mysqli_stmt_execute($stmt);
+    return array_map('intval', array_column(mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC), 'idModulo'));
 }
 
 function limpiarModulosProfesor($idProf) {

@@ -6,11 +6,11 @@
 }
 
 .informe-card {
-    background: #fff;
+    background: var(--surface);
     border-radius: 16px;
     padding: 32px 24px 28px;
-    box-shadow: 0 4px 24px rgb(0 0 0 / 7%);
-    border: 1px solid #e5e7eb;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -19,7 +19,7 @@
 
 .informe-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgb(0 0 0 / 12%);
+    box-shadow: var(--shadow-md);
 }
 
 .informe-icono {
@@ -38,13 +38,13 @@
 .informe-titulo {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--text);
     margin: 0;
 }
 
 .informe-desc {
     font-size: .85rem;
-    color: #6b7280;
+    color: var(--dim);
     line-height: 1.5;
     margin: 0;
     flex: 1;
@@ -60,19 +60,19 @@
 .informe-select {
     width: 100%;
     padding: 9px 12px;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--border-2);
     border-radius: 8px;
     font-size: .875rem;
-    color: #374151;
-    background: #f9fafb;
+    color: var(--text);
+    background: var(--surface-2);
     appearance: auto;
     transition: border-color .15s;
 }
 
 .informe-select:focus {
     outline: none;
-    border-color: #667eea;
-    background: #fff;
+    border-color: var(--accent);
+    background: var(--surface);
 }
 
 .informe-btn {
@@ -103,8 +103,8 @@
 /* Selector de alumnos */
 .estudiantes-selector-wrapper {
     margin-top: 15px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
     text-align: left;
@@ -112,14 +112,14 @@
 
 .selector-header {
     padding: 8px 12px;
-    background: #f1f5f9;
-    border-bottom: 1px solid #e2e8f0;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.75rem;
     font-weight: bold;
-    color: #475569;
+    color: var(--dim);
 }
 
 .selector-header label {
@@ -141,7 +141,7 @@
 }
 
 .estudiante-check-item:hover {
-    background: #eff6ff;
+    background: color-mix(in oklab, var(--accent) 8%, var(--surface));
 }
 
 .estudiante-check-item label {
@@ -150,7 +150,7 @@
     gap: 10px;
     cursor: pointer;
     font-size: 0.82rem;
-    color: #1e293b;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

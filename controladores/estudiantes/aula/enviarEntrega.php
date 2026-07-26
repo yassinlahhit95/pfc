@@ -56,15 +56,22 @@ $archivoEntrega = null;
 if (!empty($_FILES['archivoEntrega']['name'])) {
     $archivo = $_FILES['archivoEntrega'];
     $ext = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, ['pdf','docx','txt'])) {
+    $mimeAllowed = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+        'application/octet-stream',
+    ];
+    $tmpName  = $archivo['tmp_name'];
+    $mimeReal = @mime_content_type($tmpName);
+    if (!in_array($ext, ['pdf','docx','txt']) || ($mimeReal && !in_array($mimeReal, $mimeAllowed))) {
         entrega_salir(false, "Solo se permiten archivos PDF, DOCX o TXT.", $volverTarea, $isAjax);
     }
     if ($archivo['size'] > 20 * 1024 * 1024) {
         entrega_salir(false, "El archivo supera el límite de 20 MB.", $volverTarea, $isAjax);
     }
     $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
-    $tmpName  = $archivo['tmp_name'];
-    $mimeReal = @mime_content_type($tmpName) ?: 'application/octet-stream';
+    $mimeReal = $mimeReal ?: 'application/octet-stream';
     $bytes    = file_get_contents($tmpName);
     $subioOk  = $bytes !== false && R2Client::putObject('aula/entregas/' . $nombreArchivo, $bytes, $mimeReal);
     @unlink($tmpName);
@@ -91,7 +98,7 @@ if (enviarEntregaAula($idTarea, $idEstudiante, $archivoEntrega, $respuesta)) {
         require_once $fh;
         $token = obtenerTokenUsuario($tarea['idProfesor'], 'profesor');
         if ($token) {
-            enviarNotificacionFirebase($token, 'Nueva entrega: ' . $tarea['titulo'], 'Un estudiante ha enviado su entrega.');
+            enviarNotificacionFirebase($token, 'Nueva entrega: ' . $tarea['titulo'], 'Un estudiante ha enviado su entrega.', 'entrega_enviada', ['idTarea' => $idTarea]);
         }
     }
     entrega_salir(true, "La entrega ha sido enviada correctamente.", $volverTarea, $isAjax);

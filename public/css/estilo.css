@@ -923,6 +923,7 @@ button.breadcrumb-item:hover {
 .badge-error    { background: var(--rojo-suave);     color: var(--rojo-ink); }
 .badge-alerta   { background: var(--amarillo-suave); color: var(--amarillo-ink); }
 .badge-ambar    { background: var(--naranja-suave);  color: var(--naranja-ink); }
+.badge-normal   { background: var(--surface-3);      color: var(--dim); }
 
 /* Avisos de atención — banda de alertas accionables (p. ej. portal de familias) */
 .aviso-atencion {
@@ -1117,9 +1118,6 @@ a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
 }
 
 .valor-mensaje { line-height: 1.7; white-space: pre-wrap; }
-
-/* Width helpers for note inputs */
-.ancho-ajustable-nota { width: 60px !important; }
 
 /* Mobile: stack perfil-acciones below name */
 @media (width <= 640px) {
@@ -1354,23 +1352,47 @@ a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
 .cuadricula-estadisticas > * { flex: 1 1 210px; }
 
 .tarjeta-estadistica {
-  border-radius: 14px;
-  padding: 22px;
-  border: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--stat-color, var(--accent));
+  border-radius: 12px;
+  padding: 20px 22px;
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow .15s ease, transform .15s ease;
 }
 
-/* Named color variants */
-.tarjeta-estadistica-azul        { background: #00b7b7; color: var(--accent-ink); }
-.tarjeta-estadistica-cian        { background: #0ea5e9; color: var(--accent-ink); }
-.tarjeta-estadistica-verde       { background: #e43653; color: var(--accent-ink); }
-.tarjeta-estadistica-naranja     { background: #e482ae; color: var(--accent-ink); }
-.tarjeta-estadistica-morada      { background: #716cb0; color: var(--accent-ink); }
+.tarjeta-estadistica:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
 
-.info-estadistica h3 { font-size: 28px; font-weight: 800; margin-bottom: 4px; line-height: 1; }
-.info-estadistica p  { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin: 0; opacity: .85; }
+.tarjeta-estadistica-icono {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: color-mix(in oklab, var(--stat-color, var(--accent)) 14%, transparent);
+  color: var(--stat-color, var(--accent));
+}
+
+/* Named color variants — cada una fija --stat-color, usado por el borde
+   izquierdo y el icono; los tokens --verde/--azul/--naranja ya se adaptan
+   solos en modo oscuro (dashboard.css), a diferencia de los hex fijos que
+   sustituyen (que además no coincidían con sus propios nombres: "verde"
+   pintaba en rosa, "naranja" en rosa). No hay token --cian/--morada propio,
+   así que esas variantes reutilizan la familia azul/accent más cercana. */
+.tarjeta-estadistica-azul     { --stat-color: var(--azul); }
+.tarjeta-estadistica-cian     { --stat-color: var(--azul); }
+.tarjeta-estadistica-verde    { --stat-color: var(--verde); }
+.tarjeta-estadistica-naranja  { --stat-color: var(--naranja); }
+.tarjeta-estadistica-morada   { --stat-color: var(--accent); }
+
+.info-estadistica h3 { font-size: 26px; font-weight: 800; margin-bottom: 2px; line-height: 1; color: var(--text); }
+.info-estadistica p  { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin: 0; color: var(--mut); }
 
 /* Secondary two-column grid */
 .cuadricula-secundaria             { display: flex; flex-wrap: wrap; gap: 20px; }
@@ -1379,37 +1401,62 @@ a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
 
 
 /* ── 15. ANNOUNCEMENTS ───────────────────────────────────────────────────────── */
-
+/* Antes: tarjeta con gradiente morado/magenta fijo, fondo azul-marino y título
+   verde neón (#00ff75) — un diseño "siempre oscuro" ajeno a var(--surface)/
+   var(--text)/etc. que no seguía el tema claro/oscuro del resto del panel y
+   desentonaba con el resto de tarjetas (.panel) de la aplicación. Se sustituye
+   por el mismo lenguaje visual que .panel: superficie + borde + tokens. Los
+   selectores llevan ".anuncio-item" delante para ganar en especificidad a
+   ".titulo-tarjeta h3" (aula-digital.css), que si no seguiría pintando el
+   título con su propio color fijo. */
 .anuncio-item {
-  background-image: linear-gradient(163deg, var(--accent, #667eea) 0%, #a0f 100%);
-  border-radius: 18px;
-  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px 20px;
   margin-bottom: 14px;
-  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s ease, transform .15s ease;
 }
 
-.anuncio-contenido {
-  background-color: #1a1c2e;
-  border-radius: 15px;
-  width: 100%;
-  padding: 14px 16px;
-  transition: border-radius .2s ease;
+.anuncio-item:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+.anuncio-cabecera {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
 }
 
-.anuncio-item:hover .anuncio-contenido { border-radius: 18px; }
+.anuncio-icono {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 15px;
+}
 
-.anuncio-titulo {
-  color: #00ff75;
-  font-size: 14px;
-  letter-spacing: .4px;
+.anuncio-cabecera-texto { flex: 1; min-width: 0; }
+
+.anuncio-item .anuncio-titulo {
+  color: var(--text);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: .1px;
   display: block;
-  border-bottom: 1px solid #2d3042;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
+  margin: 0 0 4px;
 }
 
-.anuncio-item small { color: #a0aec0; font-weight: 600; }
-.anuncio-item p     { color: #d1d5db; line-height: 1.6; font-size: 13px; }
+.anuncio-fecha { color: var(--mut); font-weight: 600; font-size: 12.5px; }
+.anuncio-mensaje { color: var(--dim); line-height: 1.6; font-size: 13.5px; margin: 0; }
 
 .texto-dirigido {
   display: inline-block;

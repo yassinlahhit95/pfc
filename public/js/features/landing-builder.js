@@ -46,7 +46,7 @@
         var iframe = $iframe.get(0);
         if (!iframe) return;
         
-        fetch('../../../index.php?preview=1')
+        fetch('../../../index.php?preview=1&_t=' + Date.now(), { cache: 'no-store' })
             .then(function(res) { return res.text(); })
             .then(function(html) {
                 // Inyectar HTML vía srcdoc para esquivar restricciones X-Frame-Options
@@ -59,13 +59,107 @@
             });
     }
 
+    // Aplica un valor editado en línea a la copia en memoria de una sección,
+    // según la ruta de campo recibida desde builder-preview.js: "titulo" para
+    // un campo simple, o "items.<indice>.<subcampo>" para un campo de lista.
+    function patchContenido(contenido, ruta, valor) {
+        var partes = ruta.split('.');
+        if (partes.length === 1) {
+            contenido[partes[0]] = valor;
+            return;
+        }
+        var clave = partes[0], indice = parseInt(partes[1], 10), sub = partes[2];
+        if (!Array.isArray(contenido[clave]) || !contenido[clave][indice]) return;
+        contenido[clave][indice][sub] = valor;
+    }
+
+    // Guardado debounced para ediciones en línea desde la previsualización
+    // (mismo endpoint y patrón de 700ms que el autoguardado del panel lateral,
+    // pero sin recargarPreview(): el iframe ya muestra el texto tal cual lo
+    // acaba de escribir el admin, recargar aquí le quitaría el foco a mitad
+    // de edición).
+    //
+    // Un temporizador POR SECCIÓN (no uno solo compartido): con un único
+    // temporizador, editar el título de la sección 1 y luego, antes de que
+    // pasaran los 700ms, el de la sección 2, cancelaba el guardado de la
+    // sección 1 sin más — se perdía en silencio, no solo se retrasaba. Al
+    // guardar cada sección bajo su propia clave esto ya no puede pasar.
+    var timeoutsCampoEnLinea = {};
+    function guardarSeccionAhora(idSeccion) {
+        var seccion = seccionPorId(idSeccion);
+        if (!seccion) return $.when();
+        return post('guardar_seccion.php', { idSeccion: idSeccion, contenido: JSON.stringify(seccion.contenido) })
+            .done(function (res) {
+                if (res.ok) marcarCambios();
+                else toast(res.msg, 'error');
+            });
+    }
+    function guardarCampoEnLineaDebounced(idSeccion) {
+        if (timeoutsCampoEnLinea[idSeccion]) clearTimeout(timeoutsCampoEnLinea[idSeccion]);
+        timeoutsCampoEnLinea[idSeccion] = setTimeout(function () {
+            delete timeoutsCampoEnLinea[idSeccion];
+            guardarSeccionAhora(idSeccion);
+        }, 700);
+    }
+    // Fuerza el guardado inmediato de cualquier edición en línea todavía
+    // pendiente (de cualquier sección) — se usa antes de Publicar, para que
+    // "publicar" nunca lea de la base de datos un borrador más viejo que lo
+    // que el admin acaba de escribir.
+    function flushCamposEnLinea() {
+        var ids = Object.keys(timeoutsCampoEnLinea);
+        var proms = ids.map(function (idString) {
+            // Object.keys() siempre da strings, aunque la clave se pusiera con
+            // un número — seccionPorId() compara con === (sin conversión de
+            // tipo), así que sin este parseInt el flush "encontraría" 0
+            // secciones y no guardaría nada, aunque sí quedaría marcado como
+            // hecho (el propio bug que se intenta arreglar, sin darse cuenta).
+            var id = parseInt(idString, 10);
+            clearTimeout(timeoutsCampoEnLinea[idString]);
+            delete timeoutsCampoEnLinea[idString];
+            return guardarSeccionAhora(id);
+        });
+        return $.when.apply($, proms);
+    }
+
     // Escuchar mensajes desde el iframe
     window.addEventListener('message', function(e) {
-        // Solo aceptar mensajes del mismo origen (el iframe va en el mismo dominio)
-        if (e.origin !== window.location.origin) return;
-        if (e.data && e.data.action === 'edit_section') {
-            var id = e.data.idSeccion;
-            abrirEditor(id);
+        // Se comprueba la ventana emisora (e.source), no e.origin: el iframe
+        // se carga vía srcdoc (recargarPreview()), lo que le da un origen
+        // opaco — sus mensajes llegan con e.origin === "null", así que
+        // compararlo contra el origen real de esta página nunca coincidía y
+        // el mensaje se descartaba siempre, aunque llegara a enviarse.
+        // Comprobar que viene exactamente de nuestro propio iframe es la
+        // forma correcta de verificar el remitente en este caso.
+        var iframeWindow = $iframe.get(0) ? $iframe.get(0).contentWindow : null;
+        if (!iframeWindow || e.source !== iframeWindow) return;
+        if (!e.data || typeof e.data !== 'object') return;
+
+        if (e.data.action === 'edit_section') {
+            abrirEditor(e.data.idSeccion);
+        } else if (e.data.action === 'field_edited') {
+            var seccion = seccionPorId(e.data.idSeccion);
+            if (!seccion) return;
+            patchContenido(seccion.contenido, e.data.field, e.data.value);
+            marcarCambios();
+            guardarCampoEnLineaDebounced(e.data.idSeccion);
+        } else if (e.data.action === 'edit_image') {
+            abrirEditor(e.data.idSeccion);
+            // Desplaza y resalta el control de imagen exacto dentro del panel
+            // recién abierto, para que el click en la foto de la previsualización
+            // se sienta como "cambiar esta foto" en vez de un panel genérico.
+            var partes = String(e.data.field).split('.');
+            var $destino;
+            if (partes.length === 3) {
+                var $items = $('#lb-editor-form').find('[data-campo-lista="' + partes[0] + '"] > .lb-elista-items > .lb-elista-item');
+                $destino = $items.eq(parseInt(partes[1], 10)).find('.lb-imagen[data-campo-imagen="' + partes[2] + '"]');
+            } else {
+                $destino = $('#lb-editor-form').find('.lb-imagen[data-campo-imagen="' + e.data.field + '"]');
+            }
+            if ($destino && $destino.length) {
+                $destino[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                $destino.addClass('lb-campo-resaltado');
+                setTimeout(function () { $destino.removeClass('lb-campo-resaltado'); }, 1500);
+            }
         }
     });
 
@@ -256,7 +350,7 @@
         var $hidden = $('<input type="hidden">').attr('name', clave).val(valor || '');
         var $preview = $('<div class="lb-imagen-preview">');
         if (valor) {
-            var srcUrl = (valor.startsWith('http://') || valor.startsWith('https://') || valor.startsWith('/')) ? valor : '/public/uploads/landing/' + valor;
+            var srcUrl = (valor.startsWith('http://') || valor.startsWith('https://') || valor.startsWith('/')) ? valor : '../../../public/uploads/landing/' + valor;
             if (isVideo) {
                 $preview.append($('<video controls style="max-width:100%; max-height:120px; border-radius:6px;">').attr('src', srcUrl));
             } else {
@@ -280,7 +374,11 @@
     var $wrapBibliotecaActivo = null;
 
     function aplicarSeleccionMedia($wrap, filename, url) {
-        $wrap.find('input[type="hidden"]').val(filename);
+        // .trigger('change') es necesario: .val() por sí solo no dispara
+        // ningún evento del DOM, así que sin esto el autoguardado del panel
+        // (que escucha 'input change' delegado) nunca se entera de que la
+        // imagen cambió — ver la misma nota en el .done() de subida más abajo.
+        $wrap.find('input[type="hidden"]').val(filename).trigger('change');
         var isVideo = filename.toLowerCase().endsWith('.mp4');
         var $preview = $wrap.find('.lb-imagen-preview').empty();
         if (isVideo) {
@@ -353,7 +451,10 @@
         var isVideo = accept && accept.includes('video');
         var icon = isVideo ? 'fa-video' : 'fa-image';
         var txt = isVideo ? 'Sin vídeo' : 'Sin imagen';
-        $wrap.find('input[type="hidden"]').val('');
+        // .trigger('change'): mismo motivo que en aplicarSeleccionMedia() —
+        // sin esto, quitar una foto y publicar sin tocar ningún otro campo
+        // dejaría la foto antigua en la landing publicada.
+        $wrap.find('input[type="hidden"]').val('').trigger('change');
         $wrap.find('.lb-imagen-preview').empty()
             .append($('<span class="lb-imagen-vacia"><i class="fas ' + icon + '"></i> ' + txt + '</span>'));
     });
@@ -381,7 +482,13 @@
                 $preview.html(oldHtml);
                 return; 
             }
-            $wrap.find('input[type="hidden"]').val(res.filename);
+            // .trigger('change'): .val() no dispara ningún evento por sí solo,
+            // y el autoguardado del panel lateral escucha 'input change'
+            // delegado en #lb-editor-form — sin esto, subir una foto y cerrar
+            // el panel sin tocar ningún otro campo nunca programaba ningún
+            // guardado (ni el propio flush de Publicar tenía nada que vaciar,
+            // porque el temporizador jamás llegaba a crearse).
+            $wrap.find('input[type="hidden"]').val(res.filename).trigger('change');
             if (res.filename.endsWith('.mp4')) {
                 $wrap.find('.lb-imagen-preview').empty().append($('<video controls style="max-width:100%; max-height:120px; border-radius:6px;">').attr('src', res.url));
             } else {
@@ -484,7 +591,11 @@
         // Enviar mensaje al iframe para hacer scroll y highlight a esta sección
         var iframe = $iframe.get(0);
         if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage({ action: 'highlight_section', idSeccion: id }, window.location.origin);
+            // '*' y no window.location.origin: el iframe (cargado vía srcdoc)
+            // tiene un origen opaco, así que un targetOrigin con el origen
+            // real de esta página nunca coincide con el suyo — el mensaje se
+            // entregaría en silencio a ninguna parte.
+            iframe.contentWindow.postMessage({ action: 'highlight_section', idSeccion: id }, '*');
         }
     }
 
@@ -566,30 +677,39 @@
 
     // Auto-guardado debounced para Live Preview
     var timeoutEditor = null;
+    function guardarEditorAhora() {
+        var seccion = seccionPorId(idAbierta);
+        if (!seccion) return $.when();
+        // Mientras haya un obligatorio vacío no tiene sentido autoguardar
+        // (el servidor lo rechazaría entero); se limita a marcar el campo.
+        if (!validarCamposRequeridos($('#lb-editor-form'), TIPOS[seccion.tipo].campos)) return $.when();
+        var datos = serializarEditor();
+        if (datos === null) return $.when();
+        var id = idAbierta;
+        return post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
+            .done(function (res) {
+                if (res.ok) {
+                    var seccionActualizada = seccionPorId(id);
+                    if (seccionActualizada) seccionActualizada.contenido = datos;
+                    marcarCambios();
+                    recargarPreview();
+                } else {
+                    toast(res.msg, 'error');
+                }
+            });
+    }
     $('#lb-editor-form').on('input change', 'input, textarea, select', function () {
         clearTimeout(timeoutEditor);
-        timeoutEditor = setTimeout(function () {
-            var seccion = seccionPorId(idAbierta);
-            if (!seccion) return;
-            // Mientras haya un obligatorio vacío no tiene sentido autoguardar
-            // (el servidor lo rechazaría entero); se limita a marcar el campo.
-            if (!validarCamposRequeridos($('#lb-editor-form'), TIPOS[seccion.tipo].campos)) return;
-            var datos = serializarEditor();
-            if (datos === null) return;
-            var id = idAbierta;
-            post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
-                .done(function (res) {
-                    if (res.ok) {
-                        var seccionActualizada = seccionPorId(id);
-                        if (seccionActualizada) seccionActualizada.contenido = datos;
-                        marcarCambios();
-                        recargarPreview();
-                    } else {
-                        toast(res.msg, 'error');
-                    }
-                });
-        }, 700); // 700ms debounce
+        timeoutEditor = setTimeout(guardarEditorAhora, 700);
     });
+    // Antes de Publicar: si el panel lateral tiene una edición sin guardar
+    // todavía (dentro de la ventana de 700ms), la guarda ya mismo.
+    function flushEditor() {
+        if (!timeoutEditor) return $.when();
+        clearTimeout(timeoutEditor);
+        timeoutEditor = null;
+        return guardarEditorAhora();
+    }
 
     /* ══════════ Ajustes globales ══════════ */
     $('#lb-form-ajustes input[type="color"]').on('input', function () {
@@ -597,16 +717,8 @@
     });
 
     var timeoutAjustes = null;
-    $('#lb-form-ajustes').on('input change', 'input, textarea', function () {
-        clearTimeout(timeoutAjustes);
-        timeoutAjustes = setTimeout(function () {
-            $('#lb-form-ajustes').trigger('submit', [true]); // submit de forma silenciosa
-        }, 500);
-    });
-
-    $('#lb-form-ajustes').on('submit', function (e, silencioso) {
-        e.preventDefault();
-        post('guardar_ajustes.php', $(this).serializeArray().reduce(function (acc, campo) {
+    function guardarAjustesAhora(silencioso) {
+        return post('guardar_ajustes.php', $('#lb-form-ajustes').serializeArray().reduce(function (acc, campo) {
             acc[campo.name] = campo.value;
             return acc;
         }, {}))
@@ -620,6 +732,26 @@
             if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
             if (!silencioso) toast('Error de conexión', 'error');
         });
+    }
+    $('#lb-form-ajustes').on('input change', 'input, textarea', function () {
+        clearTimeout(timeoutAjustes);
+        timeoutAjustes = setTimeout(function () {
+            timeoutAjustes = null;
+            guardarAjustesAhora(true);
+        }, 500);
+    });
+    // Antes de Publicar: si Ajustes globales tiene una edición sin guardar
+    // todavía, la guarda ya mismo en vez de dejar que vuele el temporizador.
+    function flushAjustes() {
+        if (!timeoutAjustes) return $.when();
+        clearTimeout(timeoutAjustes);
+        timeoutAjustes = null;
+        return guardarAjustesAhora(true);
+    }
+
+    $('#lb-form-ajustes').on('submit', function (e, silencioso) {
+        e.preventDefault();
+        guardarAjustesAhora(silencioso);
     });
 
     /* ══════════ Publicar / descartar ══════════ */
@@ -632,18 +764,26 @@
                 $boton.prop('disabled', false);
                 return;
             }
-            post('publicar.php', {})
-                .done(function (res) {
-                    if (!res.ok) { toast(res.msg, 'error'); return; }
-                    toast(res.msg, 'success');
-                    var ahora = new Date();
-                    var fecha = ('0' + ahora.getDate()).slice(-2) + '/' + ('0' + (ahora.getMonth() + 1)).slice(-2) + '/' +
-                                ahora.getFullYear() + ' ' + ('0' + ahora.getHours()).slice(-2) + ':' + ('0' + ahora.getMinutes()).slice(-2);
-                    $('#lb-estado').attr('class', 'texto-estado verde').text('Publicado el ' + fecha);
-                    $('#lb-descartar').prop('disabled', false);
-                })
-                .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); })
-                .always(function () { $boton.prop('disabled', false); });
+            // publicar.php copia el borrador de la base de datos tal cual está
+            // en ese instante — si quedara alguna edición todavía a medio
+            // debounce (un título editado en línea hace un momento, el panel
+            // lateral, ajustes globales...), publicar leería una versión más
+            // vieja del borrador y esa edición desaparecería sin avisar. Se
+            // fuerza el guardado de las tres antes de publicar.
+            $.when(flushCamposEnLinea(), flushEditor(), flushAjustes()).then(function () {
+                post('publicar.php', {})
+                    .done(function (res) {
+                        if (!res.ok) { toast(res.msg, 'error'); return; }
+                        toast(res.msg, 'success');
+                        var ahora = new Date();
+                        var fecha = ('0' + ahora.getDate()).slice(-2) + '/' + ('0' + (ahora.getMonth() + 1)).slice(-2) + '/' +
+                                    ahora.getFullYear() + ' ' + ('0' + ahora.getHours()).slice(-2) + ':' + ('0' + ahora.getMinutes()).slice(-2);
+                        $('#lb-estado').attr('class', 'texto-estado verde').text('Publicado el ' + fecha);
+                        $('#lb-descartar').prop('disabled', false);
+                    })
+                    .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); })
+                    .always(function () { $boton.prop('disabled', false); });
+            });
         });
     });
 
@@ -668,6 +808,13 @@
         $iframe.css('max-width', $(this).data('ancho'));
     });
     $('#lb-recargar').on('click', recargarPreview);
+    $('#lb-toggle-lateral').on('click', function () {
+        var $layout = $('.lb-layout');
+        $layout.toggleClass('lb-sin-lateral');
+        var oculto = $layout.hasClass('lb-sin-lateral');
+        $(this).attr('title', oculto ? 'Mostrar barra lateral' : 'Ocultar barra lateral')
+               .find('i').attr('class', oculto ? 'fas fa-compress' : 'fas fa-expand');
+    });
 
     // Cargar previsualización inicial al abrir el constructor
     recargarPreview();

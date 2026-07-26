@@ -47,6 +47,9 @@ function obtenerConexion() {
 function dbFetchOne(string $sql, string $types = '', ...$params): ?array {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con, $sql);
+    if (!$stmt) {
+        return null;
+    }
     if ($params) {
         mysqli_stmt_bind_param($stmt, $types, ...$params);
     }

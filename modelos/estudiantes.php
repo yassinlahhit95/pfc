@@ -115,6 +115,16 @@ function obtenerTokensEstudiantes() {
     return $lista;
 }
 
+function listarIdsEstudiantesActivos(): array {
+    $con = obtenerConexion();
+    $resultado = mysqli_query($con, "SELECT idEstudiante FROM estudiantes WHERE eliminado = 0");
+    $ids = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $ids[] = (int)$fila['idEstudiante'];
+    }
+    return $ids;
+}
+
 function obtenerTokenFCMEstudiante($idEstudiante) {
     return obtenerTokenFCM('estudiantes', 'idEstudiante', $idEstudiante);
 }

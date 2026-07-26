@@ -5,6 +5,8 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/notificaciones.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (!isset($_POST['actualizarNota'])) {
     header("Location: ../../../vistas/profesores/calificaciones/lista.php");
@@ -56,6 +58,19 @@ if (empty($errores)) {
         if (!empty($_POST['notificarEstudiante'])) {
             require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
             enviarEmailNotasEstudiante($idEstudiante);
+
+            $moduloInfoNotif = obtenerModuloPorId($idModulo);
+            if ($moduloInfoNotif) {
+                crearNotificacion($idEstudiante, 'estudiante', 'nota_publicada',
+                    'Nueva nota publicada en ' . $moduloInfoNotif['nombreModulo'],
+                    '../../../vistas/estudiantes/calificaciones/lista.php');
+            }
+
+            $tokenEst = obtenerTokenUsuario($idEstudiante, 'estudiante');
+            if ($tokenEst) {
+                enviarNotificacionFirebase($tokenEst, 'Nueva nota publicada',
+                    'Se ha publicado una nueva nota' . ($moduloInfoNotif ? ' en ' . $moduloInfoNotif['nombreModulo'] : ''), 'nota_publicada');
+            }
         }
         $_SESSION['exito'] = "Calificación actualizada.";
         header("Location: ../../../vistas/profesores/calificaciones/lista.php");

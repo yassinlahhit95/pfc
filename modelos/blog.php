@@ -3,7 +3,7 @@ require_once __DIR__ . "/conectar.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // BLOG / NOTICIAS DEL CENTRO — modelos/blog.php
-// Tabla: blog_posts (ver noDeploy/migrations/001_blog_posts.sql)
+// Tabla: blog_posts (ver noDeploy/database.sql)
 // ══════════════════════════════════════════════════════════════════════
 
 // La tabla blog_posts se crea una vez vía noDeploy/database.sql (no en cada

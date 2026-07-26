@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/theme/app_theme.dart';
 import '../data/chat_repository.dart';
 
 class ChatDetailScreen extends ConsumerStatefulWidget {
@@ -25,6 +26,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   Timer? _pollTimer;
   bool _loading = true;
   bool _sending = false;
+  bool _polling = false;
   Object? _error;
 
   @override
@@ -71,15 +73,28 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   Future<void> _poll() async {
-    if (_messages.isEmpty) return;
+    // Guards against the periodic Timer and the post-send manual call
+    // overlapping — without this, two concurrent fetches can both read the
+    // same "after" cursor and both append the same batch, producing visible
+    // duplicates.
+    if (_polling) return;
+    _polling = true;
     try {
       final repo = ref.read(chatRepositoryProvider);
-      final newOnes = await repo.fetchMessages(widget.convId, after: _messages.last.id);
+      final lastId = _messages.isNotEmpty ? _messages.last.id : null;
+      final newOnes = await repo.fetchMessages(widget.convId, after: lastId);
       if (!mounted || newOnes.isEmpty) return;
-      setState(() => _messages.addAll(newOnes));
+      final knownIds = _messages.map((m) => m.id).toSet();
+      final toAdd = newOnes.where((m) => !knownIds.contains(m.id));
+      setState(() {
+        _messages.addAll(toAdd);
+        _messages.sort((a, b) => a.id.compareTo(b.id));
+      });
       _scrollToBottom();
     } catch (_) {
       // Silent — this is a background refresh, don't interrupt the user.
+    } finally {
+      _polling = false;
     }
   }
 
@@ -116,6 +131,12 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // A push for THIS conversation arrived while it's open — poll right now
+    // instead of waiting for the next 4s tick, so it doesn't look frozen.
+    ref.listen(chatMessagePushProvider, (previous, convId) {
+      if (convId == widget.convId) _poll();
+    });
+
     final session = ref.watch(sessionControllerProvider).valueOrNull;
     final myId = session?.userId;
     // Chat's role strings use 'admin' for director (see api/v1/chat.php).
@@ -170,15 +191,15 @@ class _Bubble extends StatelessWidget {
       alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 3),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.sm),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         decoration: BoxDecoration(
           color: isMine ? scheme.primary : scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(16),
-            topRight: const Radius.circular(16),
-            bottomLeft: Radius.circular(isMine ? 16 : 4),
-            bottomRight: Radius.circular(isMine ? 4 : 16),
+            topLeft: const Radius.circular(Radii.lg),
+            topRight: const Radius.circular(Radii.lg),
+            bottomLeft: Radius.circular(isMine ? Radii.lg : 4),
+            bottomRight: Radius.circular(isMine ? 4 : Radii.lg),
           ),
         ),
         child: Column(
@@ -214,8 +235,12 @@ class _Composer extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: scheme.surface,
+          border: Border(top: BorderSide(color: scheme.outlineVariant)),
+        ),
+        padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.md, Space.sm),
         child: Row(
           children: [
             Expanded(
@@ -226,21 +251,19 @@ class _Composer extends StatelessWidget {
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),
                 decoration: InputDecoration(
-                  hintText: 'Escribe un mensaje…',
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
-                  filled: true,
-                  fillColor: scheme.surfaceContainerHighest,
+                  hintText: 'Mensaje',
+                  contentPadding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(Radii.pill), borderSide: BorderSide.none),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: Space.sm),
             IconButton.filled(
               onPressed: sending ? null : onSend,
               icon: sending
                   ? const SizedBox(
-                      width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Icon(Icons.send),
+                      width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  : const Icon(Icons.arrow_upward_rounded),
             ),
           ],
         ),

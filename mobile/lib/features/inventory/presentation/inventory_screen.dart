@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../data/inventory_repository.dart';
 
@@ -29,11 +31,15 @@ class InventoryScreen extends StatelessWidget {
   }
 }
 
-const _deviceStatusColors = {
-  'disponible': Color(0xFF10B981),
-  'prestado': Color(0xFFF59E0B),
-  'baja': Color(0xFFEF4444),
-};
+Color _deviceColor(BuildContext context, String estado) {
+  final dark = Theme.of(context).brightness == Brightness.dark;
+  return switch (estado) {
+    'disponible' => dark ? AppColors.verdeDark : AppColors.verdeLight,
+    'prestado' => dark ? AppColors.naranjaDark : AppColors.naranjaLight,
+    'baja' => dark ? AppColors.rojoDark : AppColors.rojoLight,
+    _ => Theme.of(context).colorScheme.onSurfaceVariant,
+  };
+}
 
 class _DevicesTab extends ConsumerWidget {
   const _DevicesTab();
@@ -64,29 +70,21 @@ class _DevicesTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(devicesProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: items.length,
             itemBuilder: (context, i) {
               final d = items[i];
-              final color = _deviceStatusColors[d.estado] ?? Colors.grey;
+              final color = _deviceColor(context, d.estado);
               final available = d.estado == 'disponible';
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-                ),
+              return AppCard(
+                margin: const EdgeInsets.only(bottom: Space.md),
                 child: Row(
                   children: [
-                    Icon(Icons.laptop_mac_outlined, color: color),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(d.nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          Text(d.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
                           Text(d.numeroSerie, style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
@@ -97,11 +95,7 @@ class _DevicesTab extends ConsumerWidget {
                         child: const Text('Prestar'),
                       )
                     else
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(20)),
-                        child: Text(d.estado, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
-                      ),
+                      StatusPill(label: d.estado, color: color),
                   ],
                 ),
               );
@@ -165,37 +159,64 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       expand: false,
-      builder: (context, scrollController) => Padding(
-        padding: const EdgeInsets.all(16),
+      builder: (context, scrollController) => Container(
+        decoration: BoxDecoration(
+          color: scheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+        ),
+        padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Container(
+              width: 36,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: Space.lg),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+            ),
             Text('Prestar ${widget.device.nombre}', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 12),
+            const SizedBox(height: Space.md),
             TextField(
               autofocus: true,
               onChanged: (v) {
                 _debounce?.cancel();
                 _debounce = Timer(const Duration(milliseconds: 300), () => _search(v));
               },
-              decoration: const InputDecoration(hintText: 'Buscar estudiante…', prefixIcon: Icon(Icons.search)),
+              decoration: const InputDecoration(hintText: 'Buscar estudiante', prefixIcon: Icon(Icons.search_rounded)),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: Space.sm),
             Expanded(
               child: _loading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
                   : ListView.builder(
                       controller: scrollController,
                       itemCount: _results.length,
                       itemBuilder: (context, i) {
                         final s = _results[i];
-                        return ListTile(
-                          leading: CircleAvatar(child: Text(s.nombre.isNotEmpty ? s.nombre[0].toUpperCase() : '?')),
-                          title: Text(s.nombre),
-                          onTap: () => _prestar(s),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Space.xs),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(Radii.md),
+                              onTap: () => _prestar(s),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: Space.sm),
+                                child: Row(
+                                  children: [
+                                    InitialsAvatar(name: s.nombre, radius: 18),
+                                    const SizedBox(width: Space.md),
+                                    Text(s.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -236,19 +257,35 @@ class _LoansTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(loansProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: items.length,
             itemBuilder: (context, i) {
               final l = items[i];
               final enCurso = l.estadoPrestamo == 'en curso';
               final date = DateTime.tryParse(l.fechaPrestamo);
-              return ListTile(
-                leading: Icon(Icons.laptop_mac_outlined, color: enCurso ? const Color(0xFFF59E0B) : Colors.grey),
-                title: Text('${l.nombreEstudiante} · ${l.nombreArticulo}'),
-                subtitle: Text(date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo),
-                trailing: enCurso
-                    ? OutlinedButton(onPressed: () => _devolver(context, ref, l), child: const Text('Devolver'))
-                    : const Text('Devuelto', style: TextStyle(color: Colors.grey)),
+              return AppCard(
+                margin: const EdgeInsets.only(bottom: Space.md),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${l.nombreEstudiante} · ${l.nombreArticulo}',
+                              style: const TextStyle(fontWeight: FontWeight.w600)),
+                          Text(
+                            date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (enCurso)
+                      OutlinedButton(onPressed: () => _devolver(context, ref, l), child: const Text('Devolver'))
+                    else
+                      Text('Devuelto', style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ),
               );
             },
           ),

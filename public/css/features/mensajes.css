@@ -378,28 +378,41 @@
   flex-wrap: wrap;
 }
 
-/* ── Buttons (native dashboard style) ─────────────────────── */
+/* ── Buttons ────────────────────────────────────────────────
+   .ibtn* used to be its own hand-rolled button (radius 12px, gap 7px,
+   opacity-only hover) instead of matching .boton-primario/.boton-secundario
+   (radius 10px, gap 8px, brightness+shadow hover) — same job, two shapes
+   that only looked alike by coincidence. Reshaped to match those exactly
+   (same property values, kept as its own class here rather than
+   redeclaring .boton-primario itself — this file loads after estilo.css
+   on pages that need it, so redeclaring the canonical classes here would
+   silently shadow estilo.css's version for those pages, the opposite of
+   "one source of truth"). */
 .ibtn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   padding: 10px 20px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   font-family: var(--font-ui);
   font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
-  transition: opacity .2s, transform .2s, background .2s;
+  white-space: nowrap;
+  transition: filter .18s ease, transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
 }
-.ibtn:hover { transform: translateY(-1px); }
-.ibtn-primary   { background: var(--accent); color: #fff; }
-.ibtn-primary:hover   { opacity: .88; }
+.ibtn:active { transform: translateY(0); }
+
+.ibtn-primary   { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-sm); }
+.ibtn-primary:hover   { filter: brightness(1.1); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
 .ibtn-secondary { background: var(--surface-3); color: var(--dim); border: 1px solid var(--border-2); }
-.ibtn-secondary:hover { background: var(--surface-2); color: var(--text); }
-.ibtn-danger    { background: rgb(239 68 68 / 10%); color: #ef4444; border: 1px solid rgb(239 68 68 / 20%); }
-.ibtn-danger:hover { background: rgb(239 68 68 / 18%); }
+.ibtn-secondary:hover { background: var(--surface-2); color: var(--text); border-color: var(--accent); transform: translateY(-1px); }
+
+.ibtn-danger    { background: var(--rojo-suave); color: var(--rojo-ink); border: 1px solid color-mix(in oklab, var(--rojo) 25%, transparent); }
+.ibtn-danger:hover { background: color-mix(in oklab, var(--rojo) 18%, var(--rojo-suave)); transform: translateY(-1px); }
 
 /* ── Banner new messages ───────────────────────────────────── */
 .inbox-banner {
@@ -433,7 +446,10 @@
 
 /* ── Char counter ──────────────────────────────────────────── */
 .msg-char-counter { font-size: 11px; color: var(--mut); text-align: right; margin-top: 4px; }
-.msg-char-limit   { color: #ef4444 !important; }
+/* .msg-char-limit: no redeclarada aquí — estilo.css ya define esta misma
+   clase con var(--rojo) (adaptado a modo oscuro); esta copia tenía un hex
+   fijo (#ef4444) que, al cargar después, ganaba y dejaba el aviso de
+   "límite superado" sin adaptarse en modo oscuro. */
 
 /* ── Responsive ────────────────────────────────────────────── */
 @media (width <= 860px) {

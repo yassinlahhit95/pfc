@@ -7,13 +7,29 @@ require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 require_once __DIR__ . "/../../../include/R2Client.php";
 
+// ajax=1 → subida por XHR con barra de progreso real (aula-recursos.js); responde
+// JSON en vez de redirigir, igual que subirArchivos.php.
+$ajax = !empty($_POST['ajax']);
+
+function _subirVersionSalir(bool $ajax, string $destino): void {
+    if ($ajax) {
+        header('Content-Type: application/json');
+        $ok  = empty($_SESSION['errores']);
+        $msg = $ok ? ($_SESSION['exito'] ?? '') : ($_SESSION['errores'] ?? '');
+        unset($_SESSION['exito'], $_SESSION['errores']);
+        echo json_encode(['ok' => $ok, 'msg' => $msg]);
+    } else {
+        header("Location: $destino");
+    }
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
 if (!Security::validateCSRFToken()) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
-    header("Location: ../../../vistas/profesores/aula/recursos.php");
-    exit;
+    _subirVersionSalir($ajax, "../../../vistas/profesores/aula/recursos.php");
 }
 
 $idProfesor = $_SESSION['idProfesor'];
@@ -23,7 +39,7 @@ $idModulo   = intval($_POST['idModulo'] ?? 0);
 $archivo = $idArchivo > 0 ? obtenerArchivoPorId($idArchivo) : null;
 if (!$archivo || $archivo['idProfesor'] != $idProfesor) {
     $_SESSION['errores'] = "No puedes actualizar este archivo.";
-    header("Location: ../../../vistas/profesores/aula/recursos.php?id=$idModulo"); exit;
+    _subirVersionSalir($ajax, "../../../vistas/profesores/aula/recursos.php?id=$idModulo");
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -39,7 +55,7 @@ $permitidos = [
 
 if (empty($_FILES['archivo']['name']) || $_FILES['archivo']['error'] !== UPLOAD_ERR_OK) {
     $_SESSION['errores'] = "No se recibió ningún archivo.";
-    header("Location: ../../../vistas/profesores/aula/recursos.php?id={$archivo['idModulo']}"); exit;
+    _subirVersionSalir($ajax, "../../../vistas/profesores/aula/recursos.php?id={$archivo['idModulo']}");
 }
 
 $nombreOrig = $_FILES['archivo']['name'];
@@ -80,5 +96,4 @@ if (!in_array($ext, $permitidos)) {
 
 $destino = "../../../vistas/profesores/aula/recursos.php?id={$archivo['idModulo']}";
 if (!empty($archivo['idCarpeta'])) $destino .= "&carpeta=" . $archivo['idCarpeta'];
-header("Location: $destino");
-exit;
+_subirVersionSalir($ajax, $destino);

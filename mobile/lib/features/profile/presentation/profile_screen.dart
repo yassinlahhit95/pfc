@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_state.dart';
+import '../../../core/auth/session.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/premium.dart';
+import '../../account/presentation/change_password_screen.dart';
+import '../../account/presentation/edit_profile_screen.dart';
 import '../../auth/data/auth_repository.dart';
+import '../../payments/presentation/my_payments_screen.dart';
 import '../data/profile_repository.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -12,86 +18,105 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileProvider);
+    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
     final scheme = Theme.of(context).colorScheme;
+    final hasPayments = role == UserRole.estudiante || role == UserRole.tutor;
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Perfil')),
       body: AsyncView<Profile>(
         value: profileAsync,
         onRetry: () => ref.invalidate(profileProvider),
-        data: (context, profile) => CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [scheme.primary.withValues(alpha: 0.16), scheme.surface],
+        data: (context, profile) => ListView(
+          padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+          children: [
+            Row(
+              children: [
+                InitialsAvatar(name: profile.displayName, radius: 28),
+                const SizedBox(width: Space.lg),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(profile.displayName, style: Theme.of(context).textTheme.titleLarge),
+                      const SizedBox(height: 2),
+                      Text(
+                        profile.roleLabel,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                      ),
+                    ],
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: Space.xxxl),
+            if (profile.email.isNotEmpty || profile.ciclo != null) ...[
+              const SectionLabel('Información'),
+              AppCard(
+                padding: EdgeInsets.zero,
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: scheme.primary,
-                      child: Text(
-                        profile.displayName.isNotEmpty ? profile.displayName[0].toUpperCase() : '?',
-                        style: TextStyle(fontSize: 32, color: scheme.onPrimary, fontWeight: FontWeight.bold),
+                    if (profile.email.isNotEmpty)
+                      _InfoRow(icon: Icons.mail_outline_rounded, label: 'Correo', value: profile.email),
+                    if (profile.email.isNotEmpty && profile.ciclo != null)
+                      Divider(height: 1, indent: 52, color: scheme.outlineVariant),
+                    if (profile.ciclo != null)
+                      _InfoRow(
+                        icon: Icons.school_outlined,
+                        label: 'Ciclo formativo',
+                        value:
+                            '${profile.ciclo!['nombreCiclo'] ?? ''} · ${profile.ciclo!['abreviaturaCiclo'] ?? ''}',
                       ),
-                    ),
-                    const SizedBox(height: 14),
-                    Text(
-                      profile.displayName,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: scheme.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        profile.roleLabel,
-                        style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600, fontSize: 12),
-                      ),
-                    ),
                   ],
                 ),
               ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  if (profile.email.isNotEmpty)
-                    _InfoTile(icon: Icons.email_outlined, label: 'Correo', value: profile.email),
-                  if (profile.ciclo != null)
-                    _InfoTile(
-                      icon: Icons.school_outlined,
-                      label: 'Ciclo formativo',
-                      value:
-                          '${profile.ciclo!['nombreCiclo'] ?? ''} (${profile.ciclo!['abreviaturaCiclo'] ?? ''})',
+              const SizedBox(height: Space.xxl),
+            ],
+            const SectionLabel('Cuenta'),
+            AppCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  _ActionRow(
+                    icon: Icons.person_outline_rounded,
+                    label: 'Editar perfil',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => EditProfileScreen(role: role!, profile: profile)),
                     ),
-                  const SizedBox(height: 24),
-                  OutlinedButton.icon(
-                    onPressed: () async {
-                      await ref.read(authRepositoryProvider).logout();
-                      await ref.read(sessionControllerProvider.notifier).clear();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: scheme.error,
-                      side: BorderSide(color: scheme.error.withValues(alpha: 0.4)),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Cerrar sesión'),
                   ),
-                ]),
+                  Divider(height: 1, indent: 52, color: scheme.outlineVariant),
+                  _ActionRow(
+                    icon: Icons.lock_outline_rounded,
+                    label: 'Cambiar contraseña',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
+                    ),
+                  ),
+                  if (hasPayments) ...[
+                    Divider(height: 1, indent: 52, color: scheme.outlineVariant),
+                    _ActionRow(
+                      icon: Icons.receipt_long_outlined,
+                      label: 'Mis pagos',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const MyPaymentsScreen()),
+                      ),
+                    ),
+                  ],
+                ],
               ),
+            ),
+            const SizedBox(height: Space.xxl),
+            OutlinedButton.icon(
+              onPressed: () async {
+                await ref.read(authRepositoryProvider).logout();
+                await ref.read(sessionControllerProvider.notifier).clear();
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: scheme.error,
+                side: BorderSide(color: scheme.error.withValues(alpha: 0.35)),
+              ),
+              icon: const Icon(Icons.logout_rounded, size: 18),
+              label: const Text('Cerrar sesión'),
             ),
           ],
         ),
@@ -100,8 +125,8 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({required this.icon, required this.label, required this.value});
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.icon, required this.label, required this.value});
   final IconData icon;
   final String label;
   final String value;
@@ -109,33 +134,51 @@ class _InfoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: scheme.outlineVariant),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.lg),
       child: Row(
         children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(color: scheme.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-            child: Icon(icon, size: 20, color: scheme.primary),
-          ),
-          const SizedBox(width: 12),
+          Icon(icon, size: 20, color: scheme.onSurfaceVariant),
+          const SizedBox(width: Space.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
-                Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(label, style: Theme.of(context).textTheme.bodySmall),
+                Text(value, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ActionRow extends StatelessWidget {
+  const _ActionRow({required this.icon, required this.label, required this.onTap});
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.lg),
+          child: Row(
+            children: [
+              Icon(icon, size: 20, color: scheme.onSurfaceVariant),
+              const SizedBox(width: Space.md),
+              Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+              Icon(Icons.chevron_right_rounded, size: 20, color: scheme.onSurfaceVariant.withValues(alpha: 0.6)),
+            ],
+          ),
+        ),
       ),
     );
   }

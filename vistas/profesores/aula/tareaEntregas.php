@@ -136,6 +136,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td>
                         <?php if (!empty($fila['idEntrega'])): ?>
                         <form method="POST" action="../../../controladores/profesores/aula/calificarEntrega.php"
+                              enctype="multipart/form-data"
                               class="form-calificar"
                               style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
@@ -146,6 +147,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <input type="text" name="comentario" maxlength="500"
                                    value="<?= Security::escapeHtml($fila['comentarioCalificacion'] ?? '') ?>"
                                    placeholder="Comentario (opcional)" style="flex:1;min-width:120px;">
+                            <?php if (!empty($fila['archivoCorreccion'])):
+                                $archivoCorreccionUrl = R2Client::documentoUrl(
+                                    __DIR__ . '/../../../public/uploads/aula/correcciones/' . $fila['archivoCorreccion'],
+                                    '../../../public/uploads/aula/correcciones/' . $fila['archivoCorreccion'],
+                                    'aula/correcciones/' . $fila['archivoCorreccion']
+                                );
+                            ?>
+                                <a href="<?= Security::escapeHtml($archivoCorreccionUrl) ?>" target="_blank"
+                                   class="boton-secundario btn-pequeno" title="Ver archivo de corrección actual">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                            <?php endif; ?>
+                            <label class="boton-secundario btn-pequeno" title="Adjuntar archivo de corrección (opcional)" style="cursor:pointer;margin:0;">
+                                <i class="fas fa-paperclip"></i>
+                                <input type="file" name="archivoCorreccion" accept=".pdf,.docx,.txt" style="display:none;"
+                                       onchange="this.closest('label').classList.add('boton-primario')">
+                            </label>
                             <button type="submit" class="boton-primario btn-pequeno" title="Guardar calificación">
                                 <i class="fas fa-check"></i>
                             </button>

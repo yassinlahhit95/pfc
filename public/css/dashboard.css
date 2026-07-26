@@ -30,6 +30,57 @@
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-ui: "Plus Jakarta Sans", system-ui, sans-serif;
 
+  /* Spacing/radius scale — mirrors mobile/lib/core/theme/app_theme.dart's
+     Space/Radii Dart constants (same names, same values) so a "gap of
+     --space-lg" means the same 16px on web and mobile. New component CSS
+     should reach for these instead of ad hoc pixel values; --gap/--pad/
+     --radius above stay as-is (they already drive the density system) —
+     this scale is additive, not a replacement. */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-xxl: 24px;
+  --space-xxxl: 32px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Compatibility aliases for the "modern" component vocabulary used by
+     vistas/profesores/aula/modulo.php and its siblings (--color-neutral-*,
+     --font-size-*, --space-1..6, --color-primary/success/warning). None of
+     these were EVER defined anywhere in the codebase — every element using
+     them (buttons, spacing, neutral text/backgrounds) was silently falling
+     back to nothing (browser-default chrome, zero margin/padding) on every
+     page that used this vocabulary, for as long as that vocabulary has
+     existed. Aliased to the real tokens above rather than rewriting those
+     templates, so this is a pure, additive, zero-risk fix — no markup
+     changes needed for it to take effect. */
+  --color-neutral-50: var(--surface-2);
+  --color-neutral-100: var(--surface-3);
+  --color-neutral-200: var(--border-2);
+  --color-neutral-300: var(--border-2);
+  --color-neutral-400: var(--mut);
+  --color-neutral-500: var(--mut);
+  --color-neutral-600: var(--dim);
+  --color-neutral-700: var(--text);
+  --color-neutral-800: var(--text);
+  --color-primary: var(--accent);
+  --color-success: var(--verde);
+  --color-warning: var(--naranja);
+  --font-size-xs: .75rem;
+  --font-size-sm: .85rem;
+  --font-size-base: 1rem;
+  --space-1: var(--space-xs);
+  --space-2: var(--space-sm);
+  --space-3: var(--space-md);
+  --space-4: var(--space-lg);
+  --space-5: var(--space-xl);
+  --space-6: var(--space-xxl);
+
   /* Semantic status colors — base (solid), -suave (tinted panel bg), -ink (text on -suave).
      Defined here so views can use var(--verde) etc. and adapt automatically in dark mode. */
   --verde:    #10b981; --verde-suave:    #ecfdf5; --verde-ink:    #166534;
@@ -90,6 +141,9 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 .bg-mesh .blob {
   position: absolute; border-radius: 50%; filter: blur(80px);
   opacity: .5; transition: opacity .6s, background .6s;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 [data-theme="dark"] .bg-mesh .blob { opacity: .26; }
 
@@ -105,11 +159,21 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   background: radial-gradient(circle at 50% 50%, #f472b6, transparent 70%);
   animation: drift1 30s ease-in-out infinite reverse; }
 
-@keyframes drift1 { 50% { transform: translate(6vw, 5vh) scale(1.12); } }
+@keyframes drift1 { 50% { transform: translate3d(6vw, 5vh, 0) scale(1.12); } }
 
-@keyframes drift2 { 50% { transform: translate(-5vw, 7vh) scale(.9); } }
+@keyframes drift2 { 50% { transform: translate3d(-5vw, 7vh, 0) scale(.9); } }
 
-@media (prefers-reduced-motion: reduce) { .blob { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .bg-mesh .blob { animation: none !important; }
+}
+
+@media (max-width: 768px) {
+  .bg-mesh .blob {
+    animation: none !important;
+    filter: blur(40px) !important;
+    opacity: 0.12 !important;
+  }
+}
 
 /* ── Sidebar ─────────────────────────────────────────────────────────── */
 .sidebar {
@@ -121,6 +185,13 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   transition: width .3s ease-out, background .3s, transform .3s ease-out;
   will-change: width, transform;
   z-index: 30;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--surface) !important;
+  }
 }
 .sidebar.collapsed { width: 78px; }
 
@@ -500,8 +571,8 @@ a.tile { text-decoration: none; color: inherit; display: flex; }
 /* nav-rail is at left:-16px which clips outside the 78px sidebar */
 .sidebar.collapsed .nav-rail { display: none; }
 
-/* Remove brand-text from layout entirely (opacity:0 kept the space) */
-.sidebar.collapsed .brand-text { display: none !important; }
+/* .sidebar.collapsed .brand-text ya está en display:none más arriba (línea
+   ~222) — esta era una redeclaración idéntica sin ningún rol adicional. */
 
 /* Keep the toggle button visible and clickable so the user can re-expand */
 .sidebar.collapsed .brand { position: relative; }

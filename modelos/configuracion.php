@@ -11,7 +11,7 @@ function obtenerConfiguracionCentro() {
     $cfg = mysqli_fetch_assoc($res);
     return $cfg ?: [
         'nombreCentro'            => 'Centro de Formación Profesional',
-        'codigoCentro'            => '', 'direccionCentro' => '', 'ciudadCentro' => '',
+        'codigoCentro'            => '', 'nifCifCentro' => '', 'direccionCentro' => '', 'ciudadCentro' => '',
         'cpCentro'                => '', 'telefonoCentro'  => '', 'emailCentro'  => '',
         'cursoEscolar'            => date('Y') . '-' . (date('Y') + 1),
         'logoCentro'              => '', 'logoGobierno1'   => '', 'logoGobierno2' => '',
@@ -45,11 +45,11 @@ function guardarConfiguracionCentro($d) {
     $con = obtenerConexion();
     $res = mysqli_query($con, "SELECT idConfig FROM configuracion_centro WHERE idConfig = 1");
     $sql = mysqli_num_rows($res) === 0
-        ? "INSERT INTO configuracion_centro (nombreCentro,codigoCentro,direccionCentro,ciudadCentro,cpCentro,telefonoCentro,emailCentro,cursoEscolar,textoLegal,nombreDirectorFirmante,idConfig) VALUES (?,?,?,?,?,?,?,?,?,?,1)"
-        : "UPDATE configuracion_centro SET nombreCentro=?,codigoCentro=?,direccionCentro=?,ciudadCentro=?,cpCentro=?,telefonoCentro=?,emailCentro=?,cursoEscolar=?,textoLegal=?,nombreDirectorFirmante=? WHERE idConfig=1";
+        ? "INSERT INTO configuracion_centro (nombreCentro,codigoCentro,nifCifCentro,direccionCentro,ciudadCentro,cpCentro,telefonoCentro,emailCentro,cursoEscolar,textoLegal,nombreDirectorFirmante,idConfig) VALUES (?,?,?,?,?,?,?,?,?,?,?,1)"
+        : "UPDATE configuracion_centro SET nombreCentro=?,codigoCentro=?,nifCifCentro=?,direccionCentro=?,ciudadCentro=?,cpCentro=?,telefonoCentro=?,emailCentro=?,cursoEscolar=?,textoLegal=?,nombreDirectorFirmante=? WHERE idConfig=1";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, 'ssssssssss',
-        $d['nombreCentro'], $d['codigoCentro'], $d['direccionCentro'],
+    mysqli_stmt_bind_param($stmt, 'sssssssssss',
+        $d['nombreCentro'], $d['codigoCentro'], $d['nifCifCentro'], $d['direccionCentro'],
         $d['ciudadCentro'], $d['cpCentro'], $d['telefonoCentro'],
         $d['emailCentro'], $d['cursoEscolar'], $d['textoLegal'],
         $d['nombreDirectorFirmante']);

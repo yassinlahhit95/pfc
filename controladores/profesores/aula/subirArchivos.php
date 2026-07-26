@@ -195,7 +195,7 @@ try {
                     $tituloPush  = 'Nuevos recursos · ' . $modulo['nombreModulo'];
                     $mensajePush = $subidos . ' recurso(s) publicado(s) el ' . date('d/m/Y H:i');
                     foreach (obtenerTokensFCMPorCicloAula($modulo['idCiclo']) as $token) {
-                        @enviarNotificacionFirebase($token, $tituloPush, $mensajePush);
+                        @enviarNotificacionFirebase($token, $tituloPush, $mensajePush, 'aula_archivo_nuevo', ['idModulo' => (int)$modulo['idModulo']]);
                     }
                 }
             }

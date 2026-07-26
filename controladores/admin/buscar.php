@@ -156,7 +156,7 @@ while ($numDir < 2 && ($row = mysqli_fetch_assoc($res))) {
     $results[] = [
         'type'  => 'director',
         'label' => $label,
-        'url'   => '/vistas/admin/directores/verDetallesDirectores.php?idDirector=' . (int)$row['idDirector'],
+        'url'   => '/vistas/admin/directores/verDetallesDirectores.php?id=' . (int)$row['idDirector'],
     ];
     $numDir++;
 }
@@ -176,7 +176,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'secretaria',
         'label' => $label,
-        'url'   => '/vistas/admin/secretarias/modificarSecretaria.php?idSecretaria=' . (int)$row['idSecretaria'],
+        'url'   => '/vistas/admin/secretarias/modificarSecretaria.php?id=' . (int)$row['idSecretaria'],
     ];
 }
 

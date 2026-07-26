@@ -41,7 +41,7 @@ foreach ($hijos as $hijo) {
     $results[] = [
         'type'  => 'estudiante',
         'label' => $label,
-        'url'   => '../estudiantes/expediente.php?id=' . (int)$hijo['idEstudiante'],
+        'url'   => '/vistas/tutores/estudiantes/expediente.php?id=' . (int)$hijo['idEstudiante'],
     ];
 }
 
@@ -64,7 +64,7 @@ if (!empty($idsHijos)) {
         $results[] = [
             'type'  => 'pago',
             'label' => 'Pago ' . $row['monto'] . '€ — ' . $row['nombreEstudiante'] . ' (' . date('d/m/Y', strtotime($row['fechaPago'])) . ')',
-            'url'   => '../pagos/misPagos.php',
+            'url'   => '/vistas/tutores/pagos/misPagos.php',
         ];
     }
 }
@@ -80,7 +80,7 @@ mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'anuncio', 'label' => $row['titulo'], 'url' => '../anuncios/lista.php'];
+    $results[] = ['type' => 'anuncio', 'label' => $row['titulo'], 'url' => '/vistas/tutores/anuncios/lista.php'];
 }
 
 // ── Eventos ──
@@ -91,7 +91,7 @@ mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '../eventos/lista.php'];
+    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '/vistas/tutores/eventos/lista.php'];
 }
 
 echo json_encode($results, JSON_UNESCAPED_UNICODE);

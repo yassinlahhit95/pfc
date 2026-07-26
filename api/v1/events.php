@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 v1Auth(); // any authenticated user can see events
+v1RequireFeature('feature_eventos');
 
 $limit  = min(max((int)($_GET['limit']  ?? 20), 1), 100);
 $offset = max((int)($_GET['offset'] ?? 0), 0);

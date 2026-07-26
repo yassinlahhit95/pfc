@@ -9,6 +9,7 @@ class Justification {
     required this.motivo,
     required this.estado,
     required this.motivoRechazo,
+    required this.archivoUrl,
   });
 
   factory Justification.fromJson(Map<String, dynamic> json) => Justification(
@@ -16,12 +17,14 @@ class Justification {
         motivo: json['motivo'] as String? ?? '',
         estado: json['estado'] as String? ?? 'pendiente',
         motivoRechazo: json['motivoRechazo'] as String?,
+        archivoUrl: json['archivo_url'] as String?,
       );
 
   final int id;
   final String motivo;
   final String estado;
   final String? motivoRechazo;
+  final String? archivoUrl;
 }
 
 class AttendanceRecord {
@@ -34,6 +37,7 @@ class AttendanceRecord {
     required this.nombreEstudiante,
     required this.idModulo,
     required this.nombreModulo,
+    required this.nombreProfesor,
     required this.justificacion,
   });
 
@@ -46,6 +50,7 @@ class AttendanceRecord {
         nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
         idModulo: json['idModulo'] as int? ?? 0,
         nombreModulo: json['nombreModulo'] as String? ?? '',
+        nombreProfesor: json['nombreProfesor'] as String? ?? '',
         justificacion: json['justificacion'] != null
             ? Justification.fromJson((json['justificacion'] as Map).cast<String, dynamic>())
             : null,
@@ -59,6 +64,7 @@ class AttendanceRecord {
   final String nombreEstudiante;
   final int idModulo;
   final String nombreModulo;
+  final String nombreProfesor;
   final Justification? justificacion;
 
   bool get canJustify =>
@@ -82,6 +88,7 @@ class PendingJustification {
     required this.fecha,
     required this.nombreModulo,
     required this.nombreEstudiante,
+    required this.archivoUrl,
   });
 
   factory PendingJustification.fromJson(Map<String, dynamic> json) => PendingJustification(
@@ -91,6 +98,7 @@ class PendingJustification {
         fecha: json['fecha'] as String? ?? '',
         nombreModulo: json['nombreModulo'] as String? ?? '',
         nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
+        archivoUrl: json['archivo_url'] as String?,
       );
 
   final int idJustificacion;
@@ -98,6 +106,7 @@ class PendingJustification {
   final String motivo;
   final String fecha;
   final String nombreModulo;
+  final String? archivoUrl;
   final String nombreEstudiante;
 }
 

@@ -151,9 +151,11 @@ final class R2Client {
     // Authorization igual que put/delete, pero con query string propia (el
     // ensamblado de request() asume canonicalQueryString vacía, así que esto
     // no reutiliza ese método: aquí la query string SÍ entra en la firma).
-    // Devuelve como máximo 1000 objetos (un solo "page" — de sobra para listar
-    // imágenes de una carpeta de la landing; no se pagina más allá).
-    public static function listObjects(string $prefix): array {
+    // Página única (1000 objetos máx) + estado de paginación — extraído de
+    // listObjects() para que totalUsage() pueda recorrer el bucket entero sin
+    // duplicar la firma SigV4, sin cambiar el contrato de listObjects() para
+    // quien ya lo usa (listado de una carpeta de la landing, nunca supera 1000).
+    private static function listObjectsPage(string $prefix, ?string $continuationToken = null): array {
         [$accountId, $accessKey, $secretKey, $bucket] = self::config();
         $host      = self::host($accountId);
         $amzDate   = gmdate('Ymd\THis\Z');
@@ -161,6 +163,7 @@ final class R2Client {
         $payloadHash = hash('sha256', '');
 
         $queryParams = ['list-type' => '2', 'prefix' => $prefix, 'max-keys' => '1000'];
+        if ($continuationToken !== null) $queryParams['continuation-token'] = $continuationToken;
         ksort($queryParams, SORT_STRING);
         $canonicalQueryParts = [];
         foreach ($queryParams as $k => $v) {
@@ -193,7 +196,7 @@ final class R2Client {
 
         if (CircuitBreaker::isOpen('r2')) {
             Logger::error('R2 circuit OPEN — listado omitido', ['prefix' => $prefix]);
-            return [];
+            return ['objects' => [], 'isTruncated' => false, 'nextToken' => null];
         }
 
         $headers = [
@@ -216,14 +219,14 @@ final class R2Client {
         if ($err || $code >= 500) {
             Logger::error('Fallo en listado R2: ' . ($err ?: "HTTP $code"), ['prefix' => $prefix]);
             CircuitBreaker::recordFailure('r2');
-            return [];
+            return ['objects' => [], 'isTruncated' => false, 'nextToken' => null];
         }
         CircuitBreaker::recordSuccess('r2');
 
-        if ($code !== 200 || $res === false) return [];
+        if ($code !== 200 || $res === false) return ['objects' => [], 'isTruncated' => false, 'nextToken' => null];
 
         $xml = @simplexml_load_string($res);
-        if ($xml === false) return [];
+        if ($xml === false) return ['objects' => [], 'isTruncated' => false, 'nextToken' => null];
 
         $objetos = [];
         foreach ($xml->Contents as $item) {
@@ -233,7 +236,36 @@ final class R2Client {
                 'lastModified' => (string)$item->LastModified,
             ];
         }
-        return $objetos;
+        $isTruncated = ((string)$xml->IsTruncated) === 'true';
+        $nextToken   = $isTruncated && isset($xml->NextContinuationToken) ? (string)$xml->NextContinuationToken : null;
+
+        return ['objects' => $objetos, 'isTruncated' => $isTruncated, 'nextToken' => $nextToken];
+    }
+
+    public static function listObjects(string $prefix): array {
+        return self::listObjectsPage($prefix)['objects'];
+    }
+
+    // Recorre el bucket entero (todas las páginas) sumando tamaño y contando
+    // objetos — usado por el widget de almacenamiento del panel admin. Tope
+    // de 50 páginas (50.000 objetos) como salvaguarda ante un bucle sin fin;
+    // muy por encima de lo que este proyecto generará en la práctica.
+    public static function totalUsage(string $prefix = ''): array {
+        $bytes = 0;
+        $objectCount = 0;
+        $token = null;
+        $pages = 0;
+        do {
+            $page = self::listObjectsPage($prefix, $token);
+            foreach ($page['objects'] as $obj) {
+                $bytes += $obj['size'];
+                $objectCount++;
+            }
+            $token = $page['nextToken'];
+            $pages++;
+        } while ($page['isTruncated'] && $token !== null && $pages < 50);
+
+        return ['bytes' => $bytes, 'objectCount' => $objectCount];
     }
 
     // ── URL pre-firmada (firma por query-string) — GET ───────────────────

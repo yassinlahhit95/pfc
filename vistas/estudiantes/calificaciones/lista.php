@@ -105,7 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 
-<div class="grid-2col" style="align-items:start;">
+<div style="display:flex; flex-direction:column; gap:30px;">
     <!-- ═══════════════ MÓDULOS ═══════════════ -->
     <div class="panel" style="display:flex; flex-direction:column; gap:30px;">
         <div class="titulo-tarjeta" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-2); padding-bottom:15px; margin-bottom:0px;">
@@ -185,13 +185,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <th>Reto</th>
                         <th>Fechas</th>
                         <th style="text-align:center;">Nota</th>
+                        <th style="text-align:center;">Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (!empty($retosNotas)) { ?>
                         <?php foreach ($retosNotas as $reto) {
                             $nota = (float)$reto['nota'];
-                            $claseNota = $nota >= 5 ? 'texto-verde' : 'texto-rojo';
+                            $aprobado = $nota >= 5;
+                            $claseNota = $aprobado ? 'texto-verde' : 'texto-rojo';
+                            $claseEstado = $aprobado ? 'badge-exito' : 'badge-error';
+                            $estadoReto = $aprobado ? 'APROBADO' : 'SUSPENSO';
                         ?>
                         <tr>
                             <td style="font-weight:600; color:var(--text-color);">
@@ -205,11 +209,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td style="text-align:center; font-weight:800; font-size:1.15rem;" class="<?= Security::escapeHtml($claseNota) ?>">
                                 <?= Security::escapeHtml($reto['nota']) ?>
                             </td>
+                            <td style="text-align:center;">
+                                <span class="badge <?= Security::escapeHtml($claseEstado) ?>"><?= Security::escapeHtml($estadoReto) ?></span>
+                            </td>
                         </tr>
                         <?php } ?>
                     <?php } else { ?>
                         <tr>
-                            <td colspan="3" style="text-align:center; padding:40px 20px;">
+                            <td colspan="4" style="text-align:center; padding:40px 20px;">
                                 <div style="font-size:3rem; color:var(--border); margin-bottom:15px;"><i class="fas fa-check-square"></i></div>
                                 <div class="texto-suave">No tienes calificaciones en retos por el momento.</div>
                             </td>

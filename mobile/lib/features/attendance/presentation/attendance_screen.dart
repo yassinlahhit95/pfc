@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/filter_bar.dart';
+import '../../../core/widgets/premium.dart';
 import '../data/attendance_repository.dart';
 import 'mark_attendance_screen.dart';
 
+Future<void> _openJustificante(BuildContext context, String url) async {
+  final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  if (!ok && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo abrir el justificante.')));
+  }
+}
+
 const _estadoColors = {
-  'presente': Color(0xFF10B981),
-  'ausente': Color(0xFFEF4444),
-  'retraso': Color(0xFFF59E0B),
-  'justificado': Color(0xFF3B82F6),
+  'presente': AppColors.verdeLight,
+  'ausente': AppColors.rojoLight,
+  'retraso': AppColors.naranjaLight,
+  'justificado': AppColors.azulLight,
 };
 const _estadoLabels = {
   'presente': 'Presente',
@@ -35,8 +46,8 @@ class AttendanceScreen extends ConsumerWidget {
           appBar: AppBar(
             title: const Text('Asistencias'),
             bottom: const TabBar(tabs: [
-              Tab(text: 'Pasar lista', icon: Icon(Icons.checklist_rounded)),
-              Tab(text: 'Justificaciones', icon: Icon(Icons.fact_check_outlined)),
+              Tab(text: 'Pasar lista'),
+              Tab(text: 'Justificaciones'),
             ]),
           ),
           body: const TabBarView(
@@ -50,28 +61,80 @@ class AttendanceScreen extends ConsumerWidget {
   }
 }
 
-class _MyAttendanceList extends ConsumerWidget {
+class _MyAttendanceList extends ConsumerStatefulWidget {
   const _MyAttendanceList();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_MyAttendanceList> createState() => _MyAttendanceListState();
+}
+
+class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
+  String? _estado;
+  String? _modulo;
+  String? _estudiante;
+
+  @override
+  Widget build(BuildContext context) {
     final attendanceAsync = ref.watch(attendanceMineProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Asistencias')),
       body: AsyncView<List<AttendanceRecord>>(
         value: attendanceAsync,
         onRetry: () => ref.invalidate(attendanceMineProvider),
-        data: (context, records) {
-          if (records.isEmpty) {
+        data: (context, allRecords) {
+          if (allRecords.isEmpty) {
             return const EmptyState(icon: Icons.event_available_outlined, title: 'Sin registros de asistencia');
           }
-          return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(attendanceMineProvider),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: records.length,
-              itemBuilder: (context, i) => _AttendanceCard(record: records[i]),
-            ),
+
+          final modulos = allRecords.map((r) => r.nombreModulo).toSet().toList()..sort();
+          final estudiantes = allRecords.map((r) => r.nombreEstudiante).toSet().toList()..sort();
+          const estados = ['presente', 'ausente', 'retraso', 'justificado'];
+
+          final records = allRecords.where((r) {
+            if (_estado != null && r.estado != _estado) return false;
+            if (_modulo != null && r.nombreModulo != _modulo) return false;
+            if (_estudiante != null && r.nombreEstudiante != _estudiante) return false;
+            return true;
+          }).toList();
+
+          return Column(
+            children: [
+              const SizedBox(height: Space.md),
+              FilterBar(children: [
+                FilterPill<String>(
+                  label: 'Estado',
+                  value: _estado,
+                  options: [for (final e in estados) (e, _estadoLabels[e] ?? e)],
+                  onChanged: (v) => setState(() => _estado = v),
+                ),
+                FilterPill<String>(
+                  label: 'Módulo',
+                  value: _modulo,
+                  options: [for (final m in modulos) (m, m)],
+                  onChanged: (v) => setState(() => _modulo = v),
+                ),
+                if (estudiantes.length > 1)
+                  FilterPill<String>(
+                    label: 'Estudiante',
+                    value: _estudiante,
+                    options: [for (final s in estudiantes) (s, s)],
+                    onChanged: (v) => setState(() => _estudiante = v),
+                  ),
+              ]),
+              const SizedBox(height: Space.sm),
+              Expanded(
+                child: records.isEmpty
+                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                    : RefreshIndicator(
+                        onRefresh: () async => ref.invalidate(attendanceMineProvider),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                          itemCount: records.length,
+                          itemBuilder: (context, i) => _AttendanceCard(record: records[i]),
+                        ),
+                      ),
+              ),
+            ],
           );
         },
       ),
@@ -88,47 +151,45 @@ class _AttendanceCard extends ConsumerWidget {
     final sent = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('Justificar falta', style: Theme.of(ctx).textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text('${record.nombreModulo} · ${record.fecha}', style: Theme.of(ctx).textTheme.bodySmall),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              minLines: 2,
-              maxLines: 4,
-              decoration: const InputDecoration(labelText: 'Motivo', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: () async {
-                if (controller.text.trim().isEmpty) return;
-                try {
-                  await ref.read(attendanceRepositoryProvider).justify(
-                        idAsistencia: record.id,
-                        motivo: controller.text.trim(),
-                      );
-                  if (ctx.mounted) Navigator.of(ctx).pop(true);
-                } catch (_) {
-                  if (ctx.mounted) {
-                    ScaffoldMessenger.of(ctx)
-                        .showSnackBar(const SnackBar(content: Text('No se pudo enviar la justificación.')));
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _Sheet(
+        child: Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Justificar falta', style: Theme.of(ctx).textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text('${record.nombreModulo} · ${record.fecha}', style: Theme.of(ctx).textTheme.bodySmall),
+              const SizedBox(height: Space.xl),
+              TextField(
+                controller: controller,
+                minLines: 2,
+                maxLines: 4,
+                decoration: const InputDecoration(labelText: 'Motivo'),
+              ),
+              const SizedBox(height: Space.xl),
+              FilledButton(
+                onPressed: () async {
+                  if (controller.text.trim().isEmpty) return;
+                  try {
+                    await ref.read(attendanceRepositoryProvider).justify(
+                          idAsistencia: record.id,
+                          motivo: controller.text.trim(),
+                        );
+                    if (ctx.mounted) Navigator.of(ctx).pop(true);
+                  } catch (_) {
+                    if (ctx.mounted) {
+                      ScaffoldMessenger.of(ctx)
+                          .showSnackBar(const SnackBar(content: Text('No se pudo enviar la justificación.')));
+                    }
                   }
-                }
-              },
-              child: const Text('Enviar'),
-            ),
-          ],
+                },
+                child: const Text('Enviar'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -142,47 +203,33 @@ class _AttendanceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheme = Theme.of(context).colorScheme;
-    final color = _estadoColors[record.estado] ?? scheme.outline;
+    final color = _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
     final date = DateTime.tryParse(record.fecha);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: scheme.outlineVariant),
-      ),
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: Space.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(width: 4, height: 40, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4))),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(record.nombreModulo, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(record.nombreModulo, style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
                 Text(
-                  date != null ? DateFormat('d MMM yyyy').format(date) : record.fecha,
+                  [
+                    if (date != null) DateFormat('d MMM yyyy').format(date) else record.fecha,
+                    if (record.nombreProfesor.isNotEmpty) record.nombreProfesor,
+                  ].join(' · '),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 if (record.justificacion != null) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    switch (record.justificacion!.estado) {
-                      'pendiente' => '⏳ Justificación en revisión',
-                      'aprobada' => '✅ Justificación aprobada',
-                      'rechazada' => '❌ Rechazada: ${record.justificacion!.motivoRechazo ?? ''}',
-                      _ => '',
-                    },
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  const SizedBox(height: Space.md),
+                  _JustificationBox(justificacion: record.justificacion!),
                 ],
                 if (record.canJustify) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: Space.sm),
                   OutlinedButton(
                     onPressed: () => _openJustifySheet(context, ref),
                     child: const Text('Justificar'),
@@ -191,14 +238,78 @@ class _AttendanceCard extends ConsumerWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(20)),
-            child: Text(
-              _estadoLabels[record.estado] ?? record.estado,
-              style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12),
-            ),
+          const SizedBox(width: Space.sm),
+          StatusPill(label: _estadoLabels[record.estado] ?? record.estado, color: color),
+        ],
+      ),
+    );
+  }
+}
+
+const _justEstadoLabels = {
+  'pendiente': 'Justificación pendiente',
+  'aprobada': 'Justificación aprobada',
+  'rechazada': 'Justificación rechazada',
+};
+const _justEstadoColors = {
+  'pendiente': AppColors.naranjaLight,
+  'aprobada': AppColors.verdeLight,
+  'rechazada': AppColors.rojoLight,
+};
+
+class _JustificationBox extends StatelessWidget {
+  const _JustificationBox({required this.justificacion});
+  final Justification justificacion;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = _justEstadoColors[justificacion.estado] ?? scheme.outline;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(Space.md),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(Radii.md),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _justEstadoLabels[justificacion.estado] ?? justificacion.estado,
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: color),
+                ),
+              ),
+              if (justificacion.archivoUrl != null)
+                InkWell(
+                  onTap: () => _openJustificante(context, justificacion.archivoUrl!),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.attach_file_rounded, size: 16, color: scheme.primary),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Ver justificante',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: scheme.primary),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
+          const SizedBox(height: 4),
+          Text(justificacion.motivo, style: Theme.of(context).textTheme.bodySmall),
+          if (justificacion.estado == 'rechazada' && (justificacion.motivoRechazo?.isNotEmpty ?? false)) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Motivo del rechazo: ${justificacion.motivoRechazo}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ],
         ],
       ),
     );
@@ -261,50 +372,99 @@ class _PendingJustificationsTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(pendingJustificationsProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: items.length,
             itemBuilder: (context, i) {
               final pj = items[i];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('${pj.nombreEstudiante} · ${pj.nombreModulo}',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      Text(pj.fecha, style: Theme.of(context).textTheme.bodySmall),
-                      const SizedBox(height: 8),
-                      Text(pj.motivo),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () => _resolve(context, ref, pj, false),
-                              style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFFEF4444)),
-                              child: const Text('Rechazar'),
+              return AppCard(
+                margin: const EdgeInsets.only(bottom: Space.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${pj.nombreEstudiante} · ${pj.nombreModulo}',
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 4),
+                    Text(pj.fecha, style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(height: Space.sm),
+                    Text(pj.motivo),
+                    if (pj.archivoUrl != null) ...[
+                      const SizedBox(height: Space.sm),
+                      InkWell(
+                        onTap: () => _openJustificante(context, pj.archivoUrl!),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.attach_file_rounded, size: 16, color: Theme.of(context).colorScheme.primary),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Ver justificante',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: FilledButton(
-                              onPressed: () => _resolve(context, ref, pj, true),
-                              child: const Text('Aprobar'),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
-                  ),
+                    const SizedBox(height: Space.md),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => _resolve(context, ref, pj, false),
+                            style: OutlinedButton.styleFrom(foregroundColor: AppColors.rojoLight),
+                            child: const Text('Rechazar'),
+                          ),
+                        ),
+                        const SizedBox(width: Space.sm),
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: () => _resolve(context, ref, pj, true),
+                            child: const Text('Aprobar'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               );
             },
           ),
         );
       },
+    );
+  }
+}
+
+/// Shared bottom-sheet chrome — rounded top, drag handle, consistent
+/// padding — instead of each screen wiring up its own raw Padding+Column.
+class _Sheet extends StatelessWidget {
+  const _Sheet({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 36,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: Space.lg),
+            decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+          ),
+          child,
+        ],
+      ),
     );
   }
 }

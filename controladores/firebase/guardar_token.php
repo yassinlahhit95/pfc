@@ -9,6 +9,7 @@ require_once __DIR__ . "/../../modelos/directores.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/tutores.php";
+require_once __DIR__ . "/../../modelos/secretarias.php";
 
 ob_clean();
 header('Content-Type: application/json');
@@ -30,7 +31,8 @@ $sessionOk = (
     ($rolUsuario === 'admin'      && !empty($_SESSION['idAdmin'])      && (int)$_SESSION['idAdmin']      === $idUsuario) ||
     ($rolUsuario === 'profesor'   && !empty($_SESSION['idProfesor'])   && (int)$_SESSION['idProfesor']   === $idUsuario) ||
     ($rolUsuario === 'tutor'      && !empty($_SESSION['idTutor'])      && (int)$_SESSION['idTutor']      === $idUsuario) ||
-    ($rolUsuario === 'estudiante' && !empty($_SESSION['idEstudiante']) && (int)$_SESSION['idEstudiante'] === $idUsuario)
+    ($rolUsuario === 'estudiante' && !empty($_SESSION['idEstudiante']) && (int)$_SESSION['idEstudiante'] === $idUsuario) ||
+    ($rolUsuario === 'secretaria' && !empty($_SESSION['idSecretaria']) && (int)$_SESSION['idSecretaria'] === $idUsuario)
 );
 
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
@@ -57,6 +59,9 @@ if (!empty($tokenFCM) && $idUsuario > 0 && !empty($rolUsuario) && $sessionOk) {
             break;
         case 'admin':
             $resultado = actualizarTokenFCMDirector($idUsuario, $tokenFCM);
+            break;
+        case 'secretaria':
+            $resultado = actualizarTokenFCMSecretaria($idUsuario, $tokenFCM);
             break;
     }
 

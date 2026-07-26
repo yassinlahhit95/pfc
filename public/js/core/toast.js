@@ -10,7 +10,11 @@
     var DURATION = 4500;
 
     var CSS = [
-        '#toast-container{position:fixed;bottom:24px;right:24px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}',
+        /* bottom:96px (no solo 24px) deja sitio al FAB del chat flotante
+           (.cw-fab, 56px de alto, anclado también en bottom:24px/right:24px
+           — misma esquina), que si no quedaba tapado por el primer toast de
+           la pila en cualquier pantalla de escritorio. */
+        '#toast-container{position:fixed;bottom:96px;right:24px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}',
         '.toast{display:flex;align-items:flex-start;gap:12px;min-width:300px;max-width:420px;padding:14px 16px 20px;border-radius:14px;',
         'box-shadow:0 8px 32px rgba(0,0,0,.14);font-size:.92rem;font-weight:500;pointer-events:all;position:relative;overflow:hidden;',
         'animation:toastIn .32s cubic-bezier(.34,1.56,.64,1) forwards;}',
@@ -34,7 +38,9 @@
         '.toast.removing{animation:toastOut .22s ease forwards;}',
         '@keyframes toastIn{from{opacity:0;transform:translateX(50px) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}',
         '@keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(50px);}}',
-        '@media(max-width:700px){#toast-container{bottom:max(90px,calc(88px + env(safe-area-inset-bottom,0px)));right:12px;left:12px;align-items:stretch;}.toast{min-width:0;width:100%;}}'
+        /* En móvil el FAB pasa a bottom:max(20px,safe-area), 56px de alto —
+           mismo motivo que arriba, con margen extra para no rozarlo. */
+        '@media(max-width:700px){#toast-container{bottom:max(110px,calc(108px + env(safe-area-inset-bottom,0px)));right:12px;left:12px;align-items:stretch;}.toast{min-width:0;width:100%;}}'
     ].join('');
 
     function injectCSS() {

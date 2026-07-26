@@ -22,7 +22,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo ancho-total">
             <label for="filtroAnuncios">BUSCAR</label>
             <input type="text" id="filtroAnuncios" placeholder="Buscar por título, destinatario o fecha..."
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other">
         </div>
     </div>

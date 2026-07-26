@@ -7,7 +7,8 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../modelos/horarios.php';
 
-if (!Security::validateCSRFToken()) {
+// rotate=false — see addFranja.php for why (shared token, no-reload page).
+if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
 }
 

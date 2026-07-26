@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/RateLimiter.php';
 require_once __DIR__ . '/../../include/AccountLockout.php';
+require_once __DIR__ . '/../../include/FeatureGuard.php';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -40,6 +41,18 @@ function v1Error(string $msg, int $httpCode = 400, string $code = 'error'): neve
     http_response_code($httpCode);
     echo json_encode(['ok' => false, 'error' => $msg, 'code' => $code]);
     exit;
+}
+
+// Mirrors FeatureGuard::requirePage() (web) but keeps api/v1's own
+// {ok:false, error, code} response shape instead of FeatureGuard::requireJson()'s
+// {error, feature, blocked} one — the mobile Dio client's error interceptor
+// (api_client.dart) only recognizes the former, so reusing requireJson()
+// directly here would surface every disabled-feature response as a generic
+// "network error" instead of the real message.
+function v1RequireFeature(string $feature): void {
+    if (!FeatureGuard::check($feature)) {
+        v1Error('This feature is disabled for your school.', 403, 'feature_disabled');
+    }
 }
 
 function v1Ok(array $payload, int $httpCode = 200): never {
@@ -124,11 +137,12 @@ function v1Auth(): array {
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
-// CORS: mobile apps have no browser Origin — open CORS is safe since every
-// endpoint still requires a valid Bearer token.
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Authorization, Content-Type');
-header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
+// CORS headers are set exclusively by api/.htaccess (mod_headers "always set") —
+// having both that AND a PHP-side header() call for the same names sent two
+// conflicting Access-Control-Allow-Origin values on every response (one
+// wildcard from here, one origin-specific from .htaccess). Single source of
+// truth now; edit api/.htaccess if the allowed origin/headers/methods need
+// to change.
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);

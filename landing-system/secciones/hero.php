@@ -8,12 +8,15 @@ $parallaxUrl = landing_img_url($contenido['fondoParallax'] ?? '');
 
 $estiloLocal = $styleStr ?? '';
 $claseAdicional = '';
+$campoFondo = '';
 if ($variante === 'fondo' && !$videoUrl) {
     if ($parallaxUrl) {
         $estiloLocal .= 'background-image:url(\'' . Security::escapeHtml($parallaxUrl) . '\'); background-attachment: fixed; background-size: cover; background-position: center;';
         $claseAdicional = ' lp-hero-parallax';
+        $campoFondo = 'fondoParallax';
     } elseif ($imgUrl) {
         $estiloLocal .= 'background-image:url(\'' . Security::escapeHtml($imgUrl) . '\');';
+        $campoFondo = 'imagen';
     }
 }
 // Reconstruye el mismo atributo que $styleInline (style + data-lb-id en preview),
@@ -23,15 +26,22 @@ $estiloFondo = $estiloLocal !== '' ? ' style="' . $estiloLocal . '"' : '';
 if (!empty($preview) && isset($s['idSeccion'])) {
     $estiloFondo .= ' data-lb-id="' . Security::escapeHtml($s['idSeccion']) . '"';
 }
+// Igual que en cifras.php: el campo de imagen de fondo se marca en la propia
+// sección (cubre toda la pantalla), no en un <img> — un click en un hueco
+// libre reemplaza la foto de fondo; un click en el título/subtítulo/botón
+// edita ese campo en su lugar (closest() prioriza el nodo más específico).
+if ($campoFondo !== '') {
+    $estiloFondo .= landing_lb_field($preview, $campoFondo, 'imagen');
+}
 ?>
 <section class="lp-sec lp-hero lp-hero-<?= Security::escapeHtml($variante) ?><?= $claseAdicional ?>" id="hero"<?= $estiloFondo ?>>
   <?php if ($variante === 'promo' && !empty($contenido['promoTexto'])):
       $promoHref = landing_url_segura($contenido['promoUrl'] ?? '', ''); ?>
   <div class="lp-hero-ribbon">
     <?php if ($promoHref !== ''): ?>
-    <a href="<?= Security::escapeHtml($promoHref) ?>"><i class="fas fa-bolt"></i> <?= Security::escapeHtml($contenido['promoTexto']) ?></a>
+    <a href="<?= Security::escapeHtml($promoHref) ?>"><i class="fas fa-bolt"></i> <span<?= landing_lb_field($preview, 'promoTexto') ?>><?= Security::escapeHtml($contenido['promoTexto']) ?></span></a>
     <?php else: ?>
-    <span><i class="fas fa-bolt"></i> <?= Security::escapeHtml($contenido['promoTexto']) ?></span>
+    <span><i class="fas fa-bolt"></i> <span<?= landing_lb_field($preview, 'promoTexto') ?>><?= Security::escapeHtml($contenido['promoTexto']) ?></span></span>
     <?php endif; ?>
   </div>
   <?php endif; ?>
@@ -44,30 +54,28 @@ if (!empty($preview) && isset($s['idSeccion'])) {
   <div class="lp-contenedor lp-hero-inner">
     <div class="lp-hero-texto">
       <?php if (!empty($contenido['eyebrow'])): ?>
-      <span class="lp-eyebrow lp-badge"><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
+      <span class="lp-eyebrow lp-badge"<?= landing_lb_field($preview, 'eyebrow') ?>><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
       <?php endif; ?>
-      <h1><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h1>
+      <h1<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h1>
       <?php if (!empty($contenido['subtitulo'])): ?>
-      <p class="lp-hero-sub"><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+      <p class="lp-hero-sub"<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
       <?php endif; ?>
       <div class="lp-hero-botones">
         <?php if (!empty($contenido['botonTexto'])): ?>
         <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#contacto')) ?>" class="lp-boton-primario lp-boton-grande">
-          <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
+          <span<?= landing_lb_field($preview, 'botonTexto') ?>><?= Security::escapeHtml($contenido['botonTexto']) ?></span> <i class="fas fa-arrow-right"></i>
         </a>
         <?php endif; ?>
         <?php if (!empty($contenido['boton2Texto'])): ?>
         <a href="<?= Security::escapeHtml(landing_url_segura($contenido['boton2Url'] ?? '', '#contacto')) ?>" class="lp-boton-borde lp-boton-grande">
-          <?= Security::escapeHtml($contenido['boton2Texto']) ?>
+          <span<?= landing_lb_field($preview, 'boton2Texto') ?>><?= Security::escapeHtml($contenido['boton2Texto']) ?></span>
         </a>
         <?php endif; ?>
       </div>
     </div>
     <?php if (($variante === 'split' || $variante === 'promo') && $imgUrl): ?>
-    <div class="lp-hero-visual" style="position: relative;">
-      <div class="lp-badge lp-badge-float" style="position: absolute; top: -10px; left: -20px; z-index: 10; animation-delay: 0s;">⭐ 98% Inserción Laboral</div>
-      <div class="lp-badge lp-badge-float" style="position: absolute; bottom: 20px; right: -20px; z-index: 10; animation-delay: 2s;">🎓 Formación Oficial</div>
-      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="" style="border-radius: var(--lp-radio); position: relative; z-index: 5; box-shadow: var(--lp-sombra);">
+    <div class="lp-hero-visual">
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt=""<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
     </div>
     <?php endif; ?>
   </div>

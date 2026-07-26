@@ -242,48 +242,50 @@ if ($tfgsSinCalificar > 0) {
   <h2><i class="fas fa-exclamation-triangle" style="color:var(--rojo); margin-right:8px;"></i> Alumnos en Riesgo (Aula Digital)</h2>
   <span class="count">Requieren atención temprana</span>
 </div>
-<div class="panel" style="overflow-x:auto;">
-  <table class="tabla">
-    <thead>
-      <tr>
-        <th>Estudiante</th>
-        <th>Módulo</th>
-        <th>Entregas</th>
-        <th>Nota Media</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach($alumnosRiesgo as $alumno): ?>
+<div class="panel">
+  <div class="contenedor-tabla">
+    <table class="tabla-datos" id="tablaAlumnosRiesgo">
+      <thead>
         <tr>
-          <td>
-            <b><?= Security::escapeHtml($alumno['nombreEstudiante'] . ' ' . ($alumno['apellidosEstudiante'] ?? '')) ?></b>
-          </td>
-          <td><?= Security::escapeHtml($alumno['nombreModulo']) ?></td>
-          <td>
-            <?= (int)$alumno['tareasEntregadas'] ?> / <?= (int)$alumno['totalTareas'] ?>
-            <?php if ($alumno['totalTareas'] - $alumno['tareasEntregadas'] > 0): ?>
-              <span style="color:var(--rojo); font-size:0.8rem; margin-left:8px;"><i class="fas fa-clock"></i> Faltan <?= $alumno['totalTareas'] - $alumno['tareasEntregadas'] ?></span>
-            <?php endif; ?>
-          </td>
-          <td>
-            <?php if ($alumno['notaMedia'] !== null): ?>
-              <span style="font-weight:600; color:<?= $alumno['notaMedia'] < 5 ? 'var(--rojo)' : 'var(--verde)' ?>"><?= number_format($alumno['notaMedia'], 1) ?></span>
-            <?php else: ?>
-              <span class="texto-suave">Sin calificar</span>
-            <?php endif; ?>
-          </td>
-          <td>
-            <?php if ($alumno['nivelRiesgo'] === 'rojo'): ?>
-              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--rojo-suave); color:var(--rojo-ink); border-radius:999px; font-size:0.85rem; font-weight:600;"><i class="fas fa-circle" style="font-size:0.5rem"></i> Alto Riesgo</span>
-            <?php else: ?>
-              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--naranja-suave); color:var(--naranja-ink); border-radius:999px; font-size:0.85rem; font-weight:600;"><i class="fas fa-circle" style="font-size:0.5rem"></i> Precaución</span>
-            <?php endif; ?>
-          </td>
+          <th>Estudiante</th>
+          <th>Módulo</th>
+          <th>Entregas</th>
+          <th>Nota Media</th>
+          <th>Estado</th>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <?php foreach($alumnosRiesgo as $alumno): ?>
+          <tr>
+            <td>
+              <b><?= Security::escapeHtml($alumno['nombreEstudiante'] . ' ' . ($alumno['apellidosEstudiante'] ?? '')) ?></b>
+            </td>
+            <td><?= Security::escapeHtml($alumno['nombreModulo']) ?></td>
+            <td>
+              <?= (int)$alumno['tareasEntregadas'] ?> / <?= (int)$alumno['totalTareas'] ?>
+              <?php if ($alumno['totalTareas'] - $alumno['tareasEntregadas'] > 0): ?>
+                <span class="texto-estado rojo" style="margin-left:6px;"><i class="fas fa-clock"></i> Faltan <?= $alumno['totalTareas'] - $alumno['tareasEntregadas'] ?></span>
+              <?php endif; ?>
+            </td>
+            <td>
+              <?php if ($alumno['notaMedia'] !== null): ?>
+                <span class="texto-negrita" style="color:<?= $alumno['notaMedia'] < 5 ? 'var(--rojo)' : 'var(--verde)' ?>"><?= number_format($alumno['notaMedia'], 1) ?></span>
+              <?php else: ?>
+                <span class="texto-suave">Sin calificar</span>
+              <?php endif; ?>
+            </td>
+            <td>
+              <?php if ($alumno['nivelRiesgo'] === 'rojo'): ?>
+                <span class="texto-estado rojo"><i class="fas fa-circle" style="font-size:0.5rem"></i> Alto Riesgo</span>
+              <?php else: ?>
+                <span class="texto-estado naranja"><i class="fas fa-circle" style="font-size:0.5rem"></i> Precaución</span>
+              <?php endif; ?>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
 </div>
 <?php endif; ?>
 <!-- Announcements + Events panels -->
@@ -342,6 +344,9 @@ if ($tfgsSinCalificar > 0) {
 </div>
 
 <script>
+if (typeof iniciarPaginacion === 'function' && document.getElementById('tablaAlumnosRiesgo')) {
+  iniciarPaginacion('tablaAlumnosRiesgo', 10);
+}
 if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   var factor = ((window.TWEAK_DEFAULTS && window.TWEAK_DEFAULTS.animation) || 7) / 10;
   gsap.fromTo('.tile',

@@ -147,7 +147,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($archivo['idArchivo']) ?>, this, 'recursos')"><i class="fas fa-star" style="color:<?= Security::escapeHtml($fav ? '#f59e0b' : '') ?>"></i> <?= Security::escapeHtml($fav ? 'Quitar de favoritos' : 'Añadir a favoritos') ?></button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($archivo['idArchivo']) ?>, this)"><i class="<?= $fav ? 'fas' : 'far' ?> fa-star"></i> <span class="recurso-favorito-label"><?= Security::escapeHtml($fav ? 'Quitar de favoritos' : 'Añadir a favoritos') ?></span></button>
           </div>
         </div>
       </td>

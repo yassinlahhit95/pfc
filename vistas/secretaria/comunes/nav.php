@@ -6,6 +6,7 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
+require_once __DIR__ . "/../../../modelos/admisiones.php";
 require_once __DIR__ . "/../../../include/Cache.php";
 require_once __DIR__ . "/../../../modelos/tours.php";
 
@@ -14,16 +15,19 @@ $nombreUsuario_menu = $datosSecretaria['nombreSecretaria'] ?? 'Secretaria';
 $tourPendiente_menu = !tourEstaCompletado((int)$_SESSION['idSecretaria'], 'secretaria', 'primeros_pasos_v1');
 
 // Badges. total_admisiones_pendientes es idéntico al que ya cachea
-// obtenerContadoresNavAdmin(), así que lo reutilizamos; total_sin_leer aquí
-// filtra además "id_parent IS NULL" (solo hilos raíz), a diferencia del
-// contador de admin, así que se mantiene como consulta propia (cacheada aparte).
-$totalSinLeer_menu = Cache::remember('nav_secretaria_sin_leer', 60, function () {
-    $con = obtenerConexion();
-    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-    return $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
-});
+// obtenerContadoresNavAdmin(), así que lo reutilizamos; total_sin_leer usa
+// contarMensajesNoLeidosSecretaria() (modelos/reclamaciones.php), que filtra
+// además "id_parent IS NULL" (solo hilos raíz) a diferencia del contador de
+// admin — extraída a función para poder reutilizarla también desde el
+// poller compartido controladores/comunes/contar_no_leidos.php.
+$totalSinLeer_menu = contarMensajesNoLeidosSecretaria();
 
 $totalAdmisionesPendientes_menu = obtenerContadoresNavAdmin()['total_admisiones_pendientes'];
+
+// Preview de la campana de notificaciones — mismo patrón que profesor/admin
+// (solo se consulta cuando hay algo pendiente que mostrar).
+$admisionesNotif_menu = $totalAdmisionesPendientes_menu > 0 ? listarPreMatriculasPendientesRecientes(3) : [];
+$totalNotifCampana_menu = $totalSinLeer_menu + $totalAdmisionesPendientes_menu;
 
 function _nav_active_sec($check) {
     global $seccion;
@@ -76,13 +80,7 @@ function _nav_active_sec($check) {
         }
       } catch (e) {}
     </script>
-    <div class="brand">
-      <div class="brand-mark"><span></span></div>
-      <div class="brand-text"><strong>AulaPro</strong><small>Secretaría</small></div>
-      <button class="collapse-btn" id="collapse" aria-label="Contraer menú">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
-      </button>
-    </div>
+    <?php $navBrandSubtitle = 'Secretaría'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
 
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
@@ -262,7 +260,7 @@ function _nav_active_sec($check) {
           <label class="search-modal-bar">
             <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
             <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    data-url="../../../controladores/secretaria/buscar.php" />
             <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
@@ -275,8 +273,72 @@ function _nav_active_sec($check) {
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>
+        <div class="notif-wrap">
+          <button class="icon-btn" id="notif-btn" aria-label="Notificaciones">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="dot" id="notif-dot" data-msgs="<?= (int)$totalNotifCampana_menu ?>"<?= ($totalNotifCampana_menu > 0) ? '' : ' hidden' ?>></span>
+          </button>
+          <div class="notif-panel" id="notif-panel" hidden>
+            <div class="notif-panel-head">Notificaciones</div>
+            <?php if (!empty($admisionesNotif_menu)): ?>
+            <div class="notif-group-title">Admisiones pendientes</div>
+            <?php foreach ($admisionesNotif_menu as $admNotif): ?>
+            <a href="../admisiones/listado.php" class="notif-item">
+              <span class="notif-ico"><i class="fas fa-user-plus"></i></span>
+              <div class="notif-body">
+                <span class="notif-label"><?= Security::escapeHtml($admNotif['nombre'] . ' ' . $admNotif['apellidos']) ?> — <?= Security::escapeHtml($admNotif['nombreCiclo']) ?></span>
+                <span class="notif-time"><?= date('d/m H:i', strtotime($admNotif['fechaSolicitud'])) ?></span>
+              </div>
+              <span class="notif-badge-new">Nuevo</span>
+            </a>
+            <?php endforeach; ?>
+            <?php endif; ?>
+            <?php if ($totalSinLeer_menu > 0): ?>
+            <div class="notif-group-title">Mensajes sin leer</div>
+            <a href="../mensajes/lista.php" class="notif-item">
+              <span class="notif-ico"><i class="fas fa-envelope"></i></span>
+              <div class="notif-body">
+                <span class="notif-label">Tienes <?= (int)$totalSinLeer_menu ?> mensaje(s) sin leer</span>
+              </div>
+            </a>
+            <?php endif; ?>
+            <?php if (empty($admisionesNotif_menu) && $totalSinLeer_menu <= 0): ?>
+            <div class="notif-empty">Sin novedades</div>
+            <?php endif; ?>
+            <div class="notif-footer">
+              <a href="../admisiones/listado.php">Ver admisiones</a>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
+
+    <?php if (isset($_SESSION['idSecretaria'])) {
+        $configFB = Config::getInstance();
+    ?>
+      <div id="firebase-user-data"
+           data-user-id="<?= (int)$_SESSION['idSecretaria'] ?>"
+           data-user-role="secretaria"
+           data-api-key="<?= Security::escapeHtml($configFB->get('FIREBASE_API_KEY')) ?>"
+           data-auth-domain="<?= Security::escapeHtml($configFB->get('FIREBASE_AUTH_DOMAIN')) ?>"
+           data-project-id="<?= Security::escapeHtml($configFB->get('FIREBASE_PROJECT_ID')) ?>"
+           data-messaging-sender-id="<?= Security::escapeHtml($configFB->get('FIREBASE_MESSAGING_SENDER_ID')) ?>"
+           data-app-id="<?= Security::escapeHtml($configFB->get('FIREBASE_APP_ID')) ?>"
+           data-database-url="<?= Security::escapeHtml($configFB->get('FIREBASE_DATABASE_URL')) ?>"
+           data-vapid-key="<?= Security::escapeHtml($configFB->get('FIREBASE_VAPID_KEY')) ?>"
+           class="oculto"></div>
+      <script type="module">
+          import { setupFirebase } from '../../../public/js/firebase/firebase.js';
+          const userData = document.getElementById('firebase-user-data');
+          if (userData) {
+              const userId = userData.dataset.userId;
+              const userRole = userData.dataset.userRole;
+              if (userId && userRole) {
+                  setupFirebase(userId, userRole);
+              }
+          }
+      </script>
+    <?php } ?>
 
     <?php // Las vistas de secretaría definen $seccion (no $seccionActual)
     if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):

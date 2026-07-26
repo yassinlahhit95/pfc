@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
     exit;
 }
 
-$campos = ['nombreCentro','codigoCentro','direccionCentro','ciudadCentro',
+$campos = ['nombreCentro','codigoCentro','nifCifCentro','direccionCentro','ciudadCentro',
            'cpCentro','telefonoCentro','emailCentro','cursoEscolar',
            'textoLegal','nombreDirectorFirmante'];
 $datos = [];

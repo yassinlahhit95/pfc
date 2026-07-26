@@ -5,6 +5,9 @@
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../modelos/notificaciones.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -68,20 +71,52 @@ if (isset($_POST['actualizarProfesor'])) {
         $idCicloTutor = $esTutor ? (int)($_POST['idCicloTutor'] ?? 0) : 0;
         actualizarTutorStatus($idProfesor, $esTutor, $idCicloTutor ?: null);
 
+        // Snapshot ANTES de limpiar/reinsertar, para notificar al profesor
+        // solo de las asignaciones realmente nuevas (ver comentario en
+        // obtenerIdsCiclosDirectosProfesor()).
+        $ciclosAntes  = obtenerIdsCiclosDirectosProfesor($idProfesor);
+        $modulosAntes = obtenerIdsModulosDirectosProfesor($idProfesor);
+
         limpiarCiclosProfesor($idProfesor);
+        $ciclosSeleccionados = [];
         if (isset($_POST['ciclos']) && is_array($_POST['ciclos'])) {
             foreach ($_POST['ciclos'] as $idCic) {
                 $idCic = (int)$idCic;
-                if ($idCic > 0) asociarCicloProfesor($idCic, $idProfesor);
+                if ($idCic > 0) {
+                    asociarCicloProfesor($idCic, $idProfesor);
+                    $ciclosSeleccionados[] = $idCic;
+                }
             }
         }
         limpiarModulosProfesor($idProfesor);
+        $modulosSeleccionados = [];
         if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
             foreach ($_POST['modulos'] as $idMod) {
                 $idMod = (int)$idMod;
-                if ($idMod > 0) asociarModuloProfesor($idMod, $idProfesor);
+                if ($idMod > 0) {
+                    asociarModuloProfesor($idMod, $idProfesor);
+                    $modulosSeleccionados[] = $idMod;
+                }
             }
         }
+
+        foreach (array_diff($ciclosSeleccionados, $ciclosAntes) as $idCicNuevo) {
+            $cicloInfo = obtenerCicloPorId($idCicNuevo);
+            if ($cicloInfo) {
+                crearNotificacion($idProfesor, 'profesor', 'ciclo_asignado',
+                    'Se te ha asignado un nuevo ciclo: ' . $cicloInfo['nombreCiclo'],
+                    '../../../vistas/profesores/inicio/dashboard.php');
+            }
+        }
+        foreach (array_diff($modulosSeleccionados, $modulosAntes) as $idModNuevo) {
+            $moduloInfo = obtenerModuloPorId($idModNuevo);
+            if ($moduloInfo) {
+                crearNotificacion($idProfesor, 'profesor', 'modulo_asignado',
+                    'Se te ha asignado un nuevo módulo: ' . $moduloInfo['nombreModulo'],
+                    '../../../vistas/profesores/inicio/dashboard.php');
+            }
+        }
+
         $_SESSION['exito'] = "El profesor ha sido actualizado correctamente.";
         header("Location: ../../../vistas/admin/profesores/verProfesores.php");
         exit;

@@ -150,24 +150,12 @@ class AulaAnalytics {
     /**
      * Eventos personalizados
      */
-    trackBusqueda(query) {
-        this.track('busqueda', { query });
-    }
-
-    trackPaginacion(pagina, total) {
-        this.track('paginacion', { pagina, total });
-    }
-
     trackTabSwitch(tabName) {
         this.track('tab_switch', { tab: tabName });
     }
 
     trackModalOpen(modalName) {
         this.track('modal_open', { modal: modalName });
-    }
-
-    trackTemaChange(tema) {
-        this.track('tema_change', { tema });
     }
 }
 

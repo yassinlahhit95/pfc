@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_exception.dart';
+import '../theme/app_theme.dart';
 
 /// Renders an [AsyncValue] with consistent loading/error/data handling
 /// across every feature screen, so each screen only has to describe its
@@ -22,7 +23,7 @@ class AsyncView<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return value.when(
       data: (d) => data(context, d),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2.4)),
       error: (error, stack) {
         // Unexpected (non-API) errors are logged with their real type +
         // stack trace — the UI only ever shows a friendly fallback message,
@@ -52,18 +53,28 @@ class ErrorRetry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(Space.xxxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, size: 40),
-            const SizedBox(height: 12),
-            Text(_message, textAlign: TextAlign.center),
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(color: scheme.error.withValues(alpha: 0.08), shape: BoxShape.circle),
+              child: Icon(Icons.wifi_off_rounded, size: 24, color: scheme.error),
+            ),
+            const SizedBox(height: Space.lg),
+            Text(
+              _message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+            ),
             if (onRetry != null) ...[
-              const SizedBox(height: 16),
-              FilledButton(onPressed: onRetry, child: const Text('Reintentar')),
+              const SizedBox(height: Space.xl),
+              OutlinedButton(onPressed: onRetry, child: const Text('Reintentar')),
             ],
           ],
         ),
@@ -73,7 +84,8 @@ class ErrorRetry extends StatelessWidget {
 }
 
 /// Matches the web app's `.vacio` pattern — an inline empty state used
-/// inside an existing list/table shell, not a full-panel replacement.
+/// inside an existing list/table shell, not a full-panel replacement. Icon
+/// sits in a soft neutral circle rather than a colored badge.
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
@@ -88,17 +100,23 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(Space.xxxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 40, color: Theme.of(context).colorScheme.outline),
-            const SizedBox(height: 12),
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(color: scheme.surfaceContainerHighest, shape: BoxShape.circle),
+              child: Icon(icon, size: 24, color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: Space.lg),
+            Text(title, style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
             if (description != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: Space.xs),
               Text(
                 description!,
                 textAlign: TextAlign.center,

@@ -34,7 +34,7 @@ require_once __DIR__ . '/../comunes/nav.php';
     </div>
     <div class="chat-search">
       <input type="text" placeholder="Buscar conversación..." id="sidebar-search"
-        autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+        autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
         data-lpignore="true" data-1p-ignore="true" data-form-type="other">
     </div>
     <div class="chat-conv-list">

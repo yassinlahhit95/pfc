@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "204025751806",
+    "firebase_url": "https://pfc1-5c23c-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "pfc1-5c23c",
+    "storage_bucket": "pfc1-5c23c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204025751806:android:ca9cd7c3c2663ffb3c9daf",
+        "android_client_info": {
+          "package_name": "com.aulapro.aulapro_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmpTZP6M903LVEEtSArVwyf2KQeyTu5Fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

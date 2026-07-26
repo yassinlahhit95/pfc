@@ -117,8 +117,17 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idReto"   value="<?= $idRetoElegido ?>">
         <input type="hidden" name="idCiclo"  value="<?= $idCicloElegido ?>">
         <input type="hidden" name="idModulo" value="0">
+        <?php if (!empty($listaEstudiantes)): ?>
+        <div class="campo" style="margin-bottom:14px;max-width:320px;">
+            <input type="text" id="buscarEstudianteReto" class="buscador"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   placeholder="Buscar estudiante…"
+                   oninput="filtrarTabla('buscarEstudianteReto','tablaCalifRetos')">
+        </div>
+        <?php endif; ?>
         <div class="contenedor-tabla">
-            <table class="tabla-datos">
+            <table class="tabla-datos" id="tablaCalifRetos">
                 <thead>
                     <tr>
                         <th>Estudiante</th>
@@ -179,6 +188,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <script>
+$(function() { if (typeof iniciarPaginacion === 'function') iniciarPaginacion('tablaCalifRetos', 30); });
+
 function actualizarRetoInput(inp) {
     var valor = inp.value.trim().replace(',', '.');
     var numero = parseFloat(valor);

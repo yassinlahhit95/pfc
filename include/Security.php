@@ -54,7 +54,10 @@ class Security {
     // dominio no listado aquí, que es la vía de exfiltración/inyección que
     // más importa si alguna vez se cuela un XSS.
     private static function buildCsp(): string {
-        $imgHosts = "'self' data: https://www.gravatar.com";
+        // images.unsplash.com: fotos de stock usadas como contenido demo por
+        // defecto en las plantillas de landing (landing-system/engine/secciones.php)
+        // — dominio fijo y de confianza, igual de justificado que gravatar.com.
+        $imgHosts = "'self' data: https://www.gravatar.com https://images.unsplash.com";
         // La URL pública de R2 (si está configurada) vive en un dominio que
         // elige quien despliega la app — no se puede fijar en una lista
         // estática, así que se añade en tiempo de ejecución si existe.
@@ -72,7 +75,16 @@ class Security {
             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
             "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com",
             "img-src {$imgHosts}",
-            "connect-src 'self' https://*.googleapis.com",
+            // Sin media-src, este directive cae a default-src 'self' — bloqueaba
+            // por completo el vídeo de demo (videos.pexels.com) usado por
+            // defecto en la sección video_presentacion de las plantillas.
+            "media-src 'self' https://videos.pexels.com",
+            // https://www.gstatic.com aquí es solo para los .js.map de origen
+            // que Chrome DevTools pide en cuanto el panel Sources está abierto,
+            // ya que firebase-app.js/firebase-messaging.js (permitidos en
+            // script-src) se sirven desde ese mismo host — no es un dominio
+            // nuevo de confianza, es el mismo ya admitido para cargar el script.
+            "connect-src 'self' https://*.googleapis.com https://www.gstatic.com",
             "frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com",
             "object-src 'none'",
             "base-uri 'self'",

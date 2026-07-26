@@ -24,12 +24,18 @@ if (!$row) {
     v1Error('User account not found.', 404, 'not_found');
 }
 
-// Attach cycle info for students
+// Attach cycle info for students or professors (if they are a tutor)
 $ciclo = null;
 if ($type === 'estudiante' && !empty($row['idCiclo'])) {
     $sc = mysqli_prepare($con,
         'SELECT idCiclo, nombreCiclo, abreviaturaCiclo FROM ciclos WHERE idCiclo = ? LIMIT 1');
     mysqli_stmt_bind_param($sc, 'i', $row['idCiclo']);
+    mysqli_stmt_execute($sc);
+    $ciclo = mysqli_fetch_assoc(mysqli_stmt_get_result($sc)) ?: null;
+} elseif ($type === 'profesor' && !empty($row['esTutor']) && !empty($row['idCicloTutor'])) {
+    $sc = mysqli_prepare($con,
+        'SELECT idCiclo, nombreCiclo, abreviaturaCiclo FROM ciclos WHERE idCiclo = ? LIMIT 1');
+    mysqli_stmt_bind_param($sc, 'i', $row['idCicloTutor']);
     mysqli_stmt_execute($sc);
     $ciclo = mysqli_fetch_assoc(mysqli_stmt_get_result($sc)) ?: null;
 }

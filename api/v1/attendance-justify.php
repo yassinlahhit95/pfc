@@ -80,7 +80,7 @@ if (!empty($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK)
     }
 }
 
-if (!crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivo)) {
+if (!crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivo, $asistencia['estado'])) {
     v1Error('Could not submit the justification.', 500, 'error');
 }
 v1Ok(['message' => 'Justification submitted.'], 201);

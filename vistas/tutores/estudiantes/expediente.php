@@ -29,7 +29,7 @@ if (!$esHijo) {
 }
 
 $titulo_pagina = 'AulaPro Familias — Expediente Académico';
-$seccion       = 'inicio';
+$seccion       = 'hijo';
 include __DIR__ . '/../comunes/nav.php';
 
 $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);

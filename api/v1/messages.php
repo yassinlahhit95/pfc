@@ -21,6 +21,7 @@ $auth = v1Auth();
 if ($type === 'tutor') {
     v1Error('Tutors use the chat endpoint instead of messages.', 403, 'forbidden');
 }
+v1RequireFeature('feature_mensajes');
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -129,6 +130,15 @@ if ($method === 'POST') {
         $idEstudiante = (int)($body['idEstudiante'] ?? 0);
         if ($idEstudiante <= 0) v1Error('idEstudiante is required.', 400, 'validation');
         insertarNuevoMensaje($idEstudiante, $uid, $asunto, $descripcion, 'profesor');
+        v1Ok(['message' => 'Thread created.'], 201);
+    }
+    if ($type === 'director' || $type === 'secretaria') {
+        $idEstudiante = isset($body['idEstudiante']) ? (int)$body['idEstudiante'] : 0;
+        $idProfesor   = isset($body['idProfesor']) ? (int)$body['idProfesor'] : 0;
+        if ($idEstudiante <= 0 && $idProfesor <= 0) {
+            v1Error('idEstudiante or idProfesor is required.', 400, 'validation');
+        }
+        insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, 'admin');
         v1Ok(['message' => 'Thread created.'], 201);
     }
 

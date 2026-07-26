@@ -57,13 +57,13 @@ if (insertarRespuestaMensaje($idReclamacion, (int)$_SESSION['idEstudiante'], nul
     if ($mensaje['emisor_rol'] === 'profesor' && !empty($mensaje['idProfesor'])) {
         $token = obtenerTokenUsuario($mensaje['idProfesor'], 'profesor');
         if ($token) {
-            enviarNotificacionFirebase($token, "Respuesta a tu mensaje", $mensaje['asunto']);
+            enviarNotificacionFirebase($token, "Respuesta a tu mensaje", $mensaje['asunto'], 'message', ['idReclamacion' => $idReclamacion]);
         }
     } elseif ($mensaje['emisor_rol'] === 'admin') {
         $con  = obtenerConexion();
         $dirs = mysqli_query($con, "SELECT fcm_token FROM directores WHERE fcm_token IS NOT NULL AND fcm_token != ''");
         while ($d = mysqli_fetch_assoc($dirs)) {
-            enviarNotificacionFirebase($d['fcm_token'], "Respuesta de estudiante", $mensaje['asunto']);
+            enviarNotificacionFirebase($d['fcm_token'], "Respuesta de estudiante", $mensaje['asunto'], 'message', ['idReclamacion' => $idReclamacion]);
         }
     }
 

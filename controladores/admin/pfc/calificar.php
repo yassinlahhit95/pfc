@@ -31,10 +31,14 @@ if (isset($_POST['calificarTFG'])) {
             if (!empty($_POST['notificarEstudiante'])) {
                 require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
                 require_once __DIR__ . "/../../firebase/firebase_helper.php";
+                require_once __DIR__ . "/../../../modelos/notificaciones.php";
                 enviarEmailCalificacionTFG($idEstudiante);
+                crearNotificacion($idEstudiante, 'estudiante', 'grade_tfg',
+                    'Tu TFG ha sido calificado con un ' . $nota . ' sobre 10.',
+                    '../../../vistas/estudiantes/pfc/lista.php');
                 $tokenEstudiante = obtenerTokenUsuario($idEstudiante, 'estudiante');
                 if ($tokenEstudiante) {
-                    enviarNotificacionFirebase($tokenEstudiante, "Calificación TFG", "Tu TFG ha sido calificado con un " . $nota . " sobre 10.");
+                    enviarNotificacionFirebase($tokenEstudiante, "Calificación TFG", "Tu TFG ha sido calificado con un " . $nota . " sobre 10.", 'grade_tfg');
                 }
             }
             $_SESSION['exito'] = "La calificación del TFG ha sido guardada correctamente.";

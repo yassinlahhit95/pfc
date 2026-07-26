@@ -10,7 +10,13 @@ require_once __DIR__ . '/../../../modelos/horarios.php';
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (!Security::validateCSRFToken()) {
+// rotate=false — horario.php is a single-page drag-and-drop UI that never
+// reloads between actions, reusing one shared CSRF token for the whole
+// session (see public/js/features/horario.js). The default rotate=true
+// would delete that token after the first successful call, breaking every
+// action after it with "Token de seguridad inválido" (same bug class
+// documented in CLAUDE.md for the landing builder).
+if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
 }
 

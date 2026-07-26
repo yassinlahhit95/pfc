@@ -50,9 +50,10 @@
 .tema-universidad .lp-hero-velo { background: rgba(0, 34, 82, 0.5); backdrop-filter: none; -webkit-backdrop-filter: none; }
 .tema-universidad .lp-hero::before, .tema-universidad .lp-hero::after { display: none; } /* Sin blobs modernos */
 
-/* Cifras limpias e integradas */
-.tema-universidad .lp-cifras {
-  background: var(--lp-fondo-alt) !important;
+/* Cifras limpias e integradas (no aplica a la variante "foto": ver nota
+   sobre !important en tema-clasico.css — ya no hace falta). */
+.tema-universidad .lp-cifras:not(.lp-variante-foto) {
+  background: var(--lp-fondo-alt);
   border-top: 4px solid var(--lp-acento);
 }
 .tema-universidad .lp-cifra-numero { color: var(--lp-acento); font-weight: 800; }
@@ -99,72 +100,71 @@
   border-color: #fff;
 }
 
-/* Secciones específicas tipo "Personas e instituciones" */
-/* En el ejemplo de Deusto, hay bloques azules completos con tarjetas de bordes blancos finos */
-.tema-universidad .lp-sec:nth-child(even) {
+/* Secciones "bloque azul sólido" tipo Deusto: antes era por posición
+   (nth-child(even), coloreaba una de cada dos secciones al azar según el
+   orden del admin); ahora es deliberado, sobre los tipos de sección donde
+   un bloque de color sólido tiene sentido editorial (cifras, becas, equipo,
+   testimonios, FAQ) — oferta, instalaciones, contacto y fp_dual se quedan
+   siempre con fondo claro/tarjeta porque su contenido (fotos, formulario,
+   mapa) no funciona bien sobre un fondo de color plano. */
+.tema-universidad .lp-cifras:not(.lp-variante-foto),
+.tema-universidad .lp-becas:not(.lp-variante-foto),
+.tema-universidad .lp-equipo,
+.tema-universidad .lp-testimonios,
+.tema-universidad .lp-faq {
   background: var(--lp-acento);
   color: #ffffff;
 }
-.tema-universidad .lp-sec:nth-child(even) .lp-sec-cabecera h2,
-.tema-universidad .lp-sec:nth-child(even) .lp-sec-cabecera p,
-.tema-universidad .lp-sec:nth-child(even) .lp-tarjeta h3,
-.tema-universidad .lp-sec:nth-child(even) .lp-tarjeta p,
-.tema-universidad .lp-sec:nth-child(even) .lp-testimonio-texto,
-.tema-universidad .lp-sec:nth-child(even) .lp-faq-item h3,
-.tema-universidad .lp-sec:nth-child(even) .lp-faq-item p,
-.tema-universidad .lp-sec:nth-child(even) .lp-faq-item summary {
+.tema-universidad .lp-cifras:not(.lp-variante-foto) { border-top: none; } /* el filete de acento no pinta sobre fondo ya del mismo acento */
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-sec-cabecera h2,
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-sec-cabecera p,
+.tema-universidad .lp-equipo .lp-sec-cabecera h2,
+.tema-universidad .lp-equipo .lp-sec-cabecera p,
+.tema-universidad .lp-testimonios .lp-sec-cabecera h2,
+.tema-universidad .lp-testimonios .lp-sec-cabecera p,
+.tema-universidad .lp-faq .lp-sec-cabecera h2,
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-tarjeta h3,
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-tarjeta p,
+.tema-universidad .lp-testimonios .lp-testimonio-texto,
+.tema-universidad .lp-faq .lp-faq-item h3,
+.tema-universidad .lp-faq .lp-faq-item p,
+.tema-universidad .lp-faq .lp-faq-item summary {
   color: #ffffff;
 }
-/* .lp-contacto y el párrafo intro de .lp-fpdual no van en tarjeta (fondo
-   propio) como el resto de secciones — su texto usa var(--lp-texto)/
-   var(--lp-texto-suave) directamente, así que si caen en una posición par
-   quedan casi ilegibles (texto oscuro sobre el azul de acento). Mismo motivo
-   para .lp-equipo-cargo (un <span>, fuera del alcance de ".lp-tarjeta h3/p"),
-   .lp-becas-nota (un <p> suelto, fuera de cualquier .lp-tarjeta) y el nombre
-   / rol dentro de .lp-testimonio-autor (un <strong>/<span>, no un <p>). */
-.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato strong,
-.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato span,
-.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato a,
-.tema-universidad .lp-sec:nth-child(even) .lp-contacto-form label,
-.tema-universidad .lp-sec:nth-child(even) .lp-fpdual-texto > p,
-.tema-universidad .lp-sec:nth-child(even) .lp-equipo-cargo,
-.tema-universidad .lp-sec:nth-child(even) .lp-becas-nota,
-.tema-universidad .lp-sec:nth-child(even) .lp-testimonio-autor strong,
-.tema-universidad .lp-sec:nth-child(even) .lp-testimonio-autor span {
+/* .lp-equipo-cargo (un <span>, fuera de ".lp-tarjeta h3/p"), .lp-becas-nota
+   (un <p> suelto fuera de cualquier .lp-tarjeta) y el nombre/rol dentro de
+   .lp-testimonio-autor (un <strong>/<span>, no un <p>) quedan fuera de los
+   selectores de arriba y necesitan su propia línea. */
+.tema-universidad .lp-equipo-cargo,
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-becas-nota,
+.tema-universidad .lp-testimonios .lp-testimonio-autor strong,
+.tema-universidad .lp-testimonios .lp-testimonio-autor span {
   color: #ffffff;
 }
-.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato a:hover {
-  color: rgba(255, 255, 255, .8);
-}
-.tema-universidad .lp-sec:nth-child(even) .lp-tarjeta,
-.tema-universidad .lp-sec:nth-child(even) .lp-testimonio-card,
-.tema-universidad .lp-sec:nth-child(even) .lp-faq-item {
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-tarjeta,
+.tema-universidad .lp-equipo .lp-tarjeta,
+.tema-universidad .lp-testimonios .lp-testimonio-card,
+.tema-universidad .lp-faq .lp-faq-item {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.4);
   box-shadow: none;
 }
-.tema-universidad .lp-sec:nth-child(even) .lp-tarjeta:hover,
-.tema-universidad .lp-sec:nth-child(even) .lp-testimonio-card:hover {
+.tema-universidad .lp-becas:not(.lp-variante-foto) .lp-tarjeta:hover,
+.tema-universidad .lp-equipo .lp-tarjeta:hover,
+.tema-universidad .lp-testimonios .lp-testimonio-card:hover {
   background: rgba(255,255,255,0.05);
   border-color: #ffffff;
 }
-.tema-universidad .lp-sec:nth-child(even) .lp-testimonio-autor {
+.tema-universidad .lp-testimonios .lp-testimonio-autor {
   border-color: rgba(255,255,255,.3);
 }
-/* El icono del acordeón FAQ tiene su propio color explícito en base.css
-   (var(--lp-texto-suave), un gris apagado) — sin esto se quedaba casi
-   invisible sobre el azul sólido de una sección par. */
-.tema-universidad .lp-sec:nth-child(even) .lp-faq-item summary i {
-  color: rgba(255, 255, 255, .85);
-}
-.tema-universidad .lp-sec:nth-child(even) .lp-faq-item[open] summary i {
-  color: #ffffff;
-}
+.tema-universidad .lp-faq .lp-faq-item summary::after { color: rgba(255, 255, 255, .85); }
+.tema-universidad .lp-faq .lp-faq-item[open] summary::after { color: #ffffff; }
 
 /* En modo oscuro, base.css pone --lp-fondo en un azul casi negro (#0f172a).
    El navy por defecto de este tema (--lp-acento: #003c8f) es también oscuro,
-   así que el nav sólido y las secciones pares "desaparecen" contra el fondo
-   de página en vez de destacar como bloques corporativos. Aclarar el propio
+   así que el nav sólido y estos bloques "desaparecen" contra el fondo de
+   página en vez de destacar como bloques corporativos. Aclarar el propio
    --lp-acento no sirve aquí: el texto blanco que ya llevan encima perdería
    contraste al mismo ritmo que gana el fondo (mismo problema, solo movido).
    Un borde claro sutil resuelve la separación sin tocar ni el acento
@@ -172,16 +172,22 @@
 [data-theme="dark"] .tema-universidad .lp-nav {
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .18);
 }
-[data-theme="dark"] .tema-universidad .lp-sec:nth-child(even) {
+[data-theme="dark"] .tema-universidad .lp-cifras:not(.lp-variante-foto),
+[data-theme="dark"] .tema-universidad .lp-becas:not(.lp-variante-foto),
+[data-theme="dark"] .tema-universidad .lp-equipo,
+[data-theme="dark"] .tema-universidad .lp-testimonios,
+[data-theme="dark"] .tema-universidad .lp-faq {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 -1px 0 rgba(255, 255, 255, .14);
 }
 
-/* -- MODERNIZATION: Brutalism & Offsets -- */
-.tema-universidad .lp-boton, .tema-universidad .lp-card {
-  border: 2px solid var(--lp-texto);
+/* Botones y tarjetas con borde marcado + desplazamiento al hover (brutalista).
+   Clases reales son .lp-boton-primario/.lp-boton-borde y .lp-tarjeta — las
+   reglas anteriores apuntaban a ".lp-boton"/".lp-card", que no existen en
+   ningún render y nunca llegaban a aplicarse. */
+.tema-universidad .lp-boton-primario, .tema-universidad .lp-boton-borde, .tema-universidad .lp-tarjeta {
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.tema-universidad .lp-boton:hover, .tema-universidad .lp-boton-primario:hover {
+.tema-universidad .lp-boton-primario:hover {
   transform: translate(6px, 6px);
   box-shadow: 0px 0px 0px transparent !important;
 }

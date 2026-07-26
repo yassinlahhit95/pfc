@@ -134,9 +134,6 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
             <h3 style="margin:0 0 4px 0; font-size:1.2rem; color:var(--text);"><i class="fas fa-calendar-check" style="color:var(--verde);"></i> Mi Asistencia (Últimos 30 días)</h3>
             <p style="margin:0; color:var(--dim); font-size:0.9rem;">Días lectivos recientes</p>
         </div>
-        <a href="../aula/registrar_asistencia.php" class="boton-primario btn-pequeno">
-            <i class="fas fa-qrcode"></i> Registrar Hoy
-        </a>
     </div>
 
     <div style="display:flex; flex-wrap:wrap; gap:8px;">

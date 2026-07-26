@@ -47,10 +47,6 @@ public/uploads/pfc/*
 public/uploads/retos/*
 !public/uploads/retos/.htaccess
 
-!public/uploads/ejercicios/
-public/uploads/ejercicios/*
-!public/uploads/ejercicios/.htaccess
-
 # Logs
 logs/
 !logs/.htaccess
@@ -68,3 +64,11 @@ Thumbs.db
 # Temp / test files
 *.tmp
 *.bak
+
+# Mobile keys and services (never commit)
+mobile/android/app/google-services.json
+mobile/ios/Runner/GoogleService-Info.plist
+mobile/android/key.properties
+mobile/**/*.keystore
+mobile/**/*.jks
+mobile/.env

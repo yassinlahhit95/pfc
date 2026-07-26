@@ -88,9 +88,9 @@ function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion,
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "iissss", $valorEstudiante, $valorProfesor, $rolEmisor, $asunto, $descripcion, $fechaHoraActual);
 
-    $resultado = mysqli_stmt_execute($stmt);
-    
-    return $resultado;
+    if (!mysqli_stmt_execute($stmt)) return false;
+
+    return (int)mysqli_insert_id($con);
 }
 
 function listarMensajesDeEstudiante($idEstudiante) {
@@ -195,6 +195,20 @@ function contarMensajesDeProfesor($idProfesor) {
     $fila = mysqli_fetch_assoc($resultado);
     
     return intval($fila['total']);
+}
+
+// Idéntica base que contarMensajesNoLeidosAdmin() pero filtrando solo hilos
+// raíz (id_parent IS NULL) — extraída de la consulta que antes vivía inline
+// en vistas/secretaria/comunes/nav.php, para poder reutilizarla también
+// desde el poller compartido (controladores/comunes/contar_no_leidos.php),
+// que hasta ahora no soportaba secretaría en absoluto.
+function contarMensajesNoLeidosSecretaria() {
+    return Cache::remember('no_leidos_secretaria', 10, function () {
+        $con = obtenerConexion();
+        $sql = "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))";
+        $resultado = mysqli_query($con, $sql);
+        return $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
+    });
 }
 
 function contarMensajesNoLeidosEstudiante($idEstudiante) {

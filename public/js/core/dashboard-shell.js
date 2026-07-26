@@ -117,7 +117,13 @@
 
     if (!input || !list) return;
 
-    input.setAttribute('autocomplete', 'off');
+    // Do NOT touch autocomplete here — the HTML already sets the hardened
+    // value (autocomplete="one-time-code", per CLAUDE.md's search-input
+    // convention). This used to reset it to plain "off" on every page load,
+    // silently undoing that fix and letting Chrome's own password-manager
+    // UI (key icon / saved-password suggestions) show up over the search
+    // results again — plain "off" is the exact value already proven not to
+    // work reliably on this class of input.
 
     var rawUrl = input.dataset.url;
     if (!rawUrl) return;
@@ -170,6 +176,20 @@
     if (trigger) trigger.addEventListener("click", openMobileSearch);
     if (closeBtn) closeBtn.addEventListener("click", closeMobileSearch);
     if (backdrop) backdrop.addEventListener("click", closeMobileSearch);
+
+    // El icono de la lupa (y el resto de la barra fuera del propio <input>)
+    // dependía solo del comportamiento nativo de <label> para enfocar el
+    // input al hacer click — con un <button> (search-close) y un <kbd>
+    // también dentro de la misma etiqueta, ese enfoque implícito no es fiable
+    // en todos los casos. Se fuerza el foco explícitamente para que el icono
+    // sea un punto de click real y no una zona muerta junto al input.
+    var searchBar = getEl(".search-modal-bar");
+    if (searchBar) {
+      searchBar.addEventListener("click", function (e) {
+        if (e.target === input || e.target.closest("#search-close")) return;
+        input.focus();
+      });
+    }
 
     input.addEventListener("focus", function () {
       var q = input.value.trim();
@@ -265,6 +285,39 @@
         });
         seenIds = seenIds.slice(-50);
         try { localStorage.setItem(SEEN_KEY, JSON.stringify(seenIds)); } catch (e) {}
+
+        /* Notificaciones genéricas (modelos/notificaciones.php) + notificaciones
+           de aula (modelos/aula.php: aula_notificaciones — tarea nueva, sesión
+           nueva, archivo subido, entrega enviada/corregida): a diferencia de
+           los mensajes (que se marcan leídos al navegar al hilo), el panel ya
+           muestra su contenido completo, así que verlas aquí cuenta como
+           "vistas" — se marcan leídas de verdad en servidor (no solo con un
+           localStorage como los pagos de arriba) para que no reaparezcan en
+           la próxima carga de página. */
+        var parseIdList = function (raw) {
+          return raw ? raw.split(",").map(function (s) { return parseInt(s, 10); }).filter(Boolean) : [];
+        };
+        var notifIds = parseIdList(panel.dataset.notifIds || "");
+        var aulaNotifIds = parseIdList(panel.dataset.aulaNotifIds || "");
+        if (notifIds.length || aulaNotifIds.length) {
+          panel.querySelectorAll(".notif-item .notif-badge-new").forEach(function (b) { b.hidden = true; });
+          panel.dataset.notifIds = "";
+          panel.dataset.aulaNotifIds = "";
+          var csrfEl = getEl('[name="modal_csrf"]');
+          var csrf = csrfEl ? csrfEl.value : "";
+          var body = new URLSearchParams();
+          notifIds.forEach(function (id) { body.append("ids[]", id); });
+          aulaNotifIds.forEach(function (id) { body.append("aula_ids[]", id); });
+          body.append("csrf_token", csrf);
+          fetch(resolveAppPath("controladores/comunes/notificaciones_marcar_leidas.php"), {
+            method: "POST", credentials: "same-origin", body: body
+          }).catch(function () {});
+          if (dot) {
+            var restante = Math.max(0, parseInt(dot.dataset.msgs || "0", 10) - notifIds.length - aulaNotifIds.length);
+            dot.dataset.msgs = restante;
+          }
+        }
+
         /* Hide dot only if there are no current unread messages */
         if (dot && parseInt(dot.dataset.msgs || "0", 10) <= 0) dot.setAttribute("hidden", "");
       }
@@ -321,6 +374,43 @@
       title.addEventListener("click", toggle);
       title.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+      });
+    });
+  }
+
+  /* ── Collapsible nav sub-groups (e.g. "Configuración" > Página Web, Blog…) ── */
+  function initNavGroups() {
+    var nav = getEl("#sidebar-nav");
+    if (!nav) return;
+    var KEY = "aulapro_nav_groups";
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+
+    var toggles = nav.querySelectorAll(".nav-group-toggle");
+    Array.prototype.forEach.call(toggles, function (toggle) {
+      var group = toggle.closest(".nav-group");
+      var submenu = group ? group.querySelector(".nav-submenu") : null;
+      if (!submenu) return;
+      var name = (toggle.textContent || "").trim();
+      var items = Array.prototype.slice.call(submenu.querySelectorAll(".nav-item"));
+      if (!items.length) return;
+
+      function apply(collapsed) {
+        toggle.classList.toggle("collapsed", collapsed);
+        toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        items.forEach(function (it) { it.classList.toggle("nav-collapsed", collapsed); });
+      }
+
+      // Never start collapsed if the active page lives inside this group.
+      var hasActive = items.some(function (it) { return it.classList.contains("active"); });
+      var collapsed = !hasActive && saved[name] === true;
+      apply(collapsed);
+
+      toggle.addEventListener("click", function () {
+        collapsed = !collapsed;
+        apply(collapsed);
+        saved[name] = collapsed;
+        try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
       });
     });
   }
@@ -433,6 +523,7 @@
 
     /* Collapsible nav categories (+/-) */
     initNavSections();
+    initNavGroups();
 
     /* Search */
     initSearch();

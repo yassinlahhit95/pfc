@@ -1,7 +1,7 @@
 name: aulapro_mobile
 description: AulaPro mobile app — Flutter client for all 5 roles (admin, profesor, secretaria, estudiante, tutor), synced via api/v1.
 publish_to: "none"
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -28,6 +28,28 @@ dependencies:
   intl: ^0.19.0
   cupertino_icons: ^1.0.8
   url_launcher: ^6.3.0
+
+  # Inter — the typeface premium SaaS products (Linear, Notion, Vercel,
+  # Stripe) actually use; the default platform Roboto/San Francisco fallback
+  # is a big part of why an app reads as "generic Material template".
+  google_fonts: ^6.2.1
+
+  # Native file picker for entrega uploads (PDF/DOCX/TXT). Pinned to 10.x+,
+  # not the 8.x line pub resolves to by default — 8.x's Android AAR is built
+  # against compileSdk 34, which conflicts with flutter_plugin_android_lifecycle
+  # (a transitive dep of firebase_messaging below) requiring compileSdk 36+.
+  file_picker: ^10.1.2
+
+  # Push notifications. All three no-op gracefully at runtime if
+  # android/app/google-services.json hasn't been added yet (see
+  # NotificationsService) — the manual Firebase-console step is documented
+  # in mobile/README.md, not a build-time requirement.
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.3
+  # FCM only auto-displays a tray notification when the app is backgrounded
+  # or terminated — with the app foregrounded (the common case while
+  # actively using it) nothing appears unless we show one ourselves.
+  flutter_local_notifications: ^22.2.0
 
 dev_dependencies:
   flutter_test:

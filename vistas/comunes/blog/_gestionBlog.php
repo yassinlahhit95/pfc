@@ -23,7 +23,7 @@
         <div class="campo ancho-total">
             <label for="filtro-blog">BUSCAR</label>
             <input type="text" id="filtro-blog" placeholder="Buscar por título, categoría o autor..."
-                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
                    data-lpignore="true" data-1p-ignore="true" data-form-type="other">
         </div>
     </div>

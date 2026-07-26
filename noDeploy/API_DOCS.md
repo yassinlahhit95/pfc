@@ -204,24 +204,34 @@ innecesario el polling agresivo en primer plano.
 
 ---
 
-## Aula digital (`GET /api/v1/classroom.php`, dispatch por `action`)
+## Aula digital (`GET`/`POST /api/v1/classroom.php`, dispatch por `action`)
 
-Alcance móvil deliberadamente reducido a **ver + descargar** — gestión de
-carpetas/archivos (crear/renombrar/mover/versionar/papelera), calificar
-entregas y publicar/despublicar tareas se quedan solo en el panel web (esa
-UX de gestor de archivos por drag&drop no encaja en un móvil). Dirección y
-secretaría tienen acceso de solo lectura a **todos** los módulos (mismo
-permiso de supervisión que ya existe en el panel web); estudiante ve los
-módulos de su ciclo; profesor ve los módulos que imparte; tutor no tiene
-acceso (no está contemplado en el aula digital).
+Alcance móvil: ver + descargar + entregar/calificar + publicar/despublicar +
+sesiones vivas + favoritos. Gestión de carpetas/archivos (crear/renombrar/
+mover/versionar/papelera) se queda solo en el panel web (esa UX de gestor de
+archivos por drag&drop no encaja en un móvil). Dirección y secretaría tienen
+acceso de solo lectura/supervisión a **todos** los módulos (mismo permiso que
+ya existe en el panel web); estudiante ve los módulos de su ciclo; profesor
+ve los módulos que imparte; tutor no tiene acceso (no está contemplado en el
+aula digital).
 
+**GET:**
 - `?action=modules` → `{ modules: [...] }`
 - `?action=folders&idModulo=` → `{ folders: [...] }`
 - `?action=files&idModulo=&idCarpeta=` (idCarpeta opcional, si se omite
-  devuelve todos los archivos del módulo) → `{ files: [...] }`
+  devuelve todos los archivos del módulo) → `{ files: [...] }` — para
+  estudiante, cada archivo incluye `esFavorito: bool`.
 - `?action=tasks&idModulo=` → `{ tasks: [...] }` — para estudiante, cada
   tarea incluye `miEntrega: { nota, estado, comentarioCalificacion, fechaEntrega }`
-  o `null` si no ha entregado
+  o `null` si no ha entregado; para profesor incluye también las tareas en
+  borrador (`publicado: 0`) con `totalEntregas`/`totalCorregidas`.
+- `?action=submission&idTarea=` (solo estudiante) → `{ submission: {...} | null }`
+  — la entrega propia completa (incl. `archivoEntrega`, `respuesta`, `version`).
+- `?action=submissions&idTarea=` (profesor/dirección/secretaría) →
+  `{ submissions: [...] }` — roster completo del ciclo con su entrega (o sin
+  ella).
+- `?action=sessions&idModulo=` → `{ sessions: [...] }`
+- `?action=favorites` (solo estudiante) → `{ favorites: [...] }`
 - `?action=download&id=<idArchivo>&token=<token>` — **el token va como
   query param, no como cabecera `Authorization`**, porque este enlace lo
   abre un visor/navegador externo, no el cliente HTTP propio de la app.
@@ -231,6 +241,26 @@ acceso (no está contemplado en el aula digital).
   — fuerza descarga real, no vista previa en el navegador) vía el mismo
   `FileServer.php::servirArchivo()` que usa el panel web (local heredado si
   existe, si no redirige a una URL firmada de R2).
+
+**POST** (acción va en la query string, `?action=...`, igual que en GET —
+no en el body, para que el multipart de `submit` no choque con `v1Body()`):
+- `?action=submit` (multipart/form-data, solo estudiante) — `idTarea`,
+  `respuesta` opcional, `archivoEntrega` opcional (PDF/DOCX/TXT, máx 20MB).
+  Mismo patrón de subida que `enviarEntrega.php` en el panel web (MIME
+  server-side, nombre aleatorio, R2).
+- `?action=grade` (solo profesor) — `{ idEntrega, nota: 0-10, comentario? }`.
+- `?action=publish` (solo profesor) — `{ idTarea }` — **alterna** el estado
+  publicado/borrador (igual que `publicarTarea.php`, no fija un valor).
+- `?action=create-session` (solo profesor) —
+  `{ idModulo, titulo, descripcion?, fechaSesion, horaSesion, enlaceReunion?, plataforma? }`
+  — mismas validaciones que `crearSesion.php` (`validarFechaHoraSesion`,
+  `validarEnlaceReunion`).
+- `?action=favorite` (solo estudiante) — `{ idArchivo }` — **alterna**
+  favorito/no favorito, devuelve `{ favorito: 0|1 }`.
+
+Toda acción de escritura notifica in-app (`aula_notificaciones`) y por push
+(FCM) a la contraparte relevante — ver la sección de notificaciones push más
+abajo para los `type` usados en cada caso.
 
 ---
 
@@ -243,7 +273,10 @@ acceso (no está contemplado en el aula digital).
     los alumnos del módulo, para poder pasar lista aunque aún no tengan
     registro) · director/secretaria → `403` (usar el panel web)
   - Cada fila `ausente`/`retraso` incluye `justificacion` (la más reciente,
-    o `null`) — bataneado en una sola consulta, no una por fila.
+    o `null`) — bataneado en una sola consulta, no una por fila. Si la
+    justificación tiene un `archivo` adjunto, el objeto incluye también
+    `archivo_url` (resuelto igual que en el panel web: local heredado si
+    existe, si no URL firmada de R2).
 - `POST /api/v1/attendance.php` (solo profesor) —
   `{ idModulo, fecha, registros: [{idEstudiante, estado, observacion?}] }`
   — upsert masivo (reenviar el mismo módulo+fecha actualiza, no duplica).
@@ -260,19 +293,77 @@ acceso (no está contemplado en el aula digital).
 
 ---
 
-## Pagos e inventario (solo director/secretaria)
+## Notificaciones push (FCM)
+
+`POST /api/v1/fcm-token.php` — `{ token: "<fcm registration token>" }`.
+Registra/actualiza el token de este dispositivo para el usuario autenticado
+(cualquiera de los 5 roles). Llamar al iniciar sesión y en cada
+`onTokenRefresh` del SDK de Firebase Messaging. Columna destino resuelta vía
+`V1_USER_MAP` — `token_fcm` para `secretarias`, `fcm_token` para el resto
+(misma asimetría que ya maneja `V1_STRIP`).
+
+El envío real reutiliza `controladores/firebase/firebase_helper.php`
+(`enviarNotificacionFirebase($token, $titulo, $mensaje, $tipo, $extra)`) —
+mismo camino que ya usa el panel web para mensajería/chat/anuncios/aula
+digital/TFG. El payload incluye `data.type` para que el cliente pueda hacer
+deep-link al tocar la notificación:
+
+| `type`               | Origen                                              |
+|-----------------------|------------------------------------------------------|
+| `chat_message`        | Chat directo (`data.conv_id`)                        |
+| `message`              | Mensajería/reclamaciones (`data.idReclamacion`)      |
+| `announcement`         | Anuncios (admin/secretaría)                          |
+| `grade_tfg`            | Calificación de TFG                                   |
+| `entrega_enviada`      | Nueva entrega de un estudiante (al profesor)          |
+| `entrega_calificada`   | Entrega calificada (al estudiante)                    |
+| `aula_archivo_nuevo`   | Nuevos recursos subidos a un módulo                    |
+| `sesion_nueva`         | Nueva sesión viva creada                               |
+| `asistencia_resuelta`  | Justificación de falta resuelta                        |
+
+---
+
+## Pagos e inventario
 
 Alcance móvil de solo lectura por ahora — crear/editar pagos, dar de alta
 dispositivos, etc. se queda en el panel web; prestar/devolver sí está
 disponible (acción de un toque, encaja bien en móvil).
 
-- `GET /api/v1/payments.php?idCiclo=` (opcional) → `{ payments: [...] }`
-- `GET /api/v1/payments.php?pending=1` → `{ pending: [...] }` (estudiantes
-  con saldo pendiente)
+`GET /api/v1/payments.php` — la forma de la respuesta depende del rol:
+- **director/secretaria** → `{ payments: [...] }` (todos), o con
+  `?idCiclo=` filtrado, o con `?pending=1` → `{ pending: [...] }`
+  (estudiantes con saldo pendiente)
+- **estudiante** → `{ payments: [...], estado: {totalPagado, precioCiclo, restante} }`
+  (sus propios pagos)
+- **tutor** → `{ students: [{idEstudiante, nombreEstudiante, payments, estado}, ...] }`
+  (uno por cada hijo vinculado)
+- **profesor** → `403 forbidden`
+
+Inventario (solo director/secretaria):
 - `GET /api/v1/inventory.php?action=devices` → `{ devices: [...] }`
 - `GET /api/v1/inventory.php?action=loans` → `{ loans: [...] }`
 - `POST /api/v1/inventory.php` `{ action: "prestar", idArticulo, idEstudiante }`
 - `POST /api/v1/inventory.php` `{ action: "devolver", idPrestamo }`
+
+---
+
+## Cuenta (todos los roles)
+
+- `POST /api/v1/change-password.php` — `{ current_password, new_password }`.
+  Exige la contraseña actual (a diferencia del flujo web de
+  `must_change_password`, que confía en el login recién completado — este
+  es un cambio voluntario desde una sesión ya autenticada). Misma política
+  que la web (`Security::validatePassword`: 8+ caracteres, mayúscula,
+  minúscula, número) y mismo hashing (bcrypt coste 12). Revoca todos los
+  demás tokens de la cuenta (no el usado en esta petición), para cortar el
+  acceso a cualquier token robado en cuanto el dueño real cambia su clave.
+- `POST /api/v1/profile.php` — edición de datos de contacto propios, por
+  lista blanca estricta por rol (nunca email/rol/id/campos administrativos):
+  - estudiante: `telefonoEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante`
+  - profesor: `telefonoProfesor, direccionProfesor, ciudadProfesor, codigoPostalProfesor`
+  - director: `telefonoDirector, direccionDirector, ciudadDirector, codigoPostalDirector`
+  - tutor: `telefonoTutor`
+  - secretaria: ninguno (el esquema actual no tiene columnas de contacto
+    editables para este rol, solo nombre/email/password)
 
 ---
 
@@ -351,8 +442,9 @@ móvil ni ningún cliente de usuario final.
   el cuerpo JSON en POST): `health`, `stats`, `features`, `config`,
   `set_feature`, `suspend`, `activate`, `set_message`, `clear_message`,
   `lock_features`, `unlock_features`, `status`, `heartbeat`.
-- Requiere que `noDeploy/migrations/006_add_saas_control_columns.sql` esté
-  aplicado en la base de datos — si no, `heartbeat`/`set_message`/etc.
+- Requiere las columnas SaaS de `configuracion_centro` (`license_token`,
+  `saas_lock_features`, `saas_message`, etc. — ver `noDeploy/database.sql`)
+  presentes en la base de datos — si no, `heartbeat`/`set_message`/etc.
   devuelven error o funcionan en modo degradado según la acción.
 - No documentado en detalle aquí porque es un canal interno entre sistemas,
   no una API de cara al usuario — para su contrato completo, ver

@@ -114,7 +114,7 @@
     // ── Copiar enlace al portapapeles ────────────────────
     copiarEnlace(url) {
       const abs = new URL(url, window.location.href).href;
-      const ok = () => this.toast('<i class="fas fa-check"></i> Enlace copiado');
+      const ok = () => this.toast('<i class="fas fa-check"></i> Enlace copiado', 'success');
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(abs).then(ok).catch(() => this._copiaManual(abs, ok));
       } else {
@@ -169,7 +169,7 @@
         tipo: tipo, id: id, modulo: moduloActual(), carpeta: carpetaActual()
       }).then(res => {
         if (!res || !res.ok) {
-          this.toast('<i class="fas fa-triangle-exclamation"></i> No se pudo cambiar el estado');
+          this.toast('<i class="fas fa-triangle-exclamation"></i> No se pudo cambiar el estado', 'error');
           return;
         }
         const fijado = (res.fijado === 1 || res.fijado === '1');
@@ -191,16 +191,27 @@
     favorito(id, btn) {
       this.ajax(CTRL_EST + 'toggleFavorito.php', { id: id }).then(res => {
         if (!res || !res.ok) {
-          this.toast('<i class="fas fa-triangle-exclamation"></i> No se pudo actualizar favoritos');
+          this.toast('<i class="fas fa-triangle-exclamation"></i> No se pudo actualizar favoritos', 'error');
           return;
         }
         const fav = (res.favorito === true || res.favorito === 1 || res.favorito === '1');
-        btn.classList.toggle('activo', fav);
-        const icon = btn.querySelector('i');
-        if (icon) {
-          icon.className = fav ? 'fas fa-star' : 'far fa-star';
+        // En favoritos.php la fila entera representa "esto es un favorito", así
+        // que al desmarcar debe desaparecer de la lista, no solo cambiar el icono.
+        if (!fav && btn.hasAttribute('data-quitar-en-desmarcar')) {
+          const fila = btn.closest('tr');
+          if (fila) fila.remove();
+        } else {
+          btn.classList.toggle('activo', fav);
+          const icon = btn.querySelector('i');
+          if (icon) {
+            icon.className = (fav ? 'fas' : 'far') + ' fa-star';
+          }
+          const label = btn.querySelector('.recurso-favorito-label');
+          if (label) {
+            label.textContent = fav ? 'Quitar de favoritos' : 'Añadir a favoritos';
+          }
         }
-        this.toast(fav ? 'Añadido a favoritos' : 'Quitado de favoritos');
+        this.toast('<i class="fas fa-star"></i> ' + (fav ? 'Añadido a favoritos' : 'Quitado de favoritos'), 'success');
         cerrarMenus();
       });
     },
@@ -268,6 +279,86 @@
     cerrarMenus();
   });
   window.addEventListener('resize', cerrarMenus);
+
+  // ── Barra de progreso real de subida ────────────────────────────────────
+  // Construida en JS (no requiere tocar cada vista) y reutilizada tanto por
+  // los formularios de los modales como por el drag-and-drop. Usa XHR
+  // (no fetch) porque solo XMLHttpRequest expone xhr.upload.onprogress —
+  // es la única forma de conocer el porcentaje real subido, en vez de un
+  // loader indefinido que no informa de nada mientras dura la subida.
+  function crearBarraProgreso(mensaje) {
+    var caja = document.createElement('div');
+    caja.className = 'recurso-progreso-overlay';
+    caja.innerHTML =
+      '<div class="recurso-progreso-caja">' +
+        '<div class="recurso-progreso-msg"><i class="fas fa-cloud-arrow-up"></i> ' + mensaje + '</div>' +
+        '<div class="recurso-upload-progreso-barra"><span style="width:0%"></span></div>' +
+        '<div class="recurso-upload-progreso-texto"><span class="recurso-progreso-pct">0%</span></div>' +
+      '</div>';
+    document.body.appendChild(caja);
+    var barra = caja.querySelector('.recurso-upload-progreso-barra span');
+    var texto = caja.querySelector('.recurso-progreso-pct');
+    return {
+      actualizar: function (pct) {
+        barra.style.width = pct + '%';
+        texto.textContent = pct + '%';
+      },
+      quitar: function () { caja.remove(); }
+    };
+  }
+
+  // Sube un <form multipart> por XHR mostrando el porcentaje real, en vez de
+  // dejar que el navegador haga un POST normal a ciegas. Responde JSON
+  // (ajax=1, ver subirArchivos.php / subirVersion.php) — si el envío falla
+  // se re-habilita el formulario para reintentar, y si tiene éxito se
+  // recarga la página para reflejar el nuevo archivo/versión.
+  function subirFormularioConProgreso(form, mensaje) {
+    var fd = new FormData(form);
+    fd.set('ajax', '1');
+    var btn = form.querySelector('[type="submit"]');
+
+    var progreso = crearBarraProgreso(mensaje);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', form.action, true);
+    xhr.upload.onprogress = function (e) {
+      if (!e.lengthComputable) return;
+      progreso.actualizar(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onload = function () {
+      progreso.quitar();
+      var data = null;
+      try { data = JSON.parse(xhr.responseText); } catch (err) { /* respuesta no-JSON */ }
+      if (data && data.ok) {
+        AulaRecursos.toast('<i class="fas fa-check-circle"></i> ' + (data.msg || 'Subido correctamente.'), 'success');
+        setTimeout(function () { window.location.reload(); }, 900);
+      } else {
+        AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> ' + ((data && data.msg) || 'No se pudo subir.'), 'error');
+        if (btn) btn.disabled = false;
+      }
+    };
+    xhr.onerror = function () {
+      progreso.quitar();
+      AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> Error de red al subir. Inténtalo de nuevo.', 'error');
+      if (btn) btn.disabled = false;
+    };
+    xhr.send(fd);
+  }
+
+  // ── Subida de archivos vía modal (#modalSubir, #modalVersion) ──────────
+  // Antes eran formularios <form enctype="multipart/form-data"> normales
+  // (POST a ciegas + recarga real de página), con un UploadOverlay genérico
+  // que no mostraba ningún porcentaje mientras duraba la subida. Ahora se
+  // interceptan y se envían por XHR con barra de progreso real (ver arriba).
+  document.addEventListener('submit', function(e) {
+    var form = e.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if ((form.getAttribute('enctype') || '').indexOf('multipart/form-data') === -1) return;
+    if (!form.closest('.recurso-visor-overlay')) return;
+    e.preventDefault();
+    var btn = form.querySelector('[type="submit"]');
+    if (btn) btn.disabled = true;
+    subirFormularioConProgreso(form, 'Subiendo archivo(s)…');
+  });
 
   // ── Selectores de color e icono ──────────────────────
   document.addEventListener('click', function(e) {
@@ -338,9 +429,6 @@
       var files = e.dataTransfer.files;
       if (!files || !files.length) return;
 
-      var loader = document.getElementById('recursoLoader');
-      if (loader) loader.classList.add('activo');
-
       var fd = new FormData();
       fd.append('subirArchivos', '1');
       fd.append('ajax', '1');
@@ -351,21 +439,29 @@
         fd.append('archivos[]', files[i], files[i].name);
       }
 
-      fetch(CTRL + 'subirArchivos.php', { method: 'POST', body: fd, credentials: 'same-origin' })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (loader) loader.classList.remove('activo');
-          if (data.ok) {
-            AulaRecursos.toast('<i class="fas fa-check-circle"></i> ' + data.msg, 'success');
-            setTimeout(function() { window.location.reload(); }, 900);
-          } else {
-            AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> ' + (data.msg || 'No se pudo subir.'), 'error');
-          }
-        })
-        .catch(function() {
-          if (loader) loader.classList.remove('activo');
-          AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> Error al subir. Inténtalo de nuevo.', 'error');
-        });
+      var progreso = crearBarraProgreso('Subiendo ' + files.length + ' archivo(s)…');
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', CTRL + 'subirArchivos.php', true);
+      xhr.upload.onprogress = function (ev) {
+        if (!ev.lengthComputable) return;
+        progreso.actualizar(Math.round((ev.loaded / ev.total) * 100));
+      };
+      xhr.onload = function () {
+        progreso.quitar();
+        var data = null;
+        try { data = JSON.parse(xhr.responseText); } catch (err) { /* respuesta no-JSON */ }
+        if (data && data.ok) {
+          AulaRecursos.toast('<i class="fas fa-check-circle"></i> ' + data.msg, 'success');
+          setTimeout(function() { window.location.reload(); }, 900);
+        } else {
+          AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> ' + ((data && data.msg) || 'No se pudo subir.'), 'error');
+        }
+      };
+      xhr.onerror = function () {
+        progreso.quitar();
+        AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> Error al subir. Inténtalo de nuevo.', 'error');
+      };
+      xhr.send(fd);
     });
   })();
 

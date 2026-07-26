@@ -17,25 +17,25 @@ if ($variante === 'split') {
     <div class="lp-video-pres-inner">
       <div class="lp-video-pres-content">
         <?php if (!empty($contenido['eyebrow'])): ?>
-        <span class="lp-eyebrow"><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
+        <span class="lp-eyebrow"<?= landing_lb_field($preview, 'eyebrow') ?>><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
         <?php endif; ?>
-        
-        <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
-        
+
+        <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
+
         <?php if (!empty($contenido['subtitulo'])): ?>
-        <p class="lp-video-pres-sub"><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+        <p class="lp-video-pres-sub"<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
         <?php endif; ?>
-        
+
         <?php if (!empty($contenido['parrafo'])): ?>
         <div class="lp-video-pres-text">
-          <p><?= nl2br(Security::escapeHtml($contenido['parrafo'])) ?></p>
+          <p<?= landing_lb_field($preview, 'parrafo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['parrafo'])) ?></p>
         </div>
         <?php endif; ?>
-        
+
         <?php if (!empty($contenido['botonTexto'])): ?>
         <div class="lp-video-pres-actions">
           <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#contacto')) ?>" class="lp-boton-primario">
-            <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
+            <span<?= landing_lb_field($preview, 'botonTexto') ?>><?= Security::escapeHtml($contenido['botonTexto']) ?></span> <i class="fas fa-arrow-right"></i>
           </a>
         </div>
         <?php endif; ?>

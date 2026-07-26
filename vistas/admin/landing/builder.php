@@ -52,7 +52,7 @@ $titulo_pagina = "AULAPRO | CONSTRUCTOR DE LA WEB";
 $seccion       = 'landing';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
-<link rel="stylesheet" href="../../../public/css/features/landing-builder.css">
+<link rel="stylesheet" href="../../../public/css/features/landing-builder.css?v=<?= filemtime(__DIR__ . '/../../../public/css/features/landing-builder.css') ?>">
 
 <div class="cabecera">
     <h1><i class="fas fa-globe"></i> Página web pública</h1>
@@ -172,6 +172,7 @@ include_once __DIR__ . '/../comunes/nav.php';
                 <button type="button" class="lb-disp" data-ancho="768px" title="Tableta"><i class="fas fa-tablet-screen-button"></i></button>
                 <button type="button" class="lb-disp" data-ancho="390px" title="Móvil"><i class="fas fa-mobile-screen"></i></button>
             </div>
+            <button type="button" class="lb-item-btn" id="lb-toggle-lateral" title="Ocultar barra lateral"><i class="fas fa-expand"></i></button>
             <button type="button" class="lb-item-btn" id="lb-recargar" title="Recargar previsualización"><i class="fas fa-rotate-right"></i></button>
         </div>
         <div class="lb-preview-marco">
@@ -235,4 +236,4 @@ include_once __DIR__ . '/../comunes/nav.php';
 window.LANDING_TIPOS     = <?= json_encode($tipos, JSON_UNESCAPED_UNICODE) ?>;
 window.LANDING_SECCIONES = <?= json_encode($seccionesJs, JSON_UNESCAPED_UNICODE) ?>;
 </script>
-<script src="../../../public/js/features/landing-builder.js"></script>
+<script src="../../../public/js/features/landing-builder.js?v=<?= filemtime(__DIR__ . '/../../../public/js/features/landing-builder.js') ?>"></script>

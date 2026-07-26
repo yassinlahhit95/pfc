@@ -30,7 +30,5 @@ if ($faltan) {
     echo "\n ✓ Instalación ya completada — nada más que hacer.\n";
 } else {
     echo "\n → Siguiente paso: visita /install/ en tu navegador para completar la instalación guiada.\n";
-    echo "   (o, sin asistente: copia .env.example a .env, importa noDeploy/database.sql\n";
-    echo "   y noDeploy/seed_minimal.sql a mano — ver README.md)\n";
 }
 echo "─────────────────────────────────────────────────────────\n\n";

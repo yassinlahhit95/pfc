@@ -51,6 +51,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
+<?php if ($exito): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');
+});
+</script>
+<?php endif; ?>
+
 
 <div class="panel">
     <form action="../../../controladores/profesores/retos/actualizar.php" method="POST" class="formulario" enctype="multipart/form-data">
@@ -191,10 +199,20 @@ $(document).ready(function() {
             xhr: function() {
                 var xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener("progress", function(evt) {
-                    if (xhr.lengthComputable) {
+                    // Bug: era xhr.lengthComputable (undefined — XMLHttpRequest no
+                    // tiene esa propiedad; vive en el evento) así que este bloque
+                    // nunca se ejecutaba y la barra se quedaba siempre en 0%.
+                    if (evt.lengthComputable) {
                         var percentComplete = Math.round((evt.loaded / evt.total) * 100);
                         $('#progressFill').css('width', percentComplete + '%');
                         $('#progressText').text(percentComplete + '%');
+                        if (percentComplete >= 100) {
+                            // xhr.upload.progress solo mide el envío navegador→servidor;
+                            // el servidor aún tiene que subir cada archivo a R2 en
+                            // secuencia (puede tardar bastante más) antes de responder,
+                            // así que sin este aviso el 100% parece "colgado".
+                            $('#progressText').text('100% — procesando en el servidor…');
+                        }
                     }
                 }, false);
                 return xhr;

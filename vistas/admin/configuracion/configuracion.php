@@ -165,6 +165,15 @@ include_once __DIR__ . '/../comunes/nav.php';
                            placeholder="2024-2025">
                 </div>
             </div>
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="nifCifCentro">NIF/CIF del Centro</label>
+                    <input type="text" id="nifCifCentro" name="nifCifCentro"
+                           value="<?= Security::escapeHtml($datos['nifCifCentro'] ?? $cfg['nifCifCentro'] ?? '') ?>"
+                           placeholder="Ej: Q2801234A">
+                    <small class="texto-suave">Se muestra en la Política de Privacidad como identidad del responsable del tratamiento (Art. 13 RGPD).</small>
+                </div>
+            </div>
             <div class="campo ancho-total">
                 <label for="direccionCentro">Dirección</label>
                 <input type="text" id="direccionCentro" name="direccionCentro"

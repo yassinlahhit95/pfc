@@ -133,7 +133,7 @@ function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
         'total_pagos' => "SELECT COUNT(*) FROM pagos",
         'total_mensajes' => "SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')",
         'total_sin_leer' => "SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))",
-        'total_admisiones_pendientes' => "SELECT COUNT(*) FROM pre_matriculas WHERE estado = 'PENDIENTE'",
+        'total_admisiones_pendientes' => "SELECT COUNT(*) FROM pre_matriculas WHERE estado IN ('pendiente', 'revisando')",
     ];
 
     $data = Cache::remember('nav_admin_counts_global', 60, function () use ($globalQueries) {

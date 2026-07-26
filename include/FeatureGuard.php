@@ -88,6 +88,7 @@ class FeatureGuard
                 return [
                     'instance_status'      => $payload['status']   ?? 'active',
                     'suspension_message'   => $payload['susp_msg'] ?? '',
+                    'nombreCentro'         => $row['nombreCentro'] ?: 'AulaPro',
                     'feature_prematricula' => $feat('feature_prematricula', $payload, $row),
                     'feature_chat'         => $feat('feature_chat',         $payload, $row),
                     'feature_inventario'   => $feat('feature_inventario',   $payload, $row),
@@ -115,7 +116,7 @@ class FeatureGuard
             }
 
             // Token presente pero inválido/expirado → fail closed inmediato (sin gracia)
-            return self::suspendedState('Su licencia ha expirado. Contacte con el proveedor para renovarla.');
+            return self::suspendedState('Su licencia ha expirado. Contacte con el proveedor para renovarla.', $row);
         }
 
         // Camino B: sin token — periodo de gracia si NUNCA se licenció
@@ -125,13 +126,14 @@ class FeatureGuard
         $hasEverBeenLicensed = !empty($row['license_token_exp'] ?? null);
 
         if ($hasEverBeenLicensed) {
-            return self::suspendedState('Renovación de licencia requerida. Contacte con el proveedor.');
+            return self::suspendedState('Renovación de licencia requerida. Contacte con el proveedor.', $row);
         }
 
         // Instalación nueva (columna inexistente aún) o nunca sincronizada → valores brutos de BD
         return [
             'instance_status'      => $row['instance_status']     ?? 'active',
             'suspension_message'   => $row['suspension_message']  ?? '',
+            'nombreCentro'         => $row['nombreCentro'] ?: 'AulaPro',
             'feature_prematricula' => (int)($row['feature_prematricula'] ?? 0),
             'feature_chat'         => (int)($row['feature_chat']         ?? 1),
             'feature_inventario'   => (int)($row['feature_inventario']   ?? 1),
@@ -158,11 +160,12 @@ class FeatureGuard
         ];
     }
 
-    private static function suspendedState(string $message): array
+    private static function suspendedState(string $message, array $row = []): array
     {
         return [
             'instance_status'      => 'suspended',
             'suspension_message'   => $message,
+            'nombreCentro'         => $row['nombreCentro'] ?: 'AulaPro',
             'feature_prematricula' => 0,
             'feature_chat'         => 0,
             'feature_inventario'   => 0,
@@ -256,6 +259,15 @@ class FeatureGuard
     public static function getAll(): array
     {
         return self::load();
+    }
+
+    // Nombre del centro configurado en el onboarding/ajustes (configuracion_centro.nombreCentro).
+    // Reutiliza la misma carga cacheada (APCu 60s) que ya hace load() para los
+    // feature flags, en vez de otra consulta aparte — y ya se invalida sola
+    // cuando guardarConfiguracionCentro() llama a clearCache() al guardar.
+    public static function getCenterName(): string
+    {
+        return (string)(self::load()['nombreCentro'] ?? 'AulaPro');
     }
 
     public static function isSuspended(): bool

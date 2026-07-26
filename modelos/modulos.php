@@ -7,14 +7,23 @@ require_once __DIR__ . "/conectar.php";
 
 function listarModulos() {
     $con = obtenerConexion();
+    // mysqli_query() (a diferencia de una sentencia preparada, como usan el
+    // resto de funciones de este archivo) devuelve las columnas numéricas
+    // como string en vez de int/float nativo — api/v1/classroom.php expone
+    // esta función tal cual a director/secretaría ("Aula digital" ve todos
+    // los módulos), y el cliente Flutter hace `json['idModulo'] as int` sin
+    // tolerancia a string, así que la app crasheaba solo para esos dos roles
+    // al abrir Aula Digital. Sentencia preparada aquí iguala el resto de
+    // listarModulos*() de este archivo, que ya devuelven tipos nativos.
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel, niveles.nombreNivel
             FROM modulos
             JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
             JOIN niveles ON ciclos.idNivel = niveles.idNivel
             WHERE ciclos.activo = 1
             ORDER BY idModulo ASC";
-    $resultado = mysqli_query($con, $sql);
-    if (!$resultado) return [];
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
@@ -24,10 +33,11 @@ function listarModulos() {
 
 function listarModulosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo
+    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel, niveles.nombreNivel
             FROM modulos
             JOIN modulo_profesor ON modulos.idModulo = modulo_profesor.idModulo
             JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
+            JOIN niveles ON ciclos.idNivel = niveles.idNivel
             WHERE modulo_profesor.idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);

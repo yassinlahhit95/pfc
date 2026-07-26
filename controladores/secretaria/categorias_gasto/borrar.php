@@ -20,7 +20,7 @@ if (isset($_POST['idCategoria'])) {
     if ($count > 0) {
         $msg = "No se puede eliminar: tiene {$count} gasto(s) asociado(s). Reasígnalos o elimínalos primero.";
     } elseif (borrarCategoria($id)) {
-        registrarAccion('borrar', 'categorias_gasto', $id);
+        registrarAccionSecretaria('borrar', 'categorias_gasto', $id);
         $ok  = true;
         $msg = 'Categoría eliminada correctamente.';
         $_SESSION['exito'] = $msg;

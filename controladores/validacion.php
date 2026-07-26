@@ -98,8 +98,10 @@ if ($lock['locked']) {
 // Limpia contadores de IP y cuenta tras login exitoso
 $clearIpAttempts = function() use ($con, $ip, $email) {
     $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = 0, bloqueado_hasta = NULL WHERE ip = ?");
-    mysqli_stmt_bind_param($upd, "s", $ip);
-    mysqli_stmt_execute($upd);
+    if ($upd) {
+        mysqli_stmt_bind_param($upd, "s", $ip);
+        mysqli_stmt_execute($upd);
+    }
     AccountLockout::clear($con, $email);
 };
 
@@ -274,16 +276,23 @@ if ($rowIp) {
     if ($nuevosIntentos >= 10) {
         $hasta = date('Y-m-d H:i:s', time() + 600);
         $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = 0, bloqueado_hasta = ?, ultimo_intento = NOW() WHERE ip = ?");
-        mysqli_stmt_bind_param($upd, "ss", $hasta, $ip);
+        if ($upd) {
+            mysqli_stmt_bind_param($upd, "ss", $hasta, $ip);
+            mysqli_stmt_execute($upd);
+        }
     } else {
         $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = intentos + 1, ultimo_intento = NOW() WHERE ip = ?");
-        mysqli_stmt_bind_param($upd, "s", $ip);
+        if ($upd) {
+            mysqli_stmt_bind_param($upd, "s", $ip);
+            mysqli_stmt_execute($upd);
+        }
     }
-    mysqli_stmt_execute($upd);
 } else {
     $ins = mysqli_prepare($con, "INSERT INTO login_intentos (ip, intentos) VALUES (?, 1)");
-    mysqli_stmt_bind_param($ins, "s", $ip);
-    mysqli_stmt_execute($ins);
+    if ($ins) {
+        mysqli_stmt_bind_param($ins, "s", $ip);
+        mysqli_stmt_execute($ins);
+    }
 }
 
 Logger::security('LOGIN_FAILED', [

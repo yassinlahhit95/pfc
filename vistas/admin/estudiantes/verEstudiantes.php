@@ -125,7 +125,7 @@ $listaNiveles = listarNiveles();
                     <tr class="fila-nivel-<?= (int)($estudianteIndividual['idNivel'] ?? 0) ?>" data-anio="<?= Security::escapeHtml($estudianteIndividual['anioEstudio'] ?? '') ?>">
                         <td><?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?></td>
                         <td>
-                            <span class="texto-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                            <span class="texto-estado <?= $estudianteIndividual['curso'] === 'Grado Superior' ? 'verde' : 'azul' ?>"><?= Security::escapeHtml($estudianteIndividual['curso'] ?? '-') ?></span>
                         </td>
                         <td><b><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>

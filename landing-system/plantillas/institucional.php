@@ -18,6 +18,13 @@ return [
         ['tipo' => 'oferta_formativa'],
         ['tipo' => 'porque_elegirnos', 'contenido' => ['variante' => 'tarjetas']],
         ['tipo' => 'equipo_docente'],
+        ['tipo' => 'video_presentacion', 'contenido' => [
+            'variante' => 'split', 'orientacion' => 'izquierda',
+            'eyebrow' => 'Centro Integrado de FP', 'titulo' => 'Así vivimos la Formación Profesional',
+            'subtitulo' => 'Instalaciones, profesorado especialista y un centro autorizado para las enseñanzas oficiales.',
+            'parrafo' => 'Un recorrido rápido por el día a día del centro: aulas, talleres y el ambiente de trabajo que encontrarás desde el primer día.',
+            'botonTexto' => 'Conoce nuestras instalaciones', 'botonUrl' => '#instalaciones',
+        ]],
         ['tipo' => 'fp_dual', 'contenido' => ['variante' => 'split']],
         ['tipo' => 'instalaciones'],
         // Reutiliza el tipo "empresas" (solo logos + enlace, ya genérico)
@@ -43,6 +50,8 @@ return [
             'botonTexto' => 'Consultar en secretaría',
             'notaLegal' => 'Las condiciones de acceso a becas y ayudas dependen de la normativa de cada convocatoria. Consulta con secretaría los requisitos específicos.',
         ]],
+        ['tipo' => 'testimonios', 'contenido' => ['variante' => 'grid']],
+        ['tipo' => 'faq', 'contenido' => ['variante' => 'lista']],
         ['tipo' => 'prematricula_cta', 'contenido' => ['variante' => 'centrado']],
         ['tipo' => 'contacto'],
     ],

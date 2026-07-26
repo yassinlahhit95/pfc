@@ -11,15 +11,20 @@ return [
     'colorAcento' => '#003c8f', // Azul universidad clásico
 
     'secciones' => [
-        ['tipo' => 'hero', 'contenido' => [
-            'variante'    => 'fondo',
-            'eyebrow'     => 'Tu futuro profesional',
-            'titulo'      => 'Formamos personas para transformar el mundo',
-            'subtitulo'   => 'Una formación práctica y especializada que te prepara para los retos del mañana.',
-            'botonTexto'  => 'Nuestra oferta',
-            'botonUrl'    => '#oferta_formativa',
-            'boton2Texto' => 'Solicitar información',
-            'boton2Url'   => '#contacto',
+        // Hero animado con 3 diapositivas (Ken Burns) en vez del hero estático
+        // "fondo" — la variante de fondo sólido a pantalla completa es la que
+        // mejor encaja con un slider; a cambio, hero_slider solo admite un CTA
+        // (sin botón secundario como el hero clásico), simplificación asumida
+        // a propósito por el efecto de transición animada.
+        ['tipo' => 'hero_slider', 'contenido' => [
+            'eyebrow' => 'Tu futuro profesional',
+            'slides' => [
+                ['imagen' => 'https://images.unsplash.com/photo-1741636371995-875bf17ca657?w=1600&q=80&auto=format&fit=crop', 'titulo' => 'Formamos personas para transformar el mundo', 'subtitulo' => 'Una formación práctica y especializada que te prepara para los retos del mañana.'],
+                ['imagen' => 'https://images.unsplash.com/photo-1754607812143-12d421b1db11?w=1600&q=80&auto=format&fit=crop', 'titulo' => 'Espacios pensados para aprender', 'subtitulo' => 'Bibliotecas, aulas y talleres equipados con la tecnología del sector.'],
+                ['imagen' => 'https://images.unsplash.com/photo-1758270705290-62b6294dd044?w=1600&q=80&auto=format&fit=crop', 'titulo' => 'Aprende junto a profesionales en activo', 'subtitulo' => 'Profesorado con experiencia real, acompañándote en cada módulo.'],
+            ],
+            'botonTexto' => 'Nuestra oferta', 'botonUrl' => '#oferta_formativa',
+            'autoplay' => 'si',
         ]],
         ['tipo' => 'cifras', 'contenido' => ['variante' => 'tarjetas']],
         ['tipo' => 'porque_elegirnos', 'contenido' => [

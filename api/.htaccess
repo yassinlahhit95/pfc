@@ -6,6 +6,11 @@
 
 # CORS headers for the v1 mobile API
 # Native mobile apps don't need CORS, but a future PWA or web client will.
+# Access-Control-Allow-Origin below is kept in sync with .env's APP_URL
+# automatically (install wizard step 2, and vistas/admin/saas/estado.php's
+# credentials form) — see updateCorsOrigin() in install/lib/helpers.php.
+# It only needs a manual edit if APP_URL is ever changed by hand-editing
+# .env directly instead of through one of those two paths.
 <IfModule mod_headers.c>
     Header always set Access-Control-Allow-Origin "https://aulapro.yassin.agency"
     Header always set Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS"

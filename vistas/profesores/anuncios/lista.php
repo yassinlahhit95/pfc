@@ -17,9 +17,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>TABLA DE ANUNCIOS</h1>
+    <div>
+        <h1>ANUNCIOS</h1>
+        <p class="subtitulo-encabezado">Comunicados publicados por el centro</p>
+    </div>
 </div>
-
 
 <?php if (!empty($anuncios)) { ?>
     <?php foreach ($anuncios as $anuncio) { ?>
@@ -37,7 +39,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } ?>
 <?php } else { ?>
     <div class="panel">
-        <p class="texto-suave" style="text-align: center; padding: 20px;">No hay anuncios publicados en este momento.</p>
+        <div class="panel-vacio">
+            <div class="panel-vacio-icono"><i class="fas fa-bullhorn"></i></div>
+            <div class="panel-vacio-titulo">Sin anuncios</div>
+            <div class="panel-vacio-desc">No hay anuncios publicados en este momento.</div>
+        </div>
     </div>
 <?php } ?>
 

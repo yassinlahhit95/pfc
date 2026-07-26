@@ -126,6 +126,28 @@ final chatRepositoryProvider = Provider<ChatRepository>(
   (ref) => ChatRepository(ref.read(apiClientProvider)),
 );
 
+/// Bumped by NotificationsService whenever a 'chat_message' push arrives in
+/// the foreground, carrying that message's conv_id — lets ChatDetailScreen
+/// (if it's the same conversation) and ConversationsScreen refresh instantly
+/// instead of waiting for their own poll timers (4s / 8s) to come around.
+final chatMessagePushProvider = StateProvider<int?>((ref) => null);
+
 final chatConversationsProvider = FutureProvider.autoDispose<List<ChatConversation>>(
   (ref) => ref.read(chatRepositoryProvider).fetchConversations(),
 );
+
+/// Polls the unread chat count so the bottom-nav badge (home_shell.dart)
+/// stays current without the user having to open the tab — mirrors the web
+/// app's dashboard-shell.js pollUnread(). autoDispose so the timer loop stops
+/// as soon as nothing is watching it anymore (e.g. after logout).
+final chatUnreadCountProvider = StreamProvider.autoDispose<int>((ref) async* {
+  final repo = ref.watch(chatRepositoryProvider);
+  while (true) {
+    try {
+      yield await repo.fetchUnread();
+    } catch (_) {
+      yield 0;
+    }
+    await Future.delayed(const Duration(seconds: 30));
+  }
+});

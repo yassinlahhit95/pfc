@@ -176,7 +176,6 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
   <h1><i class="fas fa-clipboard-check"></i> Registro de Asistencia</h1>
-  <a href="../aula/asistencia_qr.php" class="boton-secundario"><i class="fas fa-qrcode"></i> Asistencia por PIN</a>
 </div>
 
 <?php if ($exito): ?>
@@ -298,6 +297,15 @@ require_once __DIR__ . "/../comunes/nav.php";
     </div>
     <?php endif; ?>
 
+    <!-- Buscador de alumnos -->
+    <div class="campo" style="margin-bottom:14px;max-width:320px;">
+      <input type="text" id="buscarAlumnoAsist" class="buscador"
+             autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+             data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+             placeholder="Buscar alumno…"
+             oninput="filtrarAsistCards(this.value)">
+    </div>
+
     <!-- Resumen en vivo -->
     <div class="asist-resumen" id="resumenAsist">
       <span class="asist-chip chip-t"><i class="fas fa-users"></i> <span id="cnt-total"><?= count($estudiantes) ?></span> total</span>
@@ -374,6 +382,15 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <?php require_once __DIR__ . "/../comunes/footer.php"; ?>
 <script>
+function filtrarAsistCards(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('.asist-card').forEach(function (card) {
+        var nombreEl = card.querySelector('.asist-nombre');
+        var nombre = nombreEl ? nombreEl.textContent.toLowerCase() : '';
+        card.style.display = (q !== '' && nombre.indexOf(q) === -1) ? 'none' : '';
+    });
+}
+
 function setAll(estado) {
     document.querySelectorAll('.r-estado[value="' + estado + '"]').forEach(function(r) {
         r.checked = true;

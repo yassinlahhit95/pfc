@@ -11,6 +11,7 @@ class Payment {
     required this.estadoComprobante,
     required this.nombreEstudiante,
     required this.nombreCiclo,
+    required this.nivel,
   });
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
@@ -21,6 +22,10 @@ class Payment {
         estadoComprobante: json['estadoComprobante'] as String? ?? '',
         nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
         nombreCiclo: json['nombreCiclo'] as String? ?? '',
+        // "curso" on estudiantes is actually the nivel enum (Grado Medio /
+        // Grado Superior), not an academic year — same field the web app
+        // filters students by.
+        nivel: json['curso'] as String? ?? '',
       );
 
   final int id;
@@ -30,6 +35,7 @@ class Payment {
   final String estadoComprobante;
   final String nombreEstudiante;
   final String nombreCiclo;
+  final String nivel;
 }
 
 class PendingPayment {
@@ -53,6 +59,41 @@ class PendingPayment {
   final String deuda;
 }
 
+class FinancialStatus {
+  const FinancialStatus({required this.totalPagado, required this.precioCiclo, required this.restante});
+
+  factory FinancialStatus.fromJson(Map<String, dynamic> json) => FinancialStatus(
+        totalPagado: (json['totalPagado'] as num?)?.toDouble() ?? 0,
+        precioCiclo: (json['precioCiclo'] as num?)?.toDouble() ?? 0,
+        restante: (json['restante'] as num?)?.toDouble() ?? 0,
+      );
+
+  final double totalPagado;
+  final double precioCiclo;
+  final double restante;
+}
+
+class StudentPaymentsGroup {
+  const StudentPaymentsGroup({
+    required this.idEstudiante,
+    required this.nombreEstudiante,
+    required this.payments,
+    required this.estado,
+  });
+
+  factory StudentPaymentsGroup.fromJson(Map<String, dynamic> json) => StudentPaymentsGroup(
+        idEstudiante: json['idEstudiante'] as int,
+        nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
+        payments: (json['payments'] as List).cast<Map<String, dynamic>>().map(Payment.fromJson).toList(),
+        estado: FinancialStatus.fromJson((json['estado'] as Map).cast<String, dynamic>()),
+      );
+
+  final int idEstudiante;
+  final String nombreEstudiante;
+  final List<Payment> payments;
+  final FinancialStatus estado;
+}
+
 class PaymentsRepository {
   PaymentsRepository(this._client);
   final ApiClient _client;
@@ -66,6 +107,21 @@ class PaymentsRepository {
     final data = await _client.get('/payments.php', query: {'pending': 1});
     return (data['pending'] as List).cast<Map<String, dynamic>>().map(PendingPayment.fromJson).toList();
   }
+
+  /// estudiante: own payment history + running balance.
+  Future<({List<Payment> payments, FinancialStatus estado})> fetchMine() async {
+    final data = await _client.get('/payments.php');
+    return (
+      payments: (data['payments'] as List).cast<Map<String, dynamic>>().map(Payment.fromJson).toList(),
+      estado: FinancialStatus.fromJson((data['estado'] as Map).cast<String, dynamic>()),
+    );
+  }
+
+  /// tutor: payment history + balance per linked child.
+  Future<List<StudentPaymentsGroup>> fetchForTutor() async {
+    final data = await _client.get('/payments.php');
+    return (data['students'] as List).cast<Map<String, dynamic>>().map(StudentPaymentsGroup.fromJson).toList();
+  }
 }
 
 final paymentsRepositoryProvider = Provider<PaymentsRepository>(
@@ -78,4 +134,13 @@ final paymentsProvider = FutureProvider.autoDispose<List<Payment>>(
 
 final pendingPaymentsProvider = FutureProvider.autoDispose<List<PendingPayment>>(
   (ref) => ref.read(paymentsRepositoryProvider).fetchPending(),
+);
+
+final myPaymentsProvider =
+    FutureProvider.autoDispose<({List<Payment> payments, FinancialStatus estado})>(
+  (ref) => ref.read(paymentsRepositoryProvider).fetchMine(),
+);
+
+final tutorPaymentsProvider = FutureProvider.autoDispose<List<StudentPaymentsGroup>>(
+  (ref) => ref.read(paymentsRepositoryProvider).fetchForTutor(),
 );

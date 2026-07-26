@@ -39,10 +39,10 @@ if (isset($_POST['enviarMensaje'])) {
     if ($resultado) {
         if (!empty($idProfesor)) {
             $tokenProfesor = obtenerTokenUsuario($idProfesor, "profesor");
-            if ($tokenProfesor) enviarNotificacionFirebase($tokenProfesor, "Mensaje de Estudiante: $asunto", $descripcion);
+            if ($tokenProfesor) enviarNotificacionFirebase($tokenProfesor, "Mensaje de Estudiante: $asunto", $descripcion, 'message', ['idReclamacion' => $resultado]);
         } else {
             $tokensDirectores = obtenerTokensDirectores();
-            foreach ($tokensDirectores as $token) enviarNotificacionFirebase($token, "Mensaje de Estudiante a Dirección: $asunto", $descripcion);
+            foreach ($tokensDirectores as $token) enviarNotificacionFirebase($token, "Mensaje de Estudiante a Dirección: $asunto", $descripcion, 'message', ['idReclamacion' => $resultado]);
         }
 
         $_SESSION['exito'] = "El mensaje ha sido enviado correctamente.";

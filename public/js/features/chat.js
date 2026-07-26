@@ -292,11 +292,6 @@ window.AulaChat = (function () {
             // Focus automático al iniciar
             setTimeout(() => el.input()?.focus(), 200);
         },
-        destroy() {
-            clearTimeout(pollTimer);
-            pollTimer = null;
-            cfg = {};
-        },
     };
 })();
 

@@ -55,21 +55,24 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
+    <span class="tarjeta-estadistica-icono"><i class="fas fa-circle-check"></i></span>
     <div class="info-estadistica">
         <h3><?= Security::escapeHtml(number_format($datosEstadoFinanciero['totalPagado'], 2)) ?> €</h3>
-        <p>TOTAL PAGADO</p>
+        <p>Total pagado</p>
     </div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
+    <span class="tarjeta-estadistica-icono"><i class="fas fa-tag"></i></span>
     <div class="info-estadistica">
         <h3><?= Security::escapeHtml(number_format($datosEstadoFinanciero['precioCiclo'], 2)) ?> €</h3>
-        <p>PRECIO DEL CICLO</p>
+        <p>Precio del ciclo</p>
     </div>
   </div>
   <div class="tarjeta-estadistica <?= Security::escapeHtml(($datosEstadoFinanciero['restante'] > 0) ? 'tarjeta-estadistica-naranja' : 'tarjeta-estadistica-cian') ?>">
+    <span class="tarjeta-estadistica-icono"><i class="fas <?= ($datosEstadoFinanciero['restante'] > 0) ? 'fa-clock' : 'fa-check-double' ?>"></i></span>
     <div class="info-estadistica">
         <h3><?= Security::escapeHtml(number_format($datosEstadoFinanciero['restante'], 2)) ?> €</h3>
-        <p>PENDIENTE DE PAGO</p>
+        <p>Pendiente de pago</p>
     </div>
   </div>
 </div>

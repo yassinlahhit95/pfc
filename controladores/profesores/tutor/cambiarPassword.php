@@ -9,9 +9,7 @@ if (empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
 
 $idCicloTutor = (int)$_SESSION['idCicloTutor'];
 
-if (!Security::validateCSRFToken()) {
-    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
-}
+// CSRF token is already validated in ProfesorGuard.php for all POST requests (with rotate=false to survive AJAX)
 
 $id   = (int)($_POST['id']   ?? 0);
 $pass = $_POST['nuevaPassword'] ?? '';

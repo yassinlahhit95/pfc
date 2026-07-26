@@ -44,13 +44,14 @@ $csrf = Security::generateCSRFToken();
            font-size:13px; margin-bottom:14px; }
   .banner { background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:11px 14px; border-radius:9px;
             font-size:13px; margin-bottom:18px; }
-  .brand { font-weight:800; font-size:18px; color:var(--primary); margin-bottom:18px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; color:var(--primary); margin-bottom:18px; }
   .brand b { color:var(--primary-strong); }
+  .brand img { height:32px; width:auto; }
 </style>
 </head>
 <body>
   <form class="card" method="POST" action="../controladores/auth/cambiar_password.php" autocomplete="off">
-    <div class="brand">Aula<b>Pro</b></div>
+    <div class="brand"><img src="../public/imagenes/aulapro.png" alt="AulaPro"> Aula<b>Pro</b></div>
     <h1>Cambia tu contraseña</h1>
     <p class="sub">Por tu seguridad, establece una contraseña nueva y personal.</p>
 

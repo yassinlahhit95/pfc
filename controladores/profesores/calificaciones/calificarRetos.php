@@ -4,6 +4,8 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/notificaciones.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (!isset($_POST['guardarNotasReto'])) {
     header("Location: ../../../vistas/profesores/academico/calificacionesRetos.php");
@@ -35,6 +37,8 @@ $idsEstudiantes = $_POST['estudiantes'] ?? [];
 $notas          = $_POST['notas'] ?? [];
 $hayError       = false;
 
+$retoInfo = obtenerRetoPorId($idReto);
+
 foreach ($idsEstudiantes as $indice => $idEstudiante) {
     $idEstudiante = trim($idEstudiante);
     $nota         = trim($notas[$indice]);
@@ -46,11 +50,25 @@ foreach ($idsEstudiantes as $indice => $idEstudiante) {
     }
 
     if (!$hayError) {
+        // Igual que en calificarModulos_prof.php: solo se notifica al pasar
+        // de sin nota a con nota, no en cada re-guardado del reto.
+        $notaAntes = trim((string)obtenerCalificacionReto($idEstudiante, $idReto));
+
         if (empty($nota)) {
             eliminarCalificacionReto($idEstudiante, $idReto);
         } else {
             if (!calificarReto($idEstudiante, $idReto, $nota)) {
                 $hayError = true;
+            } elseif ($notaAntes === '' && $retoInfo) {
+                crearNotificacion((int)$idEstudiante, 'estudiante', 'nota_publicada',
+                    'Nueva nota publicada en el reto ' . $retoInfo['nombreReto'],
+                    '../../../vistas/estudiantes/calificaciones/lista.php');
+
+                $tokenEst = obtenerTokenUsuario((int)$idEstudiante, 'estudiante');
+                if ($tokenEst) {
+                    enviarNotificacionFirebase($tokenEst, 'Nueva nota publicada',
+                        'Se ha publicado una nueva nota en el reto ' . $retoInfo['nombreReto'], 'nota_publicada');
+                }
             }
         }
     }

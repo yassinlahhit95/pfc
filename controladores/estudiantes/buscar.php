@@ -52,7 +52,7 @@ mysqli_stmt_bind_param($stmt, 'is', $idCiclo, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'reto', 'label' => $row['nombreReto'], 'url' => '../retos/lista.php'];
+    $results[] = ['type' => 'reto', 'label' => $row['nombreReto'], 'url' => '/vistas/estudiantes/retos/lista.php'];
 }
 
 // Anuncios visibles para estudiantes
@@ -66,7 +66,7 @@ mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'anuncio', 'label' => $row['titulo'], 'url' => '../anuncios/lista.php'];
+    $results[] = ['type' => 'anuncio', 'label' => $row['titulo'], 'url' => '/vistas/estudiantes/anuncios/lista.php'];
 }
 
 // Mensajes del propio estudiante
@@ -82,7 +82,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'mensaje',
         'label' => $row['asunto'],
-        'url'   => '../mensajes/detalles.php?id=' . (int)$row['idReclamacion'],
+        'url'   => '/vistas/estudiantes/mensajes/detalles.php?id=' . (int)$row['idReclamacion'],
     ];
 }
 
@@ -110,7 +110,7 @@ if ($idCiclo > 0) {
         $results[] = [
             'type'  => 'estudiante',
             'label' => $label,
-            'url'   => '../chat/index.php', // Assuming direct chat access
+            'url'   => '/vistas/estudiantes/chat/index.php', // Assuming direct chat access
         ];
         $numEst++;
     }
@@ -133,7 +133,7 @@ if ($idCiclo > 0) {
         $results[] = [
             'type'  => 'profesor',
             'label' => $label,
-            'url'   => '../chat/index.php',
+            'url'   => '/vistas/estudiantes/chat/index.php',
         ];
     }
 }
@@ -149,7 +149,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'director',
         'label' => $row['nombreDirector'],
-        'url'   => '../chat/index.php',
+        'url'   => '/vistas/estudiantes/chat/index.php',
     ];
 }
 
@@ -164,7 +164,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'secretaria',
         'label' => $row['nombreSecretaria'],
-        'url'   => '../chat/index.php',
+        'url'   => '/vistas/estudiantes/chat/index.php',
     ];
 }
 
@@ -178,7 +178,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'pago',
         'label' => 'Pago ' . $row['monto'] . '€ (' . date('d/m/Y', strtotime($row['fechaPago'])) . ')',
-        'url'   => '../pagos/lista.php',
+        'url'   => '/vistas/estudiantes/pagos/lista.php',
     ];
 }
 
@@ -189,7 +189,7 @@ if (stripos('tfg trabajo fin de grado', $q) !== false) {
     mysqli_stmt_execute($stmtTfg);
     $resTfg = mysqli_stmt_get_result($stmtTfg);
     if (mysqli_fetch_assoc($resTfg)) {
-        $results[] = ['type' => 'tfg', 'label' => 'Mi TFG', 'url' => '../academico/resultadosFinales.php'];
+        $results[] = ['type' => 'tfg', 'label' => 'Mi TFG', 'url' => '/vistas/estudiantes/academico/resultadosFinales.php'];
     }
 }
 
@@ -200,7 +200,7 @@ mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '../eventos/lista.php'];
+    $results[] = ['type' => 'evento', 'label' => $row['tituloEvento'], 'url' => '/vistas/estudiantes/eventos/lista.php'];
 }
 
 // ── Archivos (recursos.php) de su ciclo ──
@@ -218,7 +218,7 @@ if ($idCiclo > 0) {
         $results[] = [
             'type'  => 'archivo',
             'label' => $row['nombreOriginal'] . ' ('. $row['nombreModulo'] .')',
-            'url'   => '../aula/recursos.php?id=' . (int)$row['idModulo'],
+            'url'   => '/vistas/estudiantes/aula/recursos.php?id=' . (int)$row['idModulo'],
         ];
     }
 }

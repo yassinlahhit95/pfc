@@ -42,7 +42,20 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 .lp-contenedor { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
 .lp-sec { padding: clamp(64px, 9vw, 108px) 0; position: relative; }
-.lp-sec:nth-of-type(even) { background: var(--lp-fondo-alt); }
+/* Ritmo de fondo alterno deliberado: por tipo de sección, no por posición.
+   Antes era ciego (nth-of-type(even)) y coloreaba una sección de cada dos
+   al azar según el orden en que el admin las hubiera colocado, sin relación
+   con su contenido — aquí solo las secciones "planas" de icono/lista/
+   galería llevan el tinte, como pausa visual intencional entre bloques con
+   fondo propio (hero, cifras, fp_dual, prematrícula, footer-cta...). Los
+   temas pueden ampliar esto con su propio ritmo (ver temas/*.css). */
+.lp-porque:not(.lp-variante-foto),
+.lp-becas:not(.lp-variante-foto),
+.lp-instalaciones,
+.lp-empresas,
+.lp-faq {
+  background: var(--lp-fondo-alt);
+}
 
 .lp-sec-cabecera { max-width: 720px; margin: 0 auto 56px; text-align: center; }
 .lp-sec-cabecera h2 { font-size: clamp(30px, 4.2vw, 46px); font-weight: 800; margin-bottom: 16px; text-wrap: balance; }
@@ -618,12 +631,18 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* ── Becas y financiación ─────────────────────────────────────────────── */
 .lp-becas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; }
-.lp-becas-icono {
-  width: 54px; height: 54px; border-radius: 16px;
-  background: linear-gradient(135deg, var(--lp-acento-suave), color-mix(in srgb, var(--lp-acento) 18%, #ffffff));
+.lp-becas-icono, .lp-porque-icono {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--lp-fondo);
   color: var(--lp-acento); display: flex; align-items: center; justify-content: center;
-  font-size: 22px; margin-bottom: 18px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-acento) 16%, transparent);
+  font-size: 21px; margin-bottom: 20px;
+  border: 1.5px solid color-mix(in srgb, var(--lp-acento) 28%, var(--lp-borde));
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--lp-acento) 6%, transparent);
+  transition: transform .25s cubic-bezier(.4,0,.2,1), background .2s ease, color .2s ease;
+}
+.lp-tarjeta:hover .lp-becas-icono, .lp-tarjeta:hover .lp-porque-icono {
+  transform: rotate(-8deg) scale(1.06);
+  background: var(--lp-acento); color: #fff;
 }
 .lp-becas-item h3 { font-size: 17.5px; font-weight: 800; margin-bottom: 8px; }
 .lp-becas-item p { color: var(--lp-texto-suave); font-size: 14.5px; }
@@ -632,15 +651,34 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* ── Por qué elegirnos ───────────────────────────────────────────────── */
 .lp-porque-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
-.lp-porque-icono {
-  width: 54px; height: 54px; border-radius: 16px;
-  background: linear-gradient(135deg, var(--lp-acento-suave), color-mix(in srgb, var(--lp-acento) 18%, #ffffff));
-  color: var(--lp-acento); display: flex; align-items: center; justify-content: center;
-  font-size: 22px; margin-bottom: 18px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-acento) 16%, transparent);
-}
 .lp-porque-item h3 { font-size: 17.5px; font-weight: 800; margin-bottom: 8px; }
 .lp-porque-item p { color: var(--lp-texto-suave); font-size: 14.5px; }
+
+/* ── Foto + lista (variante "foto", compartida por porque_elegirnos y
+   becas_financiacion): reutiliza el mismo patrón visual split que fp_dual
+   en vez de inventar un componente nuevo — icono en línea junto al texto,
+   foto real al otro lado. ─────────────────────────────────────────────── */
+.lp-icono-foto-split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: center; }
+.lp-icono-foto-split.lp-invertido { grid-template-columns: 1.1fr .9fr; }
+.lp-icono-foto-split.lp-invertido .lp-icono-foto-visual { order: -1; }
+.lp-icono-foto-visual { position: relative; }
+.lp-icono-foto-visual::before {
+  content: ''; position: absolute; inset: 10% -5% -5% 10%; border-radius: var(--lp-radio);
+  background: linear-gradient(135deg, var(--lp-acento), var(--lp-acento-2)); opacity: .14;
+}
+.lp-icono-foto-visual img {
+  position: relative; border-radius: var(--lp-radio); box-shadow: var(--lp-sombra-hover);
+  width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
+}
+.lp-icono-foto-lista { list-style: none; display: flex; flex-direction: column; gap: 24px; }
+.lp-icono-foto-lista li { display: flex; gap: 18px; align-items: flex-start; }
+.lp-icono-foto-lista li strong { display: block; font-size: 16px; margin-bottom: 4px; }
+.lp-icono-foto-lista li p { color: var(--lp-texto-suave); font-size: 14.5px; margin: 0; }
+.lp-icono-foto-lista .lp-becas-icono, .lp-icono-foto-lista .lp-porque-icono { margin-bottom: 0; flex-shrink: 0; }
+@media (max-width: 900px) {
+  .lp-icono-foto-split, .lp-icono-foto-split.lp-invertido { grid-template-columns: 1fr; }
+  .lp-icono-foto-split.lp-invertido .lp-icono-foto-visual { order: 0; }
+}
 
 /* ── Equipo docente ───────────────────────────────────────────────────── */
 .lp-equipo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 22px; }
@@ -672,14 +710,29 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 
 /* ── Cifras ──────────────────────────────────────────────────────────── */
+/* Sin !important: antes hacía falta para ganarle a la alternancia global
+   por posición (nth-of-type(even), ya eliminada — ver .lp-sec más arriba),
+   que tenía más especificidad que un simple ".lp-cifras". Los temas ahora
+   pueden sobreescribir este fondo por especificidad natural (.tema-x .lp-cifras
+   son 2 clases, le gana sin necesidad de !important). */
 .lp-cifras {
   position: relative; overflow: hidden; padding: clamp(56px, 8vw, 96px) 0;
-  background: radial-gradient(900px 400px at 80% 120%, color-mix(in srgb, var(--lp-acento) 45%, #0b1220), #0b1220) !important;
+  background: radial-gradient(900px 400px at 80% 120%, color-mix(in srgb, var(--lp-acento) 45%, #0b1220), #0b1220);
 }
 .lp-cifras::after {
   content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .4;
   background-image: radial-gradient(rgba(255, 255, 255, .1) 1px, transparent 1.5px);
   background-size: 26px 26px;
+}
+/* Variante "foto": la imagen de fondo llega vía style="" inline (mismo
+   patrón que .lp-hero en cifras.php) — gana porque background-image inline
+   siempre gana a un background por hoja de estilos salvo !important. Este
+   ::after reutiliza el mismo hueco que la textura de puntos de arriba, pero
+   como degradado oscuro de contraste en vez de textura (no pega sobre foto). */
+.lp-cifras.lp-variante-foto { background-size: cover; background-position: center; }
+.lp-cifras.lp-variante-foto::after {
+  background-image: none; opacity: 1;
+  background: linear-gradient(180deg, rgba(2, 6, 23, .35), rgba(2, 6, 23, .85));
 }
 .lp-cifras-grid {
   position: relative; z-index: 1;
@@ -796,7 +849,6 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   display: flex; align-items: center; justify-content: center;
   font-size: 16px;
 }
-.lp-testimonio-estrellas { display: flex; gap: 3px; color: #fbbf24; font-size: 13px; }
 .lp-testimonio-texto { color: var(--lp-texto); font-size: 15.5px; margin-bottom: 24px; flex: 1; line-height: 1.6; }
 .lp-testimonio-autor { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--lp-borde); padding-top: 18px; }
 .lp-testimonio-foto, .lp-testimonio-avatar {
@@ -904,9 +956,16 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   gap: 16px; padding: 18px 0; font-weight: 700; font-size: 15.5px; cursor: pointer;
 }
 .lp-faq-item summary::-webkit-details-marker { display: none; }
-.lp-faq-item summary i { color: var(--lp-texto-suave); transition: transform .22s ease; flex: none; }
-.lp-faq-item[open] summary i { transform: rotate(180deg); color: var(--lp-acento); }
 .lp-faq-item p { color: var(--lp-texto-suave); font-size: 14.5px; padding-bottom: 20px; }
+/* Indicador "+" → rotado 45° cuando está abierto. No hay ningún <i> en el
+   markup de faq.php (una regla anterior que apuntaba a "summary i" no tenía
+   nada que seleccionar — CSS muerto), así que el indicador vive aquí como
+   pseudo-elemento, ligado a lo que realmente se renderiza. */
+.lp-faq-item summary::after {
+  content: '+'; font-size: 24px; font-weight: 400; color: var(--lp-texto-suave);
+  transition: transform .3s ease, color .22s ease; flex: none; line-height: 1;
+}
+.lp-faq-item[open] summary::after { transform: rotate(45deg); color: var(--lp-acento); }
 
 /* ── Contacto ────────────────────────────────────────────────────────── */
 .lp-contacto-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start; }
@@ -1170,12 +1229,6 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
     .lp-sec { padding: 60px 0; }
   .lp-sec-cabecera { margin-bottom: 36px; }
 
-  /* Nav: hide desktop links, show burger */
-  .lp-nav-links { display: none; }
-  .lp-nav-cta { margin-left: auto; }
-  .lp-nav-cta .lp-boton-fantasma { display: none; }
-  .lp-nav-burger { display: flex; }
-
   /* Sections that go single column */
   .lp-hero { padding: 80px 0 72px; }
   .lp-hero-split .lp-hero-inner,
@@ -1254,9 +1307,9 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* -- Dark Mode Variables -------------------------------------------------- */
 [data-theme="dark"] {
-  --lp-fondo: #0f172a;
-  --lp-fondo-alt: #020617;
-  --lp-texto: #f8fafc;
+  --lp-fondo: #0B0F19; /* Gris espacial en vez de negro puro */
+  --lp-fondo-alt: #131A2B;
+  --lp-texto: #F1F5F9;
   --lp-texto-suave: #94a3b8;
   --lp-borde: #1e293b;
   --lp-sombra: 0 4px 6px -1px rgba(0, 0, 0, .3), 0 2px 4px -2px rgba(0, 0, 0, .2);
@@ -1307,41 +1360,6 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   color: var(--lp-acento);
   margin-right: 0.5rem;
 }
-
-/* -- Galería Masonry ------------------------------------------------------- */
-.lp-galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  grid-auto-flow: dense;
-}
-.lp-galeria-item {
-  position: relative;
-  border-radius: var(--lp-radio);
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--lp-sombra);
-}
-.lp-galeria-item img {
-  width: 100%;
-  height: auto;
-  min-height: 250px;
-  object-fit: cover;
-  transition: transform 0.4s;
-}
-.lp-galeria-item:hover img {
-  transform: scale(1.05);
-}
-.lp-galeria-item figcaption {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-  color: #fff;
-  padding: 1.5rem 1rem 1rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.lp-galeria-item:hover figcaption { opacity: 1; }
 
 /* ══════════════════════════════════════════════════════════════════════
    BLOG — tarjetas, listado, artículo y paginación
@@ -1665,14 +1683,40 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
 }
 
+/* -- Edición en línea desde la previsualización -----------------------------
+   [data-lb-field] solo existe en el HTML cuando $preview es true (ver
+   landing_lb_field() en engine/secciones.php) — en la web pública real estas
+   reglas no se aplican a nada, no hace falta una clase "modo preview" aparte. */
+[data-lb-field] {
+  cursor: text;
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  transition: outline-color .15s ease;
+}
+[data-lb-field]:hover {
+  outline-color: color-mix(in srgb, var(--lp-acento) 45%, transparent);
+}
+[data-lb-field].lp-editando-campo {
+  outline: 2px solid var(--lp-acento);
+  outline-offset: 3px;
+  background: color-mix(in srgb, var(--lp-acento) 6%, transparent);
+  cursor: text;
+}
+[data-lb-field][data-lb-kind="imagen"] {
+  cursor: pointer;
+}
+[data-lb-field][data-lb-kind="imagen"]:hover {
+  outline-style: dashed;
+  outline-color: color-mix(in srgb, var(--lp-acento) 60%, transparent);
+}
 
 
-/* -- MODERNIZATION EXTENSIONS -- */
-/* Animations */
+
+/* -- Animaciones y utilidades globales -------------------------------------- */
 @keyframes lp-pulse-soft {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--lp-acento-rgb, 14, 165, 233), 0.7); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(var(--lp-acento-rgb, 14, 165, 233), 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--lp-acento-rgb, 14, 165, 233), 0); }
+  0% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--lp-acento) 55%, transparent); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px transparent; }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; }
 }
 
 @keyframes lp-float {
@@ -1681,12 +1725,6 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   100% { transform: translateY(0px); }
 }
 
-@keyframes lp-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* Global utility classes */
 .lp-badge {
   display: inline-flex;
   align-items: center;
@@ -1710,71 +1748,15 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   box-shadow: var(--lp-sombra-hover);
 }
 
-/* Dark mode enhancements */
-[data-theme='dark'] {
-  --lp-fondo: #0B0F19; /* Deep space gray instead of pure black */
-  --lp-fondo-alt: #131A2B;
-  --lp-texto: #F1F5F9;
-  --lp-texto-suave: #94A3B8;
-  --lp-borde: #1E293B;
-}
-
-
-/* -- SECTION LAYOUT ENHANCEMENTS -- */
-
-/* Oferta Formativa (Bento Box) */
-.lp-oferta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-}
-@media (min-width: 1024px) {
-  .lp-oferta-grid > article:nth-child(4n+1) { grid-column: span 2; }
-}
-.lp-ciclo {
-  position: relative;
-  overflow: hidden;
-}
+/* Tarjeta de ciclo (oferta_formativa): cuerpo con fondo semitransparente +
+   blur cuando la tarjeta lleva foto detrás, para que el texto respire sobre
+   la imagen sin perder la superficie de tarjeta. */
 .lp-ciclo-cuerpo {
   position: relative;
   z-index: 2;
   background: color-mix(in srgb, var(--lp-fondo) 80%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-/* Instalaciones (Masonry) */
-.lp-galeria {
-  columns: 3 300px;
-  gap: 20px;
-}
-.lp-galeria-item {
-  break-inside: avoid;
-  margin-bottom: 20px;
-  overflow: hidden;
-  border-radius: var(--lp-radio);
-  box-shadow: var(--lp-sombra);
-}
-.lp-galeria-item img {
-  width: 100%;
-  display: block;
-  transition: transform 0.4s ease;
-}
-.lp-galeria-item:hover img {
-  transform: scale(1.08);
-}
-
-/* Empresas (Marquee) */
-.lp-empresas-grid {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 40px;
-  overflow: hidden;
-  width: max-content;
-  animation: lp-marquee 20s linear infinite;
-}
-.lp-empresas-grid:hover {
-  animation-play-state: paused;
 }
 
 /* Equipo Docente (Flip Card) */
@@ -1819,26 +1801,9 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   margin: 16px 0;
 }
 
-/* Testimonios (Snap Carousel) */
-.lp-testimonios-grid {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 24px;
-  padding-bottom: 16px;
-}
-.lp-testimonios-grid::-webkit-scrollbar {
-  height: 8px;
-}
-.lp-testimonios-grid::-webkit-scrollbar-thumb {
-  background: var(--lp-borde);
-  border-radius: 4px;
-}
+/* Comilla decorativa gigante en cada tarjeta de testimonio (ambas variantes,
+   grid y carrusel — puramente ornamental, no interfiere con el layout). */
 .lp-testimonio-card {
-  scroll-snap-align: start;
-  flex: 0 0 calc(33.333% - 16px);
-  min-width: 300px;
   position: relative;
 }
 .lp-testimonio-card::before {
@@ -1853,30 +1818,19 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   pointer-events: none;
 }
 
-/* FAQ (Accordion Morph) */
-.lp-faq-item details summary::-webkit-details-marker { display: none; }
-.lp-faq-item details summary {
-  list-style: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.lp-faq-item details summary::after {
-  content: '+';
-  font-size: 24px;
-  transition: transform 0.3s;
-}
-.lp-faq-item details[open] summary::after {
-  transform: rotate(45deg);
+/* CTA de pre-matrícula: pulso sutil en el botón principal para llamar la
+   atención — respeta prefers-reduced-motion como el resto de animaciones
+   continuas del archivo (blobs del hero, malla del tema vocacional). */
+@media (prefers-reduced-motion: no-preference) {
+  .lp-prematricula-accion .lp-boton-primario {
+    animation: lp-pulse-soft 2s infinite;
+  }
 }
 
-/* Prematricula CTA */
-.lp-prematricula-accion .lp-boton-primario {
-  animation: lp-pulse-soft 2s infinite;
-}
-
-/* Force burger menu early on very crowded navbars */
+/* Cambio a menú hamburguesa (único punto de corte para esto — antes estaba
+   duplicado también dentro de la media query de 1100px de más arriba, lo que
+   dejaba un rango 1101–1200px con layout de escritorio pero sin enlaces de
+   nav visibles ni hamburguesa). */
 @media (max-width: 1200px) {
   .lp-nav-links { display: none; }
   .lp-nav-cta { margin-left: auto; }
