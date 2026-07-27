@@ -83,12 +83,11 @@ switch ($accion) {
         $notaMaxima = (float)($_POST['notaMaxima'] ?? 10);
         $peso = (float)($_POST['peso'] ?? 1);
         $obligatorio = !empty($_POST['obligatorio']);
-        $recuperable = !empty($_POST['recuperable']);
         $incluirEnMedia = !empty($_POST['incluirEnMedia']);
         $origen = in_array($_POST['origen'] ?? '', ['examen','reto','ra_ce','fct','tfg','otro'], true) ? $_POST['origen'] : 'otro';
         $orden = (int)($_POST['orden'] ?? 1);
         if (!$idConfig || $nombre === '') { echo json_encode(['ok' => false, 'msg' => 'Faltan datos.']); break; }
-        $id = guardarTipoEvaluacion($idConfig, $idTipo, $nombre, $notaMaxima, $peso, $obligatorio, $recuperable, $incluirEnMedia, $origen, $orden);
+        $id = guardarTipoEvaluacion($idConfig, $idTipo, $nombre, $notaMaxima, $peso, $obligatorio, false, $incluirEnMedia, $origen, $orden);
         echo json_encode($id ? ['ok' => true, 'idTipo' => $id] : ['ok' => false, 'msg' => 'No se pudo guardar.']);
         break;
 
@@ -127,8 +126,8 @@ switch ($accion) {
     case 'guardar_tfg':
         if (!$idConfig) { echo json_encode(['ok' => false, 'msg' => 'Falta la configuración.']); break; }
         $ok = actualizarConfigTFG(
-            $idConfig, !empty($_POST['habilitado']), !empty($_POST['requiereComite']), !empty($_POST['requiereDefensa']),
-            (float)($_POST['notaMinima'] ?? 5), (float)($_POST['pesoEnMedia'] ?? 1), !empty($_POST['permiteRecuperacion'])
+            $idConfig, !empty($_POST['habilitado']), false, false,
+            (float)($_POST['notaMinima'] ?? 5), (float)($_POST['pesoEnMedia'] ?? 1), false
         );
         echo json_encode(['ok' => $ok]);
         break;
@@ -136,8 +135,8 @@ switch ($accion) {
     case 'guardar_retos':
         if (!$idConfig) { echo json_encode(['ok' => false, 'msg' => 'Falta la configuración.']); break; }
         $ok = actualizarConfigRetos(
-            $idConfig, (float)($_POST['pesoDefecto'] ?? 1), !empty($_POST['permiteGrupal']),
-            !empty($_POST['permiteFases']), !empty($_POST['requiereRubrica']), !empty($_POST['evaluacionPares'])
+            $idConfig, (float)($_POST['pesoDefecto'] ?? 1), false,
+            false, false, false
         );
         echo json_encode(['ok' => $ok]);
         break;
