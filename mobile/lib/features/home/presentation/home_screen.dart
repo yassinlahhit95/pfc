@@ -186,9 +186,9 @@ class HomeScreen extends ConsumerWidget {
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
         ),
         _MetricCard(
-          value: 'Al día',
-          label: 'Estado SaaS',
-          icon: Icons.verified_user_rounded,
+          value: 'Equipos',
+          label: 'Inventario',
+          icon: Icons.inventory_2_rounded,
           color: const Color(0xFF7C3AED),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InventoryScreen())),
         ),
