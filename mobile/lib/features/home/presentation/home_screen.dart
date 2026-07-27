@@ -8,6 +8,7 @@ import '../../../core/widgets/premium.dart';
 import '../../announcements/presentation/announcements_screen.dart';
 import '../../attendance/data/attendance_repository.dart';
 import '../../attendance/presentation/attendance_screen.dart';
+import '../../attendance/presentation/staff_justify_screen.dart';
 import '../../classroom/data/classroom_repository.dart';
 import '../../classroom/presentation/favorites_screen.dart';
 import '../../classroom/presentation/modules_screen.dart';
@@ -65,6 +66,11 @@ class HomeScreen extends ConsumerWidget {
     final personal = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
     final hasClassroom = role != UserRole.tutor && role != UserRole.director;
     final hasAttendance = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
+    final isTutorTeacher = role == UserRole.profesor &&
+        (profileAsync.valueOrNull?.data['esTutor'] == 1 ||
+         profileAsync.valueOrNull?.data['esTutor'] == '1' ||
+         profileAsync.valueOrNull?.data['esTutor'] == true);
+    final hasStaffJustify = isTutorTeacher || role == UserRole.director || role == UserRole.secretaria;
     final isBackOffice = role == UserRole.director || role == UserRole.secretaria;
 
     final academico = <_NavItem>[
@@ -73,6 +79,8 @@ class HomeScreen extends ConsumerWidget {
       if (hasClassroom) const _NavItem(Icons.auto_stories_outlined, 'Aula digital', 'Temas, recursos y entregas', ModulesScreen()),
       if (role == UserRole.estudiante) const _NavItem(Icons.star_rounded, 'Favoritos', 'Tus archivos guardados', FavoritesScreen()),
       if (hasAttendance) const _NavItem(Icons.fact_check_outlined, 'Asistencias', 'Registro de faltas y asistencia', AttendanceScreen()),
+      if (hasStaffJustify)
+        const _NavItem(Icons.add_a_photo_outlined, 'Justificar falta', 'Foto de un justificante en persona', StaffJustifyScreen()),
     ];
     final centro = <_NavItem>[
       const _NavItem(Icons.campaign_outlined, 'Anuncios', 'Comunicados oficiales y avisos', AnnouncementsScreen()),

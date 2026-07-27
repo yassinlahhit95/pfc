@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/payments_repository.dart';
+import 'cobrar_pago_sheet.dart';
+
+Future<void> _openComprobante(BuildContext context, String url) async {
+  final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  if (!ok && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo abrir el comprobante.')));
+  }
+}
 
 class PaymentsScreen extends StatelessWidget {
   const PaymentsScreen({super.key});
@@ -54,7 +63,6 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
   @override
   Widget build(BuildContext context) {
     final paymentsAsync = ref.watch(paymentsProvider);
-    final currency = NumberFormat.currency(locale: 'es_ES', symbol: '€');
 
     return AsyncView<List<Payment>>(
       value: paymentsAsync,
@@ -107,37 +115,10 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
                       child: ListView.builder(
                         padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
                         itemCount: items.length,
-                        itemBuilder: (context, i) {
-                          final p = items[i];
-                          final color = _estadoColor(context, p.estadoComprobante);
-                          final monto = double.tryParse(p.monto) ?? 0;
-                          return AppCard(
-                            margin: const EdgeInsets.only(bottom: Space.md),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(p.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                      const SizedBox(height: 2),
-                                      Text('${p.nombreCiclo} · ${p.tipoPago} · ${p.fechaPago}',
-                                          style: Theme.of(context).textTheme.bodySmall),
-                                    ],
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(currency.format(monto), style: const TextStyle(fontWeight: FontWeight.w700)),
-                                    const SizedBox(height: 6),
-                                    StatusPill(label: p.estadoComprobante, color: color),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                        itemBuilder: (context, i) => _PaymentReviewCard(
+                          payment: items[i],
+                          onResolved: () => ref.invalidate(paymentsProvider),
+                        ),
                       ),
                     ),
             ),
@@ -174,25 +155,187 @@ class _PendingPaymentsTab extends ConsumerWidget {
               final deuda = double.tryParse(p.deuda) ?? 0;
               return AppCard(
                 margin: const EdgeInsets.only(bottom: Space.md),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: InkWell(
+                  onTap: () async {
+                    final updated = await showCobrarPagoSheet(
+                      context,
+                      ref,
+                      idEstudiante: p.idEstudiante,
+                      nombreEstudiante: p.nombreEstudiante,
+                      deudaActual: deuda,
+                    );
+                    if (updated) {
+                      ref.invalidate(pendingPaymentsProvider);
+                      ref.invalidate(paymentsProvider);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(p.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
+                            Text(p.nombreCiclo, style: Theme.of(context).textTheme.bodySmall),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(p.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
-                          Text(p.nombreCiclo, style: Theme.of(context).textTheme.bodySmall),
+                          Text(currency.format(deuda), style: TextStyle(fontWeight: FontWeight.w700, color: color)),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Cobrar', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
+                              Icon(Icons.chevron_right_rounded, size: 14, color: Theme.of(context).colorScheme.primary),
+                            ],
+                          ),
                         ],
                       ),
-                    ),
-                    Text(currency.format(deuda), style: TextStyle(fontWeight: FontWeight.w700, color: color)),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
           ),
         );
       },
+    );
+  }
+}
+
+class _PaymentReviewCard extends ConsumerStatefulWidget {
+  const _PaymentReviewCard({required this.payment, required this.onResolved});
+  final Payment payment;
+  final VoidCallback onResolved;
+
+  @override
+  ConsumerState<_PaymentReviewCard> createState() => _PaymentReviewCardState();
+}
+
+class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
+  bool _resolving = false;
+
+  Future<void> _resolve(bool aprobar) async {
+    String? motivoRechazo;
+    if (!aprobar) {
+      final controller = TextEditingController();
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Rechazar comprobante'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(labelText: 'Motivo del rechazo'),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancelar')),
+            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Rechazar')),
+          ],
+        ),
+      );
+      if (confirmed != true || controller.text.trim().isEmpty) return;
+      motivoRechazo = controller.text.trim();
+    }
+
+    setState(() => _resolving = true);
+    try {
+      await ref.read(paymentsRepositoryProvider).resolveComprobante(
+            idPago: widget.payment.id,
+            aprobar: aprobar,
+            motivoRechazo: motivoRechazo,
+          );
+      widget.onResolved();
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(aprobar ? 'Comprobante aprobado.' : 'Comprobante rechazado.')));
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo resolver el comprobante.')));
+      }
+    } finally {
+      if (mounted) setState(() => _resolving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.payment;
+    final currency = NumberFormat.currency(locale: 'es_ES', symbol: '€');
+    final color = _estadoColor(context, p.estadoComprobante);
+    final monto = double.tryParse(p.monto) ?? 0;
+
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: Space.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 2),
+                    Text('${p.nombreCiclo} · ${p.tipoPago} · ${p.fechaPago}',
+                        style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(currency.format(monto), style: const TextStyle(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 6),
+                  StatusPill(label: p.estadoComprobante, color: color),
+                ],
+              ),
+            ],
+          ),
+          if (p.comprobanteUrl != null) ...[
+            const SizedBox(height: Space.sm),
+            InkWell(
+              onTap: () => _openComprobante(context, p.comprobanteUrl!),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.attach_file_rounded, size: 16, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Ver comprobante',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (p.estadoComprobante == 'verificando') ...[
+            const SizedBox(height: Space.md),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _resolving ? null : () => _resolve(false),
+                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.rojoLight),
+                    child: const Text('Rechazar'),
+                  ),
+                ),
+                const SizedBox(width: Space.sm),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: _resolving ? null : () => _resolve(true),
+                    child: const Text('Aprobar'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

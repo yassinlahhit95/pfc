@@ -1,16 +1,26 @@
 <?php
 declare(strict_types=1);
 
-// POST /api/v1/attendance-justify.php (multipart/form-data) — estudiante or
-// tutor (scoped to their own linked children) justifies an ausente/retraso.
-// Body fields: idAsistencia, motivo, archivo (optional file, PDF/JPG/PNG, max 8MB).
-// Mirrors controladores/{estudiantes,tutores}/asistencias/justificar.php's
-// exact validation rules and upload pattern (server-side MIME detection,
-// random filename, R2 key `justificantes/just_<idEstudiante>_<random>.<ext>`).
+// POST /api/v1/attendance-justify.php (multipart/form-data) — justifies an
+// ausente/retraso. Body fields: idAsistencia, motivo, archivo (optional file,
+// PDF/JPG/PNG, max 8MB). Mirrors controladores/{estudiantes,tutores}/asistencias
+// /justificar.php's exact validation rules and upload pattern (server-side MIME
+// detection, random filename, R2 key `justificantes/just_<idEstudiante>_<random>.<ext>`).
+//
+// Who can call this and what happens:
+//   estudiante/tutor  — scoped to their own/linked children's record. Goes
+//                       into the normal 'pendiente' queue for the teaching
+//                       profesor to review (unchanged from before).
+//   profesor          — must teach the record's módulo. Staff already saw
+//                       the proof in person, so this auto-approves immediately.
+//   secretaria/director — no scope restriction (center-wide, like the web).
+//                       Also auto-approves immediately.
 
 require_once __DIR__ . '/_api.php';
 require_once __DIR__ . '/../../modelos/justificacionesFalta.php';
 require_once __DIR__ . '/../../modelos/tutores.php';
+require_once __DIR__ . '/../../modelos/modulos.php';
+require_once __DIR__ . '/_attendance_shared.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     v1Error('Method not allowed.', 405, 'method_not_allowed');
@@ -19,9 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $auth = v1Auth();
 ['user_type' => $type, 'user_id' => $uid] = $auth;
 
-if ($type !== 'estudiante' && $type !== 'tutor') {
-    v1Error('Only estudiantes and tutores can submit justifications.', 403, 'forbidden');
+$rolesPermitidos = ['profesor', 'secretaria', 'director'];
+if (!in_array($type, $rolesPermitidos, true)) {
+    v1Error('Este rol no puede justificar faltas.', 403, 'forbidden');
 }
+$esStaff = true; // All permitted roles are staff now
 
 $idAsistencia = (int)($_POST['idAsistencia'] ?? 0);
 $motivo       = trim((string)($_POST['motivo'] ?? ''));
@@ -30,7 +42,7 @@ if ($idAsistencia <= 0 || $motivo === '') {
 }
 
 $con = obtenerConexion();
-$st = mysqli_prepare($con, 'SELECT idEstudiante, estado FROM asistencias WHERE idAsistencia = ?');
+$st = mysqli_prepare($con, 'SELECT idEstudiante, idModulo, estado FROM asistencias WHERE idAsistencia = ?');
 mysqli_stmt_bind_param($st, 'i', $idAsistencia);
 mysqli_stmt_execute($st);
 $asistencia = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
@@ -38,13 +50,31 @@ if (!$asistencia) v1Error('Attendance record not found.', 404, 'not_found');
 
 $idEstudiante = (int)$asistencia['idEstudiante'];
 
-if ($type === 'estudiante') {
-    if ($idEstudiante !== $uid) v1Error('You do not have access to this record.', 403, 'forbidden');
-} else {
-    $hijos  = listarEstudiantesPorTutor($uid);
-    $esHijo = in_array($idEstudiante, array_map(fn($h) => (int)$h['idEstudiante'], $hijos), true);
-    if (!$esHijo) v1Error('You do not have access to this student.', 403, 'forbidden');
+if ($type === 'profesor') {
+    // Fetch student's cycle
+    $stEst = mysqli_prepare($con, 'SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?');
+    mysqli_stmt_bind_param($stEst, 'i', $idEstudiante);
+    mysqli_stmt_execute($stEst);
+    $estData = mysqli_fetch_assoc(mysqli_stmt_get_result($stEst));
+    $idCicloEstudiante = $estData ? (int)$estData['idCiclo'] : 0;
+
+    // Fetch professor's tutor status
+    $stTutor = mysqli_prepare($con, 'SELECT esTutor, idCicloTutor FROM profesores WHERE idProfesor = ?');
+    mysqli_stmt_bind_param($stTutor, 'i', $uid);
+    mysqli_stmt_execute($stTutor);
+    $tutorInfo = mysqli_fetch_assoc(mysqli_stmt_get_result($stTutor));
+
+    $esTutor = $tutorInfo && (int)$tutorInfo['esTutor'] === 1;
+    $idCicloTutor = $tutorInfo ? (int)$tutorInfo['idCicloTutor'] : 0;
+
+    if (!$esTutor) {
+        v1Error('Solo los profesores tutores pueden justificar faltas.', 403, 'forbidden');
+    }
+    if ($idCicloTutor !== $idCicloEstudiante) {
+        v1Error('Solo puedes justificar faltas de alumnos de tu tutoría.', 403, 'forbidden');
+    }
 }
+// secretaria/director: no additional scope check.
 
 if (!in_array($asistencia['estado'], ['ausente', 'retraso'], true)) {
     v1Error('This record cannot be justified.', 400, 'validation');
@@ -80,7 +110,16 @@ if (!empty($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK)
     }
 }
 
-if (!crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivo, $asistencia['estado'])) {
+$idJustificacion = crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivo, $asistencia['estado'], $type, $esStaff ? $uid : null);
+if ($idJustificacion === false) {
     v1Error('Could not submit the justification.', 500, 'error');
 }
+
+if ($esStaff) {
+    $ok = resolverJustificacionFalta($idJustificacion, $idAsistencia, true, $uid, '', $asistencia['estado'], $type);
+    if (!$ok) v1Error('Justification saved but could not be auto-approved.', 500, 'error');
+    notificarJustificacionResuelta($idEstudiante, $idAsistencia, true, '');
+    v1Ok(['message' => 'Justification submitted and approved.'], 201);
+}
+
 v1Ok(['message' => 'Justification submitted.'], 201);

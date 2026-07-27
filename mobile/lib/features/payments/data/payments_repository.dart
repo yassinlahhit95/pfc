@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_client.dart';
@@ -9,6 +12,8 @@ class Payment {
     required this.fechaPago,
     required this.tipoPago,
     required this.estadoComprobante,
+    required this.motivoRechazoComprobante,
+    required this.comprobanteUrl,
     required this.nombreEstudiante,
     required this.nombreCiclo,
     required this.nivel,
@@ -20,6 +25,8 @@ class Payment {
         fechaPago: json['fechaPago'] as String? ?? '',
         tipoPago: json['tipoPago'] as String? ?? '',
         estadoComprobante: json['estadoComprobante'] as String? ?? '',
+        motivoRechazoComprobante: json['motivoRechazoComprobante'] as String?,
+        comprobanteUrl: json['comprobante_url'] as String?,
         nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
         nombreCiclo: json['nombreCiclo'] as String? ?? '',
         // "curso" on estudiantes is actually the nivel enum (Grado Medio /
@@ -33,6 +40,8 @@ class Payment {
   final String fechaPago;
   final String tipoPago;
   final String estadoComprobante;
+  final String? motivoRechazoComprobante;
+  final String? comprobanteUrl;
   final String nombreEstudiante;
   final String nombreCiclo;
   final String nivel;
@@ -121,6 +130,40 @@ class PaymentsRepository {
   Future<List<StudentPaymentsGroup>> fetchForTutor() async {
     final data = await _client.get('/payments.php');
     return (data['students'] as List).cast<Map<String, dynamic>>().map(StudentPaymentsGroup.fromJson).toList();
+  }
+
+  /// estudiante/tutor: upload a proof-of-payment photo/PDF for an overdue pago.
+  Future<void> uploadComprobante({required int idPago, required File archivo}) {
+    return _client.post('/payments-comprobante.php', data: FormData.fromMap({
+      'idPago': idPago,
+      'archivo': MultipartFile.fromFileSync(archivo.path),
+    }));
+  }
+
+  /// director/secretaria: approve/reject a comprobante that's 'verificando'.
+  Future<void> resolveComprobante({required int idPago, required bool aprobar, String? motivoRechazo}) {
+    return _client.post('/payments-resolve.php', data: {
+      'idPago': idPago,
+      'aprobar': aprobar,
+      if (motivoRechazo != null) 'motivoRechazo': motivoRechazo,
+    });
+  }
+
+  /// director/secretaria: record payment and optionally upload photo of receipt.
+  Future<void> registrarCobroPago({
+    required int idEstudiante,
+    required double monto,
+    required String tipoPago,
+    String? fechaProximoPago,
+    File? archivo,
+  }) {
+    return _client.post('/payments-cobrar.php', data: FormData.fromMap({
+      'idEstudiante': idEstudiante,
+      'monto': monto,
+      'tipoPago': tipoPago,
+      if (fechaProximoPago != null) 'fechaProximoPago': fechaProximoPago,
+      if (archivo != null) 'archivo': MultipartFile.fromFileSync(archivo.path),
+    }));
   }
 }
 

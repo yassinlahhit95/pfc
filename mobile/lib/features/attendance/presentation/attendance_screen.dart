@@ -10,6 +10,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/attendance_repository.dart';
+import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
 
 Future<void> _openJustificante(BuildContext context, String url) async {
@@ -146,61 +147,6 @@ class _AttendanceCard extends ConsumerWidget {
   const _AttendanceCard({required this.record});
   final AttendanceRecord record;
 
-  Future<void> _openJustifySheet(BuildContext context, WidgetRef ref) async {
-    final controller = TextEditingController();
-    final sent = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _Sheet(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text('Justificar falta', style: Theme.of(ctx).textTheme.titleMedium),
-              const SizedBox(height: 4),
-              Text('${record.nombreModulo} · ${record.fecha}', style: Theme.of(ctx).textTheme.bodySmall),
-              const SizedBox(height: Space.xl),
-              TextField(
-                controller: controller,
-                minLines: 2,
-                maxLines: 4,
-                decoration: const InputDecoration(labelText: 'Motivo'),
-              ),
-              const SizedBox(height: Space.xl),
-              FilledButton(
-                onPressed: () async {
-                  if (controller.text.trim().isEmpty) return;
-                  try {
-                    await ref.read(attendanceRepositoryProvider).justify(
-                          idAsistencia: record.id,
-                          motivo: controller.text.trim(),
-                        );
-                    if (ctx.mounted) Navigator.of(ctx).pop(true);
-                  } catch (_) {
-                    if (ctx.mounted) {
-                      ScaffoldMessenger.of(ctx)
-                          .showSnackBar(const SnackBar(content: Text('No se pudo enviar la justificación.')));
-                    }
-                  }
-                },
-                child: const Text('Enviar'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    if (sent == true) {
-      ref.invalidate(attendanceMineProvider);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Justificación enviada.')));
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
@@ -227,13 +173,6 @@ class _AttendanceCard extends ConsumerWidget {
                 if (record.justificacion != null) ...[
                   const SizedBox(height: Space.md),
                   _JustificationBox(justificacion: record.justificacion!),
-                ],
-                if (record.canJustify) ...[
-                  const SizedBox(height: Space.sm),
-                  OutlinedButton(
-                    onPressed: () => _openJustifySheet(context, ref),
-                    child: const Text('Justificar'),
-                  ),
                 ],
               ],
             ),
@@ -434,37 +373,6 @@ class _PendingJustificationsTab extends ConsumerWidget {
           ),
         );
       },
-    );
-  }
-}
-
-/// Shared bottom-sheet chrome — rounded top, drag handle, consistent
-/// padding — instead of each screen wiring up its own raw Padding+Column.
-class _Sheet extends StatelessWidget {
-  const _Sheet({required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 36,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: Space.lg),
-            decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
-          ),
-          child,
-        ],
-      ),
     );
   }
 }

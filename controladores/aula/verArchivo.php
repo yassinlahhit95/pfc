@@ -47,11 +47,10 @@ $uploadDir = realpath(__DIR__ . "/../../public/uploads/aula/archivos");
 $candidato = $uploadDir !== false ? $uploadDir . DIRECTORY_SEPARATOR . $archivo['nombreArchivo'] : false;
 $ruta      = $candidato !== false ? realpath($candidato) : false;
 
-// El guard de path-traversal solo aplica cuando realpath() SÍ resuelve algo
-// (fichero heredado en disco local); que no resuelva ya no es un error — el
-// fichero puede ser un objeto nuevo que solo existe en R2 (sin backfill de
-// lo que ya había en public/uploads/), y servirArchivo() decide ese caso.
-if (!$uploadDir || ($ruta !== false && strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0)) {
+$normDir  = $uploadDir ? str_replace('\\', '/', $uploadDir) . '/' : '';
+$normRuta = $ruta ? str_replace('\\', '/', $ruta) : '';
+
+if (!$uploadDir || ($ruta !== false && stripos($normRuta, $normDir) !== 0)) {
     http_response_code(404); exit('El fichero ya no existe.');
 }
 

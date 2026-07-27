@@ -100,7 +100,11 @@ if ($action === 'download') {
         $uploadDir = realpath(__DIR__ . "/../../public/uploads/aula/$carpeta");
         $candidato = $uploadDir !== false ? $uploadDir . DIRECTORY_SEPARATOR . $nombreArchivo : false;
         $ruta      = $candidato !== false ? realpath($candidato) : false;
-        if (!$uploadDir || ($ruta !== false && strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0)) {
+
+        $normDir  = $uploadDir ? str_replace('\\', '/', $uploadDir) . '/' : '';
+        $normRuta = $ruta ? str_replace('\\', '/', $ruta) : '';
+
+        if (!$uploadDir || ($ruta !== false && stripos($normRuta, $normDir) !== 0)) {
             http_response_code(404);
             exit('El fichero ya no existe.');
         }
@@ -130,7 +134,11 @@ if ($action === 'download') {
         $uploadDir = realpath(__DIR__ . "/../../public/uploads/aula/tareas");
         $candidato = $uploadDir !== false ? $uploadDir . DIRECTORY_SEPARATOR . $nombreArchivo : false;
         $ruta      = $candidato !== false ? realpath($candidato) : false;
-        if (!$uploadDir || ($ruta !== false && strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0)) {
+
+        $normDir  = $uploadDir ? str_replace('\\', '/', $uploadDir) . '/' : '';
+        $normRuta = $ruta ? str_replace('\\', '/', $ruta) : '';
+
+        if (!$uploadDir || ($ruta !== false && stripos($normRuta, $normDir) !== 0)) {
             http_response_code(404);
             exit('El fichero ya no existe.');
         }
@@ -184,7 +192,11 @@ if ($action === 'download') {
     $uploadDir = realpath(__DIR__ . '/../../public/uploads/aula/archivos');
     $candidato = $uploadDir !== false ? $uploadDir . DIRECTORY_SEPARATOR . $archivo['nombreArchivo'] : false;
     $ruta      = $candidato !== false ? realpath($candidato) : false;
-    if (!$uploadDir || ($ruta !== false && strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0)) {
+
+    $normDir  = $uploadDir ? str_replace('\\', '/', $uploadDir) . '/' : '';
+    $normRuta = $ruta ? str_replace('\\', '/', $ruta) : '';
+
+    if (!$uploadDir || ($ruta !== false && stripos($normRuta, $normDir) !== 0)) {
         http_response_code(404);
         exit('El fichero ya no existe.');
     }

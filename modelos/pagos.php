@@ -111,6 +111,26 @@ function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fec
     return mysqli_stmt_execute($stmt);
 }
 
+function registrarCobroPago(int $idEstudiante, float $monto, string $tipoPago, string $fechaPago, ?string $fechaProximo, ?string $comprobante = null): bool {
+    $con = obtenerConexion();
+    $estadoComprobante = 'aprobado';
+    $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago, comprobante, estadoComprobante) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "idsssss", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante, $estadoComprobante);
+    return mysqli_stmt_execute($stmt);
+}
+
+// Sube/reemplaza el comprobante de un pago existente (autoservicio estudiante/tutor
+// para un pago vencido) — vuelve a 'verificando' y limpia un rechazo anterior,
+// para que un segundo intento no quede colgado con el motivoRechazo viejo.
+function subirComprobantePago(int $idPago, string $archivo): bool {
+    $con = obtenerConexion();
+    $sql = "UPDATE pagos SET comprobante = ?, estadoComprobante = 'verificando', motivoRechazoComprobante = NULL WHERE idPago = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $archivo, $idPago);
+    return mysqli_stmt_execute($stmt);
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
@@ -120,6 +140,16 @@ function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $
     $sql = "UPDATE pagos SET idEstudiante=?, monto=?, tipoPago=?, fechaPago=?, fechaProximoPago=? WHERE idPago=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "idsssi", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $idPago);
+    return mysqli_stmt_execute($stmt);
+}
+
+// Aprueba/rechaza un comprobante subido por el estudiante/tutor (secretaría/director).
+function resolverComprobantePago(int $idPago, bool $aprobar, ?string $motivoRechazo = null): bool {
+    $con = obtenerConexion();
+    $estado = $aprobar ? 'aprobado' : 'rechazado';
+    $sql = "UPDATE pagos SET estadoComprobante = ?, motivoRechazoComprobante = ? WHERE idPago = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $estado, $motivoRechazo, $idPago);
     return mysqli_stmt_execute($stmt);
 }
 
