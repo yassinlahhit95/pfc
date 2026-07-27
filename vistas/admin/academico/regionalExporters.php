@@ -111,8 +111,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="archivoCurriculum">Plan de Estudios Oficial (BOPV)</label>
                 <select name="archivoCurriculum" id="archivoCurriculum" required>
                     <option value="">-- Selecciona un plan oficial --</option>
-                    <option value="daw_euskadi.json">País Vasco | Desarrollo de Aplicaciones Web (DAW)</option>
-                    <option value="smr_euskadi.json">País Vasco | Sistemas Microinformáticos y Redes (SMR)</option>
+                    <optgroup label="País Vasco (BOPV) - Activo">
+                        <option value="daw_euskadi.json">País Vasco | Desarrollo de Aplicaciones Web (DAW)</option>
+                        <option value="smr_euskadi.json">País Vasco | Sistemas Microinformáticos y Redes (SMR)</option>
+                    </optgroup>
+                    <optgroup label="Otras Comunidades - Próximamente">
+                        <option value="" disabled>Madrid | Plan Oficial de FP (Soporte futuro)</option>
+                        <option value="" disabled>Cataluña | Plan Oficial de FP (Soporte futuro)</option>
+                        <option value="" disabled>Andalucía | Plan Oficial de FP (Soporte futuro)</option>
+                        <option value="" disabled>Comunidad Valenciana | Plan Oficial de FP (Soporte futuro)</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -154,7 +162,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="sistemaExp">Formato del Sistema Regional</label>
                 <select name="sistema" id="sistemaExp" required>
-                    <option value="euskadi_hezigune" selected>Euskadi (Hezigune XML Export)</option>
+                    <option value="">-- Selecciona una plataforma autonómica --</option>
+                    <optgroup label="Plataformas Activas">
+                        <option value="euskadi_hezigune" selected>Euskadi (Hezigune XML Export)</option>
+                    </optgroup>
+                    <optgroup label="Plataformas en Desarrollo (Próximamente)">
+                        <option value="" disabled>Madrid (SICE XML Export)</option>
+                        <option value="" disabled>Cataluña (SAGA XML Export)</option>
+                        <option value="" disabled>Andalucía (Séneca XML Export)</option>
+                        <option value="" disabled>Comunidad Valenciana (ITACA XML Export)</option>
+                    </optgroup>
                 </select>
             </div>
 
