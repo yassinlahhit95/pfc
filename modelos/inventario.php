@@ -12,8 +12,9 @@ function listarTodosLosPrestamos() {
                    dispositivos.idDispositivo AS idArticulo
             FROM prestamos
             JOIN estudiantes  ON prestamos.idEstudiante = estudiantes.idEstudiante
-            JOIN dispositivos ON prestamos.numeroSerie  = dispositivos.numeroSerie
-            ORDER BY idPrestamo DESC";
+            JOIN dispositivos ON prestamos.idDispositivo  = dispositivos.idDispositivo
+            WHERE prestamos.deleted_at IS NULL
+            ORDER BY prestamos.idPrestamo DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -29,6 +30,7 @@ function listarArticulos() {
     $sql = "SELECT idDispositivo AS idArticulo, nombreDispositivo AS nombreArticulo,
                    numeroSerie, estadoDispositivo AS estado
             FROM dispositivos
+            WHERE deleted_at IS NULL
             ORDER BY idDispositivo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
@@ -44,7 +46,7 @@ function obtenerArticuloPorId($idArticulo) {
     $con = obtenerConexion();
     $sql = "SELECT idDispositivo AS idArticulo, nombreDispositivo AS nombreArticulo,
                    numeroSerie, estadoDispositivo AS estado
-            FROM dispositivos WHERE idDispositivo = ?";
+            FROM dispositivos WHERE idDispositivo = ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     mysqli_stmt_execute($stmt);
@@ -68,15 +70,14 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
-        $stmt = mysqli_prepare($con, "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = ? AND estadoDispositivo = 'disponible'");
+        $stmt = mysqli_prepare($con, "SELECT idDispositivo FROM dispositivos WHERE idDispositivo = ? AND estadoDispositivo = 'disponible' AND deleted_at IS NULL");
         mysqli_stmt_bind_param($stmt, "i", $idArticulo);
         mysqli_stmt_execute($stmt);
         $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         if (!$fila) throw new \RuntimeException('dispositivo no disponible');
-        $numeroSerie = $fila['numeroSerie'];
 
-        $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')");
-        mysqli_stmt_bind_param($stmt2, "iss", $idEstudiante, $numeroSerie, $fechaPrestamo);
+        $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, idDispositivo, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'activo')");
+        mysqli_stmt_bind_param($stmt2, "iis", $idEstudiante, $idArticulo, $fechaPrestamo);
         if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert prestamos');
 
         $stmt3 = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?");
@@ -107,20 +108,20 @@ function devolverPrestamo($idPrestamo) {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
-        $stmt = mysqli_prepare($con, "SELECT numeroSerie FROM prestamos WHERE idPrestamo = ?");
+        $stmt = mysqli_prepare($con, "SELECT idDispositivo FROM prestamos WHERE idPrestamo = ? AND deleted_at IS NULL");
         mysqli_stmt_bind_param($stmt, "i", $idPrestamo);
         mysqli_stmt_execute($stmt);
         $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         if (!$fila) throw new \RuntimeException('prestamo no encontrado');
-        $numeroSerie = $fila['numeroSerie'];
+        $idDispositivo = $fila['idDispositivo'];
 
         $fechaHoy = date('Y-m-d');
         $stmt2 = mysqli_prepare($con, "UPDATE prestamos SET fechaDevolucion = ?, estadoPrestamo = 'devuelto' WHERE idPrestamo = ?");
         mysqli_stmt_bind_param($stmt2, "si", $fechaHoy, $idPrestamo);
         if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('update prestamos');
 
-        $stmt3 = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = ?");
-        mysqli_stmt_bind_param($stmt3, "s", $numeroSerie);
+        $stmt3 = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE idDispositivo = ?");
+        mysqli_stmt_bind_param($stmt3, "i", $idDispositivo);
         if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('update dispositivos');
 
         mysqli_commit($con);
@@ -137,7 +138,7 @@ function devolverPrestamo($idPrestamo) {
 
 function eliminarArticulo($idArticulo) {
     $con = obtenerConexion();
-    $sql = "DELETE FROM dispositivos WHERE idDispositivo = ?";
+    $sql = "UPDATE dispositivos SET deleted_at = NOW() WHERE idDispositivo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     return mysqli_stmt_execute($stmt);
@@ -163,8 +164,8 @@ function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
 
 function listarInventario($limite = 100, $offset = 0) {
     $con = obtenerConexion();
-    $sql = "SELECT idInventario, nombreArticulo, descripcion, cantidad
-            FROM inventario
+    $sql = "SELECT * FROM inventario
+            WHERE deleted_at IS NULL
             ORDER BY nombreArticulo ASC
             LIMIT ? OFFSET ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -180,8 +181,7 @@ function listarInventario($limite = 100, $offset = 0) {
 
 function obtenerInventarioPorId($idInventario) {
     $con = obtenerConexion();
-    $sql = "SELECT idInventario, nombreArticulo, descripcion, cantidad
-            FROM inventario WHERE idInventario = ?";
+    $sql = "SELECT * FROM inventario WHERE idInventario = ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idInventario);
     mysqli_stmt_execute($stmt);
@@ -203,11 +203,11 @@ function crearInventario($nombreArticulo, $descripcion = null, $cantidad = 0) {
 function actualizarInventario($idInventario, $nombreArticulo, $descripcion = null, $cantidad = null) {
     $con = obtenerConexion();
     if ($cantidad === null) {
-        $sql = "UPDATE inventario SET nombreArticulo = ?, descripcion = ? WHERE idInventario = ?";
+        $sql = "UPDATE inventario SET nombreArticulo = ?, descripcion = ?, updated_at = NOW() WHERE idInventario = ?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ssi", $nombreArticulo, $descripcion, $idInventario);
     } else {
-        $sql = "UPDATE inventario SET nombreArticulo = ?, descripcion = ?, cantidad = ? WHERE idInventario = ?";
+        $sql = "UPDATE inventario SET nombreArticulo = ?, descripcion = ?, cantidad = ?, updated_at = NOW() WHERE idInventario = ?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ssii", $nombreArticulo, $descripcion, $cantidad, $idInventario);
     }
@@ -216,7 +216,7 @@ function actualizarInventario($idInventario, $nombreArticulo, $descripcion = nul
 
 function eliminarInventario($idInventario) {
     $con = obtenerConexion();
-    $sql = "DELETE FROM inventario WHERE idInventario = ?";
+    $sql = "UPDATE inventario SET deleted_at = NOW() WHERE idInventario = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idInventario);
     return mysqli_stmt_execute($stmt);

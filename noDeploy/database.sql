@@ -1420,9 +1420,17 @@ CREATE TABLE `dispositivos` (
   `idDispositivo` int NOT NULL AUTO_INCREMENT,
   `nombreDispositivo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `numeroSerie` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estadoDispositivo` enum('disponible','prestado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'disponible',
+  `estadoDispositivo` enum('disponible','prestado','dañado','baja') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'disponible',
+  `categoria` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `precioCosto` decimal(10,2) DEFAULT NULL,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `foto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`idDispositivo`),
-  UNIQUE KEY `uk_serie` (`numeroSerie`)
+  UNIQUE KEY `uk_serie` (`numeroSerie`),
+  KEY `idx_dispositivos_deleted` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1824,10 +1832,20 @@ DROP TABLE IF EXISTS `inventario`;
 CREATE TABLE `inventario` (
   `idInventario` int NOT NULL AUTO_INCREMENT,
   `nombreArticulo` varchar(150) NOT NULL,
-  `descripcion` text,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `cantidad` int DEFAULT '0',
-  PRIMARY KEY (`idInventario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `codigo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `categoria` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `precioCosto` decimal(10,2) DEFAULT NULL,
+  `foto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estado` enum('disponible','agotado','descontinuado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'disponible',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`idInventario`),
+  UNIQUE KEY `uk_codigo` (`codigo`),
+  KEY `idx_inventario_deleted` (`deleted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2313,14 +2331,21 @@ DROP TABLE IF EXISTS `prestamos`;
 CREATE TABLE `prestamos` (
   `idPrestamo` int NOT NULL AUTO_INCREMENT,
   `idEstudiante` int NOT NULL,
-  `numeroSerie` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idDispositivo` int NOT NULL,
   `fechaPrestamo` date NOT NULL,
   `fechaDevolucion` date DEFAULT NULL,
-  `estadoPrestamo` enum('en curso','devuelto') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'en curso',
+  `fechaDevolucionEsperada` date DEFAULT NULL,
+  `estadoPrestamo` enum('activo','devuelto','vencido') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'activo',
+  `observaciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`idPrestamo`),
   KEY `idx_pres_est` (`idEstudiante`),
-  KEY `idx_pres_serie` (`numeroSerie`),
-  CONSTRAINT `fk_pres_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+  KEY `idx_pres_disp` (`idDispositivo`),
+  KEY `idx_prestamos_deleted` (`deleted_at`),
+  CONSTRAINT `fk_pres_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pres_dispositivo` FOREIGN KEY (`idDispositivo`) REFERENCES `dispositivos` (`idDispositivo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
