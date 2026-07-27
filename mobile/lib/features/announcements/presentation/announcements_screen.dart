@@ -6,14 +6,23 @@ import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/announcements_repository.dart';
 
-class AnnouncementsScreen extends ConsumerWidget {
+class AnnouncementsScreen extends ConsumerStatefulWidget {
   const AnnouncementsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AnnouncementsScreen> createState() => _AnnouncementsScreenState();
+}
+
+class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
+  String _searchQuery = '';
+  String? _selectedDestinatario;
+
+  @override
+  Widget build(BuildContext context) {
     final announcementsAsync = ref.watch(announcementsProvider);
     final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
     final canCreate = role == UserRole.director || role == UserRole.secretaria;
@@ -38,21 +47,68 @@ class AnnouncementsScreen extends ConsumerWidget {
       body: AsyncView<List<Announcement>>(
         value: announcementsAsync,
         onRetry: () => ref.invalidate(announcementsProvider),
-        data: (context, items) {
-          if (items.isEmpty) {
+        data: (context, allItems) {
+          if (allItems.isEmpty) {
             return const EmptyState(
               icon: Icons.campaign_outlined,
               title: 'No hay anuncios',
             );
           }
-          return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(announcementsProvider),
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
-              itemCount: items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: Space.md),
-              itemBuilder: (context, i) => _AnnouncementCard(item: items[i]),
-            ),
+
+          final filteredItems = allItems.where((item) {
+            final matchesSearch = _searchQuery.isEmpty ||
+                item.titulo.toLowerCase().contains(_searchQuery) ||
+                item.mensaje.toLowerCase().contains(_searchQuery);
+            final matchesDest = _selectedDestinatario == null || item.dirigidoA == _selectedDestinatario;
+            return matchesSearch && matchesDest;
+          }).toList();
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Buscar anuncios...',
+                    prefixIcon: Icon(Icons.search_rounded),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      _searchQuery = val.trim().toLowerCase();
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: Space.md),
+              FilterBar(children: [
+                FilterPill<String>(
+                  label: 'Destinatarios',
+                  value: _selectedDestinatario,
+                  options: const [
+                    ('todos', 'Todos'),
+                    ('estudiantes', 'Estudiantes'),
+                    ('profesores', 'Profesores'),
+                    ('tutores', 'Tutores'),
+                  ],
+                  onChanged: (v) => setState(() => _selectedDestinatario = v),
+                ),
+              ]),
+              const SizedBox(height: Space.sm),
+              Expanded(
+                child: filteredItems.isEmpty
+                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                    : RefreshIndicator(
+                        onRefresh: () async => ref.invalidate(announcementsProvider),
+                        child: ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                          itemCount: filteredItems.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: Space.md),
+                          itemBuilder: (context, i) => _AnnouncementCard(item: filteredItems[i]),
+                        ),
+                      ),
+              ),
+            ],
           );
         },
       ),

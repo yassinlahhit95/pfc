@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../data/inventory_repository.dart';
@@ -41,10 +42,18 @@ Color _deviceColor(BuildContext context, String estado) {
   };
 }
 
-class _DevicesTab extends ConsumerWidget {
+class _DevicesTab extends ConsumerStatefulWidget {
   const _DevicesTab();
 
-  Future<void> _openPrestarDialog(BuildContext context, WidgetRef ref, Device device) async {
+  @override
+  ConsumerState<_DevicesTab> createState() => _DevicesTabState();
+}
+
+class _DevicesTabState extends ConsumerState<_DevicesTab> {
+  String _searchQuery = '';
+  String? _status;
+
+  Future<void> _openPrestarDialog(BuildContext context, Device device) async {
     final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
@@ -57,50 +66,96 @@ class _DevicesTab extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final devicesAsync = ref.watch(devicesProvider);
 
     return AsyncView<List<Device>>(
       value: devicesAsync,
       onRetry: () => ref.invalidate(devicesProvider),
-      data: (context, items) {
-        if (items.isEmpty) {
+      data: (context, allItems) {
+        if (allItems.isEmpty) {
           return const EmptyState(icon: Icons.devices_other_outlined, title: 'Sin dispositivos');
         }
-        return RefreshIndicator(
-          onRefresh: () async => ref.invalidate(devicesProvider),
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
-            itemCount: items.length,
-            itemBuilder: (context, i) {
-              final d = items[i];
-              final color = _deviceColor(context, d.estado);
-              final available = d.estado == 'disponible';
-              return AppCard(
-                margin: const EdgeInsets.only(bottom: Space.md),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(d.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
-                          Text(d.numeroSerie, style: Theme.of(context).textTheme.bodySmall),
-                        ],
+
+        final items = allItems.where((d) {
+          final matchesSearch = _searchQuery.isEmpty ||
+              d.nombre.toLowerCase().contains(_searchQuery) ||
+              d.numeroSerie.toLowerCase().contains(_searchQuery);
+          final matchesStatus = _status == null || d.estado == _status;
+          return matchesSearch && matchesStatus;
+        }).toList();
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Buscar dispositivo...',
+                  prefixIcon: Icon(Icons.search_rounded),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                onChanged: (val) {
+                  setState(() {
+                    _searchQuery = val.trim().toLowerCase();
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: Space.md),
+            FilterBar(children: [
+              FilterPill<String>(
+                label: 'Estado',
+                value: _status,
+                options: const [
+                  ('disponible', 'Disponible'),
+                  ('prestado', 'Prestado'),
+                  ('baja', 'De baja'),
+                ],
+                onChanged: (v) => setState(() => _status = v),
+              ),
+            ]),
+            const SizedBox(height: Space.sm),
+            Expanded(
+              child: items.isEmpty
+                  ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                  : RefreshIndicator(
+                      onRefresh: () async => ref.invalidate(devicesProvider),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                        itemCount: items.length,
+                        itemBuilder: (context, i) {
+                          final d = items[i];
+                          final color = _deviceColor(context, d.estado);
+                          final available = d.estado == 'disponible';
+                          return AppCard(
+                            margin: const EdgeInsets.only(bottom: Space.md),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(d.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                      Text(d.numeroSerie, style: Theme.of(context).textTheme.bodySmall),
+                                    ],
+                                  ),
+                                ),
+                                if (available)
+                                  OutlinedButton(
+                                    onPressed: () => _openPrestarDialog(context, d),
+                                    child: const Text('Prestar'),
+                                  )
+                                else
+                                  StatusPill(label: d.estado, color: color),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    if (available)
-                      OutlinedButton(
-                        onPressed: () => _openPrestarDialog(context, ref, d),
-                        child: const Text('Prestar'),
-                      )
-                    else
-                      StatusPill(label: d.estado, color: color),
-                  ],
-                ),
-              );
-            },
-          ),
+            ),
+          ],
         );
       },
     );
@@ -228,10 +283,18 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
   }
 }
 
-class _LoansTab extends ConsumerWidget {
+class _LoansTab extends ConsumerStatefulWidget {
   const _LoansTab();
 
-  Future<void> _devolver(BuildContext context, WidgetRef ref, Loan loan) async {
+  @override
+  ConsumerState<_LoansTab> createState() => _LoansTabState();
+}
+
+class _LoansTabState extends ConsumerState<_LoansTab> {
+  String _searchQuery = '';
+  String? _status;
+
+  Future<void> _devolver(BuildContext context, Loan loan) async {
     try {
       await ref.read(inventoryRepositoryProvider).devolver(loan.id);
       ref.invalidate(loansProvider);
@@ -244,51 +307,96 @@ class _LoansTab extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final loansAsync = ref.watch(loansProvider);
 
     return AsyncView<List<Loan>>(
       value: loansAsync,
       onRetry: () => ref.invalidate(loansProvider),
-      data: (context, items) {
-        if (items.isEmpty) {
+      data: (context, allItems) {
+        if (allItems.isEmpty) {
           return const EmptyState(icon: Icons.assignment_return_outlined, title: 'Sin préstamos');
         }
-        return RefreshIndicator(
-          onRefresh: () async => ref.invalidate(loansProvider),
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
-            itemCount: items.length,
-            itemBuilder: (context, i) {
-              final l = items[i];
-              final enCurso = l.estadoPrestamo == 'en curso';
-              final date = DateTime.tryParse(l.fechaPrestamo);
-              return AppCard(
-                margin: const EdgeInsets.only(bottom: Space.md),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${l.nombreEstudiante} · ${l.nombreArticulo}',
-                              style: const TextStyle(fontWeight: FontWeight.w600)),
-                          Text(
-                            date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
+
+        final items = allItems.where((l) {
+          final matchesSearch = _searchQuery.isEmpty ||
+              l.nombreEstudiante.toLowerCase().contains(_searchQuery) ||
+              l.nombreArticulo.toLowerCase().contains(_searchQuery);
+          final matchesStatus = _status == null || l.estadoPrestamo == _status;
+          return matchesSearch && matchesStatus;
+        }).toList();
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Buscar préstamo...',
+                  prefixIcon: Icon(Icons.search_rounded),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                onChanged: (val) {
+                  setState(() {
+                    _searchQuery = val.trim().toLowerCase();
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: Space.md),
+            FilterBar(children: [
+              FilterPill<String>(
+                label: 'Estado',
+                value: _status,
+                options: const [
+                  ('en curso', 'En curso'),
+                  ('devuelto', 'Devuelto'),
+                ],
+                onChanged: (v) => setState(() => _status = v),
+              ),
+            ]),
+            const SizedBox(height: Space.sm),
+            Expanded(
+              child: items.isEmpty
+                  ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                  : RefreshIndicator(
+                      onRefresh: () async => ref.invalidate(loansProvider),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                        itemCount: items.length,
+                        itemBuilder: (context, i) {
+                          final l = items[i];
+                          final enCurso = l.estadoPrestamo == 'en curso';
+                          final date = DateTime.tryParse(l.fechaPrestamo);
+                          return AppCard(
+                            margin: const EdgeInsets.only(bottom: Space.md),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('${l.nombreEstudiante} · ${l.nombreArticulo}',
+                                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                                      Text(
+                                        date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo,
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (enCurso)
+                                  OutlinedButton(onPressed: () => _devolver(context, l), child: const Text('Devolver'))
+                                else
+                                  Text('Devuelto', style: Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    if (enCurso)
-                      OutlinedButton(onPressed: () => _devolver(context, ref, l), child: const Text('Devolver'))
-                    else
-                      Text('Devuelto', style: Theme.of(context).textTheme.bodySmall),
-                  ],
-                ),
-              );
-            },
-          ),
+            ),
+          ],
         );
       },
     );

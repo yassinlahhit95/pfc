@@ -7,11 +7,18 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/events_repository.dart';
 
-class EventsScreen extends ConsumerWidget {
+class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EventsScreen> createState() => _EventsScreenState();
+}
+
+class _EventsScreenState extends ConsumerState<EventsScreen> {
+  String _searchQuery = '';
+
+  @override
+  Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
 
     return Scaffold(
@@ -19,21 +26,54 @@ class EventsScreen extends ConsumerWidget {
       body: AsyncView<List<SchoolEvent>>(
         value: eventsAsync,
         onRetry: () => ref.invalidate(eventsProvider),
-        data: (context, items) {
-          if (items.isEmpty) {
+        data: (context, allItems) {
+          if (allItems.isEmpty) {
             return const EmptyState(
               icon: Icons.event_outlined,
               title: 'No hay eventos próximos',
             );
           }
-          return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(eventsProvider),
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
-              itemCount: items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: Space.md),
-              itemBuilder: (context, i) => _EventCard(item: items[i]),
-            ),
+
+          final items = allItems.where((e) {
+            final matchesSearch = _searchQuery.isEmpty ||
+                e.titulo.toLowerCase().contains(_searchQuery) ||
+                (e.descripcion != null && e.descripcion!.toLowerCase().contains(_searchQuery)) ||
+                (e.ubicacion != null && e.ubicacion!.toLowerCase().contains(_searchQuery));
+            return matchesSearch;
+          }).toList();
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Buscar eventos...',
+                    prefixIcon: Icon(Icons.search_rounded),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      _searchQuery = val.trim().toLowerCase();
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: Space.sm),
+              Expanded(
+                child: items.isEmpty
+                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                    : RefreshIndicator(
+                        onRefresh: () async => ref.invalidate(eventsProvider),
+                        child: ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                          itemCount: items.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: Space.md),
+                          itemBuilder: (context, i) => _EventCard(item: items[i]),
+                        ),
+                      ),
+              ),
+            ],
           );
         },
       ),
