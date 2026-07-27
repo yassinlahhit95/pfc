@@ -54,6 +54,28 @@
    filtro suelto. */
 
 @media (max-width: 860px) {
-    .aw-wizard { flex-direction: column; }
-    .aw-pasos { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 12px; width: 100%; }
+    .aw-wizard { flex-direction: column; gap: 16px; }
+    .aw-pasos {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-right: 0;
+        padding-bottom: 8px;
+        width: 100%;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .aw-pasos::-webkit-scrollbar {
+        height: 4px;
+    }
+    .aw-pasos::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+    }
+    .aw-paso-btn {
+        flex-shrink: 0;
+        padding: 8px 12px;
+    }
 }
