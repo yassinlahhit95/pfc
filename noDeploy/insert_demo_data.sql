@@ -5,6 +5,7 @@
 -- (Bcrypt Hash: $2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu)
 -- =====================================================================
 
+SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
@@ -22,6 +23,7 @@ TRUNCATE TABLE `profesores`;
 TRUNCATE TABLE `ciclo_profesor`;
 TRUNCATE TABLE `modulo_profesor`;
 TRUNCATE TABLE `estudiantes`;
+TRUNCATE TABLE `grupos`;
 TRUNCATE TABLE `tutores`;
 TRUNCATE TABLE `estudiante_tutor`;
 TRUNCATE TABLE `anuncios`;
@@ -36,6 +38,7 @@ TRUNCATE TABLE `categorias_gasto`;
 TRUNCATE TABLE `gastos`;
 TRUNCATE TABLE `fp_empresas`;
 TRUNCATE TABLE `fct`;
+TRUNCATE TABLE `fct_diarios`;
 
 -- ---------------------------------------------------------------------
 -- 2. SCHOOL CENTER CONFIGURATION
@@ -85,6 +88,14 @@ INSERT INTO `cursos_academicos` (`idCurso`, `idCiclo`, `nombre`, `orden`) VALUES
 (4, 2, '2º DAM', 2), 
 (5, 3, '1º SMR', 1), 
 (6, 3, '2º SMR', 2);
+
+-- ---------------------------------------------------------------------
+-- 5b. GROUPS (GRUPOS)
+-- ---------------------------------------------------------------------
+INSERT INTO `grupos` (`idGrupo`, `nombreGrupo`, `idCiclo`, `anioEstudio`) VALUES 
+(1, 'DAW-A', 1, '1º'), 
+(2, 'DAW-B', 1, '2º'), 
+(3, 'DAM-A', 2, '2º');
 
 -- ---------------------------------------------------------------------
 -- 6. SUBJECTS / MODULES
@@ -187,49 +198,49 @@ INSERT INTO `estudiantes` (
   `idEstudiante`, `nombreEstudiante`, `emailEstudiante`, `password`, `telefonoEstudiante`, 
   `dniEstudiante`, `fechaNacimientoEstudiante`, `fechaAltaEstudiante`, `direccionEstudiante`, 
   `ciudadEstudiante`, `codigoPostalEstudiante`, `observacionesEstudiante`, `idCiclo`, `curso`, 
-  `anioEstudio`, `idCurso`
+  `anioEstudio`, `idCurso`, `idGrupo`
 ) VALUES 
 (
   1, 'Ana Silva', 'ana.silva@aulapro.com', 
   '$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu', '600666777', 
   '56789012E', '2005-04-10', '2024-09-01', 'Calle Verde 5', 
   'Madrid', '28005', 'Delegada de clase. Excelente rendimiento académico.', 1, 'Grado Superior', 
-  '2º', 2
+  '2º', 2, 2
 ),
 (
   2, 'David Ortiz', 'david.ortiz@aulapro.com', 
   '$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu', '600777888', 
   '67890123F', '2005-09-18', '2024-09-01', 'Calle Azul 6', 
   'Madrid', '28006', 'Participativo y muy interesado en diseño Frontend.', 1, 'Grado Superior', 
-  '2º', 2
+  '2º', 2, 2
 ),
 (
   3, 'Elena Pastor', 'elena.pastor@aulapro.com', 
   '$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu', '600888999', 
   '78901234G', '2006-01-22', '2025-09-01', 'Calle Roja 7', 
   'Madrid', '28007', 'Interés en frameworks modernos y diseño UI/UX.', 1, 'Grado Superior', 
-  '1º', 1
+  '1º', 1, 1
 ),
 (
   4, 'Javier Ruiz', 'javier.ruiz@aulapro.com', 
   '$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu', '600999000', 
   '89012345H', '2006-05-30', '2025-09-01', 'Calle Amarilla 8', 
   'Madrid', '28008', 'Tiene conocimientos previos de programación autodidacta.', 1, 'Grado Superior', 
-  '1º', 1
+  '1º', 1, 1
 ),
 (
   5, 'Lucía Mendez', 'lucia.mendez@aulapro.com', 
   '$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu', '600000111', 
   '90123456I', '2005-11-05', '2024-09-01', 'Calle Naranja 9', 
   'Madrid', '28009', 'Estudiante de 2º DAM. Interesada en desarrollo de videojuegos.', 2, 'Grado Superior', 
-  '2º', 4
+  '2º', 4, 3
 ),
 (
   6, 'Sergio Abad', 'sergio.abad@aulapro.com', 
   '$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu', '600111000', 
   '01234567J', '2005-02-14', '2024-09-01', 'Calle Violeta 10', 
   'Madrid', '28010', 'Interés en administración de servidores y redes.', 2, 'Grado Superior', 
-  '2º', 4
+  '2º', 4, 3
 );
 
 -- ---------------------------------------------------------------------
@@ -386,5 +397,13 @@ INSERT INTO `fct` (
   'sofia.martinez@globalweb.com', '655654321', 'Madrid', '2026-03-01', '2026-06-30', 
   400, 260, NULL, NULL, 'Buen ritmo en maquetación. En progreso continuo.', 1, 1
 );
+
+-- ---------------------------------------------------------------------
+-- 23. DAILY INTERNSHIP LOGS (DIARIOS FCT)
+-- ---------------------------------------------------------------------
+INSERT INTO `fct_diarios` (`idDiario`, `idFCT`, `fecha`, `horas`, `actividades`, `estado`, `observacionesTutor`) VALUES 
+(1, 1, DATE_SUB(CURRENT_DATE, INTERVAL 3 DAY), 8.00, 'Configuración del entorno de desarrollo local con Docker. Clonado del repositorio y primer contacto con el esquema de base de datos.', 'aprobado', 'Buen comienzo. Entorno configurado correctamente.'), 
+(2, 1, DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY), 8.00, 'Desarrollo de los endpoints de la API de autenticación y validación de tokens JWT.', 'aprobado', 'Código limpio y siguiendo las directrices de seguridad.'), 
+(3, 1, DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), 8.00, 'Creación de pruebas unitarias para los controladores de usuarios y resolución de bugs menores en el middleware.', 'pendiente', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
