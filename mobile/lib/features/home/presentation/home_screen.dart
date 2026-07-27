@@ -17,6 +17,7 @@ import '../../grades/data/grades_repository.dart';
 import '../../grades/presentation/grades_screen.dart';
 import '../../inventory/presentation/inventory_screen.dart';
 import '../../payments/presentation/payments_screen.dart';
+import '../../payments/presentation/my_payments_screen.dart';
 import '../../messages/presentation/messages_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
@@ -116,9 +117,27 @@ class HomeScreen extends ConsumerWidget {
       final avgGradeStr = avgGrade > 0 ? avgGrade.toStringAsFixed(1) : '—';
 
       metrics.addAll([
-        _MetricCard(value: attendancePercent, label: 'Asistencia', icon: Icons.person_search_rounded, color: const Color(0xFF059669)),
-        _MetricCard(value: studentPendingTasks.toString(), label: 'Tareas disp.', icon: Icons.assignment_rounded, color: const Color(0xFF7C3AED)),
-        _MetricCard(value: avgGradeStr, label: 'Nota Media', icon: Icons.stars_rounded, color: const Color(0xFFD97706)),
+        _MetricCard(
+          value: attendancePercent,
+          label: 'Asistencia',
+          icon: Icons.person_search_rounded,
+          color: const Color(0xFF059669),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
+        ),
+        _MetricCard(
+          value: studentPendingTasks.toString(),
+          label: 'Tareas disp.',
+          icon: Icons.assignment_rounded,
+          color: const Color(0xFF7C3AED),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ModulesScreen())),
+        ),
+        _MetricCard(
+          value: avgGradeStr,
+          label: 'Nota Media',
+          icon: Icons.stars_rounded,
+          color: const Color(0xFFD97706),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
+        ),
       ]);
     } else if (role == UserRole.profesor) {
       final todayName = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][DateTime.now().weekday - 1];
@@ -126,21 +145,77 @@ class HomeScreen extends ConsumerWidget {
       final tutorCicloAbreviatura = userProfile?.ciclo?['abreviaturaCiclo'] as String? ?? 'Ninguna';
 
       metrics.addAll([
-        _MetricCard(value: clasesHoyCount.toString(), label: 'Clases Hoy', icon: Icons.schedule_rounded, color: const Color(0xFF2563EB)),
-        _MetricCard(value: pendingGradesCount.toString(), label: 'Por Corregir', icon: Icons.rate_review_rounded, color: const Color(0xFFE11D48)),
-        _MetricCard(value: tutorCicloAbreviatura, label: 'Aula Tutoría', icon: Icons.room_rounded, color: const Color(0xFF0D9488)),
+        _MetricCard(
+          value: clasesHoyCount.toString(),
+          label: 'Clases Hoy',
+          icon: Icons.schedule_rounded,
+          color: const Color(0xFF2563EB),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ScheduleScreen())),
+        ),
+        _MetricCard(
+          value: pendingGradesCount.toString(),
+          label: 'Por Corregir',
+          icon: Icons.rate_review_rounded,
+          color: const Color(0xFFE11D48),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ModulesScreen())),
+        ),
+        _MetricCard(
+          value: tutorCicloAbreviatura,
+          label: 'Aula Tutoría',
+          icon: Icons.room_rounded,
+          color: const Color(0xFF0D9488),
+          onTap: isTutorTeacher
+              ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StaffJustifyScreen()))
+              : null,
+        ),
       ]);
     } else if (role == UserRole.director || role == UserRole.secretaria) {
       metrics.addAll([
-        const _MetricCard(value: '142', label: 'Matrículas', icon: Icons.people_rounded, color: Color(0xFF2563EB)),
-        const _MetricCard(value: '98.2%', label: 'Asistencia', icon: Icons.trending_up_rounded, color: Color(0xFF059669)),
-        const _MetricCard(value: 'Al día', label: 'Estado SaaS', icon: Icons.verified_user_rounded, color: Color(0xFF7C3AED)),
+        _MetricCard(
+          value: '142',
+          label: 'Matrículas',
+          icon: Icons.people_rounded,
+          color: const Color(0xFF2563EB),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
+        ),
+        _MetricCard(
+          value: '98.2%',
+          label: 'Asistencia',
+          icon: Icons.trending_up_rounded,
+          color: const Color(0xFF059669),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
+        ),
+        _MetricCard(
+          value: 'Al día',
+          label: 'Estado SaaS',
+          icon: Icons.verified_user_rounded,
+          color: const Color(0xFF7C3AED),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InventoryScreen())),
+        ),
       ]);
     } else if (role == UserRole.tutor) {
       metrics.addAll([
-        const _MetricCard(value: '1', label: 'Hijo', icon: Icons.family_restroom_rounded, color: Color(0xFF4F46E5)),
-        const _MetricCard(value: 'Al día', label: 'Recibos', icon: Icons.receipt_rounded, color: Color(0xFF059669)),
-        const _MetricCard(value: '0', label: 'Faltas', icon: Icons.notification_important_rounded, color: Color(0xFFE11D48)),
+        _MetricCard(
+          value: '1',
+          label: 'Hijo',
+          icon: Icons.family_restroom_rounded,
+          color: const Color(0xFF4F46E5),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
+        ),
+        _MetricCard(
+          value: 'Al día',
+          label: 'Recibos',
+          icon: Icons.receipt_rounded,
+          color: const Color(0xFF059669),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyPaymentsScreen())),
+        ),
+        _MetricCard(
+          value: '0',
+          label: 'Faltas',
+          icon: Icons.notification_important_rounded,
+          color: const Color(0xFFE11D48),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
+        ),
       ]);
     }
 
@@ -329,12 +404,14 @@ class _MetricCard extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   final String value;
   final String label;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -342,33 +419,46 @@ class _MetricCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    Widget cardContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: isDark ? color.withValues(alpha: 0.15) : color.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: Icon(icon, size: 16, color: color),
+        ),
+        const SizedBox(height: Space.md),
+        Text(value, style: textTheme.titleLarge),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant.withValues(alpha: 0.7)),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+
+    if (onTap != null) {
+      cardContent = InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(Radii.md),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
+          child: cardContent,
+        ),
+      );
+    }
+
     return Expanded(
       child: AppCard(
-        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: isDark ? color.withValues(alpha: 0.15) : color.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(icon, size: 16, color: color),
-            ),
-            const SizedBox(height: Space.md),
-            Text(value, style: textTheme.titleLarge),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant.withValues(alpha: 0.7)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+        padding: onTap != null ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
+        child: cardContent,
       ),
     );
   }
