@@ -180,24 +180,29 @@ if (!empty($todasConfigs)):
         </tbody>
       </table>
       </div>
-      <form class="formulario" id="aw-form-curso">
-        <input type="hidden" name="idCiclo" value="<?= $idCicloSeleccionado ?>">
-        <div class="campo">
-          <label for="aw-curso-nombre-preset">Nombre</label>
-          <select id="aw-curso-nombre-preset">
-            <option value="1º">1º</option>
-            <option value="2º">2º</option>
-            <option value="3º">3º</option>
-            <option value="4º">4º</option>
-            <option value="__custom__">Otro (personalizado)…</option>
-          </select>
-          <input type="text" name="nombre" id="aw-curso-nombre" maxlength="40" required placeholder="Nombre personalizado" value="1º" style="display:none;margin-top:6px;">
-        </div>
-        <div class="campo"><label for="awcur-orden">Orden</label><input type="number" id="awcur-orden" name="orden" value="1" min="1"></div>
-        <div class="acciones">
-          <button type="submit" class="boton-secundario">Añadir curso</button>
-        </div>
-      </form>
+      <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border);">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-plus-circle" style="color: var(--accent);"></i> Añadir nuevo curso
+        </h3>
+        <form class="formulario" id="aw-form-curso">
+          <input type="hidden" name="idCiclo" value="<?= $idCicloSeleccionado ?>">
+          <div class="campo">
+            <label for="aw-curso-nombre-preset">Nombre</label>
+            <select id="aw-curso-nombre-preset">
+              <option value="1º">1º</option>
+              <option value="2º">2º</option>
+              <option value="3º">3º</option>
+              <option value="4º">4º</option>
+              <option value="__custom__">Otro (personalizado)…</option>
+            </select>
+            <input type="text" name="nombre" id="aw-curso-nombre" maxlength="40" required placeholder="Nombre personalizado" value="1º" style="display:none;margin-top:6px;">
+          </div>
+          <div class="campo"><label for="awcur-orden">Orden</label><input type="number" id="awcur-orden" name="orden" value="1" min="1"></div>
+          <div class="acciones">
+            <button type="submit" class="boton-secundario">Añadir curso</button>
+          </div>
+        </form>
+      </div>
     </section>
 
     <!-- PASO 3: PERÍODOS -->
@@ -224,39 +229,44 @@ if (!empty($todasConfigs)):
         </tbody>
       </table>
       </div>
-      <form class="formulario" id="aw-form-periodo">
-        <div class="campo"><label for="awp-nombre">Nombre</label><input type="text" id="awp-nombre" name="nombre" maxlength="80" required placeholder="p.ej. 3ª Evaluación"></div>
-        <div class="campo">
-          <label for="awp-tipo">Tipo</label>
-          <select id="awp-tipo" name="tipo">
-            <option value="evaluacion">Evaluación</option>
-            <option value="recuperacion">Recuperación</option>
-            <option value="ordinaria">Ordinaria</option>
-            <option value="extraordinaria">Extraordinaria</option>
-            <option value="final">Final</option>
-            <option value="proyecto">Proyecto</option>
-            <option value="practicas">Prácticas</option>
-            <option value="certificacion">Certificación</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-        <div class="campo"><label for="awp-orden">Orden</label><input type="number" id="awp-orden" name="orden" value="1" min="1"></div>
-        <div class="campo">
-          <label for="awp-recuperaDe">Recupera al período (opcional)</label>
-          <select id="awp-recuperaDe" name="idPeriodoRecuperaDe">
-            <option value="">— Ninguno —</option>
-            <?php foreach ($periodos as $periodo): if ($periodo['tipo'] === 'recuperacion') continue; ?>
-            <option value="<?= (int)$periodo['idPeriodo'] ?>">#<?= (int)$periodo['idPeriodo'] ?> — <?= Security::escapeHtml($periodo['nombre']) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="campo-checkbox-grupo">
-          <label class="campo-checkbox"><input type="checkbox" name="visible" checked> Visible</label>
-        </div>
-        <div class="acciones">
-          <button type="submit" class="boton-secundario">Añadir período</button>
-        </div>
-      </form>
+      <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border);">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-plus-circle" style="color: var(--accent);"></i> Añadir nuevo período académico
+        </h3>
+        <form class="formulario" id="aw-form-periodo">
+          <div class="campo"><label for="awp-nombre">Nombre</label><input type="text" id="awp-nombre" name="nombre" maxlength="80" required placeholder="p.ej. 3ª Evaluación"></div>
+          <div class="campo">
+            <label for="awp-tipo">Tipo</label>
+            <select id="awp-tipo" name="tipo">
+              <option value="evaluacion">Evaluación</option>
+              <option value="recuperacion">Recuperación</option>
+              <option value="ordinaria">Ordinaria</option>
+              <option value="extraordinaria">Extraordinaria</option>
+              <option value="final">Final</option>
+              <option value="proyecto">Proyecto</option>
+              <option value="practicas">Prácticas</option>
+              <option value="certificacion">Certificación</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="campo"><label for="awp-orden">Orden</label><input type="number" id="awp-orden" name="orden" value="1" min="1"></div>
+          <div class="campo">
+            <label for="awp-recuperaDe">Recupera al período (opcional)</label>
+            <select id="awp-recuperaDe" name="idPeriodoRecuperaDe">
+              <option value="">— Ninguno —</option>
+              <?php foreach ($periodos as $periodo): if ($periodo['tipo'] === 'recuperacion') continue; ?>
+              <option value="<?= (int)$periodo['idPeriodo'] ?>">#<?= (int)$periodo['idPeriodo'] ?> — <?= Security::escapeHtml($periodo['nombre']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="campo-checkbox-grupo">
+            <label class="campo-checkbox"><input type="checkbox" name="visible" checked> Visible</label>
+          </div>
+          <div class="acciones">
+            <button type="submit" class="boton-secundario">Añadir período</button>
+          </div>
+        </form>
+      </div>
     </section>
 
     <!-- PASO 4: TIPOS DE EVALUACIÓN -->
@@ -283,27 +293,32 @@ if (!empty($todasConfigs)):
         </tbody>
       </table>
       </div>
-      <form class="formulario" id="aw-form-tipo">
-        <div class="campo"><label for="awt-nombre">Nombre</label><input type="text" id="awt-nombre" name="nombre" maxlength="80" required placeholder="p.ej. Portafolio"></div>
-        <div class="campo"><label for="awt-peso">Peso relativo</label><input type="number" id="awt-peso" name="peso" value="1" step="0.01" min="0" required></div>
-        <div class="campo">
-          <label for="awt-origen">Origen (de dónde saca la nota)</label>
-          <select id="awt-origen" name="origen">
-            <option value="examen">Examen (evaluaciones/períodos)</option>
-            <option value="reto">Reto (sistema de retos existente)</option>
-            <option value="ra_ce">RA/CE (resultados de aprendizaje)</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-        <div class="campo"><label for="awt-orden">Orden</label><input type="number" id="awt-orden" name="orden" value="1" min="1"></div>
-        <div class="campo-checkbox-grupo">
-          <label class="campo-checkbox"><input type="checkbox" name="obligatorio"> Obligatorio (sin nota = módulo Pendiente)</label>
-          <label class="campo-checkbox"><input type="checkbox" name="incluirEnMedia" checked> Incluir en la media del módulo</label>
-        </div>
-        <div class="acciones">
-          <button type="submit" class="boton-secundario">Añadir tipo</button>
-        </div>
-      </form>
+      <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border);">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-plus-circle" style="color: var(--accent);"></i> Añadir nuevo tipo de evaluación
+        </h3>
+        <form class="formulario" id="aw-form-tipo">
+          <div class="campo"><label for="awt-nombre">Nombre</label><input type="text" id="awt-nombre" name="nombre" maxlength="80" required placeholder="p.ej. Portafolio"></div>
+          <div class="campo"><label for="awt-peso">Peso relativo</label><input type="number" id="awt-peso" name="peso" value="1" step="0.01" min="0" required></div>
+          <div class="campo">
+            <label for="awt-origen">Origen (de dónde saca la nota)</label>
+            <select id="awt-origen" name="origen">
+              <option value="examen">Examen (evaluaciones/períodos)</option>
+              <option value="reto">Reto (sistema de retos existente)</option>
+              <option value="ra_ce">RA/CE (resultados de aprendizaje)</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="campo"><label for="awt-orden">Orden</label><input type="number" id="awt-orden" name="orden" value="1" min="1"></div>
+          <div class="campo-checkbox-grupo">
+            <label class="campo-checkbox"><input type="checkbox" name="obligatorio"> Obligatorio (sin nota = módulo Pendiente)</label>
+            <label class="campo-checkbox"><input type="checkbox" name="incluirEnMedia" checked> Incluir en la media del módulo</label>
+          </div>
+          <div class="acciones">
+            <button type="submit" class="boton-secundario">Añadir tipo</button>
+          </div>
+        </form>
+      </div>
     </section>
 
     <!-- PASO 5: REGLAS DE PROMOCIÓN -->
@@ -398,13 +413,18 @@ if (!empty($todasConfigs)):
       </table>
       </div>
       <?php if ($idConfig): ?>
-      <form class="formulario" id="aw-form-guardar-plantilla">
-        <div class="campo campo-ancho-total"><label for="awplant-nombre">Nombre de la nueva plantilla</label><input type="text" id="awplant-nombre" name="nombre" maxlength="150" required></div>
-        <div class="campo campo-ancho-total"><label for="awplant-descripcion">Descripción</label><textarea id="awplant-descripcion" name="descripcion" maxlength="500"></textarea></div>
-        <div class="acciones">
-          <button type="submit" class="boton-secundario">Guardar configuración actual como plantilla</button>
-        </div>
-      </form>
+      <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border);">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-floppy-disk" style="color: var(--accent);"></i> Guardar configuración actual como plantilla
+        </h3>
+        <form class="formulario" id="aw-form-guardar-plantilla">
+          <div class="campo campo-ancho-total"><label for="awplant-nombre">Nombre de la nueva plantilla</label><input type="text" id="awplant-nombre" name="nombre" maxlength="150" required></div>
+          <div class="campo campo-ancho-total"><label for="awplant-descripcion">Descripción</label><textarea id="awplant-descripcion" name="descripcion" maxlength="500"></textarea></div>
+          <div class="acciones">
+            <button type="submit" class="boton-secundario">Guardar configuración actual como plantilla</button>
+          </div>
+        </form>
+      </div>
       <?php endif; ?>
     </section>
 

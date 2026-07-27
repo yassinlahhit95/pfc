@@ -44,24 +44,6 @@
 
 #tabla-cursos, #tabla-periodos, #tabla-tipos { margin-bottom: 18px; }
 
-/* Estos formularios son cortos y de nº de campos fijo y conocido. Dejados
-   a auto-fill, el nº de columnas depende del ancho real de .aw-contenido
-   (con el panel de pasos + su padding, ronda 2 columnas en pantallas de
-   escritorio normales) — y con un nº de campos que no es múltiplo exacto
-   de esas columnas, la última fila se queda con un hueco vacío (p.ej. 3
-   campos en 2 columnas → 2 + 1 suelto). Se fija aquí el nº de columnas
-   que cada formulario necesita para llenarse siempre en filas completas,
-   independientemente del ancho real de la pantalla. */
-#aw-form-crear,
-#aw-form-general,
-#aw-form-calificacion,
-#aw-form-fct { grid-template-columns: repeat(3, 1fr); }
-
-#aw-form-curso,
-#aw-form-periodo,
-#aw-form-tipo,
-#aw-form-tfg { grid-template-columns: repeat(2, 1fr); }
-
 /* El selector de Ciclo (paso 2, arriba de la tabla de cursos) se deja tal
    cual con auto-fill: es un único control de filtro suelto, no un grupo
    de campos — forzarlo a 1 columna explícita lo estiraría a todo el
@@ -74,15 +56,4 @@
 @media (max-width: 860px) {
     .aw-wizard { flex-direction: column; }
     .aw-pasos { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 12px; width: 100%; }
-}
-
-@media (max-width: 700px) {
-    #aw-form-crear,
-    #aw-form-general,
-    #aw-form-calificacion,
-    #aw-form-fct,
-    #aw-form-curso,
-    #aw-form-periodo,
-    #aw-form-tipo,
-    #aw-form-tfg { grid-template-columns: 1fr; }
 }
