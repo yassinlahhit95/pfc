@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../data/inventory_repository.dart';
+import 'inventory_form_screen.dart';
 
 class InventoryScreen extends StatelessWidget {
   const InventoryScreen({super.key});
@@ -17,16 +19,21 @@ class InventoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Inventario'),
           bottom: const TabBar(tabs: [
             Tab(text: 'Dispositivos'),
             Tab(text: 'Préstamos'),
+            Tab(text: 'Artículos'),
           ]),
         ),
-        body: const TabBarView(children: [_DevicesTab(), _LoansTab()]),
+        body: const TabBarView(children: [
+          _DevicesTab(),
+          _LoansTab(),
+          _InventoryItemsTab(),
+        ]),
       ),
     );
   }
@@ -52,6 +59,13 @@ class _DevicesTab extends ConsumerStatefulWidget {
 class _DevicesTabState extends ConsumerState<_DevicesTab> {
   String _searchQuery = '';
   String? _status;
+  final _debounce = Debounce();
+
+  @override
+  void dispose() {
+    _debounce.cancel();
+    super.dispose();
+  }
 
   Future<void> _openPrestarDialog(BuildContext context, Device device) async {
     final result = await showModalBottomSheet<bool>(
@@ -96,8 +110,10 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
                 onChanged: (val) {
-                  setState(() {
-                    _searchQuery = val.trim().toLowerCase();
+                  _debounce(const Duration(milliseconds: 300), () {
+                    setState(() {
+                      _searchQuery = val.trim().toLowerCase();
+                    });
                   });
                 },
               ),
@@ -124,6 +140,7 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
                       child: ListView.builder(
                         padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
                         itemCount: items.length,
+                        itemExtent: 80, // ponytail: optimize long lists by giving known item height
                         itemBuilder: (context, i) {
                           final d = items[i];
                           final color = _deviceColor(context, d.estado);
@@ -389,6 +406,226 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
                                   OutlinedButton(onPressed: () => _devolver(context, l), child: const Text('Devolver'))
                                 else
                                   Text('Devuelto', style: Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _InventoryItemsTab extends ConsumerStatefulWidget {
+  const _InventoryItemsTab();
+
+  @override
+  ConsumerState<_InventoryItemsTab> createState() => _InventoryItemsTabState();
+}
+
+class _InventoryItemsTabState extends ConsumerState<_InventoryItemsTab> {
+  String _searchQuery = '';
+  final _debounce = Debounce();
+
+  @override
+  void dispose() {
+    _debounce.cancel();
+    super.dispose();
+  }
+
+  Future<void> _openForm([int? id]) async {
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => id != null
+            ? InventoryFormScreen(id: id)
+            : const InventoryFormScreen(),
+      ),
+    );
+    if (result == true && mounted) {
+      ref.invalidate(inventoryItemsListProvider);
+    }
+  }
+
+  Future<void> _deleteItem(BuildContext context, InventoryItem item) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Eliminar artículo'),
+        content: Text('¿Está seguro de que desea eliminar "${item.nombre}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      await ref.read(inventoryRepositoryProvider).deleteItem(item.id);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Artículo eliminado')),
+        );
+        ref.invalidate(inventoryItemsListProvider);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al eliminar: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final itemsAsync = ref.watch(inventoryItemsListProvider);
+
+    return AsyncView<List<InventoryItem>>(
+      value: itemsAsync,
+      onRetry: () => ref.invalidate(inventoryItemsListProvider),
+      data: (context, allItems) {
+        if (allItems.isEmpty) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const EmptyState(icon: Icons.inventory_2_outlined, title: 'Sin artículos'),
+              const SizedBox(height: Space.md),
+              FilledButton.icon(
+                onPressed: () => _openForm(),
+                icon: const Icon(Icons.add),
+                label: const Text('Crear Artículo'),
+              ),
+            ],
+          );
+        }
+
+        final items = allItems.where((item) {
+          final matchesSearch = _searchQuery.isEmpty ||
+              item.nombre.toLowerCase().contains(_searchQuery) ||
+              (item.descripcion?.toLowerCase().contains(_searchQuery) ?? false);
+          return matchesSearch;
+        }).toList();
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Buscar artículo...',
+                        prefixIcon: Icon(Icons.search_rounded),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      onChanged: (val) {
+                        _debounce(const Duration(milliseconds: 300), () {
+                          setState(() {
+                            _searchQuery = val.trim().toLowerCase();
+                          });
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: Space.md),
+                  FloatingActionButton.small(
+                    onPressed: () => _openForm(),
+                    child: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: Space.md),
+            Expanded(
+              child: items.isEmpty
+                  ? const Center(child: EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados'))
+                  : RefreshIndicator(
+                      onRefresh: () async => ref.invalidate(inventoryItemsListProvider),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                        itemCount: items.length,
+                        itemBuilder: (context, i) {
+                          final item = items[i];
+                          final availabilityStatus = item.cantidad > 0 ? 'Disponible' : 'Agotado';
+                          final availabilityColor = item.cantidad > 0
+                              ? (Theme.of(context).brightness == Brightness.dark
+                                  ? AppColors.verdeDark
+                                  : AppColors.verdeLight)
+                              : (Theme.of(context).brightness == Brightness.dark
+                                  ? AppColors.rojoDark
+                                  : AppColors.rojoLight);
+
+                          return AppCard(
+                            margin: const EdgeInsets.only(bottom: Space.md),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(item.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                          if (item.descripcion?.isNotEmpty ?? false)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: Space.xs),
+                                              child: Text(
+                                                item.descripcion!,
+                                                style: Theme.of(context).textTheme.bodySmall,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuButton(
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          child: const Row(
+                                            children: [Icon(Icons.edit_outlined), SizedBox(width: Space.md), Text('Editar')],
+                                          ),
+                                          onTap: () => _openForm(item.id),
+                                        ),
+                                        PopupMenuItem(
+                                          child: const Row(
+                                            children: [
+                                              Icon(Icons.delete_outlined, color: Colors.red),
+                                              SizedBox(width: Space.md),
+                                              Text('Eliminar', style: TextStyle(color: Colors.red)),
+                                            ],
+                                          ),
+                                          onTap: () => _deleteItem(context, item),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: Space.md),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.inventory, size: 16),
+                                        const SizedBox(width: Space.xs),
+                                        Text('${item.cantidad} disponible(s)', style: Theme.of(context).textTheme.labelMedium),
+                                      ],
+                                    ),
+                                    StatusPill(label: availabilityStatus, color: availabilityColor),
+                                  ],
+                                ),
                               ],
                             ),
                           );

@@ -2,10 +2,17 @@
 declare(strict_types=1);
 
 // Inventario/préstamos — director/secretaria only.
-// GET  /api/v1/inventory.php?action=devices — all dispositivos + estado
-// GET  /api/v1/inventory.php?action=loans   — all préstamos (historial + en curso)
-// POST /api/v1/inventory.php {action:'prestar', idArticulo, idEstudiante}
-// POST /api/v1/inventory.php {action:'devolver', idPrestamo}
+// Device Loans:
+//   GET  /api/v1/inventory.php?action=devices        — all dispositivos + estado
+//   GET  /api/v1/inventory.php?action=loans          — all préstamos (historial + en curso)
+//   POST /api/v1/inventory.php {action:'prestar', idArticulo, idEstudiante}
+//   POST /api/v1/inventory.php {action:'devolver', idPrestamo}
+// Inventory Items (generic items with quantity):
+//   GET  /api/v1/inventory.php?action=items[&limit=X&offset=Y] — paginated items
+//   GET  /api/v1/inventory.php?action=item&id=X                — single item
+//   POST /api/v1/inventory.php {action:'create_item', nombreArticulo, descripcion?, cantidad?}
+//   POST /api/v1/inventory.php {action:'update_item', idInventario, nombreArticulo, descripcion?, cantidad?}
+//   POST /api/v1/inventory.php {action:'delete_item', idInventario}
 
 require_once __DIR__ . '/_api.php';
 require_once __DIR__ . '/../../modelos/inventario.php';
@@ -24,6 +31,22 @@ if ($method === 'GET') {
     $action = $_GET['action'] ?? '';
     if ($action === 'devices') v1Ok(['devices' => listarArticulos()]);
     if ($action === 'loans') v1Ok(['loans' => listarTodosLosPrestamos()]);
+
+    if ($action === 'items') {
+        $limit = (int)($_GET['limit'] ?? 100);
+        $offset = (int)($_GET['offset'] ?? 0);
+        $limit = min($limit, 500); // cap at 500
+        v1Ok(['items' => listarInventario($limit, $offset)]);
+    }
+
+    if ($action === 'item') {
+        $id = (int)($_GET['id'] ?? 0);
+        if ($id <= 0) v1Error('id is required.', 400, 'validation');
+        $item = obtenerInventarioPorId($id);
+        if (!$item) v1Error('Item not found.', 404, 'not_found');
+        v1Ok(['item' => $item]);
+    }
+
     v1Error('Unknown action.', 400, 'validation');
 }
 
@@ -31,6 +54,7 @@ if ($method === 'POST') {
     $body = v1Body();
     $action = $body['action'] ?? '';
 
+    // Device loan actions
     if ($action === 'prestar') {
         $idArticulo   = (int)($body['idArticulo'] ?? 0);
         $idEstudiante = (int)($body['idEstudiante'] ?? 0);
@@ -53,6 +77,50 @@ if ($method === 'POST') {
         $ok = devolverPrestamo($idPrestamo);
         if (!$ok) v1Error('Could not register the return.', 500, 'error');
         v1Ok(['message' => 'Return registered.']);
+    }
+
+    // Inventory item actions
+    if ($action === 'create_item') {
+        $nombre = $body['nombreArticulo'] ?? '';
+        $descripcion = $body['descripcion'] ?? null;
+        $cantidad = (int)($body['cantidad'] ?? 0);
+
+        if (empty($nombre)) {
+            v1Error('nombreArticulo is required.', 400, 'validation');
+        }
+
+        $id = crearInventario($nombre, $descripcion, $cantidad);
+        if (!$id) v1Error('Could not create item.', 500, 'error');
+        v1Ok(['id' => $id, 'message' => 'Item created.'], 201);
+    }
+
+    if ($action === 'update_item') {
+        $id = (int)($body['idInventario'] ?? 0);
+        $nombre = $body['nombreArticulo'] ?? '';
+        $descripcion = $body['descripcion'] ?? null;
+        $cantidad = isset($body['cantidad']) ? (int)$body['cantidad'] : null;
+
+        if ($id <= 0) v1Error('idInventario is required.', 400, 'validation');
+        if (empty($nombre)) v1Error('nombreArticulo is required.', 400, 'validation');
+
+        $item = obtenerInventarioPorId($id);
+        if (!$item) v1Error('Item not found.', 404, 'not_found');
+
+        $ok = actualizarInventario($id, $nombre, $descripcion, $cantidad);
+        if (!$ok) v1Error('Could not update item.', 500, 'error');
+        v1Ok(['message' => 'Item updated.']);
+    }
+
+    if ($action === 'delete_item') {
+        $id = (int)($body['idInventario'] ?? 0);
+        if ($id <= 0) v1Error('idInventario is required.', 400, 'validation');
+
+        $item = obtenerInventarioPorId($id);
+        if (!$item) v1Error('Item not found.', 404, 'not_found');
+
+        $ok = eliminarInventario($id);
+        if (!$ok) v1Error('Could not delete item.', 500, 'error');
+        v1Ok(['message' => 'Item deleted.']);
     }
 
     v1Error('Unknown action.', 400, 'validation');

@@ -156,3 +156,76 @@ function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
     $resultado = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resultado) > 0;
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// INVENTARIO CRUD (generic inventory items, separate from devices)
+// ══════════════════════════════════════════════════════════════════════
+
+function listarInventario($limite = 100, $offset = 0) {
+    $con = obtenerConexion();
+    $sql = "SELECT idInventario, nombreArticulo, descripcion, cantidad
+            FROM inventario
+            ORDER BY nombreArticulo ASC
+            LIMIT ? OFFSET ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $limite, $offset);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    return $lista;
+}
+
+function obtenerInventarioPorId($idInventario) {
+    $con = obtenerConexion();
+    $sql = "SELECT idInventario, nombreArticulo, descripcion, cantidad
+            FROM inventario WHERE idInventario = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idInventario);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($resultado);
+}
+
+function crearInventario($nombreArticulo, $descripcion = null, $cantidad = 0) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO inventario (nombreArticulo, descripcion, cantidad) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $nombreArticulo, $descripcion, $cantidad);
+    if (mysqli_stmt_execute($stmt)) {
+        return mysqli_insert_id($con);
+    }
+    return false;
+}
+
+function actualizarInventario($idInventario, $nombreArticulo, $descripcion = null, $cantidad = null) {
+    $con = obtenerConexion();
+    if ($cantidad === null) {
+        $sql = "UPDATE inventario SET nombreArticulo = ?, descripcion = ? WHERE idInventario = ?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ssi", $nombreArticulo, $descripcion, $idInventario);
+    } else {
+        $sql = "UPDATE inventario SET nombreArticulo = ?, descripcion = ?, cantidad = ? WHERE idInventario = ?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ssii", $nombreArticulo, $descripcion, $cantidad, $idInventario);
+    }
+    return mysqli_stmt_execute($stmt);
+}
+
+function eliminarInventario($idInventario) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM inventario WHERE idInventario = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idInventario);
+    return mysqli_stmt_execute($stmt);
+}
+
+function actualizarCantidadInventario($idInventario, $cantidad) {
+    $con = obtenerConexion();
+    $sql = "UPDATE inventario SET cantidad = ? WHERE idInventario = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $cantidad, $idInventario);
+    return mysqli_stmt_execute($stmt);
+}
