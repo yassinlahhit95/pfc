@@ -150,7 +150,7 @@ function eliminarArticulo($idArticulo) {
 
 function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
     $con = obtenerConexion();
-    $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?";
+    $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $numeroSerie, $idExcluir);
     mysqli_stmt_execute($stmt);
