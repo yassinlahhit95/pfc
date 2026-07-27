@@ -7,8 +7,15 @@ import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
+import '../../../core/widgets/photo_picker_sheet.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/payments_repository.dart';
+
+const _estadoComprobanteLabels = {
+  'verificando': 'Verificando',
+  'aprobado': 'Comprobante aprobado',
+  'rechazado': 'Comprobante rechazado',
+};
 
 Color _estadoColor(BuildContext context, String estado) {
   final dark = Theme.of(context).brightness == Brightness.dark;
@@ -54,7 +61,8 @@ class _StudentView extends ConsumerWidget {
               const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin pagos registrados')
             else ...[
               const SectionLabel('Historial'),
-              for (final p in data.payments) _PaymentTile(payment: p),
+              for (final p in data.payments)
+                _PaymentTile(payment: p, onUploaded: () => ref.invalidate(myPaymentsProvider)),
             ],
           ],
         ),
@@ -110,7 +118,8 @@ class _TutorViewState extends ConsumerState<_TutorView> {
                       if (allGroups.length > 1) SectionLabel(g.nombreEstudiante),
                       _BalanceCard(estado: g.estado),
                       const SizedBox(height: Space.md),
-                      for (final p in g.payments) _PaymentTile(payment: p),
+                      for (final p in g.payments)
+                        _PaymentTile(payment: p, onUploaded: () => ref.invalidate(tutorPaymentsProvider)),
                       const SizedBox(height: Space.xxl),
                     ],
                   ],
@@ -171,32 +180,89 @@ class _BalanceCard extends StatelessWidget {
   }
 }
 
-class _PaymentTile extends StatelessWidget {
-  const _PaymentTile({required this.payment});
+class _PaymentTile extends ConsumerStatefulWidget {
+  const _PaymentTile({required this.payment, this.onUploaded});
   final Payment payment;
+  final VoidCallback? onUploaded;
+
+  @override
+  ConsumerState<_PaymentTile> createState() => _PaymentTileState();
+}
+
+class _PaymentTileState extends ConsumerState<_PaymentTile> {
+  bool _uploading = false;
+
+  Future<void> _subirComprobante() async {
+    final archivo = await pickPhoto(context);
+    if (archivo == null) return;
+    setState(() => _uploading = true);
+    try {
+      await ref.read(paymentsRepositoryProvider).uploadComprobante(idPago: widget.payment.id, archivo: archivo);
+      widget.onUploaded?.call();
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Comprobante enviado. Pendiente de verificación.')));
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo subir el comprobante.')));
+      }
+    } finally {
+      if (mounted) setState(() => _uploading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final payment = widget.payment;
     final color = _estadoColor(context, payment.estadoComprobante);
     final currency = NumberFormat.currency(locale: 'es_ES', symbol: '€');
     final monto = double.tryParse(payment.monto) ?? 0;
+    final estadoLabel = _estadoComprobanteLabels[payment.estadoComprobante];
+    final puedeSubir = payment.estadoComprobante == 'ninguno' || payment.estadoComprobante == 'rechazado';
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: Space.sm),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(payment.tipoPago, style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text(payment.fechaPago, style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(payment.tipoPago, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    Text(payment.fechaPago, style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ),
+              ),
+              Text(currency.format(monto), style: const TextStyle(fontWeight: FontWeight.w700)),
+              const SizedBox(width: Space.sm),
+              Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+            ],
           ),
-          Text(currency.format(monto), style: const TextStyle(fontWeight: FontWeight.w700)),
-          const SizedBox(width: Space.sm),
-          Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          if (estadoLabel != null) ...[
+            const SizedBox(height: 4),
+            Text(estadoLabel, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color)),
+          ],
+          if (payment.estadoComprobante == 'rechazado' && (payment.motivoRechazoComprobante?.isNotEmpty ?? false)) ...[
+            const SizedBox(height: 2),
+            Text(
+              payment.motivoRechazoComprobante!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            ),
+          ],
+          if (puedeSubir) ...[
+            const SizedBox(height: Space.sm),
+            OutlinedButton.icon(
+              onPressed: _uploading ? null : _subirComprobante,
+              icon: _uploading
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.add_a_photo_outlined, size: 18),
+              label: Text(payment.estadoComprobante == 'rechazado' ? 'Volver a subir' : 'Subir comprobante'),
+            ),
+          ],
         ],
       ),
     );

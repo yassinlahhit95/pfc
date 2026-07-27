@@ -31,6 +31,16 @@ $listaPendientes = listarPagosPendientes();
 $titulo_pagina = 'AULAPRO | PAGOS';
 $seccion = 'pagos';
 include __DIR__ . '/../comunes/nav.php';
+
+require_once __DIR__ . "/../../../include/R2Client.php";
+function _comprobanteUrlWeb(string $archivo): string {
+    $archivoNombre = basename($archivo);
+    return R2Client::documentoUrl(
+        __DIR__ . '/../../../public/uploads/comprobantes/' . $archivoNombre,
+        '../../../public/uploads/comprobantes/' . $archivoNombre,
+        'comprobantes/' . $archivoNombre
+    );
+}
 ?>
 
 <div class="cabecera">
@@ -96,12 +106,13 @@ include __DIR__ . '/../comunes/nav.php';
                     <th>CANTIDAD</th>
                     <th>FECHA PAGO</th>
                     <th>PRÓXIMO PAGO</th>
+                    <th>COMPROBANTE</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaPagos)): ?>
-                    <tr><td colspan="7" class="vacio">No hay registros de pagos que coincidan con los filtros.</td></tr>
+                    <tr><td colspan="9" class="vacio">No hay registros de pagos que coincidan con los filtros.</td></tr>
                 <?php else: ?>
                     <?php foreach ($listaPagos as $pago): ?>
                     <tr>
@@ -116,6 +127,37 @@ include __DIR__ . '/../comunes/nav.php';
                                 <span style="color:var(--mut)">N/A</span>
                             <?php else: ?>
                                 <?= !empty($pago['fechaProximoPago']) ? date('d/m/Y', strtotime($pago['fechaProximoPago'])) : '—' ?>
+                            <?php endif; ?>
+                        </td>
+                        <td style="white-space:nowrap;">
+                            <?php if (($pago['estadoComprobante'] ?? 'ninguno') === 'ninguno' || empty($pago['comprobante'])): ?>
+                                <span class="texto-suave">—</span>
+                            <?php else: ?>
+                                <a href="<?= Security::escapeHtml(_comprobanteUrlWeb($pago['comprobante'])) ?>" target="_blank" rel="noopener" style="display:block;margin-bottom:4px;">
+                                    <i class="fas fa-paperclip"></i> Ver
+                                </a>
+                                <?php if ($pago['estadoComprobante'] === 'verificando'): ?>
+                                    <span class="texto-estado naranja" style="margin-bottom:4px;display:inline-block;">Verificando</span><br>
+                                    <form method="POST" action="../../../controladores/secretaria/pagos/resolverComprobante.php" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                                        <input type="hidden" name="idPago" value="<?= (int)$pago['idPago'] ?>">
+                                        <input type="hidden" name="decision" value="aprobar">
+                                        <button type="submit" class="boton-secundario btn-xs" style="font-size:.78rem;padding:4px 8px;"><i class="fas fa-check"></i> Aprobar</button>
+                                    </form>
+                                    <button type="button" class="boton-peligro btn-xs" style="font-size:.78rem;padding:4px 8px;"
+                                            onclick="abrirRechazoComprobante(<?= (int)$pago['idPago'] ?>)">
+                                        <i class="fas fa-times"></i> Rechazar
+                                    </button>
+                                <?php elseif ($pago['estadoComprobante'] === 'aprobado'): ?>
+                                    <span class="texto-estado verde">Aprobado</span>
+                                <?php elseif ($pago['estadoComprobante'] === 'rechazado'): ?>
+                                    <span class="texto-estado rojo">Rechazado</span>
+                                    <?php if (!empty($pago['motivoRechazoComprobante'])): ?>
+                                        <div class="texto-suave" style="font-size:.76rem;margin-top:2px;max-width:180px;white-space:normal;">
+                                            <?= Security::escapeHtml($pago['motivoRechazoComprobante']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -198,9 +240,33 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
+<!-- Modal Rechazar Comprobante -->
+<div id="modal-rechazar-comprobante" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-caja" style="max-width:440px;width:90%;">
+        <form method="POST" action="../../../controladores/secretaria/pagos/resolverComprobante.php">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <input type="hidden" name="idPago" id="rechazar-comprobante-idPago" value="">
+            <input type="hidden" name="decision" value="rechazar">
+            <h3 class="modal-titulo">Rechazar comprobante</h3>
+            <div class="campo ancho-total" style="margin-top:12px;">
+                <label for="rechazar-comprobante-motivo">Motivo del rechazo</label>
+                <textarea id="rechazar-comprobante-motivo" name="motivoRechazo" rows="3" required placeholder="Explica por qué se rechaza…"></textarea>
+            </div>
+            <div class="peligro-acciones" style="margin-top:16px;">
+                <button type="button" class="boton-secundario" onclick="document.getElementById('modal-rechazar-comprobante').classList.remove('modal-abierto')">Cancelar</button>
+                <button type="submit" class="boton-peligro"><i class="fas fa-times"></i> Rechazar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 iniciarPaginacion('tablaPagos', 15);
+function abrirRechazoComprobante(idPago) {
+    document.getElementById('rechazar-comprobante-idPago').value = idPago;
+    document.getElementById('modal-rechazar-comprobante').classList.add('modal-abierto');
+}
 
 function otorgarProrrogaPago(idPago) {
     var pedir = window.ModalConfirm

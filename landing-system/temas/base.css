@@ -1848,3 +1848,159 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   .lp-nav-cta .lp-boton-fantasma { display: none; }
   .lp-nav-burger { display: flex; }
 }
+
+/* ========================================= */
+/* ?? MODERN DESIGN UPGRADES (CONTACT & FOOTER) */
+/* ========================================= */
+
+/* Contact Section Enhancements */
+.lp-contacto-grid {
+    position: relative;
+    z-index: 1;
+}
+
+.lp-contacto-dato i {
+    background: linear-gradient(135deg, var(--lp-acento), #6b21a8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 20px !important;
+    transform: scale(1);
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.lp-contacto-dato:hover i {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px var(--lp-acento));
+}
+
+.lp-contacto-form {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+
+.lp-contacto-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+}
+
+.lp-contacto-form input, .lp-contacto-form textarea {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+    border-radius: 12px !important;
+}
+
+[data-theme="dark"] .lp-contacto-form input, [data-theme="dark"] .lp-contacto-form textarea {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.lp-contacto-form input:focus, .lp-contacto-form textarea:focus {
+    box-shadow: 0 0 0 4px rgba(var(--lp-acento-rgb), 0.15) !important;
+    border-color: var(--lp-acento) !important;
+    transform: scale(1.01);
+}
+
+.lp-contacto-mapa {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.lp-contacto-mapa:hover {
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    transform: scale(1.02);
+}
+
+/* Footer Enhancements */
+.lp-footer {
+    position: relative;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.03));
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] .lp-footer {
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.lp-footer-col h4 {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 8px;
+}
+.lp-footer-col h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--lp-acento);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+.lp-footer-col:hover h4::after {
+    width: 100%;
+}
+
+.lp-footer-redes a {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+[data-theme="dark"] .lp-footer-redes a {
+    background: rgba(255,255,255,0.05);
+}
+
+.lp-footer-redes a:hover {
+    background: var(--lp-acento);
+    color: #fff;
+    transform: translateY(-5px) rotate(8deg);
+    box-shadow: 0 10px 20px rgba(var(--lp-acento-rgb), 0.4);
+}
+
+.lp-footer-cta {
+    background: linear-gradient(135deg, var(--lp-acento), #4338ca) !important;
+    position: relative;
+    overflow: hidden;
+}
+.lp-footer-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    animation: rotateGradient 15s linear infinite;
+}
+
+@keyframes rotateGradient {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.lp-footer-cta-texto h2 {
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.lp-footer-col a {
+    transition: all 0.2s ease;
+}
+.lp-footer-col a:hover {
+    padding-left: 8px;
+    color: var(--lp-acento) !important;
+}

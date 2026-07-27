@@ -1,13 +1,19 @@
 <?php
 require_once __DIR__ . '/conectar.php';
 
-function crearJustificacionFalta(int $idAsistencia, int $idEstudiante, string $motivo, ?string $archivo, string $estadoOriginal = 'ausente'): bool {
+// Devuelve el idJustificacion insertado (siempre > 0) o false si falla —
+// antes devolvía bool, pero attendance-justify.php necesita el id para
+// auto-aprobar acto seguido cuando el solicitante es staff. Los `if
+// (crearJustificacionFalta(...))` existentes (estudiante/tutor) siguen
+// funcionando igual: cualquier id real es truthy.
+function crearJustificacionFalta(int $idAsistencia, int $idEstudiante, string $motivo, ?string $archivo, string $estadoOriginal = 'ausente', string $rolSolicitante = 'estudiante', ?int $idSolicitante = null): int|false {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con,
-        "INSERT INTO justificaciones_falta (idAsistencia, idEstudiante, motivo, archivo, estadoOriginal)
-         VALUES (?, ?, ?, ?, ?)");
-    mysqli_stmt_bind_param($stmt, "iisss", $idAsistencia, $idEstudiante, $motivo, $archivo, $estadoOriginal);
-    return mysqli_stmt_execute($stmt);
+        "INSERT INTO justificaciones_falta (idAsistencia, idEstudiante, motivo, archivo, estadoOriginal, rolSolicitante, idSolicitante)
+         VALUES (?, ?, ?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "iissssi", $idAsistencia, $idEstudiante, $motivo, $archivo, $estadoOriginal, $rolSolicitante, $idSolicitante);
+    if (!mysqli_stmt_execute($stmt)) return false;
+    return (int)mysqli_insert_id($con);
 }
 
 // Última justificación (cualquier estado) por falta — para saber si una fila
@@ -92,16 +98,16 @@ function justificacionPerteneceAProfesor(int $idJustificacion, int $idProfesor):
 // el historial (p.ej. aprobó por error y quiere rechazarla, o al revés). Al rechazar
 // se restaura el estado original de la asistencia (guardado en jf.estadoOriginal),
 // no un valor fijo, porque pudo ser 'ausente' o 'retraso'.
-function resolverJustificacionFalta(int $idJustificacion, int $idAsistencia, bool $aprobar, int $idProfesor, string $motivoRechazo, string $estadoOriginal): bool {
+function resolverJustificacionFalta(int $idJustificacion, int $idAsistencia, bool $aprobar, int $idResuelvePor, string $motivoRechazo, string $estadoOriginal, string $rolResuelve = 'profesor'): bool {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
         $estado = $aprobar ? 'aprobada' : 'rechazada';
         $stmt = mysqli_prepare($con,
             "UPDATE justificaciones_falta
-             SET estado = ?, idProfesorResuelve = ?, motivoRechazo = ?, fechaResolucion = NOW()
+             SET estado = ?, idResuelvePor = ?, rolResuelve = ?, motivoRechazo = ?, fechaResolucion = NOW()
              WHERE idJustificacion = ?");
-        mysqli_stmt_bind_param($stmt, "sisi", $estado, $idProfesor, $motivoRechazo, $idJustificacion);
+        mysqli_stmt_bind_param($stmt, "sissi", $estado, $idResuelvePor, $rolResuelve, $motivoRechazo, $idJustificacion);
         if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('update justificacion');
 
         $nuevoEstadoAsistencia = $aprobar ? 'justificado' : $estadoOriginal;

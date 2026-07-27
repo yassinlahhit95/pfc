@@ -40,6 +40,10 @@ dependencies:
   # (a transitive dep of firebase_messaging below) requiring compileSdk 36+.
   file_picker: ^10.1.2
 
+  # Camera/gallery capture for payment comprobantes and staff-submitted
+  # attendance justifications (photograph a paper note in person).
+  image_picker: ^1.1.2
+
   # Push notifications. All three no-op gracefully at runtime if
   # android/app/google-services.json hasn't been added yet (see
   # NotificationsService) — the manual Firebase-console step is documented

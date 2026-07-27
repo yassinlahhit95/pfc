@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -133,6 +135,13 @@ class AttendanceRepository {
     );
   }
 
+  /// secretaria/director: a specific student's attendance (center-wide, no
+  /// scope restriction) — backs StaffJustifyScreen's student-search flow.
+  Future<List<AttendanceRecord>> fetchForStudent(int idEstudiante) async {
+    final data = await _client.get('/attendance.php', query: {'idEstudiante': idEstudiante});
+    return (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList();
+  }
+
   Future<void> submitAttendance({
     required int idModulo,
     required String fecha,
@@ -145,10 +154,11 @@ class AttendanceRepository {
     });
   }
 
-  Future<void> justify({required int idAsistencia, required String motivo}) {
+  Future<void> justify({required int idAsistencia, required String motivo, File? archivo}) {
     return _client.post('/attendance-justify.php', data: FormData.fromMap({
       'idAsistencia': idAsistencia,
       'motivo': motivo,
+      if (archivo != null) 'archivo': MultipartFile.fromFileSync(archivo.path),
     }));
   }
 

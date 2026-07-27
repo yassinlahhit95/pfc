@@ -220,7 +220,9 @@ if ($rVencidos) {
                     <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= date('d/m/Y', strtotime($pagoVencido['fechaProximoPago'])) ?></td>
                     <td style="padding:10px;">
                         <?php if ($pagoVencido['estadoComprobante'] === 'verificando'): ?>
-                            <span class="badge badge-ambar"><i class="fas fa-search"></i> Verificando</span>
+                            <a href="../pagos/verPagos.php" title="Revisar y aprobar/rechazar el comprobante">
+                                <span class="badge badge-ambar"><i class="fas fa-search"></i> Verificando</span>
+                            </a>
                         <?php else: ?>
                             <span class="texto-suave">Sin comprobante</span>
                         <?php endif; ?>

@@ -75,7 +75,7 @@ Future<bool> showCobrarPagoSheet(
               ),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<String>(
-                value: tipoPago,
+                initialValue: tipoPago,
                 decoration: const InputDecoration(labelText: 'Tipo de Pago'),
                 items: const [
                   DropdownMenuItem(value: 'mensual', child: Text('Mensualidad')),

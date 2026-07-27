@@ -59,30 +59,7 @@ if ($method === 'POST') {
     );
     if (!$ok) v1Error('Could not resolve the justification.', 500, 'error');
 
-    $idEstudiante = (int)$justificacion['idEstudiante'];
-    $titulo = $aprobar ? 'Justificación aprobada' : 'Justificación rechazada';
-    $mensaje = $aprobar
-        ? 'Tu justificación de falta ha sido aprobada.'
-        : 'Tu justificación de falta ha sido rechazada' . ($motivoRechazo !== '' ? ": $motivoRechazo" : '.');
-
-    $fh = __DIR__ . '/../../controladores/firebase/firebase_helper.php';
-    if (file_exists($fh)) {
-        require_once $fh;
-        $con = obtenerConexion();
-        $destinatarios = [['id' => $idEstudiante, 'rol' => 'estudiante']];
-        $st = mysqli_prepare($con, 'SELECT idTutor FROM estudiante_tutor WHERE idEstudiante = ?');
-        mysqli_stmt_bind_param($st, 'i', $idEstudiante);
-        mysqli_stmt_execute($st);
-        foreach (mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC) as $row) {
-            $destinatarios[] = ['id' => (int)$row['idTutor'], 'rol' => 'tutor'];
-        }
-        foreach ($destinatarios as $d) {
-            $token = obtenerTokenUsuario($d['id'], $d['rol']);
-            if ($token) {
-                enviarNotificacionFirebase($token, $titulo, $mensaje, 'asistencia_resuelta', ['idAsistencia' => (int)$justificacion['idAsistencia']]);
-            }
-        }
-    }
+    notificarJustificacionResuelta((int)$justificacion['idEstudiante'], (int)$justificacion['idAsistencia'], $aprobar, $motivoRechazo);
 
     v1Ok(['message' => $aprobar ? 'Approved.' : 'Rejected.']);
 }

@@ -344,7 +344,13 @@ final class R2Client {
     // nombre está vacío, devuelve '' (nada que mostrar).
     public static function imagenUrl(string $rutaLocalAbsoluta, string $urlLocal, string $r2Key): string {
         if ($urlLocal === '') return '';
-        return is_file($rutaLocalAbsoluta) ? $urlLocal : self::publicUrl($r2Key);
+        if (is_file($rutaLocalAbsoluta)) return $urlLocal;
+        try {
+            return self::publicUrl($r2Key);
+        } catch (Throwable $t) {
+            error_log("R2Client Error (imagenUrl): " . $t->getMessage());
+            return '';
+        }
     }
 
     // Descarga los bytes de un objeto público (p.ej. para incrustarlo como
@@ -371,6 +377,12 @@ final class R2Client {
     // nombre está vacío, devuelve '' (nada que enlazar).
     public static function documentoUrl(string $rutaLocalAbsoluta, string $urlLocal, string $r2Key, int $expirySeconds = 300): string {
         if ($urlLocal === '') return '';
-        return is_file($rutaLocalAbsoluta) ? $urlLocal : self::presignedGetUrl($r2Key, $expirySeconds);
+        if (is_file($rutaLocalAbsoluta)) return $urlLocal;
+        try {
+            return self::presignedGetUrl($r2Key, $expirySeconds);
+        } catch (Throwable $t) {
+            error_log("R2Client Error (documentoUrl): " . $t->getMessage());
+            return '';
+        }
     }
 }

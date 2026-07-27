@@ -211,6 +211,23 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
         title: 'No impartes ningún módulo con alumnado',
       );
     }
+
+    final filteredModules = <Map<String, dynamic>>[];
+    for (final m in modulos) {
+      final allStudents = (m['estudiantes'] as List).cast<Map<String, dynamic>>();
+      final filteredStudents = allStudents.where((e) {
+        final name = (e['nombreEstudiante'] as String? ?? '').toLowerCase();
+        return _searchQuery.isEmpty || name.contains(_searchQuery);
+      }).toList();
+
+      if (filteredStudents.isNotEmpty) {
+        filteredModules.add({
+          'nombreModulo': m['nombreModulo'],
+          'estudiantes': filteredStudents,
+        });
+      }
+    }
+
     return Column(
       children: [
         Padding(
@@ -232,44 +249,36 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
             children: [
-              for (final m in modulos) ...[
-                final allStudents = (m['estudiantes'] as List).cast<Map<String, dynamic>>();
-                final filteredStudents = allStudents.where((e) {
-                  final name = (e['nombreEstudiante'] as String? ?? '').toLowerCase();
-                  return _searchQuery.isEmpty || name.contains(_searchQuery);
-                }).toList();
-
-                if (filteredStudents.isNotEmpty) ...[
-                  SectionLabel(m['nombreModulo'] as String? ?? ''),
-                  AppCard(
-                    padding: EdgeInsets.zero,
-                    margin: const EdgeInsets.only(bottom: Space.xxl),
-                    child: Column(
-                      children: [
-                        for (final e in filteredStudents)
-                          Theme(
-                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              title: Text(e['nombreEstudiante'] as String? ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
-                              childrenPadding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.lg),
-                              children: [
-                                Wrap(
-                                  spacing: Space.sm,
-                                  runSpacing: Space.sm,
-                                  children: [
-                                    _NotaChip('1ª ev.', e['nota_1ev']),
-                                    _NotaChip('1ª final', e['nota_1final']),
-                                    _NotaChip('2ª ev.', e['nota_2ev']),
-                                    _NotaChip('2ª final', e['nota_2final']),
-                                  ],
-                                ),
-                              ],
-                            ),
+              for (final m in filteredModules) ...[
+                SectionLabel(m['nombreModulo'] as String? ?? ''),
+                AppCard(
+                  padding: EdgeInsets.zero,
+                  margin: const EdgeInsets.only(bottom: Space.xxl),
+                  child: Column(
+                    children: [
+                      for (final e in (m['estudiantes'] as List).cast<Map<String, dynamic>>())
+                        Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: Text(e['nombreEstudiante'] as String? ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
+                            childrenPadding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.lg),
+                            children: [
+                              Wrap(
+                                spacing: Space.sm,
+                                runSpacing: Space.sm,
+                                children: [
+                                  _NotaChip('1ª ev.', e['nota_1ev']),
+                                  _NotaChip('1ª final', e['nota_1final']),
+                                  _NotaChip('2ª ev.', e['nota_2ev']),
+                                  _NotaChip('2ª final', e['nota_2final']),
+                                ],
+                              ),
+                            ],
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
-                ],
+                ),
               ],
             ],
           ),

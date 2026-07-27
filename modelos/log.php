@@ -1,10 +1,13 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-function registrarAccion(string $accion, string $tabla, ?int $idRegistro = null, string $descripcion = ''): void {
+// $idAdminOverride: para llamadas desde api/v1 (sin sesión PHP — auth por
+// Bearer token) donde $_SESSION['idAdmin'] nunca está poblado; pásale el
+// user_id ya autenticado por v1Auth() en vez de dejar que caiga a NULL.
+function registrarAccion(string $accion, string $tabla, ?int $idRegistro = null, string $descripcion = '', ?int $idAdminOverride = null): void {
     try {
         $con     = obtenerConexion();
-        $idAdmin = isset($_SESSION['idAdmin']) ? (int)$_SESSION['idAdmin'] : null;
+        $idAdmin = $idAdminOverride ?? (isset($_SESSION['idAdmin']) ? (int)$_SESSION['idAdmin'] : null);
         $ip      = $_SERVER['REMOTE_ADDR'] ?? null;
 
         $stmt = mysqli_prepare($con,
@@ -17,10 +20,11 @@ function registrarAccion(string $accion, string $tabla, ?int $idRegistro = null,
     }
 }
 
-function registrarAccionSecretaria(string $accion, string $tabla, ?int $idRegistro = null, string $descripcion = ''): void {
+// $idSecretariaOverride: mismo motivo que registrarAccion()'s $idAdminOverride.
+function registrarAccionSecretaria(string $accion, string $tabla, ?int $idRegistro = null, string $descripcion = '', ?int $idSecretariaOverride = null): void {
     try {
         $con          = obtenerConexion();
-        $idSecretaria = isset($_SESSION['idSecretaria']) ? (int)$_SESSION['idSecretaria'] : null;
+        $idSecretaria = $idSecretariaOverride ?? (isset($_SESSION['idSecretaria']) ? (int)$_SESSION['idSecretaria'] : null);
 
         $detalles = $descripcion;
         if ($idRegistro) $detalles = "ID: $idRegistro " . $detalles;

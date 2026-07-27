@@ -13,6 +13,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/_api.php';
 require_once __DIR__ . '/../../modelos/pagos.php';
 require_once __DIR__ . '/../../modelos/tutores.php';
+require_once __DIR__ . '/_payments_shared.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     v1Error('Method not allowed.', 405, 'method_not_allowed');
@@ -28,6 +29,10 @@ if ($type === 'director' || $type === 'secretaria') {
     }
     $idCiclo = isset($_GET['idCiclo']) ? (int)$_GET['idCiclo'] : null;
     $payments = $idCiclo ? listarPagosFiltrados($idCiclo) : listarTodosLosPagos();
+    foreach ($payments as &$p) {
+        if (!empty($p['comprobante'])) $p['comprobante_url'] = comprobanteUrl($p['comprobante']);
+    }
+    unset($p);
     v1Ok(['payments' => $payments]);
 }
 

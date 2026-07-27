@@ -6,6 +6,9 @@
          push notifications would silently never appear in the tray even with
          google-services.json in place and FCM tokens registering fine. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Camera capture for payment comprobantes and staff-submitted attendance
+         justifications (image_picker's ImageSource.camera). -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <application
         android:label="AulaPro"
         android:name="${applicationName}"

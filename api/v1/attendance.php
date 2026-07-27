@@ -5,7 +5,8 @@ declare(strict_types=1);
 //   estudiante → own records
 //   tutor      → records for each linked child (estudiante_tutor)
 //   profesor   → requires idModulo (a module they teach); optional fecha filter
-//   director/secretaria → 403 (use the web dashboard)
+//   director/secretaria → requires idEstudiante (center-wide, no scope
+//                          restriction — backs the mobile staff-justify flow)
 // Every ausente/retraso row includes its latest justification (if any) under
 // `justificacion` — batched in one query, not per-row, per the N+1 the web
 // UI has (obtenerJustificacionPorAsistencia called once per row there).
@@ -88,6 +89,13 @@ if ($method === 'GET') {
             'attendance' => attendanceAttachJustifications($rows),
             'roster' => listarEstudiantesDeModulo($idModulo),
         ]);
+    }
+
+    if ($type === 'secretaria' || $type === 'director') {
+        $idEstudiante = (int)($_GET['idEstudiante'] ?? 0);
+        if ($idEstudiante <= 0) v1Error('idEstudiante is required.', 400, 'validation');
+        $rows = listarAsistenciasFiltradas(null, null, $idEstudiante, null, null, null);
+        v1Ok(['attendance' => attendanceAttachJustifications($rows)]);
     }
 
     v1Error('This endpoint is not available for this role.', 403, 'forbidden');

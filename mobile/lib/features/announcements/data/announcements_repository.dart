@@ -8,6 +8,7 @@ class Announcement {
     required this.titulo,
     required this.mensaje,
     required this.fecha,
+    required this.dirigidoA,
   });
 
   factory Announcement.fromJson(Map<String, dynamic> json) => Announcement(
@@ -15,12 +16,14 @@ class Announcement {
         titulo: json['titulo'] as String? ?? '',
         mensaje: json['mensaje'] as String? ?? '',
         fecha: json['fechaAnuncio'] as String? ?? '',
+        dirigidoA: json['dirigidoA'] as String? ?? 'todos',
       );
 
   final int id;
   final String titulo;
   final String mensaje;
   final String fecha;
+  final String dirigidoA;
 }
 
 class AnnouncementsRepository {

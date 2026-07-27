@@ -21,19 +21,21 @@ class ModuleDetailScreen extends ConsumerWidget {
     final isProfesor = role == UserRole.profesor;
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(module.nombre),
           bottom: const TabBar(tabs: [
             Tab(text: 'Archivos'),
             Tab(text: 'Tareas'),
+            Tab(text: 'Sesiones'),
           ]),
         ),
         body: TabBarView(
           children: [
             _FilesTab(idModulo: module.id, canFavorite: role == UserRole.estudiante),
             _TasksTab(idModulo: module.id, isProfesor: isProfesor),
+            _SessionsTab(idModulo: module.id, moduleName: module.nombre, isProfesor: isProfesor),
           ],
         ),
       ),

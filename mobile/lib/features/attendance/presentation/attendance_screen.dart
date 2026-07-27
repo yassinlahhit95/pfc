@@ -10,7 +10,6 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/attendance_repository.dart';
-import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
 
 Future<void> _openJustificante(BuildContext context, String url) async {
