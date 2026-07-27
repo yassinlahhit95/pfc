@@ -1495,12 +1495,15 @@ CREATE TABLE `estudiantes` (
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
   `mfa_secret` text COLLATE utf8mb4_unicode_ci,
   `mfa_backup_codes` text COLLATE utf8mb4_unicode_ci,
+  `idGrupo` int DEFAULT NULL,
   PRIMARY KEY (`idEstudiante`),
   UNIQUE KEY `uk_email_est` (`emailEstudiante`),
   UNIQUE KEY `uk_dni_est` (`dniEstudiante`),
   KEY `idx_est_ciclo` (`idCiclo`),
   KEY `idx_est_curso` (`idCurso`),
-  CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
+  KEY `idx_est_grupo` (`idGrupo`),
+  CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL,
+  CONSTRAINT `fk_estudiantes_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1851,7 +1854,10 @@ CREATE TABLE `justificaciones_falta` (
   `archivo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estadoOriginal` enum('ausente','retraso') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ausente',
   `estado` enum('pendiente','aprobada','rechazada') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
-  `idProfesorResuelve` int DEFAULT NULL,
+  `idResuelvePor` int DEFAULT NULL,
+  `rolResuelve` enum('profesor','secretaria','director') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rolSolicitante` enum('estudiante','tutor','profesor','secretaria','director') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'estudiante',
+  `idSolicitante` int DEFAULT NULL,
   `motivoRechazo` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fechaSolicitud` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fechaResolucion` timestamp NULL DEFAULT NULL,
@@ -2180,6 +2186,7 @@ CREATE TABLE `pagos` (
   `comprobante` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `prorrogaHasta` date DEFAULT NULL,
   `estadoComprobante` enum('ninguno','verificando','aprobado','rechazado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'ninguno',
+  `motivoRechazoComprobante` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`idPago`),
   KEY `idx_pago_est` (`idEstudiante`),
   CONSTRAINT `fk_pag_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
@@ -2761,6 +2768,65 @@ CREATE TABLE `verificaciones_log` (
 LOCK TABLES `verificaciones_log` WRITE;
 /*!40000 ALTER TABLE `verificaciones_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `verificaciones_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `fct_diarios`
+--
+
+DROP TABLE IF EXISTS `fct_diarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fct_diarios` (
+  `idDiario` int NOT NULL AUTO_INCREMENT,
+  `idFCT` int NOT NULL,
+  `fecha` date NOT NULL,
+  `horas` decimal(4,2) NOT NULL,
+  `actividades` text NOT NULL,
+  `estado` enum('pendiente','aprobado','rechazado') NOT NULL DEFAULT 'pendiente',
+  `observacionesTutor` text DEFAULT NULL,
+  `tokenAprobacion` varchar(64) DEFAULT NULL,
+  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idDiario`),
+  KEY `idx_fct_diarios_fct` (`idFCT`),
+  CONSTRAINT `fk_fct_diarios_fct` FOREIGN KEY (`idFCT`) REFERENCES `fct` (`idFCT`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fct_diarios`
+--
+
+LOCK TABLES `fct_diarios` WRITE;
+/*!40000 ALTER TABLE `fct_diarios` DISABLE KEYS */;
+/*!40000 ALTER TABLE `fct_diarios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `grupos`
+--
+
+DROP TABLE IF EXISTS `grupos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `grupos` (
+  `idGrupo` int NOT NULL AUTO_INCREMENT,
+  `nombreGrupo` varchar(100) NOT NULL,
+  `idCiclo` int NOT NULL,
+  `anioEstudio` varchar(10) NOT NULL,
+  PRIMARY KEY (`idGrupo`),
+  KEY `idx_grupos_ciclo` (`idCiclo`),
+  CONSTRAINT `fk_grupos_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `grupos`
+--
+
+LOCK TABLES `grupos` WRITE;
+/*!40000 ALTER TABLE `grupos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `grupos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

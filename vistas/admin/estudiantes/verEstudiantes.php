@@ -8,6 +8,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
+require_once __DIR__ . "/../../../modelos/grupos.php";
 
 $listaDeEstudiantesActuales = listarEstudiantes();
 
@@ -65,6 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
+$listaGruposFiltro = listarTodosLosGrupos();
 
 $con = obtenerConexion();
 $resCursosUnicos = mysqli_query($con, "SELECT DISTINCT nombre FROM cursos_academicos ORDER BY orden ASC, nombre ASC");
@@ -110,6 +112,17 @@ if ($resCursosUnicos) {
                 <?php endforeach; ?>
             </select>
         </div>
+        <div class="campo relleno">
+            <label for="selectFiltroGrupo">FILTRAR POR GRUPO:</label>
+            <select id="selectFiltroGrupo" onchange="aplicarFiltrosEstudiantes()">
+                <option value="">-- Todos los Grupos --</option>
+                <?php foreach ($listaGruposFiltro as $grupoFiltro): ?>
+                    <option value="<?= Security::escapeHtml($grupoFiltro['nombreGrupo']) ?>">
+                        <?= Security::escapeHtml($grupoFiltro['nombreGrupo']) ?> (<?= Security::escapeHtml($grupoFiltro['abreviaturaCiclo']) ?>)
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -124,13 +137,14 @@ if ($resCursosUnicos) {
                     <th>CORREO ELECTRÓNICO</th>
                     <th>CICLO ASIGNADO</th>
                     <th>AÑO</th>
+                    <th>GRUPO / AULA</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
-                        <td colspan="7" class="vacio">No hay estudiantes registrados en el sistema.</td>
+                        <td colspan="8" class="vacio">No hay estudiantes registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
@@ -143,6 +157,7 @@ if ($resCursosUnicos) {
                         <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>
                         <td><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreCiclo']), 'UTF-8') ?></td>
                         <td><?= Security::escapeHtml($estudianteIndividual['anioEstudio'] ?? '-') ?></td>
+                        <td><strong><?= Security::escapeHtml($estudianteIndividual['nombreGrupo'] ?? 'Sin grupo') ?></strong></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
@@ -175,6 +190,7 @@ function aplicarFiltrosEstudiantes() {
     var idNivel = $('#selectFiltroNivel').val();
     var textoCiclo = $('#selectFiltroCiclo').val().toLowerCase();
     var textoAnio = $('#selectFiltroAnio').val();
+    var textoGrupo = $('#selectFiltroGrupo').val().toLowerCase();
 
     $('#tablaEstudiantes tbody tr').each(function() {
         var $fila = $(this);
@@ -184,8 +200,11 @@ function aplicarFiltrosEstudiantes() {
         var textoCelda = $fila.find('td').eq(4).text().toLowerCase();
         var pasaCiclo = textoCiclo === '' || textoCelda.indexOf(textoCiclo) !== -1;
         var pasaAnio = textoAnio === '' || $fila.data('anio') === textoAnio;
+        
+        var textoCeldaGrupo = $fila.find('td').eq(6).text().toLowerCase();
+        var pasaGrupo = textoGrupo === '' || textoCeldaGrupo.indexOf(textoGrupo) !== -1;
 
-        $fila.toggleClass('fila-filtro-oculta', !(pasaNivel && pasaCiclo && pasaAnio));
+        $fila.toggleClass('fila-filtro-oculta', !(pasaNivel && pasaCiclo && pasaAnio && pasaGrupo));
     });
 
     if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaEstudiantes');

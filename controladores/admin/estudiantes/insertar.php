@@ -33,6 +33,7 @@ if (isset($_POST['guardarEstudiante'])) {
     $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
     $anioEstudioPost  = trim($_POST['anioEstudio'] ?? '');
     $anioEstudio      = existeNombreCursoEnCiclo($idCiclo, $anioEstudioPost) && $anioEstudioPost !== '' ? $anioEstudioPost : null;
+    $idGrupo          = !empty($_POST['idGrupo']) ? (int)$_POST['idGrupo'] : null;
 
     $avisos = [];
     if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es un campo obligatorio.";
@@ -69,7 +70,7 @@ if (isset($_POST['guardarEstudiante'])) {
         exit;
     }
 
-    if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio)) {
+    if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio, $idGrupo)) {
         registrarAccion('insertar', 'estudiantes', null, $nombre);
         $_SESSION['exito'] = mensajeExitoConCredenciales("El estudiante ha sido registrado correctamente.");
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");

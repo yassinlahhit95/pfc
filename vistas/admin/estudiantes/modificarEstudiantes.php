@@ -90,6 +90,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <option value="">-- Sin especificar --</option>
                     </select>
                 </div>
+
+                <div class="campo">
+                    <label for="idGrupo">Grupo / Aula</label>
+                    <select name="idGrupo" id="idGrupo">
+                        <option value="">-- Selecciona primero año y ciclo --</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-fila">
@@ -169,6 +176,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 var listaDeCiclos = <?= json_encode($listaCiclos) ?>;
 var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var anioEstudioActual = <?= json_encode($estudiante['anioEstudio'] ?? '') ?>;
+var idGrupoActual = <?= json_encode($estudiante['idGrupo'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivelNombre = $('#curso').val();
@@ -192,9 +200,31 @@ function poblarAnios() {
         }
     });
     if (anioEstudioActual) $select.val(anioEstudioActual);
+    poblarGrupos();
+}
+
+function poblarGrupos() {
+    var idCiclo = $('#idCiclo').val();
+    var anioEstudio = $('#anioEstudio').val();
+    var $select = $('#idGrupo').empty();
+    if (!idCiclo || !anioEstudio) {
+        $select.append($('<option>').val('').text('-- Selecciona primero año y ciclo --'));
+        return;
+    }
+    $select.append($('<option>').val('').text('-- Cargando grupos... --'));
+    $.getJSON('../../../api/v1/grupos.php', { idCiclo: idCiclo, anioEstudio: anioEstudio }, function(data) {
+        $select.empty().append($('<option>').val('').text('-- Sin grupo --'));
+        $.each(data, function(i, g) {
+            $select.append($('<option>').val(g.idGrupo).text(g.nombreGrupo));
+        });
+        if (idGrupoActual) {
+            $select.val(idGrupoActual);
+        }
+    });
 }
 
 $('#idCiclo').on('change', poblarAnios);
+$('#anioEstudio').on('change', poblarGrupos);
 
 $(function() {
     filtrarCiclos();

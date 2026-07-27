@@ -118,6 +118,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <option value="">-- Selecciona primero un ciclo --</option>
                     </select>
                 </div>
+
+                <div class="campo">
+                    <label for="idGrupo">Grupo / Aula</label>
+                    <select name="idGrupo" id="idGrupo">
+                        <option value="">-- Selecciona primero año y ciclo --</option>
+                    </select>
+                </div>
             </div>
 
             <div class="campo ancho-total">
@@ -137,6 +144,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 var todosCiclos = <?= json_encode($todosLosCiclos) ?>;
 var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? '') ?>;
+var idGrupoActual = <?= json_encode($datos['idGrupo'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();
@@ -158,6 +166,7 @@ function poblarAnios() {
     var $select = $('#anioEstudio').empty();
     if (!idCiclo) {
         $select.append($('<option>').val('').text('-- Selecciona primero un ciclo --'));
+        poblarGrupos();
         return;
     }
     $select.append($('<option>').val('').text('-- Sin especificar --'));
@@ -167,9 +176,31 @@ function poblarAnios() {
         }
     });
     if (anioEstudioActual) $select.val(anioEstudioActual);
+    poblarGrupos();
+}
+
+function poblarGrupos() {
+    var idCiclo = $('#idCiclo').val();
+    var anioEstudio = $('#anioEstudio').val();
+    var $select = $('#idGrupo').empty();
+    if (!idCiclo || !anioEstudio) {
+        $select.append($('<option>').val('').text('-- Selecciona primero año y ciclo --'));
+        return;
+    }
+    $select.append($('<option>').val('').text('-- Cargando grupos... --'));
+    $.getJSON('../../../api/v1/grupos.php', { idCiclo: idCiclo, anioEstudio: anioEstudio }, function(data) {
+        $select.empty().append($('<option>').val('').text('-- Sin grupo --'));
+        $.each(data, function(i, g) {
+            $select.append($('<option>').val(g.idGrupo).text(g.nombreGrupo));
+        });
+        if (idGrupoActual) {
+            $select.val(idGrupoActual);
+        }
+    });
 }
 
 $('#idCiclo').on('change', poblarAnios);
+$('#anioEstudio').on('change', poblarGrupos);
 
 $(function() {
     filtrarCiclos();

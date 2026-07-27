@@ -34,6 +34,7 @@ if (isset($_POST['actualizarEstudiante'])) {
     $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
     $anioEstudioPost  = trim($_POST['anioEstudio'] ?? '');
     $anioEstudio      = existeNombreCursoEnCiclo($idCiclo, $anioEstudioPost) && $anioEstudioPost !== '' ? $anioEstudioPost : null;
+    $idGrupo          = !empty($_POST['idGrupo']) ? (int)$_POST['idGrupo'] : null;
 
     if ($idEstudiante <= 0) {
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
@@ -63,7 +64,7 @@ if (isset($_POST['actualizarEstudiante'])) {
     }
 
     if (empty($errores)) {
-        if (actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio)) {
+        if (actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio, $idGrupo)) {
             registrarAccion('actualizar', 'estudiantes', $idEstudiante, $nombre);
             $_SESSION['exito'] = "La información del estudiante ha sido actualizada correctamente.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");

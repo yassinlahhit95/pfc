@@ -99,6 +99,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <div class="recurso-menu">
                                 <a class="recurso-menu-item" href="editar.php?id=<?= (int)$fct['idFCT'] ?>"><i class="fas fa-edit"></i> Editar / Calificar</a>
                                 <div class="recurso-menu-sep"></div>
+                                <a class="recurso-menu-item" href="diario.php?idFCT=<?= (int)$fct['idFCT'] ?>"><i class="fas fa-book"></i> Ver Diario de Actividades</a>
+                                <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
                                    data-id="<?= (int)$fct['idFCT'] ?>"

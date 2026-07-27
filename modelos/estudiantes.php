@@ -40,9 +40,10 @@ function descifrarFilaEstudiante(?array $fila): ?array {
 
 function listarEstudiantes() {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel, grupos.nombreGrupo
             FROM estudiantes
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
+            LEFT JOIN grupos ON estudiantes.idGrupo = grupos.idGrupo
             WHERE (estudiantes.eliminado = 0 OR estudiantes.eliminado IS NULL)
             ORDER BY estudiantes.idEstudiante ASC";
     $res = mysqli_query($con, $sql);
@@ -133,7 +134,7 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null) {
+function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null, $idGrupo = null) {
     $con = obtenerConexion();
     require_once __DIR__ . '/../include/credenciales.php';
     [$pass] = generarCredencialesTemporales($email, $nombre, 'Estudiante');
@@ -142,9 +143,9 @@ function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, 
     $dniC             = Crypto::encryptDeterministic($dni);
     $direccionC       = Crypto::encrypt($direccion);
     $observacionesC   = Crypto::encrypt($observaciones);
-    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso, anioEstudio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso, anioEstudio, idGrupo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssisss", $nombre, $email, $pass, $telefonoC, $fechaNacimientoC, $dniC, $fechaAlta, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idCiclo, $curso, $anioEstudio);
+    mysqli_stmt_bind_param($stmt, "ssssssssssisssi", $nombre, $email, $pass, $telefonoC, $fechaNacimientoC, $dniC, $fechaAlta, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idCiclo, $curso, $anioEstudio, $idGrupo);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -152,16 +153,16 @@ function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, 
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarEstudiante($id, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null) {
+function actualizarEstudiante($id, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null, $idGrupo = null) {
     $con = obtenerConexion();
     $telefonoC        = Crypto::encrypt($telefono);
     $fechaNacimientoC = Crypto::encrypt($fechaNacimiento);
     $dniC             = Crypto::encryptDeterministic($dni);
     $direccionC       = Crypto::encrypt($direccion);
     $observacionesC   = Crypto::encrypt($observaciones);
-    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=?, anioEstudio=? WHERE idEstudiante=?";
+    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=?, anioEstudio=?, idGrupo=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssissi", $nombre, $email, $telefonoC, $fechaNacimientoC, $dniC, $fechaAlta, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idCiclo, $curso, $anioEstudio, $id);
+    mysqli_stmt_bind_param($stmt, "ssssssssssissii", $nombre, $email, $telefonoC, $fechaNacimientoC, $dniC, $fechaAlta, $direccionC, $ciudad, $codigoPostal, $observacionesC, $idCiclo, $curso, $anioEstudio, $idGrupo, $id);
     return mysqli_stmt_execute($stmt);
 }
 
