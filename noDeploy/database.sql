@@ -1612,14 +1612,22 @@ INSERT INTO `recordatorios` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `notificaciones`
+-- Table structure for table `notificaciones_recordatorios`
+--
+-- NOTA: esta tabla es el log de envío/lectura de los recordatorios de eventos
+-- (creada junto a `eventos`/`recordatorios`). Se le dio nombre y PK propios
+-- y distintos de la tabla `notificaciones` genérica (campana de la navbar,
+-- ver modelos/notificaciones.php) para no colisionar con ella: un nombre
+-- duplicado aquí habría hecho que este segundo CREATE TABLE (más abajo en
+-- el dump, orden alfabético) pisara la estructura de esta tabla al importar
+-- el esquema completo. Ver regla de nombrado en CLAUDE.md ("Naming").
 --
 
-DROP TABLE IF EXISTS `notificaciones`;
+DROP TABLE IF EXISTS `notificaciones_recordatorios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `notificaciones` (
-  `idNotificacion` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `notificaciones_recordatorios` (
+  `idNotificacionRecordatorio` int NOT NULL AUTO_INCREMENT,
   `idEvento` int NOT NULL,
   `idUsuario` int NOT NULL,
   `tipoUsuario` enum('director','profesor','secretaria','estudiante','tutor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1629,23 +1637,23 @@ CREATE TABLE `notificaciones` (
   `leido` tinyint DEFAULT '0',
   `estado` enum('pendiente','enviado','fallido') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idNotificacion`),
-  KEY `idx_notif_usuario` (`idUsuario`),
-  KEY `idx_notif_evento` (`idEvento`),
-  KEY `idx_notif_programada` (`fecha_programada`),
-  KEY `idx_notif_recordatorio` (`idRecordatorio`),
-  CONSTRAINT `fk_notificaciones_evento` FOREIGN KEY (`idEvento`) REFERENCES `eventos` (`idEvento`) ON DELETE CASCADE,
-  CONSTRAINT `fk_notificaciones_recordatorio` FOREIGN KEY (`idRecordatorio`) REFERENCES `recordatorios` (`idRecordatorio`) ON DELETE SET NULL
+  PRIMARY KEY (`idNotificacionRecordatorio`),
+  KEY `idx_notifrec_usuario` (`idUsuario`),
+  KEY `idx_notifrec_evento` (`idEvento`),
+  KEY `idx_notifrec_programada` (`fecha_programada`),
+  KEY `idx_notifrec_recordatorio` (`idRecordatorio`),
+  CONSTRAINT `fk_notifrec_evento` FOREIGN KEY (`idEvento`) REFERENCES `eventos` (`idEvento`) ON DELETE CASCADE,
+  CONSTRAINT `fk_notifrec_recordatorio` FOREIGN KEY (`idRecordatorio`) REFERENCES `recordatorios` (`idRecordatorio`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `notificaciones`
+-- Dumping data for table `notificaciones_recordatorios`
 --
 
-LOCK TABLES `notificaciones` WRITE;
-/*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
+LOCK TABLES `notificaciones_recordatorios` WRITE;
+/*!40000 ALTER TABLE `notificaciones_recordatorios` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notificaciones_recordatorios` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
