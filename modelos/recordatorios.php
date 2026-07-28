@@ -28,12 +28,15 @@ function crearRecordatoriosDefecto(int $idEvento): bool {
         error_log("Error al preparar crearRecordatoriosDefecto: " . mysqli_error($con));
         return false;
     }
+    $tipo1 = '24h_antes'; $min1 = 1440;
+    $tipo2 = '1h_antes';  $min2 = 60;
+    $tipo3 = 'en_inicio'; $min3 = 0;
     mysqli_stmt_bind_param(
         $stmt,
         "isiisiisi",
-        $idEvento, $tipo1 = '24h_antes', $min1 = 1440,
-        $idEvento, $tipo2 = '1h_antes',  $min2 = 60,
-        $idEvento, $tipo3 = 'en_inicio', $min3 = 0
+        $idEvento, $tipo1, $min1,
+        $idEvento, $tipo2, $min2,
+        $idEvento, $tipo3, $min3
     );
     $ok = mysqli_stmt_execute($stmt);
     if (!$ok) {
