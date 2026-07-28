@@ -3,4 +3,4 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requireJson('feature_eventos');
 $rolBase = 'admin';
-require __DIR__ . '/../../comunes/eventos/borrar_impl.php';
+require __DIR__ . '/../../comunes/eventos/crear_impl.php';
