@@ -51,10 +51,13 @@ const FEATURE_FILES = [
   ['public/css/features/login.css', 'css'],
   ['public/css/features/legal.css', 'css'],
   ['public/css/features/chat.css', 'css'],
+  ['public/css/features/calendario.css', 'css'],
   ['public/js/features/chat.js', 'js'],
   ['public/js/features/chat-widget.js', 'js'],
   ['public/js/features/mensajes.js', 'js'],
   ['public/js/features/horario.js', 'js'],
+  ['public/js/features/calendario.js', 'js'],
+  ['public/js/core/notificaciones-dashboard.js', 'js'],
 ];
 
 function bundle(files, outFile, loader) {

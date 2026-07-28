@@ -1,0 +1,223 @@
+// Calendario de actividades (admin + secretaría) — modal de crear/editar
+// evento sobre vistas/comunes/eventos/_gestionEventos.php. Contratos AJAX:
+//   POST /controladores/{admin|secretaria}/eventos/crear.php
+//   POST /controladores/{admin|secretaria}/eventos/editar.php
+//   GET  /controladores/comunes/eventos/obtener.php?id=N
+// (ver controladores/comunes/eventos/{crear,editar}_impl.php y obtener.php).
+// El borrado usa data-modal-borrar (core/modal-borrar.js), no este fichero.
+(function ($) {
+    var $modal, $titulo, $id, $csrf, $rolBaseHolder, $guardar;
+
+    function resolveAppPath(relPath) {
+        if (window.AulaProResolveAppPath) return window.AulaProResolveAppPath(relPath);
+        return relPath;
+    }
+
+    function rolBase() {
+        return $modal.data('rol-base') || 'admin';
+    }
+
+    function actualizarAudiencePicker(tipo) {
+        $('#ev-audiencia-roles').toggle(tipo === 'roles');
+        $('#ev-audiencia-personalizado').toggle(tipo === 'personalizado');
+    }
+
+    function construirAudienciaJson(tipo) {
+        if (tipo === 'roles') {
+            var roles = [];
+            $('input[name="ev-rol"]:checked').each(function () { roles.push($(this).val()); });
+            return JSON.stringify({ roles: roles });
+        }
+        if (tipo === 'personalizado') {
+            var usuarios = [];
+            ($('#ev-personalizado').val() || '').split(',').forEach(function (par) {
+                par = par.trim();
+                if (!par || par.indexOf(':') === -1) return;
+                var partes = par.split(':');
+                var tipoU = (partes[0] || '').trim();
+                var id = parseInt(partes[1], 10);
+                if (tipoU && !isNaN(id)) usuarios.push({ id: id, tipo: tipoU });
+            });
+            return JSON.stringify({ usuarios_custom: usuarios });
+        }
+        return '';
+    }
+
+    function poblarAudiencePicker(tipoVisibilidad, audienciaJson) {
+        $('input[name="ev-rol"]').prop('checked', false);
+        $('#ev-personalizado').val('');
+
+        var datos = {};
+        if (audienciaJson) {
+            try { datos = JSON.parse(audienciaJson) || {}; } catch (e) { datos = {}; }
+        }
+        if (tipoVisibilidad === 'roles' && Array.isArray(datos.roles)) {
+            datos.roles.forEach(function (rol) {
+                $('input[name="ev-rol"][value="' + rol + '"]').prop('checked', true);
+            });
+        }
+        if (tipoVisibilidad === 'personalizado' && Array.isArray(datos.usuarios_custom)) {
+            $('#ev-personalizado').val(datos.usuarios_custom.map(function (u) {
+                return u.tipo + ':' + u.id;
+            }).join(', '));
+        }
+        actualizarAudiencePicker(tipoVisibilidad);
+    }
+
+    function resetearForm() {
+        $id.val('');
+        $('#ev-titulo').val('');
+        $('#ev-descripcion').val('');
+        $('#ev-fecha').val(new Date().toISOString().slice(0, 10));
+        $('#ev-hora').val('10:00');
+        $('#ev-ubicacion').val('');
+        $('input[name="ev-visibilidad"][value="publica"]').prop('checked', true);
+        $('input[name="ev-rol"]').prop('checked', false);
+        $('#ev-personalizado').val('');
+        $('input[name="ev-recordatorio"]').prop('checked', false);
+        $('input[name="ev-recordatorio"][value="24h_antes"]').prop('checked', true);
+        actualizarAudiencePicker('publica');
+        $('#ev-titulo-error, #ev-fecha-error').hide().text('');
+    }
+
+    function abrirModal() {
+        $modal.removeClass('modal-cerrando').addClass('modal-abierto');
+    }
+
+    function cerrarModal() {
+        $modal.addClass('modal-cerrando');
+        setTimeout(function () { $modal.removeClass('modal-abierto modal-cerrando'); }, 180);
+    }
+
+    function abrirModalEvento(idEvento) {
+        resetearForm();
+        if (idEvento) {
+            $titulo.text('Editar Evento');
+            editarEvento(idEvento);
+        } else {
+            $titulo.text('Crear Evento');
+            abrirModal();
+        }
+    }
+
+    function editarEvento(idEvento) {
+        $.ajax({
+            url: resolveAppPath('controladores/comunes/eventos/obtener.php') + '?id=' + encodeURIComponent(idEvento),
+            type: 'GET',
+            dataType: 'json',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).done(function (res) {
+            if (!res || !res.ok || !res.evento) {
+                if (window.Toast) Toast.show((res && res.msg) || 'No se pudo cargar el evento', 'error');
+                return;
+            }
+            var e = res.evento;
+            $id.val(e.idEvento);
+            $('#ev-titulo').val(e.tituloEvento || '');
+            $('#ev-descripcion').val(e.descripcionEvento || '');
+            $('#ev-fecha').val((e.fechaEvento || '').slice(0, 10));
+            $('#ev-hora').val((e.horaEvento || '10:00:00').slice(0, 5));
+            $('#ev-ubicacion').val(e.ubicacionEvento || '');
+
+            var tipoVisibilidad = e.tipo_visibilidad || 'publica';
+            $('input[name="ev-visibilidad"][value="' + tipoVisibilidad + '"]').prop('checked', true);
+            poblarAudiencePicker(tipoVisibilidad, e.audiencia_json);
+
+            $('input[name="ev-recordatorio"]').prop('checked', false);
+            (res.recordatorios || []).forEach(function (r) {
+                if (parseInt(r.activo, 10) === 1) {
+                    $('input[name="ev-recordatorio"][value="' + r.tipo_recordatorio + '"]').prop('checked', true);
+                }
+            });
+
+            abrirModal();
+        }).fail(function () {
+            if (window.Toast) Toast.show('Error de conexión al cargar el evento', 'error');
+        });
+    }
+
+    function guardarEvento() {
+        var idEvento = $id.val();
+        var tipoVisibilidad = $('input[name="ev-visibilidad"]:checked').val() || 'publica';
+        var recordatorios = [];
+        $('input[name="ev-recordatorio"]:checked').each(function () { recordatorios.push($(this).val()); });
+
+        var titulo = $('#ev-titulo').val().trim();
+        var fecha = $('#ev-fecha').val();
+        $('#ev-titulo-error, #ev-fecha-error').hide().text('');
+        var invalido = false;
+        if (!titulo) { $('#ev-titulo-error').text('El título es obligatorio.').show(); invalido = true; }
+        if (!fecha) { $('#ev-fecha-error').text('La fecha es obligatoria.').show(); invalido = true; }
+        if (invalido) return;
+
+        var payload = {
+            csrf_token: $csrf.val(),
+            tituloEvento: titulo,
+            descripcionEvento: $('#ev-descripcion').val().trim(),
+            fechaEvento: fecha,
+            horaEvento: $('#ev-hora').val() || '10:00',
+            ubicacionEvento: $('#ev-ubicacion').val().trim(),
+            tipo_visibilidad: tipoVisibilidad,
+            audiencia_json: construirAudienciaJson(tipoVisibilidad),
+            recordatorios: recordatorios
+        };
+        if (idEvento) payload.idEvento = idEvento;
+
+        var url = resolveAppPath('controladores/' + rolBase() + '/eventos/' + (idEvento ? 'editar.php' : 'crear.php'));
+
+        $guardar.prop('disabled', true).addClass('cargando');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: payload,
+            dataType: 'json',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).done(function (res) {
+            $guardar.prop('disabled', false).removeClass('cargando');
+            if (res && res.ok) {
+                if (window.Toast) Toast.show(res.msg || 'Evento guardado', 'success');
+                cerrarModal();
+                setTimeout(function () { location.reload(); }, 600);
+            } else {
+                if (window.Toast) Toast.show((res && res.msg) || 'Error al guardar el evento', 'error');
+            }
+        }).fail(function (jqXHR) {
+            $guardar.prop('disabled', false).removeClass('cargando');
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
+            if (window.Toast) Toast.show('Error de conexión al guardar', 'error');
+        });
+    }
+
+    function inicializarCalendario() {
+        $modal = $('#modal-evento');
+        if (!$modal.length) return;
+        $titulo = $('#modal-evento-titulo');
+        $id = $('#ev-id');
+        $csrf = $('#ev-csrf');
+        $guardar = $('#modal-evento-guardar');
+
+        $(document).on('click', '[data-nuevo-evento]', function (e) {
+            e.preventDefault();
+            abrirModalEvento(null);
+        });
+        $(document).on('click', '[data-editar-evento]', function (e) {
+            e.preventDefault();
+            abrirModalEvento($(this).data('id'));
+        });
+        $('#modal-evento-cancelar').on('click', cerrarModal);
+        $modal.on('click', function (e) { if ($(e.target).is($modal)) cerrarModal(); });
+        $(document).on('keydown', function (e) {
+            if (e.key === 'Escape' && $modal.hasClass('modal-abierto')) cerrarModal();
+        });
+        $('input[name="ev-visibilidad"]').on('change', function () { actualizarAudiencePicker(this.value); });
+        $('#form-evento').on('submit', function (e) { e.preventDefault(); guardarEvento(); });
+    }
+
+    window.abrirModalEvento = abrirModalEvento;
+    window.editarEvento = editarEvento;
+    window.guardarEvento = guardarEvento;
+    window.actualizarAudiencePicker = actualizarAudiencePicker;
+    window.inicializarCalendario = inicializarCalendario;
+
+    $(document).ready(inicializarCalendario);
+}(jQuery));
