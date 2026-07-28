@@ -1,0 +1,94 @@
+/* Calendario de actividades — modal crear/editar evento (admin + secretaría).
+   Reutiliza .modal-backdrop/.modal-caja/.formulario/.campo/.modal-acciones de
+   estilo.css (sección 20 MODAL); aquí solo lo específico del formulario de
+   eventos: ancho del modal, grupos de radios/checkboxes y el widget del
+   dashboard de recordatorios. */
+
+.modal-caja-evento {
+  max-width: 620px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.grupo-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.opcion-radio,
+.opcion-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.opcion-radio input,
+.opcion-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .modal-caja-evento { max-width: calc(100% - 24px); }
+}
+
+/* ── Widget de recordatorios en el dashboard ─────────────────────────── */
+
+.recordatorios-widget-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recordatorio-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.recordatorio-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.recordatorio-item-titulo {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recordatorio-item-fecha {
+  font-size: 0.8rem;
+  color: var(--dim);
+}
+
+.recordatorio-item-marcar {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.recordatorio-item-marcar:hover {
+  text-decoration: underline;
+}
