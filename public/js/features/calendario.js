@@ -188,6 +188,135 @@
         });
     }
 
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function renderizarCalendarioMensual(año, mes, eventosDelMes) {
+        var fecha = new Date(año, mes, 1);
+        var diasEnMes = new Date(año, mes + 1, 0).getDate();
+        var primerDia = fecha.getDay();
+        var eventoPorFecha = {};
+
+        eventosDelMes = eventosDelMes || [];
+        eventosDelMes.forEach(function (evt) {
+            var fechaStr = (evt.fechaEvento || '').slice(0, 10);
+            if (!eventoPorFecha[fechaStr]) eventoPorFecha[fechaStr] = [];
+            eventoPorFecha[fechaStr].push(evt);
+        });
+
+        var html = '';
+        var diaActual = 1;
+        var semana = 0;
+
+        for (semana = 0; semana < 6; semana++) {
+            html += '<div class="cal-semana">';
+            for (var diaSem = 0; diaSem < 7; diaSem++) {
+                var esEncabezado = semana === 0;
+                var dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+                if (esEncabezado) {
+                    html += '<div class="cal-dia-encabezado">' + dias[diaSem] + '</div>';
+                } else {
+                    var esDelMes = (semana > 0 || diaSem >= primerDia) && diaActual <= diasEnMes;
+                    if (semana === 0 && diaSem < primerDia) {
+                        html += '<div class="cal-dia cal-dia-otra"></div>';
+                    } else if (esDelMes) {
+                        var fechaStr = año + '-' + String(mes + 1).padStart(2, '0') + '-' + String(diaActual).padStart(2, '0');
+                        var eventosHoy = eventoPorFecha[fechaStr] || [];
+                        var claseExtra = eventosHoy.length > 0 ? 'cal-dia-con-eventos' : '';
+                        html += '<div class="cal-dia ' + claseExtra + '" data-fecha="' + fechaStr + '">' +
+                                '<div class="cal-dia-num">' + diaActual + '</div>';
+                        if (eventosHoy.length > 0) {
+                            html += '<div class="cal-dia-eventos">';
+                            eventosHoy.slice(0, 2).forEach(function (evt) {
+                                var titulo = (evt.tituloEvento || '').substring(0, 20);
+                                html += '<div class="cal-evento-mini" data-editar-evento data-id="' + evt.idEvento + '">' +
+                                        escapeHtml(titulo) + '</div>';
+                            });
+                            if (eventosHoy.length > 2) {
+                                html += '<div class="cal-evento-mini cal-evento-mas">+' + (eventosHoy.length - 2) + '</div>';
+                            }
+                            html += '</div>';
+                        }
+                        html += '</div>';
+                        diaActual++;
+                    } else {
+                        html += '<div class="cal-dia cal-dia-otra"></div>';
+                    }
+                }
+            }
+            html += '</div>';
+            if (diaActual > diasEnMes) break;
+        }
+        return html;
+    }
+
+    function actualizarCalendarioMensual(año, mes) {
+        var $widget = $('#cal-widget-mensual');
+        if (!$widget.length) return;
+
+        var start = año + '-' + String(mes + 1).padStart(2, '0') + '-01';
+        var end = new Date(año, mes + 1, 0);
+        var endStr = end.getFullYear() + '-' + String(end.getMonth() + 1).padStart(2, '0') + '-' + String(end.getDate()).padStart(2, '0');
+
+        $.ajax({
+            url: resolveAppPath('controladores/comunes/eventos/listar.php') + '?start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(endStr),
+            type: 'GET',
+            dataType: 'json',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).done(function (res) {
+            if (res && res.ok && Array.isArray(res.eventos)) {
+                var html = renderizarCalendarioMensual(año, mes, res.eventos);
+                $widget.find('.cal-mes').html(html);
+                $widget.find('.cal-mes-titulo').text(
+                    new Date(año, mes).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+                );
+            }
+        });
+    }
+
+    function inicializarCalendarioMensual() {
+        var $widget = $('#cal-widget-mensual');
+        if (!$widget.length) return;
+
+        var hoy = new Date();
+        var mesActual = hoy.getMonth();
+        var añoActual = hoy.getFullYear();
+
+        var $prevBtn = $widget.find('[data-cal-prev]');
+        var $nextBtn = $widget.find('[data-cal-next]');
+        var $crearBtn = $widget.find('[data-nuevo-evento]');
+
+        $prevBtn.on('click', function (e) {
+            e.preventDefault();
+            mesActual--;
+            if (mesActual < 0) { mesActual = 11; añoActual--; }
+            actualizarCalendarioMensual(añoActual, mesActual);
+        });
+
+        $nextBtn.on('click', function (e) {
+            e.preventDefault();
+            mesActual++;
+            if (mesActual > 11) { mesActual = 0; añoActual++; }
+            actualizarCalendarioMensual(añoActual, mesActual);
+        });
+
+        $widget.on('click', '.cal-dia[data-fecha]', function (e) {
+            if (!$(e.target).closest('[data-editar-evento]').length) {
+                var fecha = $(this).data('fecha');
+                resetearForm();
+                $('#ev-fecha').val(fecha);
+                $titulo.text('Crear Evento');
+                abrirModal();
+            }
+        });
+
+        actualizarCalendarioMensual(añoActual, mesActual);
+    }
+
     function inicializarCalendario() {
         $modal = $('#modal-evento');
         if (!$modal.length) return;
@@ -211,6 +340,8 @@
         });
         $('input[name="ev-visibilidad"]').on('change', function () { actualizarAudiencePicker(this.value); });
         $('#form-evento').on('submit', function (e) { e.preventDefault(); guardarEvento(); });
+
+        inicializarCalendarioMensual();
     }
 
     window.abrirModalEvento = abrirModalEvento;
@@ -218,6 +349,7 @@
     window.guardarEvento = guardarEvento;
     window.actualizarAudiencePicker = actualizarAudiencePicker;
     window.inicializarCalendario = inicializarCalendario;
+    window.actualizarCalendarioMensual = actualizarCalendarioMensual;
 
     $(document).ready(inicializarCalendario);
 }(jQuery));

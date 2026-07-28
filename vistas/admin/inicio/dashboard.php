@@ -411,6 +411,12 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 
 </section>
 
+<!-- Calendar widget -->
+<?php include __DIR__ . '/../../comunes/eventos/_calendario_widget.php'; ?>
+
+<!-- Modal evento (para calendar widget CRUD) -->
+<?php $rolBase = 'admin'; include __DIR__ . '/../../comunes/eventos/_modal_evento.php'; ?>
+
 <!-- Announcements + Events panels -->
 <div class="dash-panels">
   <div class="dash-panel">
@@ -487,55 +493,6 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       </div>
     </div>
   </div>
-
-  <!-- Panel: Estudiantes con Pagos Pendientes -->
-  <div class="dash-panel" style="grid-column: 1 / -1;">
-    <div class="dash-panel-head">
-      <h3>Estudiantes con Pagos Pendientes</h3>
-      <a href="../pagos/verPagosGeneral.php">Ir a Pagos</a>
-    </div>
-    <div class="dash-panel-body" style="padding:0; overflow-x:auto;">
-      <?php if (!empty($estudiantesPendientes)) { ?>
-        <table style="width:100%; border-collapse:collapse; font-size:0.92rem;">
-          <thead>
-            <tr style="background:var(--surface-2, #f1f5f9); text-align:left;">
-              <th style="padding:10px 14px;">Estudiante</th>
-              <th style="padding:10px 14px;">Ciclo</th>
-              <th style="padding:10px 14px;">Pagado</th>
-              <th style="padding:10px 14px;">Deuda</th>
-              <th style="padding:10px 14px;">Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            $contadorPagos = 0;
-            foreach ($estudiantesPendientes as $estudiantePendiente) {
-              if ($contadorPagos >= 8) break;
-            ?>
-              <tr style="border-bottom:1px solid var(--border, #e2e8f0);">
-                <td style="padding:10px 14px; font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante']) ?></td>
-                <td style="padding:10px 14px;"><span class="ann-item-tag"><?= Security::escapeHtml($estudiantePendiente['nombreCiclo']) ?></span></td>
-                <td style="padding:10px 14px; color:var(--verde, #16a34a);"><?= number_format($estudiantePendiente['totalPagado'], 2) ?> €</td>
-                <td style="padding:10px 14px; color:var(--rojo, #dc2626); font-weight:600;"><?= number_format($estudiantePendiente['deuda'], 2) ?> €</td>
-                <td style="padding:10px 14px;">
-                  <a href="../pagos/agregarPagos.php?idEstudiante=<?= $estudiantePendiente['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
-                </td>
-              </tr>
-            <?php
-            $contadorPagos++;
-            } ?>
-          </tbody>
-        </table>
-        <?php if (count($estudiantesPendientes) > 8) { ?>
-          <p style="padding:10px 14px; text-align:center; font-size:0.85rem; color:var(--dim);">
-            Mostrando 8 de <?= count($estudiantesPendientes) ?> estudiantes. <a href="../pagos/verPagosGeneral.php">Ver todos →</a>
-          </p>
-        <?php } ?>
-      <?php } else { ?>
-        <p class="empty-state" style="padding:20px; text-align:center;"><i class="fas fa-circle-check" style="color:var(--verde);"></i> No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
-      <?php } ?>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -563,4 +520,5 @@ if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matche
 </script>
 
 <script src="<?= AssetMin::url(__DIR__, '../../../public/js/core/notificaciones-dashboard.js') ?>"></script>
+<script src="<?= AssetMin::url(__DIR__, '../../../public/js/features/calendario.js') ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
