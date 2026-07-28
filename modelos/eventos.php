@@ -22,19 +22,49 @@ function listarTodosLosEventos() {
     return $lista;
 }
 
-function listarEventosProximos() {
-    $con = obtenerConexion();
-    $hoy = date('Y-m-d');
-    $sql = "SELECT * FROM eventos WHERE fechaEvento >= ? ORDER BY fechaEvento ASC, horaEvento ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $hoy);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+// Rol y id del usuario de la sesión actual, como [idUsuario, tipoUsuario].
+// El tipo usa los mismos literales que audiencia_json.roles / tipoUsuario de
+// notificaciones_recordatorios. Devuelve [0, ''] si no hay ninguna sesión.
+function eventosUsuarioSesion(): array {
+    $roles = [
+        'director'   => $_SESSION['idAdmin']      ?? null,
+        'profesor'   => $_SESSION['idProfesor']   ?? null,
+        'secretaria' => $_SESSION['idSecretaria'] ?? null,
+        'estudiante' => $_SESSION['idEstudiante'] ?? null,
+        'tutor'      => $_SESSION['idTutor']      ?? null,
+    ];
+    foreach ($roles as $tipo => $id) {
+        if (!empty($id)) return [(int)$id, $tipo];
     }
-    return $lista;
+    return [0, ''];
+}
+
+// Eventos de hoy en adelante visibles para el usuario dado. Sin argumentos usa
+// el usuario de la sesión actual, que es como la llaman los dashboards y las
+// listas de eventos de cada rol. Filtra baja lógica y audiencia — no devolver
+// aquí un evento soft-borrado o dirigido a otro rol es el objetivo entero de
+// la función, no la llames sin saber a quién representas.
+function listarEventosProximos(?int $idUsuario = null, ?string $tipoUsuario = null) {
+    if ($idUsuario === null) {
+        [$idUsuario, $tipoUsuario] = eventosUsuarioSesion();
+    }
+    $hoy = date('Y-m-d');
+
+    // El director/admin gestiona el calendario entero: ve también los eventos
+    // de audiencia restringida y los privados de otros.
+    if ($tipoUsuario === 'director') {
+        $con = obtenerConexion();
+        $sql = "SELECT * FROM eventos WHERE activo = 1 AND fechaEvento >= ? ORDER BY fechaEvento ASC, horaEvento ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $hoy);
+        mysqli_stmt_execute($stmt);
+        $lista = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+        mysqli_stmt_close($stmt);
+        return $lista;
+    }
+
+    if (!$idUsuario || !$tipoUsuario) return [];
+    return obtenerEventosParaUsuario($idUsuario, $tipoUsuario, $hoy);
 }
 
 function obtenerEventoPorId($idEvento) {
@@ -92,6 +122,21 @@ function eliminarEvento($idEvento) {
 // CRUD CON RECORDATORIOS (calendario + avisos)
 // ══════════════════════════════════════════════════════════════════════
 
+// Deja audiencia_json listo para la columna JSON: array -> JSON, y cadena vacía
+// -> NULL. Las visibilidades 'publica'/'privada' no tienen audiencia y el modal
+// del calendario envía '' para ellas; '' no es un documento JSON válido y MySQL
+// rechaza el INSERT entero ("Invalid JSON text"), así que hay que normalizarlo
+// aquí y no en cada llamador.
+function normalizarAudienciaJson($audiencia): ?string {
+    if (is_array($audiencia)) {
+        $audiencia = json_encode($audiencia);
+    }
+    if ($audiencia === '' || $audiencia === false) {
+        return null;
+    }
+    return $audiencia;
+}
+
 // Crea un evento y sincroniza sus recordatorios. $data admite:
 // tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento,
 // idCreador, tipo_visibilidad, audiencia_json (string JSON o array),
@@ -115,10 +160,7 @@ function crearEvento(array $data) {
     $ubicacion   = $data['ubicacionEvento'] ?? null;
     $idCreador   = (int)($data['idCreador'] ?? 0);
 
-    $audiencia = $data['audiencia_json'] ?? null;
-    if (is_array($audiencia)) {
-        $audiencia = json_encode($audiencia);
-    }
+    $audiencia = normalizarAudienciaJson($data['audiencia_json'] ?? null);
 
     $con = obtenerConexion();
     $sql = "INSERT INTO eventos
@@ -173,10 +215,7 @@ function editarEvento($idEvento, array $data): bool {
         }
     }
     if (array_key_exists('audiencia_json', $data)) {
-        $audiencia = $data['audiencia_json'];
-        if (is_array($audiencia)) {
-            $audiencia = json_encode($audiencia);
-        }
+        $audiencia = normalizarAudienciaJson($data['audiencia_json']);
         $sets[]    = "audiencia_json = ?";
         $tipos    .= 's';
         $valores[] = $audiencia;
@@ -236,6 +275,12 @@ function obtenerEventosParaUsuario(int $idUsuario, string $tipoUsuario, ?string 
     $con = obtenerConexion();
 
     $rolJson = json_encode($tipoUsuario); // p.ej. "profesor" -> '"profesor"'
+    // usuarios_custom es un array de objetos [{"id":5,"tipo":"profesor"}, ...],
+    // así que el candidato de JSON_CONTAINS tiene que ser ese mismo objeto y no
+    // el id suelto (comparar solo el id nunca casa contra un array de objetos, y
+    // además confundiría al profesor 5 con el estudiante 5). El orden de las
+    // claves da igual: JSON_CONTAINS compara objetos por clave, no por posición.
+    $usuarioJson = json_encode(['id' => $idUsuario, 'tipo' => $tipoUsuario]);
 
     $sql = "SELECT * FROM eventos
             WHERE activo = 1
@@ -244,11 +289,11 @@ function obtenerEventosParaUsuario(int $idUsuario, string $tipoUsuario, ?string 
                  OR (tipo_visibilidad = 'roles' AND JSON_CONTAINS(audiencia_json, ?, '$.roles'))
                  OR (tipo_visibilidad = 'personalizado' AND JSON_CONTAINS(audiencia_json, ?, '$.usuarios_custom'))
               )";
-    // idUsuario se envía como string: JSON_CONTAINS necesita un literal JSON
-    // válido en su 2º argumento y el protocolo binario de mysqli con tipo 'i'
-    // no lo tipa como tal (MySQL responde "Invalid data type for JSON data").
+    // Ambos van como string: JSON_CONTAINS necesita un literal JSON válido en su
+    // 2º argumento y el protocolo binario de mysqli con tipo 'i' no lo tipa como
+    // tal (MySQL responde "Invalid data type for JSON data").
     $tipos   = 'ss';
-    $valores = [$rolJson, (string)$idUsuario];
+    $valores = [$rolJson, $usuarioJson];
 
     if ($fechaInicio !== null) {
         $sql      .= " AND fechaEvento >= ?";
@@ -260,7 +305,7 @@ function obtenerEventosParaUsuario(int $idUsuario, string $tipoUsuario, ?string 
         $tipos    .= 's';
         $valores[] = $fechaFin;
     }
-    $sql .= " ORDER BY fechaEvento DESC";
+    $sql .= " ORDER BY fechaEvento ASC, horaEvento ASC";
 
     $stmt = mysqli_prepare($con, $sql);
     if (!$stmt) {

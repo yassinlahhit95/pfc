@@ -12,8 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     v1Error('Method not allowed.', 405, 'method_not_allowed');
 }
 
-v1Auth(); // any authenticated user can see events
+$usuario = v1Auth(); // any authenticated user can see events
 v1RequireFeature('feature_eventos');
+
+require_once __DIR__ . '/../../modelos/eventos.php';
 
 $limit  = min(max((int)($_GET['limit']  ?? 20), 1), 100);
 $offset = max((int)($_GET['offset'] ?? 0), 0);
@@ -24,40 +26,33 @@ $to   = $_GET['to']   ?? null;
 // Validate date format to prevent injection via named params
 if ($from && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) $from = null;
 if ($to   && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $to))   $to   = null;
-
-$con = obtenerConexion();
-
-$where  = [];
-$params = [];
-$types  = '';
-
 if ($upcoming) {
-    $where[] = 'fechaEvento >= CURDATE()';
-}
-if ($from) {
-    $where[] = 'fechaEvento >= ?';
-    $params[] = $from;
-    $types   .= 's';
-}
-if ($to) {
-    $where[] = 'fechaEvento <= ?';
-    $params[] = $to;
-    $types   .= 's';
+    $hoy  = date('Y-m-d');
+    $from = ($from && $from > $hoy) ? $from : $hoy;
 }
 
-$sql = 'SELECT idEvento, tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento
-        FROM eventos';
-if ($where) $sql .= ' WHERE ' . implode(' AND ', $where);
-$sql .= ' ORDER BY fechaEvento ASC, horaEvento ASC LIMIT ? OFFSET ?';
-$params[] = $limit;
-$params[] = $offset;
-$types   .= 'ii';
-
-$st = mysqli_prepare($con, $sql);
-if ($params) {
-    mysqli_stmt_bind_param($st, $types, ...$params);
+// Misma regla de visibilidad que la web: el director gestiona el calendario
+// entero, el resto de roles solo ve lo que le corresponde según
+// tipo_visibilidad/audiencia_json. Antes esto consultaba `eventos` a pelo, sin
+// filtro de audiencia ni de baja lógica.
+if ($usuario['user_type'] === 'director') {
+    $rows = listarTodosEventos(['solo_activos' => true]);
+    if ($from) $rows = array_filter($rows, fn($e) => $e['fechaEvento'] >= $from);
+    if ($to)   $rows = array_filter($rows, fn($e) => $e['fechaEvento'] <= $to);
+    usort($rows, fn($a, $b) => [$a['fechaEvento'], $a['horaEvento']] <=> [$b['fechaEvento'], $b['horaEvento']]);
+} else {
+    $rows = obtenerEventosParaUsuario((int)$usuario['user_id'], $usuario['user_type'], $from, $to);
 }
-mysqli_stmt_execute($st);
-$rows = mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC);
+
+// Solo los campos públicos del evento: audiencia_json/idCreador revelan a quién
+// más va dirigido y no tienen por qué salir del servidor.
+$rows = array_map(fn($e) => [
+    'idEvento'          => (int)$e['idEvento'],
+    'tituloEvento'      => $e['tituloEvento'],
+    'descripcionEvento' => $e['descripcionEvento'],
+    'fechaEvento'       => $e['fechaEvento'],
+    'horaEvento'        => $e['horaEvento'],
+    'ubicacionEvento'   => $e['ubicacionEvento'],
+], array_slice(array_values($rows), $offset, $limit));
 
 v1Ok(['events' => $rows, 'limit' => $limit, 'offset' => $offset]);

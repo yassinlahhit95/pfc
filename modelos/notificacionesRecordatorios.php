@@ -53,6 +53,9 @@ function obtenerAudienciaEvento(array $evento): array {
 
     if ($tipoVisibilidad === 'roles') {
         // Solo los roles listados en audiencia_json.roles (JSON_CONTAINS sobre el array).
+        // Baja lógica: solo `secretarias` (activoSecretaria) y `estudiantes`
+        // (deleted_at) la tienen. `directores`, `profesores` y `tutores` no
+        // tienen ninguna columna de baja — no añadir un filtro inventado ahí.
         $sql = "SELECT idDirector AS id, 'director' AS tipo FROM directores
                     WHERE JSON_CONTAINS(?, '\"director\"', '$.roles')
                 UNION ALL
@@ -60,14 +63,20 @@ function obtenerAudienciaEvento(array $evento): array {
                     WHERE JSON_CONTAINS(?, '\"profesor\"', '$.roles')
                 UNION ALL
                 SELECT idSecretaria, 'secretaria' FROM secretarias
-                    WHERE activoSecretaria = 1 AND JSON_CONTAINS(?, '\"secretaria\"', '$.roles')";
+                    WHERE activoSecretaria = 1 AND JSON_CONTAINS(?, '\"secretaria\"', '$.roles')
+                UNION ALL
+                SELECT idEstudiante, 'estudiante' FROM estudiantes
+                    WHERE deleted_at IS NULL AND JSON_CONTAINS(?, '\"estudiante\"', '$.roles')
+                UNION ALL
+                SELECT idTutor, 'tutor' FROM tutores
+                    WHERE JSON_CONTAINS(?, '\"tutor\"', '$.roles')";
         $stmt = mysqli_prepare($con, $sql);
         if (!$stmt) {
             error_log("Error al preparar obtenerAudienciaEvento (roles): " . mysqli_error($con));
             return [];
         }
         $json = $audienciaJson ?: '{}';
-        mysqli_stmt_bind_param($stmt, "sss", $json, $json, $json);
+        mysqli_stmt_bind_param($stmt, "sssss", $json, $json, $json, $json, $json);
         mysqli_stmt_execute($stmt);
         $lista = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
         mysqli_stmt_close($stmt);
