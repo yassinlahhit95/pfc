@@ -18,10 +18,16 @@ import '../../grades/presentation/grades_screen.dart';
 import '../../inventory/presentation/inventory_screen.dart';
 import '../../payments/presentation/payments_screen.dart';
 import '../../payments/presentation/my_payments_screen.dart';
+import '../../payments/presentation/pagos_proximos_screen.dart';
 import '../../messages/presentation/messages_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
 import '../../schedule/presentation/schedule_screen.dart';
+import '../../students/presentation/students_screen.dart';
+import '../../teachers/presentation/teachers_screen.dart';
+import '../../tareas/presentation/tareas_screen.dart';
+import '../../retos/presentation/retos_screen.dart';
+import '../../gastos/presentation/gastos_screen.dart';
 
 class _NavItem {
   const _NavItem(this.icon, this.label, this.subtitle, this.screen);
@@ -61,11 +67,12 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    // ponytail: watch role once, derive everything else from it to reduce rebuild surface
+    final role = ref.watch(sessionControllerProvider.select((s) => s.valueOrNull?.role));
     final profileAsync = ref.watch(profileProvider);
 
     final personal = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
-    final hasClassroom = role != UserRole.tutor && role != UserRole.director;
+    final hasClassroom = role != UserRole.tutor && role != UserRole.director && role != UserRole.secretaria;
     final hasAttendance = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
     final isTutorTeacher = role == UserRole.profesor &&
         (profileAsync.valueOrNull?.data['esTutor'] == 1 ||
@@ -77,7 +84,9 @@ class HomeScreen extends ConsumerWidget {
     final academico = <_NavItem>[
       if (personal) const _NavItem(Icons.calendar_today_rounded, 'Horario', 'Ver calendario de clases', ScheduleScreen()),
       if (personal) const _NavItem(Icons.school_outlined, 'Notas', 'Consultar calificaciones', GradesScreen()),
-      if (hasClassroom) const _NavItem(Icons.auto_stories_outlined, 'Aula digital', 'Temas, recursos y entregas', ModulesScreen()),
+      if (hasClassroom) const _NavItem(Icons.auto_stories_outlined, 'Aula digital', 'Temas, recursos y sesiones', ModulesScreen()),
+      if (hasClassroom) const _NavItem(Icons.assignment_outlined, 'Tareas', 'Todos tus deberes y entregas', TareasScreen()),
+      if (hasClassroom) const _NavItem(Icons.emoji_events_outlined, 'Retos', 'Desafíos con material extra', RetosScreen()),
       if (role == UserRole.estudiante) const _NavItem(Icons.star_rounded, 'Favoritos', 'Tus archivos guardados', FavoritesScreen()),
       if (hasAttendance) const _NavItem(Icons.fact_check_outlined, 'Asistencias', 'Registro de faltas y asistencia', AttendanceScreen()),
       if (hasStaffJustify)
@@ -90,20 +99,23 @@ class HomeScreen extends ConsumerWidget {
     ];
     final gestion = <_NavItem>[
       if (isBackOffice) const _NavItem(Icons.receipt_long_outlined, 'Pagos', 'Ver recibos y cobros', PaymentsScreen()),
+      if (isBackOffice) const _NavItem(Icons.calendar_today_outlined, 'Próximos Pagos', 'Pagos vencidos y pendientes', PagosProximosScreen()),
+      if (isBackOffice) const _NavItem(Icons.shopping_bag_outlined, 'Gastos', 'Control de compras y recibos', GastosScreen()),
+      if (isBackOffice) const _NavItem(Icons.people_outlined, 'Alumnos', 'Lista de estudiantes', StudentsScreen()),
+      if (isBackOffice) const _NavItem(Icons.school_outlined, 'Profesores', 'Lista de docentes', TeachersScreen()),
       if (isBackOffice) const _NavItem(Icons.inventory_2_outlined, 'Inventario', 'Control de material y recursos', InventoryScreen()),
     ];
 
     final displayName = profileAsync.valueOrNull?.displayName ?? 'AulaPro';
 
-    // Watch values for student metrics
-    final attendanceMine = role == UserRole.estudiante ? ref.watch(attendanceMineProvider).valueOrNull ?? [] : [];
-    final studentPendingTasks = role == UserRole.estudiante ? ref.watch(studentPendingTasksCountProvider).valueOrNull ?? 0 : 0;
-    final studentGrades = role == UserRole.estudiante ? ref.watch(gradesProvider).valueOrNull : null;
+    // Watch metrics only when needed per role, using .select() to avoid cascading rebuilds
+    final attendanceMine = role == UserRole.estudiante ? ref.watch(attendanceMineProvider.select((a) => a.valueOrNull ?? [])) : [];
+    final studentPendingTasks = role == UserRole.estudiante ? ref.watch(studentPendingTasksCountProvider.select((t) => t.valueOrNull ?? 0)) : 0;
+    final studentGrades = role == UserRole.estudiante ? ref.watch(gradesProvider.select((g) => g.valueOrNull)) : null;
 
-    // Watch values for professor metrics
-    final scheduleSlots = (role == UserRole.profesor || role == UserRole.estudiante) ? ref.watch(scheduleProvider).valueOrNull ?? [] : [];
-    final pendingGradesCount = role == UserRole.profesor ? ref.watch(pendingGradesCountProvider).valueOrNull ?? 0 : 0;
-    final userProfile = ref.watch(profileProvider).valueOrNull;
+    // Watch professor metrics
+    final scheduleSlots = (role == UserRole.profesor || role == UserRole.estudiante) ? ref.watch(scheduleProvider.select((s) => s.valueOrNull ?? [])) : [];
+    final pendingGradesCount = role == UserRole.profesor ? ref.watch(pendingGradesCountProvider.select((p) => p.valueOrNull ?? 0)) : 0;
 
     // Build role-specific metric cards
     final metrics = <Widget>[];
@@ -142,7 +154,7 @@ class HomeScreen extends ConsumerWidget {
     } else if (role == UserRole.profesor) {
       final todayName = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][DateTime.now().weekday - 1];
       final clasesHoyCount = scheduleSlots.where((s) => s.diaSemana == todayName).length;
-      final tutorCicloAbreviatura = userProfile?.ciclo?['abreviaturaCiclo'] as String? ?? 'Ninguna';
+      final tutorCicloAbreviatura = profileAsync.valueOrNull?.ciclo?['abreviaturaCiclo'] as String? ?? 'Ninguna';
 
       metrics.addAll([
         _MetricCard(
@@ -172,18 +184,25 @@ class HomeScreen extends ConsumerWidget {
     } else if (role == UserRole.director || role == UserRole.secretaria) {
       metrics.addAll([
         _MetricCard(
-          value: '142',
-          label: 'Matrículas',
+          value: 'Ver',
+          label: 'Alumnos',
           icon: Icons.people_rounded,
           color: const Color(0xFF2563EB),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentsScreen())),
+        ),
+        _MetricCard(
+          value: 'Ver',
+          label: 'Profesores',
+          icon: Icons.school_rounded,
+          color: const Color(0xFFD97706),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TeachersScreen())),
         ),
         _MetricCard(
           value: '98.2%',
           label: 'Asistencia',
           icon: Icons.trending_up_rounded,
           color: const Color(0xFF059669),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
         ),
         _MetricCard(
           value: 'Equipos',

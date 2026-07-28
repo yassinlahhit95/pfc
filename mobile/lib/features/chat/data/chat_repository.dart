@@ -55,6 +55,8 @@ class ChatMessage {
     required this.contenido,
     required this.fecha,
     required this.leido,
+    this.pending = false,
+    this.readAt,
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
@@ -65,6 +67,7 @@ class ChatMessage {
         contenido: json['contenido'] as String? ?? '',
         fecha: json['fecha'] as String? ?? '',
         leido: json['leido'] == 1 || json['leido'] == true,
+        readAt: json['read_at'] as String?,
       );
 
   final int id;
@@ -74,6 +77,21 @@ class ChatMessage {
   final String contenido;
   final String fecha;
   final bool leido;
+  final bool pending;
+  final String? readAt; // ISO 8601 timestamp when recipient read the message
+
+  /// Returns a copy with the pending flag set to false
+  ChatMessage markAsSent() => ChatMessage(
+        id: id,
+        emisorRol: emisorRol,
+        emisorId: emisorId,
+        emisorNombre: emisorNombre,
+        contenido: contenido,
+        fecha: fecha,
+        leido: leido,
+        pending: false,
+        readAt: readAt,
+      );
 }
 
 class ChatRepository {

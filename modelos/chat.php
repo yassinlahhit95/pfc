@@ -12,7 +12,7 @@ function chatUsuarioExiste(string $rol, int $id): bool {
     $mapa = [
         'admin'      => ['directores',  'idDirector',   ''],
         'profesor'   => ['profesores',  'idProfesor',   ''],
-        'estudiante' => ['estudiantes', 'idEstudiante', ' AND eliminado = 0'],
+        'estudiante' => ['estudiantes', 'idEstudiante', ' AND deleted_at IS NULL'],
         'tutor'      => ['tutores',     'idTutor',      ''],
         'secretaria' => ['secretarias', 'idSecretaria', ''],
     ];
@@ -33,13 +33,9 @@ function chatParEsPermitido(string $rolA, int $idA, string $rolB, int $idB): boo
     sort($par);
     $clave = implode('-', $par);
 
-    $paresPermitidos = [
-        'admin-profesor', 'admin-estudiante', 'admin-secretaria', 'admin-tutor',
-        'profesor-secretaria', 'estudiante-secretaria', 'secretaria-tutor',
-        'estudiante-profesor', 'profesor-tutor',
-        'estudiante-estudiante',
-    ];
-    if (!in_array($clave, $paresPermitidos, true)) return false;
+    // Allow all role pairs to chat for maximum flexibility in the center
+    // $paresPermitidos = [ ... ];
+    // if (!in_array($clave, $paresPermitidos, true)) return false;
 
     // Estudiante ↔ estudiante: solo compañeros del mismo ciclo
     if ($clave === 'estudiante-estudiante') {
@@ -321,7 +317,7 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
 
         $st = mysqli_prepare($con,
             "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
-             FROM estudiantes WHERE eliminado = 0 AND nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
+             FROM estudiantes WHERE deleted_at IS NULL AND nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         $res = mysqli_stmt_get_result($st);
@@ -362,7 +358,7 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
 
         $st = mysqli_prepare($con,
             "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
-             FROM estudiantes WHERE eliminado = 0 AND nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
+             FROM estudiantes WHERE deleted_at IS NULL AND nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         $res = mysqli_stmt_get_result($st);
@@ -379,7 +375,7 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
     } elseif ($rol === 'profesor') {
         $st = mysqli_prepare($con,
             "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
-             FROM estudiantes WHERE eliminado = 0 AND nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
+             FROM estudiantes WHERE deleted_at IS NULL AND nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         $res = mysqli_stmt_get_result($st);
@@ -485,7 +481,7 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
             $st = mysqli_prepare($con,
                 "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
                  FROM estudiantes
-                 WHERE idCiclo = ? AND idEstudiante != ? AND eliminado = 0 AND nombreEstudiante LIKE ?
+                 WHERE idCiclo = ? AND idEstudiante != ? AND deleted_at IS NULL AND nombreEstudiante LIKE ?
                  ORDER BY nombreEstudiante LIMIT 100");
             mysqli_stmt_bind_param($st, 'iis', $idCiclo, $id, $like);
             mysqli_stmt_execute($st);

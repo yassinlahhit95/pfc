@@ -11,7 +11,7 @@ function listarTodosLosPagos() {
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
-            WHERE e.eliminado = 0
+            WHERE e.deleted_at IS NULL
             ORDER BY p.idPago DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
@@ -29,7 +29,7 @@ function listarPagosFiltrados($idCiclo) {
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
-            WHERE e.idCiclo = ? AND e.eliminado = 0
+            WHERE e.idCiclo = ? AND e.deleted_at IS NULL
             ORDER BY p.idPago DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
@@ -179,7 +179,7 @@ function listarPagosPendientes() {
                 SELECT idEstudiante, MAX(idPago) AS max_id
                 FROM pagos GROUP BY idEstudiante
             ) ultimo ON p.idPago = ultimo.max_id
-            JOIN estudiantes e ON e.idEstudiante = p.idEstudiante AND e.eliminado = 0
+            JOIN estudiantes e ON e.idEstudiante = p.idEstudiante AND e.deleted_at IS NULL
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             WHERE p.tipoPago IN ('mensual', 'trimestral', 'semestral')
               AND p.fechaProximoPago IS NOT NULL
@@ -196,15 +196,15 @@ function listarPagosPendientes() {
 
 function listarEstudiantesConPagosPendientes() {
     $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, c.nombreCiclo, c.precioCiclo, 
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, c.nombreCiclo, c.precioCiclo,
             IFNULL(SUM(p.monto), 0) AS totalPagado,
             (c.precioCiclo - IFNULL(SUM(p.monto), 0)) AS deuda
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             LEFT JOIN pagos p ON e.idEstudiante = p.idEstudiante
-            WHERE e.eliminado = 0
-            GROUP BY e.idEstudiante
-            HAVING deuda > 0.05
+            WHERE e.deleted_at IS NULL
+            GROUP BY e.idEstudiante, e.nombreEstudiante, c.nombreCiclo, c.precioCiclo
+            HAVING (c.precioCiclo - IFNULL(SUM(p.monto), 0)) > 0.05
             ORDER BY deuda DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);

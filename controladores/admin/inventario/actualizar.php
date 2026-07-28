@@ -36,8 +36,22 @@ if (isset($_POST['actualizarArticulo'])) {
     if (empty($errores)) {
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
         $estadoActual = $datosArticuloActual['estado'] ?? 'disponible';
+        $fotoActual = $datosArticuloActual['foto'] ?? null;
+        $foto = null;
 
-        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $dir = __DIR__ . '/../../../public/uploads/equipos/';
+            if (!is_dir($dir)) mkdir($dir, 0777, true);
+            $foto = uniqid('dev_') . '.jpg';
+            move_uploaded_file($_FILES['foto']['tmp_name'], $dir . $foto);
+            
+            // Delete old photo if it exists
+            if ($fotoActual && file_exists($dir . $fotoActual)) {
+                @unlink($dir . $fotoActual);
+            }
+        }
+
+        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual, $foto)) {
             registrarAccion('actualizar', 'inventario', $idArticulo, $nombreArticulo);
             if ($isAjax) {
                 header('Content-Type: application/json');

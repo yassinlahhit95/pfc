@@ -103,6 +103,42 @@ class StudentPaymentsGroup {
   final FinancialStatus estado;
 }
 
+class PagoProximo {
+  const PagoProximo({
+    required this.id,
+    required this.idEstudiante,
+    required this.nombreEstudiante,
+    required this.monto,
+    required this.fechaProximoPago,
+    required this.tipoPago,
+    required this.nombreCiclo,
+    required this.abreviaturaCiclo,
+    required this.estado,
+  });
+
+  factory PagoProximo.fromJson(Map<String, dynamic> json) => PagoProximo(
+        id: json['idPago'] as int,
+        idEstudiante: json['idEstudiante'] as int,
+        nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
+        monto: json['monto'] as String? ?? '0',
+        fechaProximoPago: json['fechaProximoPago'] as String? ?? '',
+        tipoPago: json['tipoPago'] as String? ?? '',
+        nombreCiclo: json['nombreCiclo'] as String? ?? '',
+        abreviaturaCiclo: json['abreviaturaCiclo'] as String? ?? '',
+        estado: json['estado'] as String? ?? 'pendiente',
+      );
+
+  final int id;
+  final int idEstudiante;
+  final String nombreEstudiante;
+  final String monto;
+  final String fechaProximoPago;
+  final String tipoPago;
+  final String nombreCiclo;
+  final String abreviaturaCiclo;
+  final String estado; // pendiente | pagado | vencido
+}
+
 class PaymentsRepository {
   PaymentsRepository(this._client);
   final ApiClient _client;
@@ -165,6 +201,30 @@ class PaymentsRepository {
       if (archivo != null) 'archivo': MultipartFile.fromFileSync(archivo.path),
     }));
   }
+
+  /// director/secretaria: fetch upcoming payments due with auto-calculated status
+  Future<({List<PagoProximo> pagos, int total})> fetchPagosProximos({
+    int limit = 20,
+    int offset = 0,
+    String? status,
+    int? cicloId,
+  }) async {
+    final queryParams = {
+      'limit': limit.toString(),
+      'offset': offset.toString(),
+      if (status != null && status.isNotEmpty) 'status': status,
+      if (cicloId != null) 'ciclo': cicloId.toString(),
+    };
+
+    final data = await _client.get('/pagos.php', query: queryParams);
+    return (
+      pagos: (data['payments'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(PagoProximo.fromJson)
+          .toList(),
+      total: data['total'] as int? ?? 0,
+    );
+  }
 }
 
 final paymentsRepositoryProvider = Provider<PaymentsRepository>(
@@ -186,4 +246,14 @@ final myPaymentsProvider =
 
 final tutorPaymentsProvider = FutureProvider.autoDispose<List<StudentPaymentsGroup>>(
   (ref) => ref.read(paymentsRepositoryProvider).fetchForTutor(),
+);
+
+final pagosProximosProvider = FutureProvider.autoDispose
+    .family<({List<PagoProximo> pagos, int total}), ({int limit, int offset, String? status, int? cicloId})>(
+  (ref, params) => ref.read(paymentsRepositoryProvider).fetchPagosProximos(
+        limit: params.limit,
+        offset: params.offset,
+        status: params.status,
+        cicloId: params.cicloId,
+      ),
 );

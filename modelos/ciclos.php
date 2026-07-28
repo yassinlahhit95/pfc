@@ -65,6 +65,23 @@ function obtenerCicloPorId($idCiclo) {
     return mysqli_fetch_assoc($resultado);
 }
 
+function obtenerTipoFormacion($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT tipoFormacion FROM ciclos WHERE idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($resultado);
+    return $row['tipoFormacion'] ?? 'medio';
+}
+
+function listarAñosPorCiclo($idCiclo) {
+    require_once __DIR__ . '/../include/FPSystem.php';
+    $tipoFormacion = obtenerTipoFormacion($idCiclo);
+    return FPSystem::getYearsForType($tipoFormacion);
+}
+
 function listarProfesoresDeUnCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = ?";
@@ -148,12 +165,12 @@ function actualizarProfesoresDeCiclo($idCiclo, array $listaIdsProfesores) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
+function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo, $tipoFormacion = 'medio') {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
-        $stmt = mysqli_prepare($con, "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "ssid", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo);
+        $stmt = mysqli_prepare($con, "INSERT INTO ciclos (nombreCiclo, tipoFormacion, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "sssid", $nombreCiclo, $tipoFormacion, $abreviaturaCiclo, $idNivel, $precioCiclo);
         if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('insert ciclo');
         $idNuevoCiclo = mysqli_insert_id($con);
         if (!empty($listaIdsProfesores)) {
@@ -183,12 +200,18 @@ function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIds
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
+function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo, $tipoFormacion = null) {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
-        $stmt = mysqli_prepare($con, "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?");
-        mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
+        // If tipoFormacion not provided, keep existing value
+        if ($tipoFormacion === null) {
+            $stmt = mysqli_prepare($con, "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?");
+            mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
+        } else {
+            $stmt = mysqli_prepare($con, "UPDATE ciclos SET nombreCiclo=?, tipoFormacion=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?");
+            mysqli_stmt_bind_param($stmt, "sssidi", $nombreCiclo, $tipoFormacion, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
+        }
         if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('update ciclo');
         $stmt2 = mysqli_prepare($con, "DELETE FROM ciclo_profesor WHERE idCiclo = ?");
         mysqli_stmt_bind_param($stmt2, "i", $idCiclo);
@@ -240,7 +263,7 @@ function restaurarCiclo($idCiclo) {
 
 function contarEstudiantesEnCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo = ? AND eliminado = 0";
+    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo = ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);

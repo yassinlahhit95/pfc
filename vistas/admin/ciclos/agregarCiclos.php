@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/FPSystem.php";
 require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
@@ -50,6 +51,19 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="form-fila">
+                <div class="campo<?= fieldClass($errores, 'tipoFormacion') ?>">
+                    <label for="tipoFormacion">Tipo de Formación Profesional</label>
+                    <select id="tipoFormacion" name="tipoFormacion" required>
+                        <option value="">-- Seleccionar tipo --</option>
+                        <?php foreach (FPSystem::TIPOS as $tipo): ?>
+                            <option value="<?= $tipo ?>" <?php if (($datos['tipoFormacion'] ?? '') === $tipo) { ?>selected<?php } ?>>
+                                <?= Security::escapeHtml(FPSystem::getLabel($tipo)) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?= fieldError($errores, 'tipoFormacion') ?>
+                </div>
+
                 <div class="campo<?= fieldClass($errores, 'idNivel') ?>">
                     <label for="idNivel">Nivel Formativo </label>
                     <select id="idNivel" name="idNivel">

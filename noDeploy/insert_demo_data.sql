@@ -36,6 +36,9 @@ TRUNCATE TABLE `chat_mensajes`;
 TRUNCATE TABLE `asistencias`;
 TRUNCATE TABLE `categorias_gasto`;
 TRUNCATE TABLE `gastos`;
+TRUNCATE TABLE `dispositivos`;
+TRUNCATE TABLE `prestamos`;
+TRUNCATE TABLE `inventario`;
 TRUNCATE TABLE `fp_empresas`;
 TRUNCATE TABLE `fct`;
 TRUNCATE TABLE `fct_diarios`;
@@ -73,10 +76,10 @@ INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES
 -- ---------------------------------------------------------------------
 -- 4. CYCLES / DEGREES
 -- ---------------------------------------------------------------------
-INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`, `activo`) VALUES 
-(1, 'Desarrollo de Aplicaciones Web', 'DAW', 1200.00, 1, 1), 
-(2, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM', 1200.00, 1, 1), 
-(3, 'Sistemas Microinformáticos y Redes', 'SMR', 900.00, 2, 1);
+INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `tipoFormacion`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`, `activo`) VALUES
+(1, 'Desarrollo de Aplicaciones Web', 'superior', 'DAW', 1200.00, 1, 1),
+(2, 'Desarrollo de Aplicaciones Multiplataforma', 'superior', 'DAM', 1200.00, 1, 1),
+(3, 'Sistemas Microinformáticos y Redes', 'medio', 'SMR', 900.00, 2, 1);
 
 -- ---------------------------------------------------------------------
 -- 5. ACADEMIC COURSES PER CYCLE
@@ -379,8 +382,18 @@ INSERT INTO `gastos` (`idGasto`, `idCategoria`, `idCiclo`, `concepto`, `importe`
 -- 22. DUAL EDUCATION PARTNERSHIP (COMPANIES & INTERNSHIPS FCT)
 -- ---------------------------------------------------------------------
 INSERT INTO `fp_empresas` (`idEmpresa`, `nombre`, `cif`, `direccion`, `persona_contacto`, `telefono`, `email`, `activo`) VALUES 
-(1, 'Tech Solutions S.L.', 'B12345678', 'Parque Tecnológico, Edificio A', 'Marta García', '600123456', 'marta.garcia@techsolutions.com', 1), 
-(2, 'Global Web Developers', 'B87654321', 'Avenida de la Informática 10', 'Luis Naranjo', '600987654', 'luis.naranjo@globalweb.com', 1);
+(1, 'Tech Solutions SL', 'B12345678', 'Calle Mayor 1', 'Juan Pérez', '600123456', 'contacto@techsl.com', 1),
+(2, 'Innovaciones Web', 'B87654321', 'Av. de la Innovación 42', 'María Gómez', '611987654', 'rrhh@innoweb.com', 1);
+
+INSERT INTO `dispositivos` (`idDispositivo`, `nombreDispositivo`, `numeroSerie`, `estadoDispositivo`, `categoria`, `precioCosto`, `descripcion`, `foto`) VALUES
+(1, 'Portátil Lenovo ThinkPad', 'SN-LEN-001', 'disponible', 'Portátiles', 800.00, 'Portátil para uso del profesorado', NULL),
+(2, 'Monitor Dell 24"', 'SN-DEL-002', 'prestado', 'Monitores', 150.00, 'Monitor externo', NULL),
+(3, 'Proyector Epson', 'SN-EPS-003', 'disponible', 'Proyectores', 400.00, 'Proyector para aula 3', NULL);
+
+-- Test loan records for FK validation
+INSERT INTO `prestamos` (`idPrestamo`, `idEstudiante`, `idDispositivo`, `fechaPrestamo`, `fechaDevolucionEsperada`, `estadoPrestamo`, `observaciones`) VALUES
+(1, 1, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY), 'activo', 'Préstamo para práctica de desarrollo'),
+(2, 2, 2, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'activo', 'Uso en laboratorio de maquetación');
 
 INSERT INTO `fct` (
   `idFCT`, `idEstudiante`, `idCiclo`, `empresa`, `idEmpresa`, `tutorEmpresa`, 

@@ -225,7 +225,7 @@ var _ciclosData = <?= json_encode(array_map(fn($ciclo) => [
 ], $listaDeCiclosParaFiltro), JSON_UNESCAPED_UNICODE) ?>;
 
 function cascadeCicloSelect(selectNivel) {
-    var idNivel = parseInt($(selectNivel).val()) || 0;
+    var idNivel = parseInt($(selectNivel).val(), 10) || 0;
     var $ciclo  = $('#selectFiltroCiclo');
     var prev    = $ciclo.val();
 

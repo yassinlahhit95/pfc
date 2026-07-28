@@ -12,6 +12,38 @@ import '../../../core/widgets/premium.dart';
 import '../data/attendance_repository.dart';
 import 'mark_attendance_screen.dart';
 
+// For Consumer in AttendanceScreen
+class _AttendanceScreenContent extends ConsumerWidget {
+  const _AttendanceScreenContent({required this.tabController});
+  final TabController tabController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+
+    if (role == UserRole.profesor) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Asistencias'),
+          bottom: TabBar(
+            controller: tabController,
+            tabs: const [
+              Tab(text: 'Pasar lista'),
+              Tab(text: 'Justificaciones'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          controller: tabController,
+          children: const [MarkAttendanceScreen(), _PendingJustificationsTab()],
+        ),
+      );
+    }
+
+    return const _MyAttendanceList();
+  }
+}
+
 Future<void> _openJustificante(BuildContext context, String url) async {
   final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!ok && context.mounted) {
@@ -32,32 +64,31 @@ const _estadoLabels = {
   'justificado': 'Justificado',
 };
 
-class AttendanceScreen extends ConsumerWidget {
+class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+  State<AttendanceScreen> createState() => _AttendanceScreenState();
+}
 
-    if (role == UserRole.profesor) {
-      return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Asistencias'),
-            bottom: const TabBar(tabs: [
-              Tab(text: 'Pasar lista'),
-              Tab(text: 'Justificaciones'),
-            ]),
-          ),
-          body: const TabBarView(
-            children: [MarkAttendanceScreen(), _PendingJustificationsTab()],
-          ),
-        ),
-      );
-    }
+class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
-    return const _MyAttendanceList();
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _AttendanceScreenContent(tabController: _tabController);
   }
 }
 
@@ -72,6 +103,19 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
   String? _estado;
   String? _modulo;
   String? _estudiante;
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _resetScroll() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,20 +149,29 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
                   label: 'Estado',
                   value: _estado,
                   options: [for (final e in estados) (e, _estadoLabels[e] ?? e)],
-                  onChanged: (v) => setState(() => _estado = v),
+                  onChanged: (v) {
+                    setState(() => _estado = v);
+                    _resetScroll();
+                  },
                 ),
                 FilterPill<String>(
                   label: 'Módulo',
                   value: _modulo,
                   options: [for (final m in modulos) (m, m)],
-                  onChanged: (v) => setState(() => _modulo = v),
+                  onChanged: (v) {
+                    setState(() => _modulo = v);
+                    _resetScroll();
+                  },
                 ),
                 if (estudiantes.length > 1)
                   FilterPill<String>(
                     label: 'Estudiante',
                     value: _estudiante,
                     options: [for (final s in estudiantes) (s, s)],
-                    onChanged: (v) => setState(() => _estudiante = v),
+                    onChanged: (v) {
+                      setState(() => _estudiante = v);
+                      _resetScroll();
+                    },
                   ),
               ]),
               const SizedBox(height: Space.sm),
@@ -128,8 +181,10 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
                     : RefreshIndicator(
                         onRefresh: () async => ref.invalidate(attendanceMineProvider),
                         child: ListView.builder(
+                          controller: _scrollController,
                           padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
                           itemCount: records.length,
+                          itemExtent: 100, // ponytail: optimize list + scroll reset
                           itemBuilder: (context, i) => _AttendanceCard(record: records[i]),
                         ),
                       ),

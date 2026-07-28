@@ -28,7 +28,7 @@ function listarTodosLosPrestamos() {
 function listarArticulos() {
     $con = obtenerConexion();
     $sql = "SELECT idDispositivo AS idArticulo, nombreDispositivo AS nombreArticulo,
-                   numeroSerie, estadoDispositivo AS estado
+                   numeroSerie, estadoDispositivo AS estado, foto
             FROM dispositivos
             WHERE deleted_at IS NULL
             ORDER BY idDispositivo ASC";
@@ -45,7 +45,7 @@ function listarArticulos() {
 function obtenerArticuloPorId($idArticulo) {
     $con = obtenerConexion();
     $sql = "SELECT idDispositivo AS idArticulo, nombreDispositivo AS nombreArticulo,
-                   numeroSerie, estadoDispositivo AS estado
+                   numeroSerie, estadoDispositivo AS estado, foto
             FROM dispositivos WHERE idDispositivo = ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
@@ -58,11 +58,11 @@ function obtenerArticuloPorId($idArticulo) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarArticulo($nombreArticulo, $numeroSerie) {
+function insertarArticulo($nombreArticulo, $numeroSerie, $foto = null) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) VALUES (?, ?, 'disponible')";
+    $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo, foto) VALUES (?, ?, 'disponible', ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $nombreArticulo, $numeroSerie);
+    mysqli_stmt_bind_param($stmt, "sss", $nombreArticulo, $numeroSerie, $foto);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -96,11 +96,11 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoDispositivo) {
+function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoDispositivo, $foto = null) {
     $con = obtenerConexion();
-    $sql = "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=? WHERE idDispositivo=?";
+    $sql = "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=?, foto=COALESCE(?, foto) WHERE idDispositivo=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssi", $nombreArticulo, $numeroSerie, $estadoDispositivo, $idArticulo);
+    mysqli_stmt_bind_param($stmt, "ssssi", $nombreArticulo, $numeroSerie, $estadoDispositivo, $foto, $idArticulo);
     return mysqli_stmt_execute($stmt);
 }
 

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/FPSystem.php";
 require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
@@ -64,6 +65,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="form-fila">
+                <div class="campo">
+                    <label for="tipoFormacion">Tipo de Formación Profesional</label>
+                    <div style="padding: 10px; background: var(--surface-2); border-radius: 6px; border: 1px solid var(--border);">
+                        <strong><?= Security::escapeHtml(FPSystem::getLabel($ciclo['tipoFormacion'] ?? 'medio')) ?></strong>
+                        <small style="display: block; color: var(--text-2); margin-top: 4px;">No se puede cambiar después de la creación</small>
+                    </div>
+                </div>
+
                 <div class="campo">
                     <label for="idNivel">Nivel Formativo</label>
                     <select id="idNivel" name="idNivel">

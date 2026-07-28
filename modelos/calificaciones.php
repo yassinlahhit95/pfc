@@ -350,7 +350,7 @@ function listarResultadosFinalesCiclo($idCiclo)
     $con = obtenerConexion();
 
     // 1. Obtener estudiantes
-    $sqlEstudiantes = "SELECT e.*, c.nombreCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idCiclo = ? AND e.eliminado = 0";
+    $sqlEstudiantes = "SELECT e.*, c.nombreCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idCiclo = ? AND e.deleted_at IS NULL";
     $stmtE = mysqli_prepare($con, $sqlEstudiantes);
     mysqli_stmt_bind_param($stmtE, "i", $idCiclo);
     mysqli_stmt_execute($stmtE);
@@ -598,7 +598,7 @@ function generarDatosBoletinCiclo($idCiclo) {
          FROM estudiantes e
          JOIN ciclos c ON e.idCiclo = c.idCiclo
          JOIN niveles n ON c.idNivel = n.idNivel
-         WHERE e.idCiclo = ? AND e.eliminado = 0 ORDER BY e.nombreEstudiante ASC");
+         WHERE e.idCiclo = ? AND e.deleted_at IS NULL ORDER BY e.nombreEstudiante ASC");
     mysqli_stmt_bind_param($stmt, 'i', $idCiclo);
     mysqli_stmt_execute($stmt);
     $resEst = mysqli_stmt_get_result($stmt);

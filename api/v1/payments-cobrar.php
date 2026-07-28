@@ -25,6 +25,15 @@ $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
 $monto = floatval($_POST['monto'] ?? 0);
 $tipoPago = trim((string)($_POST['tipoPago'] ?? ''));
 $fechaProximoPago = !empty($_POST['fechaProximoPago']) ? trim((string)$_POST['fechaProximoPago']) : null;
+if (empty($fechaProximoPago)) {
+    if ($tipoPago === 'mensual') {
+        $fechaProximoPago = date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 month'));
+    } elseif ($tipoPago === 'trimestral') {
+        $fechaProximoPago = date('Y-m-d', strtotime(date('Y-m-d') . ' + 3 months'));
+    } elseif ($tipoPago === 'semestral') {
+        $fechaProximoPago = date('Y-m-d', strtotime(date('Y-m-d') . ' + 6 months'));
+    }
+}
 
 if ($idEstudiante <= 0 || $monto <= 0 || $tipoPago === '') {
     v1Error('idEstudiante, monto, and tipoPago are required and must be valid.', 400, 'validation');

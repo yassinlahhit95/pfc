@@ -12,7 +12,7 @@ require_once __DIR__ . "/../include/Cache.php";
 // de 60s que ya usa obtenerContadoresNavAdmin() más abajo.
 function contarEstudiantes(): int {
     return Cache::remember('panel_total_estudiantes', 60, function () {
-        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0")['total'] ?? 0);
+        return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes WHERE deleted_at IS NULL")['total'] ?? 0);
     });
 }
 
@@ -43,7 +43,7 @@ function contarEstudiantesDeProfesor(int $idProfesor): int {
         // llegados por la vía "profesor de módulo".
         $row = dbFetchOne(
             "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e
-             WHERE e.eliminado = 0 AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+             WHERE e.deleted_at IS NULL AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
                 OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))",
             "ii", $idProfesor, $idProfesor
         );
@@ -86,7 +86,7 @@ function obtenerTotalRecaudado(): float {
 function contarEstudiantesNuevos(int $dias = 7): int {
     return Cache::remember("panel_estudiantes_nuevos_{$dias}", 60, function () use ($dias) {
         $row = dbFetchOne(
-            "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
+            "SELECT COUNT(*) as total FROM estudiantes WHERE deleted_at IS NULL AND fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
             "i", $dias
         );
         return (int)($row['total'] ?? 0);
@@ -106,7 +106,7 @@ function contarProfesoresNuevos(int $dias = 7): int {
 function contarTFGsEntregados(): int {
     return Cache::remember('panel_tfgs_entregados', 60, function () {
         return (int)(dbFetchOne(
-            "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND archivoTFG != '' AND archivoTFG IS NOT NULL"
+            "SELECT COUNT(*) as total FROM estudiantes WHERE deleted_at IS NULL AND archivoTFG != '' AND archivoTFG IS NOT NULL"
         )['total'] ?? 0);
     });
 }
@@ -120,7 +120,7 @@ function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
     $idAdmin = (int)$idAdmin;
 
     $globalQueries = [
-        'total_estudiantes' => "SELECT COUNT(*) FROM estudiantes WHERE eliminado = 0",
+        'total_estudiantes' => "SELECT COUNT(*) FROM estudiantes WHERE deleted_at IS NULL",
         'total_profesores' => "SELECT COUNT(*) FROM profesores",
         'total_tutores' => "SELECT COUNT(*) FROM tutores",
         'total_directores' => "SELECT COUNT(*) FROM directores",
@@ -129,7 +129,7 @@ function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
         'total_retos' => "SELECT COUNT(*) FROM retos",
         'total_anuncios' => "SELECT COUNT(*) FROM anuncios",
         'total_inventario' => "SELECT COUNT(*) FROM dispositivos",
-        'total_prestamos' => "SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso'",
+        'total_prestamos' => "SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'activo'",
         'total_pagos' => "SELECT COUNT(*) FROM pagos",
         'total_mensajes' => "SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')",
         'total_sin_leer' => "SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))",

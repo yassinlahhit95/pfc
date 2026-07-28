@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/FPSystem.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
 
@@ -158,6 +159,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="2º">2º Año</option>
                 </select>
             </div>
+
+            <input type="hidden" id="ciclosData" value='<?= json_encode(array_map(function($c) {
+                return ['idCiclo' => $c['idCiclo'], 'tipoFormacion' => $c['tipoFormacion'] ?? 'medio'];
+            }, $ciclos)) ?>' />
 
             <div class="campo">
                 <label for="sistemaExp">Formato del Sistema Regional</label>

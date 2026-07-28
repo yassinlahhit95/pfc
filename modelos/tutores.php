@@ -42,7 +42,7 @@ function listarEstudiantesPorTutor($idTutor) {
             FROM estudiantes e
             JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
             JOIN ciclos c ON e.idCiclo = c.idCiclo
-            WHERE et.idTutor = ? AND e.eliminado = 0";
+            WHERE et.idTutor = ? AND e.deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idTutor);
     mysqli_stmt_execute($stmt);
@@ -65,7 +65,7 @@ function listarHijosPorTutores(array $idsTutores): array {
     $sql = "SELECT et.idTutor, e.idEstudiante, e.nombreEstudiante
             FROM estudiantes e
             JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
-            WHERE et.idTutor IN ($ph) AND e.eliminado = 0
+            WHERE et.idTutor IN ($ph) AND e.deleted_at IS NULL
             ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, $types, ...$idsTutores);

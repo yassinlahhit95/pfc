@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../../modelos/directores.php';
 require_once __DIR__ . '/../../../include/R2Client.php';
 $cfg         = obtenerConfiguracionCentro();
 $adminActual = obtenerDirectorPorId((int)$_SESSION['idAdmin']);
-$mfaActivo   = !empty($adminActual['mfa_enabled']);
+$mfaActivo   = $adminActual && !empty($adminActual['mfa_enabled']);
 $saasLocked  = FeatureGuard::isLocked();
 
 $titulo_pagina = "AULAPRO | CONFIGURACIÓN DEL CENTRO";
@@ -68,6 +68,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             ['key' => 'feature_gastos',       'icon' => 'fa-receipt',       'color' => '#ef4444', 'label' => 'Gastos',            'desc' => 'Control de gastos del centro'],
             ['key' => 'feature_informes',     'icon' => 'fa-file-pdf',      'color' => '#64748b', 'label' => 'Informes PDF',      'desc' => 'Boletines, listados y horarios'],
             ['key' => 'feature_horario',      'icon' => 'fa-calendar-alt',  'color' => '#4f46e5', 'label' => 'Cuadro Horario',    'desc' => 'Horarios y asignaciones de clase'],
+            ['key' => 'feature_modulos',      'icon' => 'fa-book',          'color' => '#8b5cf6', 'label' => 'Módulos Académicos','desc' => 'Gestión de módulos/materias y contenidos educativos'],
             ['key' => 'feature_geoblock_admin','icon' => 'fa-globe-europe','color' => '#dc2626', 'label' => 'Geo-Block (España)','desc' => 'Bloquea el panel admin al extranjero'],
             ['key' => 'feature_ra_ce',        'icon' => 'fa-star-half-stroke','color' => '#f59e0b', 'label' => 'Eval. LOMLOE (RA/CE)','desc' => 'Sistema avanzado de calificación por Resultados de Aprendizaje'],
             ['key' => 'feature_academico_config','icon' => 'fa-sliders',    'color' => '#7c3aed', 'label' => 'Motor de Calificaciones Configurable','desc' => 'Pesos de evaluación personalizables (sustituye al motor con pesos fijos). Se activa desde el asistente académico; aquí puedes revisar su estado o desactivarlo.'],

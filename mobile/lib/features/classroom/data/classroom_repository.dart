@@ -96,6 +96,7 @@ class ClassroomTask {
     required this.publicado,
     required this.totalEntregas,
     required this.totalCorregidas,
+    required this.nombreModulo,
   });
 
   factory ClassroomTask.fromJson(Map<String, dynamic> json) {
@@ -108,12 +109,13 @@ class ClassroomTask {
       nombreProfesor: json['nombreProfesor'] as String? ?? '',
       fechaCreacion: json['fechaCreacion'] as String? ?? '',
       archivoAdjunto: json['archivoAdjunto'] as String?,
-      nota: entrega?['nota'] as String?,
-      estado: entrega?['estado'] as String?,
-      comentario: entrega?['comentarioCalificacion'] as String?,
+      nota: json['nota']?.toString() ?? entrega?['nota']?.toString(),
+      estado: json['entregado'] == true ? 'entregado' : entrega?['estado']?.toString(),
+      comentario: entrega?['comentarioCalificacion']?.toString(),
       publicado: (json['publicado'] as int? ?? 1) == 1,
       totalEntregas: json['totalEntregas'] as int? ?? 0,
       totalCorregidas: json['totalCorregidas'] as int? ?? 0,
+      nombreModulo: json['nombreModulo'] as String? ?? '',
     );
   }
 
@@ -130,6 +132,7 @@ class ClassroomTask {
   final bool publicado;
   final int totalEntregas;
   final int totalCorregidas;
+  final String nombreModulo;
 }
 
 class ClassroomSubmission {

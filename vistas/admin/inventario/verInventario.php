@@ -99,6 +99,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <input type="text" id="art-serie" placeholder="Ej: SN-12345678">
                     <span class="campo-error" id="art-serie-error" style="display:none;"></span>
                 </div>
+                <div class="campo">
+                    <label for="art-foto">Fotografía (Opcional)</label>
+                    <input type="file" id="art-foto" name="foto" accept="image/*">
+                </div>
             </div>
             <div class="modal-acciones" style="margin-top:18px;">
                 <button type="button" class="boton-secundario" id="modal-articulo-cancelar">
@@ -162,16 +166,21 @@ iniciarPaginacion('tablaInventario', 15);
         var url = idArticulo
             ? '/controladores/admin/inventario/actualizar.php'
             : '/controladores/admin/inventario/insertar.php';
-        var payload = {
-            csrf_token: $('#art-csrf').val(),
-            nombreArticulo: $nombre.val(),
-            numeroSerie: $serie.val()
-        };
+        var payload = new FormData();
+        payload.append('csrf_token', $('#art-csrf').val());
+        payload.append('nombreArticulo', $nombre.val());
+        payload.append('numeroSerie', $serie.val());
+        
+        var fotoFile = $('#art-foto')[0].files[0];
+        if (fotoFile) {
+            payload.append('foto', fotoFile);
+        }
+
         if (idArticulo) {
-            payload.idArticulo = idArticulo;
-            payload.actualizarArticulo = 1;
+            payload.append('idArticulo', idArticulo);
+            payload.append('actualizarArticulo', '1');
         } else {
-            payload.guardarArticulo = 1;
+            payload.append('guardarArticulo', '1');
         }
 
         $('#art-nombre-error, #art-serie-error').hide().text('');
@@ -182,6 +191,8 @@ iniciarPaginacion('tablaInventario', 15);
             type: 'POST',
             data: payload,
             dataType: 'json',
+            processData: false,
+            contentType: false,
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .done(function (res) {

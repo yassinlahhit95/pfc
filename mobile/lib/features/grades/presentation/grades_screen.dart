@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
@@ -114,6 +115,13 @@ class _EstudianteGrades extends StatefulWidget {
 
 class _EstudianteGradesState extends State<_EstudianteGrades> {
   String _searchQuery = '';
+  final _debounce = Debounce();
+
+  @override
+  void dispose() {
+    _debounce.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,8 +151,10 @@ class _EstudianteGradesState extends State<_EstudianteGrades> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               onChanged: (val) {
-                setState(() {
-                  _searchQuery = val.trim().toLowerCase();
+                _debounce(const Duration(milliseconds: 300), () {
+                  setState(() {
+                    _searchQuery = val.trim().toLowerCase();
+                  });
                 });
               },
             ),
@@ -201,6 +211,13 @@ class _ProfesorGrades extends StatefulWidget {
 
 class _ProfesorGradesState extends State<_ProfesorGrades> {
   String _searchQuery = '';
+  final _debounce = Debounce();
+
+  @override
+  void dispose() {
+    _debounce.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,8 +256,10 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
             onChanged: (val) {
-              setState(() {
-                _searchQuery = val.trim().toLowerCase();
+              _debounce(const Duration(milliseconds: 300), () {
+                setState(() {
+                  _searchQuery = val.trim().toLowerCase();
+                });
               });
             },
           ),

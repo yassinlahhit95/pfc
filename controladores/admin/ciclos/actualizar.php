@@ -36,7 +36,8 @@ if (isset($_POST['actualizarCiclo'])) {
         exit;
     }
 
-    if (actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo)) {
+    // Note: tipoFormacion is not updatable after creation (null = keep existing)
+    if (actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo, null)) {
         registrarAccion('actualizar', 'ciclos', $idCiclo, "$nombre ($abreviatura)");
         $_SESSION['exito'] = "El ciclo formativo ha sido actualizado correctamente.";
         header("Location: ../../../vistas/admin/ciclos/verCiclos.php");

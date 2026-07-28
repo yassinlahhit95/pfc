@@ -79,6 +79,72 @@ if ($method === 'POST') {
         v1Ok(['message' => 'Return registered.']);
     }
 
+    if ($action === 'add_device') {
+        $nombre = trim($body['nombreArticulo'] ?? '');
+        $numeroSerie = trim($body['numeroSerie'] ?? '');
+        $fotoBase64 = $body['fotoBase64'] ?? null;
+        
+        if (empty($nombre) || empty($numeroSerie)) {
+            v1Error('nombreArticulo and numeroSerie are required.', 400, 'validation');
+        }
+        
+        $foto = null;
+        if ($fotoBase64) {
+            $dir = __DIR__ . '/../../public/uploads/equipos/';
+            if (!is_dir($dir)) mkdir($dir, 0777, true);
+            $foto = uniqid('dev_') . '.jpg';
+            file_put_contents($dir . $foto, base64_decode($fotoBase64));
+        }
+
+        $ok = insertarArticulo($nombre, $numeroSerie, $foto);
+        if (!$ok) v1Error('Could not add device. Maybe serial number exists.', 409, 'conflict');
+        v1Ok(['message' => 'Device added.'], 201);
+    }
+
+    if ($action === 'edit_device') {
+        $idArticulo = (int)($body['idArticulo'] ?? 0);
+        $nombre = trim($body['nombreArticulo'] ?? '');
+        $numeroSerie = trim($body['numeroSerie'] ?? '');
+        $estado = trim($body['estado'] ?? '');
+        $fotoBase64 = $body['fotoBase64'] ?? null;
+        
+        if ($idArticulo <= 0 || empty($nombre) || empty($numeroSerie) || empty($estado)) {
+            v1Error('Missing required fields.', 400, 'validation');
+        }
+        
+        $articulo = obtenerArticuloPorId($idArticulo);
+        if (!$articulo) v1Error('Device not found.', 404, 'not_found');
+
+        $foto = null;
+        if ($fotoBase64) {
+            $dir = __DIR__ . '/../../public/uploads/equipos/';
+            if (!is_dir($dir)) mkdir($dir, 0777, true);
+            $foto = uniqid('dev_') . '.jpg';
+            file_put_contents($dir . $foto, base64_decode($fotoBase64));
+            
+            // Delete old photo if it exists
+            if (!empty($articulo['foto']) && file_exists($dir . $articulo['foto'])) {
+                @unlink($dir . $articulo['foto']);
+            }
+        }
+
+        $ok = actualizarArticulo($idArticulo, $nombre, $numeroSerie, $estado, $foto);
+        if (!$ok) v1Error('Could not update device.', 500, 'error');
+        v1Ok(['message' => 'Device updated.']);
+    }
+
+    if ($action === 'delete_device') {
+        $idArticulo = (int)($body['idArticulo'] ?? 0);
+        if ($idArticulo <= 0) v1Error('idArticulo is required.', 400, 'validation');
+        
+        $articulo = obtenerArticuloPorId($idArticulo);
+        if (!$articulo) v1Error('Device not found.', 404, 'not_found');
+
+        $ok = eliminarArticulo($idArticulo);
+        if (!$ok) v1Error('Could not delete device.', 500, 'error');
+        v1Ok(['message' => 'Device deleted.']);
+    }
+
     // Inventory item actions
     if ($action === 'create_item') {
         $nombre = $body['nombreArticulo'] ?? '';

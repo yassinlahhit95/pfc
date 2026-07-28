@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_exception.dart';
 import '../theme/app_theme.dart';
+import 'skeleton_loader.dart';
 
 /// Renders an [AsyncValue] with consistent loading/error/data handling
 /// across every feature screen, so each screen only has to describe its
@@ -23,7 +24,7 @@ class AsyncView<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return value.when(
       data: (d) => data(context, d),
-      loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2.4)),
+      loading: () => const SkeletonLoader(),
       error: (error, stack) {
         // Unexpected (non-API) errors are logged with their real type +
         // stack trace — the UI only ever shows a friendly fallback message,
@@ -92,11 +93,15 @@ class EmptyState extends StatelessWidget {
     required this.icon,
     required this.title,
     this.description,
+    this.actionText,
+    this.onAction,
   });
 
   final IconData icon;
   final String title;
   final String? description;
+  final String? actionText;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +127,10 @@ class EmptyState extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+            ],
+            if (actionText != null && onAction != null) ...[
+              const SizedBox(height: Space.lg),
+              FilledButton(onPressed: onAction, child: Text(actionText!)),
             ],
           ],
         ),

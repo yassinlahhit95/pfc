@@ -17,22 +17,44 @@ Future<void> _openComprobante(BuildContext context, String url) async {
   }
 }
 
-class PaymentsScreen extends StatelessWidget {
+class PaymentsScreen extends StatefulWidget {
   const PaymentsScreen({super.key});
 
   @override
+  State<PaymentsScreen> createState() => _PaymentsScreenState();
+}
+
+class _PaymentsScreenState extends State<PaymentsScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Pagos'),
-          bottom: const TabBar(tabs: [
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pagos'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
             Tab(text: 'Todos'),
             Tab(text: 'Pendientes'),
-          ]),
+          ],
         ),
-        body: const TabBarView(children: [_AllPaymentsTab(), _PendingPaymentsTab()]),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [_AllPaymentsTab(), _PendingPaymentsTab()],
       ),
     );
   }
@@ -115,6 +137,7 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
                       child: ListView.builder(
                         padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
                         itemCount: items.length,
+                        itemExtent: 100, // ponytail: optimize list rendering
                         itemBuilder: (context, i) => _PaymentReviewCard(
                           payment: items[i],
                           onResolved: () => ref.invalidate(paymentsProvider),
@@ -150,6 +173,7 @@ class _PendingPaymentsTab extends ConsumerWidget {
           child: ListView.builder(
             padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: items.length,
+            itemExtent: 90, // ponytail: optimize list rendering
             itemBuilder: (context, i) {
               final p = items[i];
               final deuda = double.tryParse(p.deuda) ?? 0;

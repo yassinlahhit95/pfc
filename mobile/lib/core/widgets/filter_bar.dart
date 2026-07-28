@@ -31,8 +31,17 @@ class FilterPill<T> extends StatelessWidget {
       offset: const Offset(0, 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
       itemBuilder: (context) => [
-        PopupMenuItem<T?>(value: null, child: Text(allLabel)),
-        for (final o in options) PopupMenuItem<T?>(value: o.$1, child: Text(o.$2)),
+        CheckedPopupMenuItem<T?>(
+          value: null,
+          checked: value == null,
+          child: Text(allLabel),
+        ),
+        for (final o in options)
+          CheckedPopupMenuItem<T?>(
+            value: o.$1,
+            checked: value == o.$1,
+            child: Text(o.$2),
+          ),
       ],
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),

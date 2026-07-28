@@ -56,6 +56,7 @@ $etiquetas = [
     'feature_ra_ce'        => 'Eval. LOMLOE (RA/CE)',
     'feature_fp_dual'      => 'FP Dual / Empresas',
     'feature_fct'          => 'FCT',
+    'feature_modulos'      => 'Módulos Académicos',
     'feature_academico_config' => 'Motor de Calificaciones Configurable',
     'prematricula_filtrar_niveles' => 'Filtrado de niveles en Pre-Matrícula',
 ];

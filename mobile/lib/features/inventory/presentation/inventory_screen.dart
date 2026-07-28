@@ -11,6 +11,7 @@ import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../data/inventory_repository.dart';
+import 'device_form_screen.dart';
 import 'inventory_form_screen.dart';
 
 class InventoryScreen extends StatelessWidget {
@@ -79,6 +80,36 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
     }
   }
 
+  Future<void> _openForm([Device? device]) async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => DeviceFormScreen(device: device)));
+  }
+
+  Future<void> _deleteDevice(BuildContext context, Device device) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Eliminar Dispositivo'),
+        content: Text('¿Seguro que deseas eliminar "${device.nombre}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancelar')),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      try {
+        await ref.read(inventoryRepositoryProvider).deleteDevice(device.id);
+        ref.invalidate(devicesProvider);
+      } catch (e) {
+        if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final devicesAsync = ref.watch(devicesProvider);
@@ -99,8 +130,14 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
           return matchesSearch && matchesStatus;
         }).toList();
 
-        return Column(
-          children: [
+        return Scaffold(
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: _openForm,
+            icon: const Icon(Icons.add),
+            label: const Text('Añadir Dispositivo'),
+          ),
+          body: Column(
+            children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
               child: TextField(
@@ -165,6 +202,18 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
                                   )
                                 else
                                   StatusPill(label: d.estado, color: color),
+                                PopupMenuButton(
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: Space.md), Text('Editar')]),
+                                      onTap: () => _openForm(d),
+                                    ),
+                                    PopupMenuItem(
+                                      child: const Row(children: [Icon(Icons.delete_outlined, color: Colors.red), SizedBox(width: Space.md), Text('Eliminar', style: TextStyle(color: Colors.red))]),
+                                      onTap: () => _deleteDevice(context, d),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           );
@@ -173,6 +222,7 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
                     ),
             ),
           ],
+        ),
         );
       },
     );

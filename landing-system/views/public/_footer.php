@@ -36,7 +36,7 @@ if (!empty($cfg['telefonoCentro'])) {
     </div>
     <div class="lp-footer-cta-botones">
       <?php if ($prematriculaFooter): ?>
-      <a href="vistas/admisiones/pre-matricula.php" class="lp-boton-primario lp-boton-grande">
+      <a href="/vistas/admisiones/pre-matricula.php" class="lp-boton-primario lp-boton-grande">
         <i class="fas fa-file-signature"></i> Pre-matrícula online
       </a>
       <?php endif; ?>
@@ -81,13 +81,13 @@ if (!empty($cfg['telefonoCentro'])) {
         <a href="<?= $homePrefixFooter ?: '/' ?>#inicio" style="break-inside: avoid;">Inicio</a>
         <?php foreach ($menuFooter as $ancla => $info):
             if (!empty($info['url'])) { $enlace = $info['url']; }
-            elseif (!empty($info['separado'])) { $enlace = 'vistas/contacto.php'; }
+            elseif (!empty($info['separado'])) { $enlace = '/vistas/contacto.php'; }
             else { $enlace = $homePrefixFooter . '#' . Security::escapeHtml($ancla); }
         ?>
         <a href="<?= Security::escapeHtml($enlace) ?>" style="break-inside: avoid;"><?= Security::escapeHtml($info['texto']) ?></a>
         <?php endforeach; ?>
         <?php if (!isset($menuFooter['noticias'])): ?>
-        <a href="vistas/blog.php" style="break-inside: avoid;">Blog</a>
+        <a href="/vistas/blog.php" style="break-inside: avoid;">Blog</a>
         <?php endif; ?>
       </div>
     </div>
@@ -110,14 +110,14 @@ if (!empty($cfg['telefonoCentro'])) {
     <!-- Acceso rápido + legal -->
     <div class="lp-footer-col">
       <h4>Acceso rápido</h4>
-      <a href="vistas/login.php">Acceso a la plataforma</a>
+      <a href="/vistas/login.php">Acceso a la plataforma</a>
       <?php if ($prematriculaFooter): ?>
-      <a href="vistas/admisiones/pre-matricula.php">Pre-matrícula online</a>
-      <a href="vistas/admisiones/consultar.php">Consultar mi solicitud</a>
+      <a href="/vistas/admisiones/pre-matricula.php">Pre-matrícula online</a>
+      <a href="/vistas/admisiones/consultar.php">Consultar mi solicitud</a>
       <?php endif; ?>
-      <a href="vistas/legal/aviso-legal.php">Aviso legal</a>
-      <a href="vistas/legal/politica-de-privacidad.php">Política de privacidad</a>
-      <a href="vistas/legal/politica-de-cookies.php">Política de cookies</a>
+      <a href="/vistas/legal/aviso-legal.php">Aviso legal</a>
+      <a href="/vistas/legal/politica-de-privacidad.php">Política de privacidad</a>
+      <a href="/vistas/legal/politica-de-cookies.php">Política de cookies</a>
       <a href="#" id="cookie-prefs-link">Preferencias de cookies</a>
     </div>
 
@@ -127,9 +127,9 @@ if (!empty($cfg['telefonoCentro'])) {
     <div class="lp-contenedor">
       <div>© <?= date('Y') ?> <?= Security::escapeHtml($cfg['nombreCentro']) ?> · Todos los derechos reservados</div>
       <div class="lp-footer-legal-links">
-        <a href="vistas/legal/aviso-legal.php">Aviso Legal</a>
-        <a href="vistas/legal/politica-de-privacidad.php">Privacidad</a>
-        <a href="vistas/legal/politica-de-cookies.php">Cookies</a>
+        <a href="/vistas/legal/aviso-legal.php">Aviso Legal</a>
+        <a href="/vistas/legal/politica-de-privacidad.php">Privacidad</a>
+        <a href="/vistas/legal/politica-de-cookies.php">Cookies</a>
       </div>
     </div>
   </div>
@@ -149,10 +149,10 @@ if (!empty($cfg['telefonoCentro'])) {
 </a>
 <?php endif; ?>
 
-<script src="landing-system/assets/js/landing.js"></script>
+<script src="/landing-system/assets/js/landing.js"></script>
 
-<link rel="stylesheet" href="public/css/features/cookie-consent.css">
-<script src="public/js/core/cookie-consent.js"></script>
+<link rel="stylesheet" href="/public/css/features/cookie-consent.css">
+<script src="/public/js/core/cookie-consent.js"></script>
 <script>
   document.addEventListener('click', function (e) {
     var link = e.target.closest('#cookie-prefs-link');

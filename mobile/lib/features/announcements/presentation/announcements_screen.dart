@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
@@ -20,6 +21,13 @@ class AnnouncementsScreen extends ConsumerStatefulWidget {
 class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
   String _searchQuery = '';
   String? _selectedDestinatario;
+  final _debounce = Debounce();
+
+  @override
+  void dispose() {
+    _debounce.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +82,10 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   onChanged: (val) {
-                    setState(() {
-                      _searchQuery = val.trim().toLowerCase();
+                    _debounce(const Duration(milliseconds: 300), () {
+                      setState(() {
+                        _searchQuery = val.trim().toLowerCase();
+                      });
                     });
                   },
                 ),
@@ -212,56 +222,58 @@ class _CreateAnnouncementSheetState extends ConsumerState<_CreateAnnouncementShe
         color: scheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            width: 36,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: Space.lg),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
-          ),
-          Text('Nuevo anuncio', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: Space.xl),
-          TextField(
-            controller: _tituloController,
-            decoration: const InputDecoration(labelText: 'Título'),
-          ),
-          const SizedBox(height: Space.md),
-          TextField(
-            controller: _mensajeController,
-            minLines: 3,
-            maxLines: 6,
-            decoration: const InputDecoration(labelText: 'Contenido'),
-          ),
-          const SizedBox(height: Space.md),
-          Text('Dirigido a', style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: Space.xs),
-          Wrap(
-            spacing: Space.sm,
-            children: [
-              for (final (value, label) in _dirigidoAOptions)
-                ChoiceChip(
-                  label: Text(label),
-                  selected: _dirigidoA == value,
-                  onSelected: (_) => setState(() => _dirigidoA = value),
-                ),
-            ],
-          ),
-          if (_error != null) ...[
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 36,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: Space.lg),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+            ),
+            Text('Nuevo anuncio', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: Space.xl),
+            TextField(
+              controller: _tituloController,
+              decoration: const InputDecoration(labelText: 'Título'),
+            ),
             const SizedBox(height: Space.md),
-            Text(_error!, style: TextStyle(color: scheme.error)),
+            TextField(
+              controller: _mensajeController,
+              minLines: 3,
+              maxLines: 6,
+              decoration: const InputDecoration(labelText: 'Contenido'),
+            ),
+            const SizedBox(height: Space.md),
+            Text('Dirigido a', style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: Space.xs),
+            Wrap(
+              spacing: Space.sm,
+              children: [
+                for (final (value, label) in _dirigidoAOptions)
+                  ChoiceChip(
+                    label: Text(label),
+                    selected: _dirigidoA == value,
+                    onSelected: (_) => setState(() => _dirigidoA = value),
+                  ),
+              ],
+            ),
+            if (_error != null) ...[
+              const SizedBox(height: Space.md),
+              Text(_error!, style: TextStyle(color: scheme.error)),
+            ],
+            const SizedBox(height: Space.xl),
+            FilledButton(
+              onPressed: _sending ? null : _submit,
+              child: _sending
+                  ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Text('Publicar'),
+            ),
           ],
-          const SizedBox(height: Space.xl),
-          FilledButton(
-            onPressed: _sending ? null : _submit,
-            child: _sending
-                ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Publicar'),
-          ),
-        ],
+        ),
       ),
     );
   }

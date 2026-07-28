@@ -90,9 +90,9 @@ $mostrarTopbar = ($ajustes['mostrarTopbar'] ?? 'si') === 'si';
       <button class="lp-btn-theme" id="lp-theme-toggle" aria-label="Cambiar tema">
         <i class="fas fa-moon"></i>
       </button>
-      <a href="vistas/login.php" class="lp-boton-fantasma">Acceso</a>
+      <a href="/vistas/login.php" class="lp-boton-fantasma">Acceso</a>
       <?php if ($prematriculaOn): ?>
-      <a href="vistas/admisiones/pre-matricula.php" class="lp-boton-primario">Pre-matrícula</a>
+      <a href="/vistas/admisiones/pre-matricula.php" class="lp-boton-primario">Pre-matrícula</a>
       <?php endif; ?>
 
       <button class="lp-nav-burger" id="lp-nav-burger"
@@ -139,9 +139,9 @@ $mostrarTopbar = ($ajustes['mostrarTopbar'] ?? 'si') === 'si';
   <?php endif; ?>
 
   <div class="lp-nav-movil-ctas">
-    <a href="vistas/login.php" class="lp-boton-fantasma">Acceso a la plataforma</a>
+    <a href="/vistas/login.php" class="lp-boton-fantasma">Acceso a la plataforma</a>
     <?php if ($prematriculaOn): ?>
-    <a href="vistas/admisiones/pre-matricula.php" class="lp-boton-primario">
+    <a href="/vistas/admisiones/pre-matricula.php" class="lp-boton-primario">
       <i class="fas fa-file-signature"></i> Pre-matrícula online
     </a>
     <?php endif; ?>

@@ -44,7 +44,7 @@ function listarEstudiantes() {
             FROM estudiantes
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             LEFT JOIN grupos ON estudiantes.idGrupo = grupos.idGrupo
-            WHERE (estudiantes.eliminado = 0 OR estudiantes.eliminado IS NULL)
+            WHERE estudiantes.deleted_at IS NULL
             ORDER BY estudiantes.idEstudiante ASC";
     $res = mysqli_query($con, $sql);
     $rows = [];
@@ -61,7 +61,7 @@ function listarEstudiantesDeProfesor($idProfesor) {
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             WHERE (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
-              AND e.eliminado = 0
+              AND e.deleted_at IS NULL
             ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
@@ -79,7 +79,7 @@ function listarEstudiantesPorCiclo($idCiclo) {
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo
             FROM estudiantes
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
-            WHERE estudiantes.idCiclo = ? AND estudiantes.eliminado = 0
+            WHERE estudiantes.idCiclo = ? AND estudiantes.deleted_at IS NULL
             ORDER BY estudiantes.idEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
@@ -107,7 +107,7 @@ function obtenerEstudiantePorId($idEstudiante) {
 
 function obtenerTokensEstudiantes() {
     $con = obtenerConexion();
-    $sql = "SELECT fcm_token FROM estudiantes WHERE fcm_token IS NOT NULL AND fcm_token != '' AND eliminado = 0";
+    $sql = "SELECT fcm_token FROM estudiantes WHERE fcm_token IS NOT NULL AND fcm_token != '' AND deleted_at IS NULL";
     $resultado = mysqli_query($con, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
@@ -118,7 +118,7 @@ function obtenerTokensEstudiantes() {
 
 function listarIdsEstudiantesActivos(): array {
     $con = obtenerConexion();
-    $resultado = mysqli_query($con, "SELECT idEstudiante FROM estudiantes WHERE eliminado = 0");
+    $resultado = mysqli_query($con, "SELECT idEstudiante FROM estudiantes WHERE deleted_at IS NULL");
     $ids = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $ids[] = (int)$fila['idEstudiante'];
@@ -201,7 +201,7 @@ function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
 
 function softDeleteEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "UPDATE estudiantes SET eliminado=1, fecha_eliminacion=NOW() WHERE idEstudiante=?";
+    $sql = "UPDATE estudiantes SET deleted_at=NOW() WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     return mysqli_stmt_execute($stmt);
@@ -209,7 +209,7 @@ function softDeleteEstudiante($idEstudiante) {
 
 function restaurarEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "UPDATE estudiantes SET eliminado=0, fecha_eliminacion=NULL WHERE idEstudiante=?";
+    $sql = "UPDATE estudiantes SET deleted_at=NULL WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     return mysqli_stmt_execute($stmt);
@@ -220,8 +220,8 @@ function listarEstudiantesEliminados() {
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
             FROM estudiantes
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
-            WHERE estudiantes.eliminado = 1
-            ORDER BY estudiantes.fecha_eliminacion DESC";
+            WHERE estudiantes.deleted_at IS NOT NULL
+            ORDER BY estudiantes.deleted_at DESC";
     $res = mysqli_query($con, $sql);
     $rows = [];
     while ($fila = mysqli_fetch_assoc($res)) {
@@ -241,7 +241,7 @@ function eliminarEstudiante($idEstudiante) {
 
 function validarLoginEstudiante($email, $password) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND eliminado = 0";
+    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
@@ -260,7 +260,7 @@ function validarLoginEstudiante($email, $password) {
 
 function estudiantePerteneceACiclo($idEstudiante, $idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT 1 FROM estudiantes WHERE idEstudiante = ? AND idCiclo = ? AND eliminado = 0";
+    $sql = "SELECT 1 FROM estudiantes WHERE idEstudiante = ? AND idCiclo = ? AND deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -271,7 +271,7 @@ function estudiantePerteneceACiclo($idEstudiante, $idCiclo) {
 function estudiantePerteneceAProfesor($idEstudiante, $idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT 1 FROM estudiantes e
-            WHERE e.idEstudiante = ? AND e.eliminado = 0
+            WHERE e.idEstudiante = ? AND e.deleted_at IS NULL
             AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
     $stmt = mysqli_prepare($con, $sql);

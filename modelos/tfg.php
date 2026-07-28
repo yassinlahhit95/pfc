@@ -74,7 +74,7 @@ function contarTFGsDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total
             FROM estudiantes e
-            WHERE e.eliminado = 0
+            WHERE e.deleted_at IS NULL
               AND (e.archivoTFG IS NOT NULL AND e.archivoTFG != '')
               AND " . _sqlCiclosDeProfesor();
 
@@ -96,7 +96,7 @@ function listarTFGsPorProfesor($idProfesor) {
     $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
-            WHERE e.eliminado = 0
+            WHERE e.deleted_at IS NULL
               AND (e.archivoTFG IS NOT NULL AND e.archivoTFG != '')
               AND " . _sqlCiclosDeProfesor() . "
             ORDER BY e.nombreEstudiante ASC";
@@ -180,7 +180,7 @@ function listarEvaluacionTFG($idCiclo = null) {
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
-                WHERE e.idCiclo = ? AND e.eliminado = 0
+                WHERE e.idCiclo = ? AND e.deleted_at IS NULL
                 ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idCiclo);
@@ -190,7 +190,7 @@ function listarEvaluacionTFG($idCiclo = null) {
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
-                WHERE e.eliminado = 0
+                WHERE e.deleted_at IS NULL
                 ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
     }
@@ -214,7 +214,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
-                WHERE e.idCiclo = ? AND e.eliminado = 0
+                WHERE e.idCiclo = ? AND e.deleted_at IS NULL
                   AND " . _sqlCiclosDeProfesor() . "
                 ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
@@ -225,7 +225,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
-                WHERE e.eliminado = 0 AND " . _sqlCiclosDeProfesor() . "
+                WHERE e.deleted_at IS NULL AND " . _sqlCiclosDeProfesor() . "
                 ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);

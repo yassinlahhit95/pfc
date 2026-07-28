@@ -36,7 +36,15 @@ if (isset($_POST['guardarArticulo'])) {
     }
 
     if (empty($errores)) {
-        if (insertarArticulo($nombre, $numeroSerie)) {
+        $foto = null;
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $dir = __DIR__ . '/../../../public/uploads/equipos/';
+            if (!is_dir($dir)) mkdir($dir, 0777, true);
+            $foto = uniqid('dev_') . '.jpg';
+            move_uploaded_file($_FILES['foto']['tmp_name'], $dir . $foto);
+        }
+
+        if (insertarArticulo($nombre, $numeroSerie, $foto)) {
             registrarAccion('insertar', 'inventario', null, "$nombre · S/N:$numeroSerie");
             if ($isAjax) {
                 header('Content-Type: application/json');

@@ -8,6 +8,7 @@ class Device {
     required this.nombre,
     required this.numeroSerie,
     required this.estado,
+    this.foto,
   });
 
   factory Device.fromJson(Map<String, dynamic> json) => Device(
@@ -15,12 +16,14 @@ class Device {
         nombre: json['nombreArticulo'] as String? ?? '',
         numeroSerie: json['numeroSerie'] as String? ?? '',
         estado: json['estado'] as String? ?? '',
+        foto: json['foto'] as String?,
       );
 
   final int id;
   final String nombre;
   final String numeroSerie;
   final String estado;
+  final String? foto;
 }
 
 class Loan {
@@ -96,6 +99,43 @@ class InventoryRepository {
 
   Future<void> devolver(int idPrestamo) {
     return _client.post('/inventory.php', data: {'action': 'devolver', 'idPrestamo': idPrestamo});
+  }
+
+  Future<void> addDevice({
+    required String nombreArticulo,
+    required String numeroSerie,
+    String? fotoBase64,
+  }) {
+    return _client.post('/inventory.php', data: {
+      'action': 'add_device',
+      'nombreArticulo': nombreArticulo,
+      'numeroSerie': numeroSerie,
+      if (fotoBase64 != null) 'fotoBase64': fotoBase64,
+    });
+  }
+
+  Future<void> editDevice({
+    required int idArticulo,
+    required String nombreArticulo,
+    required String numeroSerie,
+    required String estado,
+    String? fotoBase64,
+  }) {
+    return _client.post('/inventory.php', data: {
+      'action': 'edit_device',
+      'idArticulo': idArticulo,
+      'nombreArticulo': nombreArticulo,
+      'numeroSerie': numeroSerie,
+      'estado': estado,
+      if (fotoBase64 != null) 'fotoBase64': fotoBase64,
+    });
+  }
+
+  Future<void> deleteDevice(int idArticulo) {
+    return _client.post('/inventory.php', data: {
+      'action': 'delete_device',
+      'idArticulo': idArticulo,
+    });
   }
 
   // Generic inventory items CRUD

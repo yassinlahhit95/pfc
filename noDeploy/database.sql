@@ -29,8 +29,8 @@ CREATE TABLE `academic_config` (
   `anioAcademico` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tipoEducacion` enum('grado_basico','grado_medio','grado_superior','colegio','otro') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
   `activo` tinyint(1) NOT NULL DEFAULT '1',
-  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idConfig`),
   KEY `idx_ac_centro_activo` (`idCentro`,`activo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -96,7 +96,7 @@ CREATE TABLE `academic_templates` (
   `descripcion` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `configuracionJson` json NOT NULL,
   `editable` tinyint(1) NOT NULL DEFAULT '1',
-  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idPlantilla`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -215,7 +215,10 @@ CREATE TABLE `asistencias` (
   PRIMARY KEY (`idAsistencia`),
   UNIQUE KEY `idx_asistencia_unica` (`idEstudiante`,`idModulo`,`fecha`),
   KEY `idModulo` (`idModulo`),
-  KEY `idProfesor` (`idProfesor`)
+  KEY `idProfesor` (`idProfesor`),
+  CONSTRAINT `fk_asistencias_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_asistencias_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_asistencias_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -406,13 +409,14 @@ CREATE TABLE `aula_archivos` (
   `idProfesor` int NOT NULL,
   `version` int NOT NULL DEFAULT '1',
   `fijado` tinyint(1) NOT NULL DEFAULT '0',
-  `eliminado` tinyint(1) NOT NULL DEFAULT '0',
-  `fechaEliminacion` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   `fechaSubida` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idArchivo`),
   KEY `idx_aula_arch_mod` (`idModulo`),
   KEY `idx_aula_arch_carp` (`idCarpeta`),
-  KEY `idx_aula_arch_elim` (`eliminado`),
+  KEY `idx_aula_arch_deleted` (`deleted_at`),
   KEY `fk_aulaarch_prof` (`idProfesor`),
   CONSTRAINT `fk_aulaarch_carp` FOREIGN KEY (`idCarpeta`) REFERENCES `aula_carpetas` (`idCarpeta`) ON DELETE SET NULL,
   CONSTRAINT `fk_aulaarch_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
@@ -478,12 +482,13 @@ CREATE TABLE `aula_carpetas` (
   `color` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#0ea5e9',
   `icono` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'fa-folder',
   `fijado` tinyint(1) NOT NULL DEFAULT '0',
-  `eliminado` tinyint(1) NOT NULL DEFAULT '0',
-  `fechaEliminacion` datetime DEFAULT NULL,
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`idCarpeta`),
   KEY `idx_aula_carp_mod` (`idModulo`),
   KEY `idx_aula_carp_padre` (`idPadre`),
+  KEY `idx_aula_carp_deleted` (`deleted_at`),
   KEY `fk_aulacarp_prof` (`idProfesor`),
   CONSTRAINT `fk_aulacarp_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulacarp_padre` FOREIGN KEY (`idPadre`) REFERENCES `aula_carpetas` (`idCarpeta`) ON DELETE CASCADE,
@@ -807,8 +812,8 @@ CREATE TABLE `blog_posts` (
   `publicado` tinyint(1) NOT NULL DEFAULT '0',
   `destacado` tinyint(1) NOT NULL DEFAULT '0',
   `fechaPublicacion` datetime DEFAULT NULL,
-  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idPost`),
   UNIQUE KEY `slug` (`slug`),
   KEY `idx_publicado` (`publicado`,`fechaPublicacion`)
@@ -937,7 +942,8 @@ CREATE TABLE `calificaciones_periodo` (
   `nota` decimal(4,2) DEFAULT NULL,
   `estado` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `observaciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idCalificacion`),
   UNIQUE KEY `uk_cp_est_mod_periodo_tipo` (`idEstudiante`,`idModulo`,`idPeriodo`,`idTipo`),
   KEY `idModulo` (`idModulo`),
@@ -1172,6 +1178,7 @@ DROP TABLE IF EXISTS `ciclos`;
 CREATE TABLE `ciclos` (
   `idCiclo` int NOT NULL AUTO_INCREMENT,
   `nombreCiclo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipoFormacion` enum('basica','medio','superior') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'medio',
   `abreviaturaCiclo` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `precioCiclo` decimal(10,2) DEFAULT NULL,
   `idNivel` int DEFAULT NULL,
@@ -1275,6 +1282,7 @@ CREATE TABLE `configuracion_centro` (
   `prematricula_filtrar_niveles` tinyint(1) NOT NULL DEFAULT '0',
   `feature_academico_config` tinyint(1) NOT NULL DEFAULT '0',
   `feature_fct` tinyint(1) NOT NULL DEFAULT '1',
+  `feature_modulos` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`idConfig`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1498,8 +1506,9 @@ CREATE TABLE `estudiantes` (
   `tituloTFG` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fechaSubidaTFG` datetime DEFAULT NULL,
   `fcm_token` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `eliminado` tinyint(1) NOT NULL DEFAULT '0',
-  `fecha_eliminacion` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
   `mfa_secret` text COLLATE utf8mb4_unicode_ci,
   `mfa_backup_codes` text COLLATE utf8mb4_unicode_ci,
@@ -1510,6 +1519,7 @@ CREATE TABLE `estudiantes` (
   KEY `idx_est_ciclo` (`idCiclo`),
   KEY `idx_est_curso` (`idCurso`),
   KEY `idx_est_grupo` (`idGrupo`),
+  KEY `idx_estudiantes_deleted` (`deleted_at`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL,
   CONSTRAINT `fk_estudiantes_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1916,8 +1926,8 @@ CREATE TABLE `landing_ciclos` (
   `publicado` tinyint(1) NOT NULL DEFAULT '0',
   `destacado` tinyint(1) NOT NULL DEFAULT '0',
   `orden` int NOT NULL DEFAULT '0',
-  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idLandingCiclo`),
   UNIQUE KEY `slug` (`slug`),
   KEY `idx_publicado` (`publicado`,`orden`)
@@ -1947,7 +1957,7 @@ CREATE TABLE `landing_config` (
   `plantilla_pub` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ajustes_pub` json DEFAULT NULL,
   `publicadoEn` datetime DEFAULT NULL,
-  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idLanding`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2811,7 +2821,7 @@ CREATE TABLE `fct_diarios` (
   `estado` enum('pendiente','aprobado','rechazado') NOT NULL DEFAULT 'pendiente',
   `observacionesTutor` text DEFAULT NULL,
   `tokenAprobacion` varchar(64) DEFAULT NULL,
-  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idDiario`),
   KEY `idx_fct_diarios_fct` (`idFCT`),
   CONSTRAINT `fk_fct_diarios_fct` FOREIGN KEY (`idFCT`) REFERENCES `fct` (`idFCT`) ON DELETE CASCADE

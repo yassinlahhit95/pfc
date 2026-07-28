@@ -12,7 +12,7 @@ if ($idConfig > 0) {
     if (!$configActiva) {
         $configActiva = dbFetchOne("SELECT * FROM academic_config ORDER BY idConfig DESC LIMIT 1");
     }
-    $idConfig = $configActiva['idConfig'] ?? null;
+    $idConfig = $configActiva ? ($configActiva['idConfig'] ?? null) : null;
 }
 $motorActivo = motorAcademicoActivo();
 

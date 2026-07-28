@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_fp_dual');
 require_once __DIR__ . "/../../../modelos/fp_dual.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 

@@ -18,26 +18,48 @@ class ConversationsScreen extends ConsumerStatefulWidget {
   ConsumerState<ConversationsScreen> createState() => _ConversationsScreenState();
 }
 
-class _ConversationsScreenState extends ConsumerState<ConversationsScreen> {
+class _ConversationsScreenState extends ConsumerState<ConversationsScreen> with WidgetsBindingObserver {
   Timer? _pollTimer;
+  AppLifecycleState? _lastLifecycleState;
+  // ponytail: adaptive backoff: starts at 30s when backgrounded, 8s when foregrounded
+  int _pollIntervalSeconds = 8;
 
   @override
   void initState() {
     super.initState();
-    // This screen stays mounted in the background (it's a bottom-nav tab
-    // inside an IndexedStack), so this timer keeps the conversation list
-    // and unread badges fresh even while another tab is showing — the
-    // closest approximation to "live" we have until push notifications
-    // (Phase 2 backend exists, not wired client-side yet) land.
-    _pollTimer = Timer.periodic(const Duration(seconds: 8), (_) {
-      if (mounted) ref.invalidate(chatConversationsProvider);
-    });
+    WidgetsBinding.instance.addObserver(this);
+    _startPolling();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pollTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lastLifecycleState = state;
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      // App backgrounded — stop polling to save battery
+      _pollTimer?.cancel();
+      _pollTimer = null;
+    } else if (state == AppLifecycleState.resumed) {
+      // App foregrounded — resume polling at normal rate
+      _pollIntervalSeconds = 8;
+      _startPolling();
+      if (mounted) ref.invalidate(chatConversationsProvider);
+    }
+  }
+
+  void _startPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(Duration(seconds: _pollIntervalSeconds), (_) {
+      if (mounted && _lastLifecycleState == AppLifecycleState.resumed) {
+        ref.invalidate(chatConversationsProvider);
+      }
+    });
   }
 
   @override

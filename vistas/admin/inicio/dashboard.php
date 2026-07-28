@@ -484,7 +484,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
               if ($contadorPagos >= 8) break;
             ?>
               <tr style="border-bottom:1px solid var(--border, #e2e8f0);">
-                <td style="padding:10px 14px; font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante'] . ' ' . ($estudiantePendiente['apellidosEstudiante'] ?? '')) ?></td>
+                <td style="padding:10px 14px; font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante']) ?></td>
                 <td style="padding:10px 14px;"><span class="ann-item-tag"><?= Security::escapeHtml($estudiantePendiente['nombreCiclo']) ?></span></td>
                 <td style="padding:10px 14px; color:var(--verde, #16a34a);"><?= number_format($estudiantePendiente['totalPagado'], 2) ?> €</td>
                 <td style="padding:10px 14px; color:var(--rojo, #dc2626); font-weight:600;"><?= number_format($estudiantePendiente['deuda'], 2) ?> €</td>

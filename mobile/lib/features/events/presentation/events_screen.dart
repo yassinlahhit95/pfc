@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/events_repository.dart';
@@ -16,6 +17,13 @@ class EventsScreen extends ConsumerStatefulWidget {
 
 class _EventsScreenState extends ConsumerState<EventsScreen> {
   String _searchQuery = '';
+  final _debounce = Debounce();
+
+  @override
+  void dispose() {
+    _debounce.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +61,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   onChanged: (val) {
-                    setState(() {
-                      _searchQuery = val.trim().toLowerCase();
+                    _debounce(const Duration(milliseconds: 300), () {
+                      setState(() {
+                        _searchQuery = val.trim().toLowerCase();
+                      });
                     });
                   },
                 ),

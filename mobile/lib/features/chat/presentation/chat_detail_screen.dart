@@ -19,7 +19,7 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
   ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
-class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> with WidgetsBindingObserver {
   final _messages = <ChatMessage>[];
   final _scrollController = ScrollController();
   final _inputController = TextEditingController();
@@ -28,19 +28,34 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   bool _sending = false;
   bool _polling = false;
   Object? _error;
+  AppLifecycleState? _lastLifecycleState;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadInitial();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pollTimer?.cancel();
     _scrollController.dispose();
     _inputController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lastLifecycleState = state;
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      _pollTimer?.cancel();
+      _pollTimer = null;
+    } else if (state == AppLifecycleState.resumed) {
+      _startPolling();
+      if (mounted) _poll();
+    }
   }
 
   Future<void> _loadInitial() async {
@@ -64,33 +79,35 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   void _startPolling() {
-    // 4s while a conversation is actively open — push notifications aren't
-    // wired up client-side yet (backend exists, native FCM setup doesn't),
-    // so this is the only delivery mechanism right now and needs to feel
-    // responsive. Safe well under the 120 req/min per-token rate limit
-    // (15 polls/min from this alone).
-    _pollTimer = Timer.periodic(const Duration(seconds: 4), (_) => _poll());
+    if (_lastLifecycleState != AppLifecycleState.resumed) return;
+    // ponytail: adaptive polling: 8s normal, stops when backgrounded
+    _pollTimer = Timer.periodic(const Duration(seconds: 8), (_) => _poll());
   }
 
   Future<void> _poll() async {
-    // Guards against the periodic Timer and the post-send manual call
-    // overlapping — without this, two concurrent fetches can both read the
-    // same "after" cursor and both append the same batch, producing visible
-    // duplicates.
-    if (_polling) return;
+    if (_polling || _lastLifecycleState != AppLifecycleState.resumed) return;
     _polling = true;
     try {
       final repo = ref.read(chatRepositoryProvider);
       final lastId = _messages.isNotEmpty ? _messages.last.id : null;
       final newOnes = await repo.fetchMessages(widget.convId, after: lastId);
-      if (!mounted || newOnes.isEmpty) return;
-      final knownIds = _messages.map((m) => m.id).toSet();
-      final toAdd = newOnes.where((m) => !knownIds.contains(m.id));
+      if (!mounted) {
+        _polling = false;
+        return;
+      }
+
+      // Server-side cursor (after: lastId) already deduplicates — no need for client-side Set
+      // Mark any pending messages as sent (server confirmed delivery)
       setState(() {
-        _messages.addAll(toAdd);
-        _messages.sort((a, b) => a.id.compareTo(b.id));
+        // Remove pending messages since they're being replaced with real ones from server
+        _messages.removeWhere((m) => m.pending);
+        // Add the confirmed real messages
+        _messages.addAll(newOnes);
       });
-      _scrollToBottom();
+
+      if (newOnes.isNotEmpty) {
+        _scrollToBottom();
+      }
     } catch (_) {
       // Silent — this is a background refresh, don't interrupt the user.
     } finally {
@@ -112,20 +129,44 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   Future<void> _send() async {
     final text = _inputController.text.trim();
     if (text.isEmpty || _sending) return;
-    setState(() => _sending = true);
+
+    final session = ref.read(sessionControllerProvider).valueOrNull;
+    final myId = session?.userId;
+    final myRol = session?.role == UserRole.director ? 'admin' : session?.role.name;
+
+    // Optimistic insert — add pending message immediately
+    if (myId != null && myRol != null) {
+      setState(() {
+        _messages.add(ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch, // Temporary ID
+          emisorRol: myRol,
+          emisorId: myId,
+          emisorNombre: 'Tú', // Display as "You" for pending messages
+          contenido: text,
+          fecha: DateTime.now().toString(),
+          leido: true,
+          pending: true,
+        ));
+      });
+      _scrollToBottom();
+    }
+
     _inputController.clear();
     try {
       final repo = ref.read(chatRepositoryProvider);
       await repo.sendMessage(convId: widget.convId, contenido: text);
+      // Poll to get the real ID and confirm delivery
       await _poll();
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No se pudo enviar el mensaje.')),
         );
+        // Remove optimistic message on error
+        setState(() {
+          _messages.removeWhere((m) => m.pending && m.contenido == text);
+        });
       }
-    } finally {
-      if (mounted) setState(() => _sending = false);
     }
   }
 
@@ -201,22 +242,68 @@ class _Bubble extends StatelessWidget {
             bottomLeft: Radius.circular(isMine ? Radii.lg : 4),
             bottomRight: Radius.circular(isMine ? 4 : Radii.lg),
           ),
+          border: message.pending ? Border.all(color: scheme.outlineVariant, width: 1) : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              message.contenido,
-              style: TextStyle(color: isMine ? scheme.onPrimary : scheme.onSurface),
+            Opacity(
+              opacity: message.pending ? 0.7 : 1.0,
+              child: Text(
+                message.contenido,
+                style: TextStyle(color: isMine ? scheme.onPrimary : scheme.onSurface),
+              ),
             ),
             const SizedBox(height: 3),
-            Text(
-              time != null ? DateFormat.Hm().format(time) : '',
-              style: TextStyle(
-                fontSize: 10,
-                color: (isMine ? scheme.onPrimary : scheme.onSurface).withValues(alpha: 0.65),
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  time != null ? DateFormat.Hm().format(time) : '',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: (isMine ? scheme.onPrimary : scheme.onSurface).withValues(alpha: 0.65),
+                  ),
+                ),
+                if (isMine) ...[
+                  const SizedBox(width: 4),
+                  if (message.pending)
+                    SizedBox(
+                      width: 10,
+                      height: 10,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(scheme.onPrimary),
+                      ),
+                    )
+                  else if (message.readAt != null)
+                    // Double checkmark: read by recipient
+                    Opacity(
+                      opacity: 0.8,
+                      child: Text(
+                        '✓✓',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: scheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  else
+                    // Single checkmark: sent to server
+                    Opacity(
+                      opacity: 0.6,
+                      child: Text(
+                        '✓',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isMine ? scheme.onPrimary : scheme.onSurface,
+                        ),
+                      ),
+                    ),
+                ],
+              ],
             ),
           ],
         ),

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/FPSystem.php";
 require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
@@ -157,7 +158,7 @@ function _nav_active_est($check) {
         <?php if (in_array($seccionActual ?? '', ['calificaciones', 'notas_retos', 'resultados_finales'])) { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_subida_tfg') && ($datosEstudiante_menu['anioEstudio'] ?? '') !== '1º') { ?>
+      <?php if (FeatureGuard::check('feature_subida_tfg') && FPSystem::isTFGYear($datosEstudiante_menu['anioEstudio'] ?? '')) { ?>
       <a href="../pfc/subir.php" class="nav-item<?= _nav_active_est('tfg') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
         <span class="nav-label">Mi TFG</span>

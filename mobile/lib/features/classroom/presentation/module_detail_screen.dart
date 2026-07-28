@@ -21,20 +21,18 @@ class ModuleDetailScreen extends ConsumerWidget {
     final isProfesor = role == UserRole.profesor;
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(module.nombre),
           bottom: const TabBar(tabs: [
             Tab(text: 'Archivos'),
-            Tab(text: 'Tareas'),
             Tab(text: 'Sesiones'),
           ]),
         ),
         body: TabBarView(
           children: [
             _FilesTab(idModulo: module.id, canFavorite: role == UserRole.estudiante),
-            _TasksTab(idModulo: module.id, isProfesor: isProfesor),
             _SessionsTab(idModulo: module.id, moduleName: module.nombre, isProfesor: isProfesor),
           ],
         ),
@@ -227,6 +225,40 @@ class _FileTile extends ConsumerWidget {
         }
       },
     );
+  }
+}
+
+// ── Helper Tareas Global ──────────────────────────────────────────────────
+
+Future<bool?> showTaskDetailSheet(
+  BuildContext context, {
+  required ClassroomTask task,
+  required bool isProfesor,
+  VoidCallback? onSubmitted,
+}) async {
+  if (isProfesor) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Las entregas y calificaciones se gestionan desde la versión web.')),
+      );
+    }
+    return null;
+  } else {
+    if (task.estado != null) {
+      return showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _ViewSubmissionSheet(task: task),
+      );
+    } else {
+      return showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _SubmitSheet(task: task),
+      );
+    }
   }
 }
 

@@ -3,6 +3,8 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requireJson('feature_modulos');
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
@@ -30,6 +32,19 @@ if (isset($_POST['guardarModulo'])) {
     $errores = [];
     if (empty($nombre))      $errores['nombreModulo'] = "El nombre del módulo es un campo obligatorio.";
     if (empty($idCiclo))     $errores['idCiclo'] = "Debe seleccionar un ciclo formativo.";
+    else {
+        $cicloValido = false;
+        $stmt = $GLOBALS['mysqli']->prepare("SELECT 1 FROM ciclos WHERE idCiclo = ? AND activo = 1");
+        if ($stmt) {
+            $stmt->bind_param('i', $idCiclo);
+            $stmt->execute();
+            $cicloValido = $stmt->get_result()->num_rows > 0;
+            $stmt->close();
+        }
+        if (!$cicloValido) {
+            $errores['idCiclo'] = "El ciclo formativo seleccionado no es válido o está inactivo.";
+        }
+    }
     if (empty($horasMaximas)) {
         $errores['horasMaximas'] = "Las horas totales del módulo son un campo obligatorio.";
     } elseif (!is_numeric($horasMaximas)) {
