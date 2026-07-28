@@ -1548,8 +1548,18 @@ CREATE TABLE `eventos` (
   `fechaEvento` date NOT NULL,
   `horaEvento` time DEFAULT NULL,
   `ubicacionEvento` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idCreador` int NOT NULL DEFAULT '1',
+  `tipo_visibilidad` enum('publica','roles','personalizado','privada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'publica',
+  `audiencia_json` json DEFAULT NULL,
+  `activo` tinyint DEFAULT '1',
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idEvento`),
-  KEY `idx_evento_fecha` (`fechaEvento`)
+  KEY `idx_evento_fecha` (`fechaEvento`),
+  KEY `idx_evento_creador` (`idCreador`),
+  KEY `idx_evento_activo` (`activo`),
+  KEY `idx_evento_fecha_activo` (`fechaEvento`,`activo`),
+  CONSTRAINT `fk_eventos_creador` FOREIGN KEY (`idCreador`) REFERENCES `directores` (`idDirector`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1559,7 +1569,83 @@ CREATE TABLE `eventos` (
 
 LOCK TABLES `eventos` WRITE;
 /*!40000 ALTER TABLE `eventos` DISABLE KEYS */;
+INSERT INTO `eventos` VALUES
+(1,'Reunión Junta Directiva','Reunión trimestral de la junta directiva del centro','2026-07-29','10:00:00','Sala de Dirección',1,'roles','{\"roles\": [\"director\", \"secretaria\"]}',1,'2026-07-28 08:00:00','2026-07-28 08:00:00'),
+(2,'Cierre de Calificaciones','Cierre de calificaciones del primer trimestre','2026-08-04','09:00:00','Campus Principal',1,'roles','{\"roles\": [\"profesor\", \"director\", \"secretaria\"]}',1,'2026-07-28 09:00:00','2026-07-28 09:00:00'),
+(3,'Evento Público Centro','Jornada de puertas abiertas del centro de formación','2026-08-11','16:00:00','Área de Informática',1,'publica',NULL,1,'2026-07-28 10:00:00','2026-07-28 10:00:00');
 /*!40000 ALTER TABLE `eventos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `recordatorios`
+--
+
+DROP TABLE IF EXISTS `recordatorios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `recordatorios` (
+  `idRecordatorio` int NOT NULL AUTO_INCREMENT,
+  `idEvento` int NOT NULL,
+  `tipo_recordatorio` enum('24h_antes','1h_antes','en_inicio') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `minutos_antes` int NOT NULL,
+  `activo` tinyint DEFAULT '1',
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idRecordatorio`),
+  UNIQUE KEY `uk_evento_tipo` (`idEvento`,`tipo_recordatorio`),
+  CONSTRAINT `fk_recordatorios_evento` FOREIGN KEY (`idEvento`) REFERENCES `eventos` (`idEvento`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `recordatorios`
+--
+
+LOCK TABLES `recordatorios` WRITE;
+/*!40000 ALTER TABLE `recordatorios` DISABLE KEYS */;
+INSERT INTO `recordatorios` VALUES
+(1,1,'24h_antes',1440,1,'2026-07-28 08:10:00'),
+(2,1,'1h_antes',60,1,'2026-07-28 08:15:00'),
+(3,1,'en_inicio',0,1,'2026-07-28 08:20:00'),
+(4,2,'1h_antes',60,1,'2026-07-28 09:05:00'),
+(5,3,'24h_antes',1440,1,'2026-07-28 10:10:00');
+/*!40000 ALTER TABLE `recordatorios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notificaciones`
+--
+
+DROP TABLE IF EXISTS `notificaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notificaciones` (
+  `idNotificacion` int NOT NULL AUTO_INCREMENT,
+  `idEvento` int NOT NULL,
+  `idUsuario` int NOT NULL,
+  `tipoUsuario` enum('director','profesor','secretaria','estudiante','tutor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idRecordatorio` int DEFAULT NULL,
+  `fecha_programada` datetime NOT NULL,
+  `fecha_enviada` datetime DEFAULT NULL,
+  `leido` tinyint DEFAULT '0',
+  `estado` enum('pendiente','enviado','fallido') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idNotificacion`),
+  KEY `idx_notif_usuario` (`idUsuario`),
+  KEY `idx_notif_evento` (`idEvento`),
+  KEY `idx_notif_programada` (`fecha_programada`),
+  KEY `idx_notif_recordatorio` (`idRecordatorio`),
+  CONSTRAINT `fk_notificaciones_evento` FOREIGN KEY (`idEvento`) REFERENCES `eventos` (`idEvento`) ON DELETE CASCADE,
+  CONSTRAINT `fk_notificaciones_recordatorio` FOREIGN KEY (`idRecordatorio`) REFERENCES `recordatorios` (`idRecordatorio`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notificaciones`
+--
+
+LOCK TABLES `notificaciones` WRITE;
+/*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
