@@ -185,7 +185,7 @@
 
 .cal-dia {
   background: var(--surface);
-  min-height: 80px;
+  min-height: 45px;
   padding: 6px;
   position: relative;
   cursor: pointer;
@@ -250,13 +250,19 @@
   color: var(--accent);
 }
 
+@media (max-width: 1024px) {
+  #cal-widget-mensual {
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   #cal-widget-mensual {
     padding: 12px;
   }
 
   .cal-dia {
-    min-height: 60px;
+    min-height: 40px;
     padding: 4px;
   }
 
@@ -267,5 +273,12 @@
   .cal-evento-mini {
     font-size: 0.7rem;
     padding: 1px 3px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Stack calendar below grid on mobile */
+  div[style*="grid-template-columns: 1fr 350px"] {
+    grid-template-columns: 1fr !important;
   }
 }

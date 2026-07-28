@@ -124,7 +124,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
   </ul>
 </section>
 <?php endif; ?>
-<section class="dash-grid">
+
+<div style="display: grid; grid-template-columns: 1fr 350px; gap: 24px; margin-bottom: 24px; align-items: start;">
+  <section class="dash-grid">
 
   <!-- A: Admisiones -->
   <?php if (FeatureGuard::check('feature_prematricula')): ?>
@@ -409,10 +411,11 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
-</section>
+  </section>
 
-<!-- Calendar widget -->
-<?php include __DIR__ . '/../../comunes/eventos/_calendario_widget.php'; ?>
+  <!-- Calendar widget -->
+  <?php include __DIR__ . '/../../comunes/eventos/_calendario_widget.php'; ?>
+</div>
 
 <!-- Modal evento (para calendar widget CRUD) -->
 <?php $rolBase = 'admin'; include __DIR__ . '/../../comunes/eventos/_modal_evento.php'; ?>
