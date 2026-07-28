@@ -17,6 +17,8 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 require_once __DIR__ . "/../../../include/Cache.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
+require_once __DIR__ . "/../../../modelos/notificacionesRecordatorios.php";
 
 $stats = Cache::remember('admin_dashboard_stats_' . $_SESSION['idAdmin'], 60, function () {
     return [
@@ -50,6 +52,7 @@ $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
 $listaAnuncios = listarTodosLosAnuncios();
 $eventos       = listarEventosProximos();
+$recordatoriosPendientes = obtenerNotificacionesNoLeidas((int)$_SESSION['idAdmin'], 'director', 5);
 $estudiantesPendientes = listarEstudiantesConPagosPendientes();
 
 $titulo_pagina = 'AulaPro — Panel de Control';
@@ -75,6 +78,9 @@ try {
 require_once __DIR__ . "/../../../include/dashboard_helpers.php";
 $eyebrow = fechaLegibleHoy();
 $saludo  = saludoHorario();
+?>
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/calendario.css') ?>">
+<?php
 
 // Arrow SVG helper
 $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -459,6 +465,29 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
   </div>
 
+  <!-- Panel: Recordatorios de eventos (notificaciones_recordatorios) -->
+  <div class="dash-panel">
+    <div class="dash-panel-head">
+      <h3>Recordatorios <span id="notif-badge" class="texto-estado rojo" style="display:inline-block;" hidden></span></h3>
+      <a href="../eventos/gestionEventos.php">Ver todos los recordatorios</a>
+    </div>
+    <div class="dash-panel-body">
+      <div id="lista-notificaciones" class="recordatorios-widget-lista">
+        <?php if (empty($recordatoriosPendientes)) { ?>
+          <p class="empty-state">No hay recordatorios pendientes.</p>
+        <?php } else { foreach ($recordatoriosPendientes as $rec) { ?>
+          <div class="recordatorio-item" data-id="<?= (int)$rec['idNotificacion'] ?>">
+            <div class="recordatorio-item-info">
+              <span class="recordatorio-item-titulo"><?= Security::escapeHtml($rec['tituloEvento']) ?></span>
+              <span class="recordatorio-item-fecha"><?= Security::escapeHtml(date('d/m/Y', strtotime($rec['fechaEvento']))) ?><?= $rec['horaEvento'] ? ' ' . Security::escapeHtml(date('H:i', strtotime($rec['horaEvento']))) : '' ?></span>
+            </div>
+            <button type="button" class="recordatorio-item-marcar" data-marcar-leido="<?= (int)$rec['idNotificacion'] ?>">Marcar leído</button>
+          </div>
+        <?php } } ?>
+      </div>
+    </div>
+  </div>
+
   <!-- Panel: Estudiantes con Pagos Pendientes -->
   <div class="dash-panel" style="grid-column: 1 / -1;">
     <div class="dash-panel-head">
@@ -533,4 +562,5 @@ if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matche
   }
 </script>
 
+<script src="<?= AssetMin::url(__DIR__, '../../../public/js/core/notificaciones-dashboard.js') ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

@@ -2,6 +2,9 @@
 require_once __DIR__ . "/conectar.php";
 require_once __DIR__ . "/eventos.php";
 
+if (!defined('NOTIFICACIONES_RECORDATORIOS_DEFINED')) {
+    define('NOTIFICACIONES_RECORDATORIOS_DEFINED', true);
+
 // ══════════════════════════════════════════════════════════════════════
 // Log de entrega de recordatorios de eventos: una fila por (evento,
 // destinatario, recordatorio) — quién debía recibir el aviso, cuándo se
@@ -11,8 +14,9 @@ require_once __DIR__ . "/eventos.php";
 // mismo nombre habría colisionado con esa tabla ya existente).
 // ══════════════════════════════════════════════════════════════════════
 
-// Roles válidos para tipoUsuario / audiencia (coincide con el enum de la tabla).
-const NOTIF_ROLES_VALIDOS = ['director', 'profesor', 'secretaria', 'estudiante', 'tutor'];
+if (!defined('NOTIF_ROLES_VALIDOS')) {
+    define('NOTIF_ROLES_VALIDOS', ['director', 'profesor', 'secretaria', 'estudiante', 'tutor']);
+}
 
 // ══════════════════════════════════════════════════════════════════════
 // AUDIENCIA
@@ -162,17 +166,27 @@ function obtenerNotificacionesNoLeidas(int $idUsuario, string $tipoUsuario, int 
     return $lista;
 }
 
-// Marca una notificación de recordatorio como leída.
-function marcarComoLeida(int $idNotificacion): bool {
+// Marca una notificación de recordatorio como leída. $idUsuario/$tipoUsuario
+// opcionales restringen la actualización al dueño de la notificación (evita
+// que un usuario marque como leída una notificación ajena adivinando el id).
+function marcarComoLeida(int $idNotificacion, ?int $idUsuario = null, ?string $tipoUsuario = null): bool {
     $idNotificacion = (int)$idNotificacion;
     $con = obtenerConexion();
     $sql = "UPDATE notificaciones_recordatorios SET leido = 1 WHERE idNotificacionRecordatorio = ?";
+    $tipos = 'i';
+    $valores = [$idNotificacion];
+    if ($idUsuario !== null && $tipoUsuario !== null) {
+        $sql .= " AND idUsuario = ? AND tipoUsuario = ?";
+        $tipos .= 'is';
+        $valores[] = $idUsuario;
+        $valores[] = $tipoUsuario;
+    }
     $stmt = mysqli_prepare($con, $sql);
     if (!$stmt) {
         error_log("Error al preparar marcarComoLeida: " . mysqli_error($con));
         return false;
     }
-    mysqli_stmt_bind_param($stmt, "i", $idNotificacion);
+    mysqli_stmt_bind_param($stmt, $tipos, ...$valores);
     $ok = mysqli_stmt_execute($stmt);
     if (!$ok) {
         error_log("Error al ejecutar marcarComoLeida (idNotificacion={$idNotificacion}): " . mysqli_stmt_error($stmt));
@@ -218,3 +232,5 @@ function procesarRecordatoriosPendientes(): array {
     }
     return ['procesados' => $procesados, 'creados' => $creados];
 }
+}
+
