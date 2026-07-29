@@ -1,4 +1,4 @@
-    <?php renderStep($csrfToken); ?>
+<?php
 require_once __DIR__ . '/../modelos/conectar.php';
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/lib/helpers.php';
@@ -60,11 +60,17 @@ $tituloPaso = ['', 'Entorno', 'Base de datos', 'Cuenta de administrador', 'Datos
   <div class="install-card">
     <div class="install-brand">Aula<b>Pro</b></div>
     <div class="install-steps">
+      <?php for ($i = 1; $i <= 5; $i++): ?>
         <span class="install-step-dot<?= $i === $paso ? ' activo' : '' ?><?= $i < $paso ? ' hecho' : '' ?>"><?= $i ?></span>
+      <?php endfor; ?>
     </div>
     <h1><?= htmlspecialchars($tituloPaso) ?></h1>
 
+    <?php if ($errores): ?>
       <div class="install-alerta-error"><?= htmlspecialchars($errores) ?></div>
+    <?php endif; ?>
+
+    <?php renderStep($csrfToken); ?>
   </div>
 </body>
 </html>

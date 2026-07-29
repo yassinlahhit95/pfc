@@ -14,6 +14,21 @@ function handlePost(): array {
         return ['ok' => false, 'msg' => 'Host, usuario y nombre de base de datos son obligatorios.'];
     }
 
+    // Validate host (alphanumeric, dots, hyphens, max 255 chars)
+    if (strlen($host) > 255 || !preg_match('/^[a-zA-Z0-9.\-]+$/', $host)) {
+        return ['ok' => false, 'msg' => 'El host contiene caracteres inválidos.'];
+    }
+
+    // Validate database username (alphanumeric, underscores, max 32 chars for MySQL)
+    if (strlen($user) > 32 || !preg_match('/^[a-zA-Z0-9_]+$/', $user)) {
+        return ['ok' => false, 'msg' => 'El usuario debe contener solo letras, números y guiones bajos.'];
+    }
+
+    // Validate app_url if provided (basic URL validation)
+    if ($appUrl !== '' && strlen($appUrl) > 500) {
+        return ['ok' => false, 'msg' => 'La URL del centro es demasiado larga.'];
+    }
+
     $test = testDbConnection($host, $user, $pass, $name);
     if (!$test['ok']) return ['ok' => false, 'msg' => $test['msg']];
 
@@ -24,8 +39,14 @@ function handlePost(): array {
         'host' => $host, 'user' => $user, 'pass' => $pass, 'name' => $name,
         'app_url' => $appUrl, 'app_env' => 'production',
     ]);
-    if (!$env['ok']) return ['ok' => false, 'msg' => $env['msg']];
+    if (!$env['ok']) {
+        // If .env write fails after successful import, don't leave system in
+        // inconsistent state. On retry, user will see the import again but
+        // database.sql's DROP IF EXISTS will make it safe to re-import.
+        return ['ok' => false, 'msg' => $env['msg']];
+    }
 
+    // CORS update is best-effort and should not fail the installation
     updateCorsOrigin($appUrl);
 
     return ['ok' => true];

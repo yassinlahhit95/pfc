@@ -1,0 +1,32 @@
+# Bloquea el acceso directo a ficheros PHP en la carpeta de instalación.
+# El asistente de instalación solo debe accederse vía /install/index.php
+# Cualquier acceso directo a ficheros .php en steps/ o lib/ será bloqueado.
+
+<IfModule mod_authz_core.c>
+    # Deny direct access to all .php files except index.php
+    <FilesMatch "^(?!index\.php$).*\.php$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    # Fallback for older Apache without mod_authz_core
+    <FilesMatch "^(?!index\.php$).*\.php$">
+        Order Allow,Deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# Block direct access to lib/ and steps/ directories
+<IfModule mod_authz_core.c>
+    <DirectoryMatch "^/install/(lib|steps)">
+        Require all denied
+    </DirectoryMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    <DirectoryMatch "^/install/(lib|steps)">
+        Order Allow,Deny
+        Deny from all
+    </DirectoryMatch>
+</IfModule>

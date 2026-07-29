@@ -21,8 +21,17 @@ function handlePost(): array {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return ['ok' => false, 'msg' => 'El email no es válido.'];
     }
-    if (strlen($pass1) < 8) {
-        return ['ok' => false, 'msg' => 'La contraseña debe tener al menos 8 caracteres.'];
+    if (strlen($pass1) < 12) {
+        return ['ok' => false, 'msg' => 'La contraseña debe tener al menos 12 caracteres.'];
+    }
+    // Validate password complexity (upper, lower, digit, special char)
+    $hasUpper = preg_match('/[A-Z]/', $pass1);
+    $hasLower = preg_match('/[a-z]/', $pass1);
+    $hasDigit = preg_match('/[0-9]/', $pass1);
+    $hasSpecial = preg_match('/[!@#$%^&*()_+\-=\[\]{};:\'",.<>?\/\\|`~]/', $pass1);
+
+    if (!($hasUpper && $hasLower && $hasDigit && $hasSpecial)) {
+        return ['ok' => false, 'msg' => 'La contraseña debe incluir mayúsculas, minúsculas, números y caracteres especiales.'];
     }
     if ($pass1 !== $pass2) {
         return ['ok' => false, 'msg' => 'Las contraseñas no coinciden.'];
@@ -63,11 +72,11 @@ function renderStep(string $csrfToken): void {
       <label>Email
         <input type="email" name="email" required autocomplete="username">
       </label>
-      <label>Contraseña <small>(mín. 8 caracteres)</small>
-        <input type="password" name="password" minlength="8" required autocomplete="new-password">
+      <label>Contraseña <small>(mín. 12 caracteres: mayúsculas, minúsculas, números, caracteres especiales)</small>
+        <input type="password" name="password" minlength="12" required autocomplete="new-password">
       </label>
       <label>Confirmar contraseña
-        <input type="password" name="password_confirm" minlength="8" required autocomplete="new-password">
+        <input type="password" name="password_confirm" minlength="12" required autocomplete="new-password">
       </label>
       <button type="submit" class="install-btn">Crear cuenta de administrador</button>
     </form>

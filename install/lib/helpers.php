@@ -113,7 +113,25 @@ function environmentPasses(array $checks): bool {
 }
 
 // ── Paso 2: base de datos ────────────────────────────────────────────
+function validateDbIdentifier(string $name, string $label): ?string {
+    // MySQL identifiers must start with letter/underscore and contain only
+    // alphanumeric chars and underscores. Max 64 chars.
+    if (strlen($name) === 0 || strlen($name) > 64) {
+        return "$label debe tener entre 1 y 64 caracteres.";
+    }
+    if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name)) {
+        return "$label debe contener solo letras, números y guiones bajos.";
+    }
+    return null;
+}
+
 function testDbConnection(string $host, string $user, string $pass, string $db): array {
+    // Validate database name before using in SQL
+    $dbErr = validateDbIdentifier($db, 'Nombre de base de datos');
+    if ($dbErr) {
+        return ['ok' => false, 'msg' => $dbErr];
+    }
+
     mysqli_report(MYSQLI_REPORT_OFF);
     $con = @mysqli_connect($host, $user, $pass);
     if (!$con) {
@@ -122,7 +140,9 @@ function testDbConnection(string $host, string $user, string $pass, string $db):
     $existia = @mysqli_select_db($con, $db);
     if (!$existia) {
         // La base de datos puede no existir todavía — se intenta crear.
-        if (!@mysqli_query($con, "CREATE DATABASE IF NOT EXISTS `$db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")) {
+        // Use mysqli_real_escape_string as extra safety layer despite validation
+        $dbSafe = mysqli_real_escape_string($con, $db);
+        if (!@mysqli_query($con, "CREATE DATABASE IF NOT EXISTS `$dbSafe` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")) {
             $err = mysqli_error($con);
             mysqli_close($con);
             return ['ok' => false, 'msg' => "La base de datos '$db' no existe y no se pudo crear: $err"];
@@ -190,6 +210,7 @@ function writeEnvFile(array $db): array {
         'DB_NAME=your_db_name'     => 'DB_NAME=' . $db['name'],
         'BOLETIN_SECRET=your_boletin_secret'         => 'BOLETIN_SECRET=' . bin2hex(random_bytes(32)),
         'PII_ENCRYPTION_KEY=your_pii_encryption_key' => 'PII_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)),
+        'CRON_TOKEN=your_cron_token'                 => 'CRON_TOKEN=' . bin2hex(random_bytes(32)),
         'APP_ENV=production'  => 'APP_ENV=' . ($db['app_env'] ?? 'production'),
         'APP_URL=https://aulapro.yassin.agency' => 'APP_URL=' . ($db['app_url'] ?? ''),
     ];
