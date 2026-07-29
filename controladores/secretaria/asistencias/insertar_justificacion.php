@@ -20,7 +20,10 @@ if (!$idEstudiante || !$idAsistencia || !$motivo) {
 
 // Get the original attendance record state
 $con = obtenerConexion();
-$res = mysqli_query($con, "SELECT estado FROM asistencias WHERE idAsistencia = $idAsistencia");
+$stmt = mysqli_prepare($con, "SELECT estado FROM asistencias WHERE idAsistencia = ?");
+mysqli_stmt_bind_param($stmt, "i", $idAsistencia);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
 $asistencia = mysqli_fetch_assoc($res);
 if (!$asistencia) {
     $_SESSION['errores'] = "La asistencia seleccionada no existe.";
@@ -31,12 +34,19 @@ $estadoOriginal = $asistencia['estado'];
 // Handle file upload
 $archivoPath = null;
 if (!empty($_FILES['archivo']['name'])) {
+    // Validate MIME type before upload
+    $mime = mime_content_type($_FILES['archivo']['tmp_name']);
+    $allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!in_array($mime, $allowed)) {
+        $_SESSION['errores'] = 'Solo se permiten PDF e imágenes (JPEG, PNG).';
+        header("Location: $_back"); exit;
+    }
+
     $targetDir = __DIR__ . "/../../../public/uploads/justificantes/";
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0755, true);
     }
-    $ext = pathinfo($_FILES['archivo']['name'], PATHINFO_EXTENSION);
-    $filename = uniqid('justif_') . '.' . $ext;
+    $filename = bin2hex(random_bytes(6)) . '.' . pathinfo($_FILES['archivo']['name'], PATHINFO_EXTENSION);
     if (move_uploaded_file($_FILES['archivo']['tmp_name'], $targetDir . $filename)) {
         $archivoPath = 'public/uploads/justificantes/' . $filename;
     }

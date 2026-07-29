@@ -22,7 +22,10 @@ if ($decision === 'rechazar' && $motivoRechazo === '') {
 }
 
 $con = obtenerConexion();
-$res = mysqli_query($con, "SELECT * FROM justificaciones_falta WHERE idJustificacion = $idJustificacion");
+$stmt = mysqli_prepare($con, "SELECT * FROM justificaciones_falta WHERE idJustificacion = ?");
+mysqli_stmt_bind_param($stmt, "i", $idJustificacion);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
 $justificacion = mysqli_fetch_assoc($res);
 
 if (!$justificacion) {

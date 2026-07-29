@@ -127,13 +127,33 @@ function crearConfigAcademicaVacia(string $nombre, string $tipoEducacion, ?strin
         mysqli_stmt_execute($stmt);
         $idConfig = (int)mysqli_insert_id($con);
 
-        mysqli_query($con, "INSERT INTO grading_policies (idConfig) VALUES ($idConfig)");
-        mysqli_query($con, "INSERT INTO promotion_rules (idConfig) VALUES ($idConfig)");
-        mysqli_query($con, "INSERT INTO internship_config (idConfig) VALUES ($idConfig)");
-        mysqli_query($con, "INSERT INTO tfg_config (idConfig) VALUES ($idConfig)");
-        mysqli_query($con, "INSERT INTO challenge_config (idConfig) VALUES ($idConfig)");
-        mysqli_query($con, "INSERT INTO assessment_types (idConfig, nombre, peso, obligatorio, origen, orden) VALUES
-            ($idConfig, 'Examen', 3.00, 1, 'examen', 1), ($idConfig, 'Reto', 1.00, 0, 'reto', 2)");
+        // Create default config tables with prepared statements
+        foreach (['grading_policies', 'promotion_rules', 'internship_config', 'tfg_config', 'challenge_config'] as $table) {
+            $stmt = mysqli_prepare($con, "INSERT INTO $table (idConfig) VALUES (?)");
+            mysqli_stmt_bind_param($stmt, "i", $idConfig);
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new \RuntimeException("Failed to create $table: " . mysqli_error($con));
+            }
+        }
+
+        // Create default assessment types
+        $stmt = mysqli_prepare($con, "INSERT INTO assessment_types (idConfig, nombre, peso, obligatorio, origen, orden) VALUES (?, ?, ?, ?, ?, ?)");
+        $types = [
+            [$idConfig, 'Examen', 3.00, 1, 'examen', 1],
+            [$idConfig, 'Reto', 1.00, 0, 'reto', 2]
+        ];
+        foreach ($types as $type) {
+            $cfg = $type[0];
+            $nom = $type[1];
+            $pes = $type[2];
+            $obl = $type[3];
+            $ori = $type[4];
+            $ord = $type[5];
+            mysqli_stmt_bind_param($stmt, "isdiss", $cfg, $nom, $pes, $obl, $ori, $ord);
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new \RuntimeException("Failed to create assessment type: " . mysqli_error($con));
+            }
+        }
 
         mysqli_commit($con);
         return $idConfig;
