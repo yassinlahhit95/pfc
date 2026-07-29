@@ -29,6 +29,9 @@
   const $ = id => document.getElementById(id);
 
   function escHtml(str) {
+    if (window.AulaProUtils && window.AulaProUtils.escapeHtml) {
+      return window.AulaProUtils.escapeHtml(str);
+    }
     return String(str || '')
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');

@@ -36,6 +36,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+<script src="../../../public/js/core/utils.js"></script>
 <script>
 $(document).ajaxError(function(event, xhr) {
     if (!window.Toast) return;
@@ -57,6 +58,7 @@ if (is_file($__bundleJs)):
 ?>
 <script src="../../../public/js/core/bundle.min.js?v=<?= filemtime($__bundleJs) ?>"></script>
 <?php else: ?>
+<script src="../../../public/js/core/utils.js"></script>
 <script src="../../../public/js/core/dashboard-shell.js?v=<?= filemtime(__DIR__.'/../../public/js/core/dashboard-shell.js') ?>"></script>
 <script src="../../../public/js/core/onboarding-tour.js?v=<?= filemtime(__DIR__.'/../../public/js/core/onboarding-tour.js') ?>"></script>
 <script src="../../../public/js/core/filtros.js"></script>

@@ -12,11 +12,16 @@
     var yaMostradas = {}; // ids ya lanzados como toast, para no repetir en cada sondeo
 
     function resolveAppPath(relPath) {
-        if (window.AulaProResolveAppPath) return window.AulaProResolveAppPath(relPath);
+        if (window.AulaProUtils && window.AulaProUtils.resolveAppPath) {
+            return window.AulaProUtils.resolveAppPath(relPath);
+        }
         return relPath;
     }
 
     function csrfToken() {
+        if (window.AulaProUtils && window.AulaProUtils.getCSRFToken) {
+            return window.AulaProUtils.getCSRFToken();
+        }
         var el = document.querySelector('[name="modal_csrf"]');
         return el ? el.value : '';
     }
@@ -76,9 +81,11 @@
     }
 
     function escapeHtml(str) {
-        return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
-            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-        });
+        return (window.AulaProUtils && window.AulaProUtils.escapeHtml)
+            ? window.AulaProUtils.escapeHtml(str)
+            : String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
     }
 
     function marcarLeido(idNotificacion) {

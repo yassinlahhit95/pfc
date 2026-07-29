@@ -133,6 +133,9 @@
     var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo", "modulo-asignar": "Módulo", ciclo: "Ciclo", evento: "Evento", director: "Director", secretaria: "Secretaría", archivo: "Archivo", pago: "Pago", entrega: "Entrega", tarea: "Tarea", tutor: "Tutor/Familia", tfg: "TFG", calificacion: "Calificación" };
 
     function escHtml(s) {
+      if (window.AulaProUtils && window.AulaProUtils.escapeHtml) {
+        return window.AulaProUtils.escapeHtml(s);
+      }
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
                       .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
