@@ -26,7 +26,7 @@ $res = mysqli_query($con, "SELECT SUM(importe) as s FROM gastos WHERE MONTH(fech
 $gastosMes = $res ? (float)(mysqli_fetch_assoc($res)['s'] ?? 0) : 0;
 
 // Total Pagos (This Month)
-$res = mysqli_query($con, "SELECT SUM(monto) as s FROM historial_pagos WHERE MONTH(fechaPago) = MONTH(CURRENT_DATE()) AND YEAR(fechaPago) = YEAR(CURRENT_DATE())");
+$res = mysqli_query($con, "SELECT SUM(monto) as s FROM pagos WHERE MONTH(fechaPago) = MONTH(CURRENT_DATE()) AND YEAR(fechaPago) = YEAR(CURRENT_DATE())");
 $pagosMes = $res ? (float)(mysqli_fetch_assoc($res)['s'] ?? 0) : 0;
 
 v1Ok([
