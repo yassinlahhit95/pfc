@@ -382,7 +382,7 @@ final class R2Client {
             return self::presignedGetUrl($r2Key, $expirySeconds);
         } catch (Throwable $t) {
             error_log("R2Client Error (documentoUrl): " . $t->getMessage());
-            return '';
+            return $urlLocal;
         }
     }
 }

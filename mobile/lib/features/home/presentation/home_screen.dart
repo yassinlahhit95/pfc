@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/i18n/translations.dart';
 import '../../../core/widgets/premium.dart';
 import '../../announcements/presentation/announcements_screen.dart';
 import '../../attendance/data/attendance_repository.dart';
 import '../../attendance/presentation/attendance_screen.dart';
+import '../../attendance/presentation/center_attendance_screen.dart';
 import '../../attendance/presentation/staff_justify_screen.dart';
 import '../../classroom/data/classroom_repository.dart';
 import '../../classroom/presentation/favorites_screen.dart';
@@ -23,8 +25,10 @@ import '../../messages/presentation/messages_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
 import '../../schedule/presentation/schedule_screen.dart';
+
 import '../../students/presentation/students_screen.dart';
 import '../../teachers/presentation/teachers_screen.dart';
+import '../data/dashboard_repository.dart';
 import '../../tareas/presentation/tareas_screen.dart';
 import '../../retos/presentation/retos_screen.dart';
 import '../../gastos/presentation/gastos_screen.dart';
@@ -71,6 +75,8 @@ class HomeScreen extends ConsumerWidget {
     final role = ref.watch(sessionControllerProvider.select((s) => s.valueOrNull?.role));
     final profileAsync = ref.watch(profileProvider);
 
+    final t = ref.watch(translationsProvider);
+
     final personal = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
     final hasClassroom = role != UserRole.tutor && role != UserRole.director && role != UserRole.secretaria;
     final hasAttendance = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
@@ -80,34 +86,32 @@ class HomeScreen extends ConsumerWidget {
          profileAsync.valueOrNull?.data['esTutor'] == true);
     final hasStaffJustify = isTutorTeacher || role == UserRole.director || role == UserRole.secretaria;
     final isBackOffice = role == UserRole.director || role == UserRole.secretaria;
-
     final academico = <_NavItem>[
-      if (personal) const _NavItem(Icons.calendar_today_rounded, 'Horario', 'Ver calendario de clases', ScheduleScreen()),
-      if (personal) const _NavItem(Icons.school_outlined, 'Notas', 'Consultar calificaciones', GradesScreen()),
-      if (hasClassroom) const _NavItem(Icons.auto_stories_outlined, 'Aula digital', 'Temas, recursos y sesiones', ModulesScreen()),
-      if (hasClassroom) const _NavItem(Icons.assignment_outlined, 'Tareas', 'Todos tus deberes y entregas', TareasScreen()),
-      if (hasClassroom) const _NavItem(Icons.emoji_events_outlined, 'Retos', 'Desafíos con material extra', RetosScreen()),
-      if (role == UserRole.estudiante) const _NavItem(Icons.star_rounded, 'Favoritos', 'Tus archivos guardados', FavoritesScreen()),
-      if (hasAttendance) const _NavItem(Icons.fact_check_outlined, 'Asistencias', 'Registro de faltas y asistencia', AttendanceScreen()),
-      if (hasStaffJustify)
-        const _NavItem(Icons.add_a_photo_outlined, 'Justificar falta', 'Foto de un justificante en persona', StaffJustifyScreen()),
+      if (personal) _NavItem(Icons.calendar_today_rounded, t['nav_horario']!, t['nav_horario_sub']!, const ScheduleScreen()),
+      if (personal) _NavItem(Icons.school_outlined, t['nav_notas']!, t['nav_notas_sub']!, const GradesScreen()),
+      if (hasClassroom) _NavItem(Icons.auto_stories_outlined, t['nav_aula']!, t['nav_aula_sub']!, const ModulesScreen()),
+      if (hasClassroom) _NavItem(Icons.assignment_outlined, t['nav_tareas']!, t['nav_tareas_sub']!, const TareasScreen()),
+      if (hasClassroom) _NavItem(Icons.emoji_events_outlined, t['nav_retos']!, t['nav_retos_sub']!, const RetosScreen()),
+      if (role == UserRole.estudiante) _NavItem(Icons.star_rounded, t['nav_favoritos']!, t['nav_favoritos_sub']!, const FavoritesScreen()),
+      if (hasAttendance) _NavItem(Icons.fact_check_outlined, t['nav_asistencias']!, t['nav_asistencias_sub']!, const AttendanceScreen()),
     ];
     final centro = <_NavItem>[
-      const _NavItem(Icons.campaign_outlined, 'Anuncios', 'Comunicados oficiales y avisos', AnnouncementsScreen()),
-      const _NavItem(Icons.mail_outline_rounded, 'Mensajería', 'Bandeja de entrada y reclamaciones', MessagesScreen()),
-      const _NavItem(Icons.event_outlined, 'Eventos', 'Próximas actividades y fechas', EventsScreen()),
+      _NavItem(Icons.campaign_outlined, t['nav_anuncios']!, t['nav_anuncios_sub']!, const AnnouncementsScreen()),
+      _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!, t['nav_mensajeria_sub']!, const MessagesScreen()),
+      _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!, const EventsScreen()),
     ];
     final gestion = <_NavItem>[
-      if (isBackOffice) const _NavItem(Icons.receipt_long_outlined, 'Pagos', 'Ver recibos y cobros', PaymentsScreen()),
-      if (isBackOffice) const _NavItem(Icons.calendar_today_outlined, 'Próximos Pagos', 'Pagos vencidos y pendientes', PagosProximosScreen()),
-      if (isBackOffice) const _NavItem(Icons.shopping_bag_outlined, 'Gastos', 'Control de compras y recibos', GastosScreen()),
-      if (isBackOffice) const _NavItem(Icons.people_outlined, 'Alumnos', 'Lista de estudiantes', StudentsScreen()),
-      if (isBackOffice) const _NavItem(Icons.school_outlined, 'Profesores', 'Lista de docentes', TeachersScreen()),
-      if (isBackOffice) const _NavItem(Icons.inventory_2_outlined, 'Inventario', 'Control de material y recursos', InventoryScreen()),
+      if (isBackOffice) _NavItem(Icons.receipt_long_outlined, t['nav_pagos']!, t['nav_pagos_sub']!, const PaymentsScreen()),
+      if (isBackOffice) _NavItem(Icons.shopping_bag_outlined, t['nav_gastos']!, t['nav_gastos_sub']!, const GastosScreen()),
+
+      if (isBackOffice) _NavItem(Icons.people_outlined, t['nav_alumnos']!, t['nav_alumnos_sub']!, const StudentsScreen()),
+      if (isBackOffice) _NavItem(Icons.fact_check_outlined, t['nav_asistencias_centro']!, t['nav_asistencias_centro_sub']!, const CenterAttendanceScreen()),
+      if (hasStaffJustify) _NavItem(Icons.edit_document, t['nav_justificar']!, t['nav_justificar_sub']!, const StaffJustifyScreen()),
+      if (isBackOffice) _NavItem(Icons.school_outlined, t['nav_profesores']!, t['nav_profesores_sub']!, const TeachersScreen()),
+      if (isBackOffice) _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!, t['nav_inventario_sub']!, const InventoryScreen()),
     ];
 
     final displayName = profileAsync.valueOrNull?.displayName ?? 'AulaPro';
-
     // Watch metrics only when needed per role, using .select() to avoid cascading rebuilds
     final attendanceMine = role == UserRole.estudiante ? ref.watch(attendanceMineProvider.select((a) => a.valueOrNull ?? [])) : [];
     final studentPendingTasks = role == UserRole.estudiante ? ref.watch(studentPendingTasksCountProvider.select((t) => t.valueOrNull ?? 0)) : 0;
@@ -116,39 +120,39 @@ class HomeScreen extends ConsumerWidget {
     // Watch professor metrics
     final scheduleSlots = (role == UserRole.profesor || role == UserRole.estudiante) ? ref.watch(scheduleProvider.select((s) => s.valueOrNull ?? [])) : [];
     final pendingGradesCount = role == UserRole.profesor ? ref.watch(pendingGradesCountProvider.select((p) => p.valueOrNull ?? 0)) : 0;
+    
+    // Watch admin metrics
+    final dashboardStats = (role == UserRole.director || role == UserRole.secretaria) 
+        ? ref.watch(dashboardStatsProvider).valueOrNull 
+        : null;
 
     // Build role-specific metric cards
     final metrics = <Widget>[];
     if (role == UserRole.estudiante) {
-      final totalAttendanceCount = attendanceMine.length;
-      final presentAttendanceCount = attendanceMine.where((r) => r.estado == 'presente' || r.estado == 'justificado').length;
-      final attendancePercent = totalAttendanceCount > 0
-          ? '${((presentAttendanceCount / totalAttendanceCount) * 100).toStringAsFixed(1)}%'
-          : '100%';
       final avgGrade = _calculateAverageGrade(studentGrades);
-      final avgGradeStr = avgGrade > 0 ? avgGrade.toStringAsFixed(1) : '—';
+      final faltas = attendanceMine.where((a) => a.estado == 'Falta').length;
 
       metrics.addAll([
         _MetricCard(
-          value: attendancePercent,
-          label: 'Asistencia',
-          icon: Icons.person_search_rounded,
-          color: const Color(0xFF059669),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
+          value: avgGrade.toStringAsFixed(1),
+          label: t['metric_media']!,
+          icon: Icons.insights_rounded,
+          color: const Color(0xFF2563EB),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
         ),
         _MetricCard(
           value: studentPendingTasks.toString(),
-          label: 'Tareas disp.',
-          icon: Icons.assignment_rounded,
-          color: const Color(0xFF7C3AED),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ModulesScreen())),
+          label: t['metric_tareas']!,
+          icon: Icons.assignment_turned_in_rounded,
+          color: const Color(0xFFD97706),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TareasScreen())),
         ),
         _MetricCard(
-          value: avgGradeStr,
-          label: 'Nota Media',
-          icon: Icons.stars_rounded,
-          color: const Color(0xFFD97706),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
+          value: faltas.toString(),
+          label: t['metric_faltas']!,
+          icon: Icons.warning_amber_rounded,
+          color: const Color(0xFFE11D48),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
         ),
       ]);
     } else if (role == UserRole.profesor) {
@@ -184,53 +188,55 @@ class HomeScreen extends ConsumerWidget {
     } else if (role == UserRole.director || role == UserRole.secretaria) {
       metrics.addAll([
         _MetricCard(
-          value: 'Ver',
-          label: 'Alumnos',
+          value: dashboardStats != null ? dashboardStats.totalEstudiantes.toString() : '...',
+          label: t['metric_estudiantes']!,
           icon: Icons.people_rounded,
           color: const Color(0xFF2563EB),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentsScreen())),
         ),
         _MetricCard(
-          value: 'Ver',
-          label: 'Profesores',
+          value: dashboardStats != null ? dashboardStats.totalProfesores.toString() : '...',
+          label: t['metric_profesores']!,
           icon: Icons.school_rounded,
           color: const Color(0xFFD97706),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TeachersScreen())),
         ),
         _MetricCard(
-          value: '98.2%',
-          label: 'Asistencia',
-          icon: Icons.trending_up_rounded,
-          color: const Color(0xFF059669),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
+          value: dashboardStats != null ? '${dashboardStats.gastosMes.toStringAsFixed(0)} €' : '...',
+          label: t['metric_gastos']!,
+          icon: Icons.receipt_long_rounded,
+          color: const Color(0xFFE11D48),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GastosScreen())),
         ),
         _MetricCard(
-          value: 'Equipos',
-          label: 'Inventario',
-          icon: Icons.inventory_2_rounded,
-          color: const Color(0xFF7C3AED),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InventoryScreen())),
+          value: dashboardStats != null ? '${dashboardStats.pagosMes.toStringAsFixed(0)} €' : '...',
+          label: t['metric_pagos']!,
+          icon: Icons.account_balance_wallet_rounded,
+          color: const Color(0xFF0D9488),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
         ),
       ]);
     } else if (role == UserRole.tutor) {
+      final hijosCount = profileAsync.valueOrNull?.data['hijos_count'] ?? 0;
+      
       metrics.addAll([
         _MetricCard(
-          value: '1',
-          label: 'Hijo',
+          value: hijosCount.toString(),
+          label: t['metric_hijo']!,
           icon: Icons.family_restroom_rounded,
           color: const Color(0xFF4F46E5),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
         ),
         _MetricCard(
-          value: 'Al día',
-          label: 'Recibos',
+          value: t['metric_al_dia']!,
+          label: t['metric_recibos']!,
           icon: Icons.receipt_rounded,
           color: const Color(0xFF059669),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyPaymentsScreen())),
         ),
         _MetricCard(
-          value: '0',
-          label: 'Faltas',
+          value: '0', // Faltas pending implementation of a combined tutor attendance metric
+          label: t['metric_faltas']!,
           icon: Icons.notification_important_rounded,
           color: const Color(0xFFE11D48),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
@@ -265,22 +271,28 @@ class HomeScreen extends ConsumerWidget {
             if (metrics.isNotEmpty) ...[
               _AnimatedEntrance(
                 delayIndex: 1,
-                child: Row(
-                  children: [
-                    for (var i = 0; i < metrics.length; i++) ...[
-                      metrics[i],
-                      if (i != metrics.length - 1) const SizedBox(width: Space.md),
-                    ],
-                  ],
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final crossAxisCount = constraints.maxWidth > 600 ? metrics.length : 2;
+                    return GridView.count(
+                      crossAxisCount: crossAxisCount,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      mainAxisSpacing: Space.md,
+                      crossAxisSpacing: Space.md,
+                      childAspectRatio: constraints.maxWidth > 600 ? 1.5 : 1.25,
+                      children: metrics,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: Space.xxl),
             ],
 
             if (academico.isNotEmpty) ...[
-              const _AnimatedEntrance(
+              _AnimatedEntrance(
                 delayIndex: 2,
-                child: SectionLabel('Académico'),
+                child: SectionLabel(t['section_academico']!),
               ),
               _AnimatedEntrance(
                 delayIndex: 3,
@@ -288,9 +300,9 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: Space.xxl),
             ],
-            const _AnimatedEntrance(
+            _AnimatedEntrance(
               delayIndex: 4,
-              child: SectionLabel('Centro'),
+              child: SectionLabel(t['section_centro']!),
             ),
             _AnimatedEntrance(
               delayIndex: 5,
@@ -298,9 +310,9 @@ class HomeScreen extends ConsumerWidget {
             ),
             if (gestion.isNotEmpty) ...[
               const SizedBox(height: Space.xxl),
-              const _AnimatedEntrance(
+              _AnimatedEntrance(
                 delayIndex: 6,
-                child: SectionLabel('Gestión'),
+                child: SectionLabel(t['section_gestion']!),
               ),
               _AnimatedEntrance(
                 delayIndex: 7,
@@ -463,20 +475,10 @@ class _MetricCard extends StatelessWidget {
       ],
     );
 
-    if (onTap != null) {
-      cardContent = InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(Radii.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
-          child: cardContent,
-        ),
-      );
-    }
-
     return Expanded(
       child: AppCard(
-        padding: onTap != null ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
+        onTap: onTap,
+        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
         child: cardContent,
       ),
     );

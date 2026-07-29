@@ -17,6 +17,7 @@ unset($_SESSION['errores'], $_SESSION['datos_login'], $_SESSION['reset_ok']);
 
 // Generar token CSRF
 $csrfToken = Security::generateCSRFToken();
+$googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -29,6 +30,40 @@ $csrfToken = Security::generateCSRFToken();
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../public/css/features/login.css') ?>">
+    <?php if ($googleClientId) { ?>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        .google-login-separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 24px 0 16px;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+        .google-login-separator::before,
+        .google-login-separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .google-login-separator:not(:empty)::before {
+            margin-right: .75em;
+        }
+        .google-login-separator:not(:empty)::after {
+            margin-left: .75em;
+        }
+        .google-login-btn-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        .google-login-btn-container > div {
+            width: 100% !important;
+        }
+    </style>
+    <?php } ?>
 </head>
 <body>
 
@@ -91,6 +126,31 @@ $csrfToken = Security::generateCSRFToken();
 
                 <button type="submit" name="enviar" class="boton-acceso">Entrar</button>
 
+                <?php if ($googleClientId) { ?>
+                <div class="google-login-separator">
+                    <span>o continuar con</span>
+                </div>
+
+                <div class="google-login-btn-container">
+                    <div id="g_id_onload"
+                         data-client_id="<?= Security::escapeHtml($googleClientId) ?>"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="handleGoogleCredential"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left"
+                         data-width="380">
+                    </div>
+                </div>
+                <?php } ?>
+
                 <a href="auth/solicitar_reset.php" style="display:block;text-align:center;margin-top:12px;font-size:.875rem;color:var(--dim);">¿Olvidaste tu contraseña?</a>
 
                 <a href="../index.php" class="enlace-volver">Volver a la web</a>
@@ -98,12 +158,29 @@ $csrfToken = Security::generateCSRFToken();
             </form>
         </div>
 
+        <?php if ($googleClientId) { ?>
+        <form id="googleLoginForm" action="../controladores/validacion_google.php" method="POST" style="display:none;">
+            <input type="hidden" name="id_token" id="googleIdToken">
+            <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
+        </form>
+        <?php } ?>
+
         <p class="form-pie">&copy; 2025/2026 AulaPro</p>
     </div>
 
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
+<?php if ($googleClientId) { ?>
+<script>
+function handleGoogleCredential(response) {
+    if (response.credential) {
+        document.getElementById('googleIdToken').value = response.credential;
+        document.getElementById('googleLoginForm').submit();
+    }
+}
+</script>
+<?php } ?>
 <script>
 $(function() {
     $('#btn_ver').on('click', function() {

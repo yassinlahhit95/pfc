@@ -46,6 +46,24 @@ class AuthRepository {
     );
   }
 
+  Future<LoginResult> loginGoogle({
+    required String idToken,
+    String? deviceInfo,
+  }) async {
+    final data = await _client.post('/auth.php', data: {
+      'google_token': idToken,
+      if (deviceInfo != null) 'device_info': deviceInfo,
+    });
+    return LoginResult(
+      token: data['token'] as String,
+      expiresAt:
+          DateTime.parse((data['expires_at'] as String).replaceFirst(' ', 'T')),
+      userType: data['user_type'] as String,
+      userId: data['user_id'] as int,
+      mustChangePassword: data['must_change_password'] == true,
+    );
+  }
+
   /// Idempotent — always resolves even if the token was already invalid.
   Future<void> logout() async {
     try {

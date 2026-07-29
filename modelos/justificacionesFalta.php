@@ -123,3 +123,74 @@ function resolverJustificacionFalta(int $idJustificacion, int $idAsistencia, boo
         return false;
     }
 }
+
+function listarTodasLasJustificaciones(?int $idProfesor = null, ?string $estado = null): array {
+    $con = obtenerConexion();
+    $where = ["1=1"];
+    $params = [];
+    $types = "";
+
+    if ($idProfesor) {
+        $where[] = "EXISTS (
+            SELECT 1 FROM modulo_profesor mp 
+            WHERE mp.idModulo = a.idModulo AND mp.idProfesor = ?
+        )";
+        $params[] = $idProfesor;
+        $types .= "i";
+    }
+    if ($estado) {
+        $where[] = "jf.estado = ?";
+        $params[] = $estado;
+        $types .= "s";
+    }
+
+    $sql = "SELECT jf.*, a.fecha, a.idModulo, m.nombreModulo, e.nombreEstudiante,
+                   p.nombreProfesor
+            FROM justificaciones_falta jf
+            JOIN asistencias a ON a.idAsistencia = jf.idAsistencia
+            JOIN modulos m ON m.idModulo = a.idModulo
+            JOIN estudiantes e ON e.idEstudiante = jf.idEstudiante
+            LEFT JOIN modulo_profesor mp ON mp.idModulo = m.idModulo
+            LEFT JOIN profesores p ON p.idProfesor = mp.idProfesor
+            WHERE " . implode(" AND ", $where) . "
+            ORDER BY jf.fechaSolicitud DESC";
+
+    $stmt = mysqli_prepare($con, $sql);
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($stmt);
+    return mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+}
+
+function borrarJustificacionFalta(int $idJustificacion): bool {
+    $con = obtenerConexion();
+    mysqli_begin_transaction($con);
+    try {
+        $stmt = mysqli_prepare($con, "SELECT idAsistencia, estadoOriginal FROM justificaciones_falta WHERE idJustificacion = ?");
+        mysqli_stmt_bind_param($stmt, "i", $idJustificacion);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $jf = mysqli_fetch_assoc($res);
+        if ($jf) {
+            $idAsistencia = (int)$jf['idAsistencia'];
+            $estadoOriginal = $jf['estadoOriginal'];
+            
+            $stmt2 = mysqli_prepare($con, "UPDATE asistencias SET estado = ? WHERE idAsistencia = ?");
+            mysqli_stmt_bind_param($stmt2, "si", $estadoOriginal, $idAsistencia);
+            mysqli_stmt_execute($stmt2);
+        }
+        
+        $stmt3 = mysqli_prepare($con, "DELETE FROM justificaciones_falta WHERE idJustificacion = ?");
+        mysqli_stmt_bind_param($stmt3, "i", $idJustificacion);
+        if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('delete justificacion');
+        
+        mysqli_commit($con);
+        return true;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        error_log('borrarJustificacionFalta error: ' . $e->getMessage());
+        return false;
+    }
+}
+

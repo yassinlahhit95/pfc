@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_client.dart';
+import '../../../core/utils/cache_extension.dart';
 
 class Teacher {
   const Teacher({
@@ -63,10 +64,13 @@ final teachersRepositoryProvider = Provider<TeachersRepository>(
 
 final teachersProvider = FutureProvider.autoDispose
     .family<({List<Teacher> teachers, int total}), ({int limit, int offset, String? status, String? query})>(
-  (ref, params) => ref.read(teachersRepositoryProvider).fetchTeachers(
+  (ref, params) {
+    ref.cacheFor(const Duration(minutes: 5));
+    return ref.read(teachersRepositoryProvider).fetchTeachers(
         limit: params.limit,
         offset: params.offset,
         status: params.status,
         query: params.query,
-      ),
+      );
+  },
 );

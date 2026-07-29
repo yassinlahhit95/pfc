@@ -70,9 +70,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idArticulo" id="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
                     <?php foreach ($articulosDisponibles as $articulo) { ?>
-                        <?php if ($articulo['estado'] == 'disponible') { ?>
+                        <?php 
+                        $disponibles = $articulo['cantidad'] - $articulo['prestados'];
+                        if ($disponibles > 0) { ?>
                             <option value="<?= (int)$articulo['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $articulo['idArticulo']) ? 'selected' : '' ?>>
-                                <?= Security::escapeHtml($articulo['nombreArticulo']) ?> (<?= Security::escapeHtml($articulo['numeroSerie']) ?>)
+                                <?= Security::escapeHtml($articulo['nombreArticulo']) ?> (<?= Security::escapeHtml($articulo['numeroSerie'] ?? 'N/A') ?>) - Disp: <?= $disponibles ?>
                             </option>
                         <?php } ?>
                     <?php } ?>

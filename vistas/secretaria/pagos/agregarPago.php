@@ -137,6 +137,12 @@ include __DIR__ . '/../comunes/nav.php';
                     <small class="texto-suave">Máximo: <?= number_format($infoFinanciera['restante'], 2) ?> €</small>
                     <?= fieldError($errores, 'monto') ?>
                 </div>
+                
+                <div class="campo">
+                    <label for="fechaProximoInput">Próximo Pago</label>
+                    <input type="text" id="fechaProximoInput" readonly placeholder="Se calculará automáticamente">
+                    <small class="texto-suave">Fecha del siguiente vencimiento</small>
+                </div>
 
                 <div class="campo">
                     <label for="comprobante">Comprobante de Pago (Opcional)</label>
@@ -169,6 +175,24 @@ $('#tipoPago').on('change', function () {
     else if (tipo === 'unico')      cuota = restante;
     if (cuota > restante) cuota = restante;
     $('#montoInput').val(cuota > 0 ? cuota.toFixed(2) : '');
+
+    // Calcular próxima fecha de pago
+    var fechaProximoInput = $('#fechaProximoInput');
+    if (tipo === 'unico' || tipo === '') {
+        fechaProximoInput.val('—');
+    } else {
+        var fechaActual = new Date();
+        var mesesSumar = 0;
+        if (tipo === 'mensual') mesesSumar = 1;
+        else if (tipo === 'trimestral') mesesSumar = 3;
+        else if (tipo === 'semestral') mesesSumar = 6;
+        
+        fechaActual.setMonth(fechaActual.getMonth() + mesesSumar);
+        var dia = String(fechaActual.getDate()).padStart(2, '0');
+        var mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
+        var anio = fechaActual.getFullYear();
+        fechaProximoInput.val(dia + '/' + mes + '/' + anio);
+    }
 });
 </script>
 <?php endif; ?>

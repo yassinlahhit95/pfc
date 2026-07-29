@@ -123,17 +123,22 @@ function _nav_active_tutor($check) {
     </nav>
 
     <nav class="sidebar-bottom-nav">
+      <a href="../../ayuda.php" class="nav-item<?= ($seccion ?? '') === 'ayuda' ? ' active' : '' ?>">
+        <span class="nav-ico"><i class="fas fa-question-circle" style="font-size:1.15rem;"></i></span>
+        <span class="nav-label"><?= __('help_center', 'Centro de Ayuda') ?></span>
+        <?php if (($seccion ?? '') === 'ayuda') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
       <a href="../perfil/ver.php" class="nav-item<?= _nav_active_tutor('perfil') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-        <span class="nav-label">Mi Perfil</span>
+        <span class="nav-label"><?= __('my_profile', 'Mi Perfil') ?></span>
       </a>
       <a href="../../cambiar_password.php" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-        <span class="nav-label">Cambiar Contraseña</span>
+        <span class="nav-label"><?= __('change_password', 'Cambiar Contraseña') ?></span>
       </a>
       <a href="../../../controladores/logout.php" class="nav-item nav-item-logout">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></span>
-        <span class="nav-label">Cerrar Sesión</span>
+        <span class="nav-label"><?= __('logout', 'Cerrar Sesión') ?></span>
       </a>
     </nav>
   </aside>
@@ -170,6 +175,17 @@ function _nav_active_tutor($check) {
             <kbd class="search-kbd">⌘K</kbd>
           </label>
           <ul class="search-results" id="search-results" hidden></ul>
+        </div>
+        <!-- Language Switcher -->
+        <div class="lang-wrap" style="position:relative; display:inline-block; margin-right:8px;">
+          <form action="../../../controladores/cambiar_idioma.php" method="POST" id="formLanguageTutor" style="margin:0;">
+             <select name="lang" onchange="document.getElementById('formLanguageTutor').submit();" style="padding:5px 8px; border-radius:8px; border:1.5px solid var(--border); font-size:.85rem; background:var(--bg-card); color:var(--text); cursor:pointer; font-weight:600; outline:none; font-family:inherit;">
+                <option value="es" <?= I18n::getLang() === 'es' ? 'selected' : '' ?>>ES</option>
+                <option value="eu" <?= I18n::getLang() === 'eu' ? 'selected' : '' ?>>EU</option>
+                <option value="ca" <?= I18n::getLang() === 'ca' ? 'selected' : '' ?>>CA</option>
+                <option value="en" <?= I18n::getLang() === 'en' ? 'selected' : '' ?>>EN</option>
+             </select>
+          </form>
         </div>
         <button class="icon-btn theme-btn" id="theme">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>

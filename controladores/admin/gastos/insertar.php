@@ -75,7 +75,22 @@ if (!empty($_FILES['archivoJustificante']['name'][0])) {
             if ($mime !== 'application/pdf') ImageOptimizer::optimize($tmpName, $mime); // optimizar el temporal ANTES de subir a R2
 
             $bytes   = file_get_contents($tmpName);
-            $subioOk = $bytes !== false && R2Client::putObject('justificantes/' . $nombreArchivo, $bytes, $mime);
+            $subioOk = false;
+            try {
+                $subioOk = $bytes !== false && R2Client::putObject('justificantes/' . $nombreArchivo, $bytes, $mime);
+            } catch (\Throwable $t) {
+                error_log("R2 upload failed in admin/gastos/insertar.php, saving locally: " . $t->getMessage());
+            }
+
+            if (!$subioOk) {
+                $localDir = __DIR__ . '/../../../public/uploads/justificantes/';
+                if (!is_dir($localDir)) {
+                    mkdir($localDir, 0755, true);
+                }
+                if (copy($tmpName, $localDir . $nombreArchivo)) {
+                    $subioOk = true;
+                }
+            }
             @unlink($tmpName);
 
             if (!$subioOk) {
@@ -99,8 +114,11 @@ if (!empty($errores)) {
     exit;
 }
 
+$creadoPorId = $_SESSION['idAdmin'] ?? null;
+$creadoPorRol = 'director';
 $resultado = insertarGasto($idCategoria, $idCiclo, $concepto, $importe, $fecha,
-                            $tipoJust, $numRef ?: null, $archivoGuardar, $observ ?: null);
+                            $tipoJust, $numRef ?: null, $archivoGuardar, $observ ?: null,
+                            $creadoPorId, $creadoPorRol);
 
 if ($resultado) {
     registrarAccion('insertar', 'gastos', (int)$resultado, $concepto);

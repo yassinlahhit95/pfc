@@ -70,6 +70,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         );
   }
 
+  Future<void> _submitGoogle() async {
+    FocusScope.of(context).unfocus();
+    await ref.read(loginControllerProvider.notifier).submitGoogle();
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginControllerProvider);
@@ -251,6 +256,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 const SizedBox(height: Space.xl),
                                 SizedBox(
                                   height: 50,
+                                  width: double.infinity,
                                   child: FilledButton(
                                     onPressed: isLoading ? null : _submit,
                                     child: isLoading
@@ -260,6 +266,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                             child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
                                           )
                                         : const Text('Entrar'),
+                                  ),
+                                ),
+                                const SizedBox(height: Space.lg),
+                                Row(
+                                  children: [
+                                    Expanded(child: Divider(color: scheme.outlineVariant)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                                      child: Text(
+                                        'o continuar con',
+                                        style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                                      ),
+                                    ),
+                                    Expanded(child: Divider(color: scheme.outlineVariant)),
+                                  ],
+                                ),
+                                const SizedBox(height: Space.lg),
+                                SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: OutlinedButton.icon(
+                                    onPressed: isLoading ? null : _submitGoogle,
+                                    icon: const GoogleLogo(size: 20),
+                                    label: const Text('Iniciar sesión con Google'),
+                                    style: OutlinedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(Radii.lg),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -403,4 +438,64 @@ class _AppMark extends StatelessWidget {
       ],
     );
   }
+}
+
+class GoogleLogo extends StatelessWidget {
+  const GoogleLogo({super.key, this.size = 24});
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(size, size),
+      painter: _GoogleLogoPainter(),
+    );
+  }
+}
+
+class _GoogleLogoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double w = size.width;
+    final double h = size.height;
+
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.22
+      ..strokeCap = StrokeCap.square;
+
+    final double radius = (w - paint.strokeWidth) / 2;
+    final Rect rect = Rect.fromCircle(center: Offset(w / 2, h / 2), radius: radius);
+
+    // Red Arc (Top Left-ish)
+    paint.color = const Color(0xFFEA4335);
+    canvas.drawArc(rect, -2.4, 1.25, false, paint);
+
+    // Yellow Arc (Bottom Left-ish)
+    paint.color = const Color(0xFFFBBC05);
+    canvas.drawArc(rect, -1.15, -1.25, false, paint);
+
+    // Green Arc (Bottom Right-ish)
+    paint.color = const Color(0xFF34A853);
+    canvas.drawArc(rect, 0.1, 1.25, false, paint);
+
+    // Blue Arc (Top Right-ish + Bar)
+    paint.color = const Color(0xFF4285F4);
+    canvas.drawArc(rect, 1.35, 1.35, false, paint);
+
+    // Bar
+    final Paint barPaint = Paint()
+      ..color = const Color(0xFF4285F4)
+      ..style = PaintingStyle.fill;
+
+    final double barStartX = w / 2;
+    final double barStartY = h / 2 - paint.strokeWidth / 2;
+    canvas.drawRect(
+      Rect.fromLTRB(barStartX, barStartY, w - paint.strokeWidth / 2, barStartY + paint.strokeWidth),
+      barPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
 import '../data/inventory_repository.dart';
 
@@ -19,6 +20,7 @@ class DeviceFormScreen extends ConsumerStatefulWidget {
 class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   late final TextEditingController _nameController;
   late final TextEditingController _serialController;
+  late final TextEditingController _cantidadController;
   String _status = 'disponible';
   bool _loading = false;
   
@@ -30,6 +32,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.device?.nombre ?? '');
     _serialController = TextEditingController(text: widget.device?.numeroSerie ?? '');
+    _cantidadController = TextEditingController(text: widget.device?.cantidad.toString() ?? '1');
     if (widget.device != null) {
       _status = widget.device!.estado;
     }
@@ -39,6 +42,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   void dispose() {
     _nameController.dispose();
     _serialController.dispose();
+    _cantidadController.dispose();
     super.dispose();
   }
 
@@ -63,6 +67,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   Future<void> _submit() async {
     final nombre = _nameController.text.trim();
     final serial = _serialController.text.trim();
+    final cantidad = int.tryParse(_cantidadController.text.trim()) ?? 1;
     
     if (nombre.isEmpty || serial.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,6 +89,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         await ref.read(inventoryRepositoryProvider).addDevice(
           nombreArticulo: nombre,
           numeroSerie: serial,
+          cantidad: cantidad,
           fotoBase64: base64Image,
         );
         if (mounted) {
@@ -98,6 +104,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           nombreArticulo: nombre,
           numeroSerie: serial,
           estado: _status,
+          cantidad: cantidad,
           fotoBase64: base64Image,
         );
         if (mounted) {
@@ -135,6 +142,13 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
               enabled: !_loading,
             ),
             const SizedBox(height: Space.lg),
+            TextField(
+              controller: _cantidadController,
+              decoration: const InputDecoration(labelText: 'Cantidad'),
+              keyboardType: TextInputType.number,
+              enabled: !_loading,
+            ),
+            const SizedBox(height: Space.lg),
             if (widget.device != null) ...[
               DropdownButtonFormField<String>(
                 value: _status,
@@ -159,10 +173,21 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             else if (widget.device?.foto != null && widget.device!.foto!.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(Radii.md),
-                child: Container(
+                child: CachedNetworkImage(
+                  imageUrl: '$apiBaseUrl/public/uploads/equipos/${widget.device!.foto}',
                   height: 200, 
-                  color: Colors.grey.withOpacity(0.1),
-                  child: Center(child: Text('Foto actual: ${widget.device!.foto}')),
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    height: 200, 
+                    color: Colors.grey.withOpacity(0.1),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    height: 200, 
+                    color: Colors.grey.withOpacity(0.1),
+                    child: const Center(child: Icon(Icons.broken_image)),
+                  ),
                 ),
               )
             else

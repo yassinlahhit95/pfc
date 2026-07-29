@@ -43,6 +43,8 @@ class Security {
             }
             session_start();
         }
+        require_once __DIR__ . '/I18n.php';
+        I18n::init();
         self::enforceSessionSecurity();
     }
 
@@ -71,7 +73,7 @@ class Security {
 
         return implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com",
+            "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com https://accounts.google.com",
             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
             "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com",
             "img-src {$imgHosts}",
@@ -84,8 +86,8 @@ class Security {
             // ya que firebase-app.js/firebase-messaging.js (permitidos en
             // script-src) se sirven desde ese mismo host — no es un dominio
             // nuevo de confianza, es el mismo ya admitido para cargar el script.
-            "connect-src 'self' https://*.googleapis.com https://www.gstatic.com",
-            "frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com",
+            "connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://accounts.google.com",
+            "frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com https://accounts.google.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
@@ -517,6 +519,43 @@ class Security {
 
         // Fallback to 'ES' to prevent locking out the admin if the free API is rate-limiting the server's public IP
         return 'ES';
+    }
+
+    public static function verifyGoogleIdToken(string $idToken): ?array {
+        $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
+        if (empty($googleClientId)) {
+            return null;
+        }
+
+        $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($idToken);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200 || !$response) {
+            return null;
+        }
+
+        $payload = json_decode($response, true);
+        if (!$payload || !isset($payload['email'])) {
+            return null;
+        }
+
+        // Validate the audience (aud) matches the Google Client ID
+        if (isset($payload['aud']) && $payload['aud'] !== $googleClientId) {
+            return null;
+        }
+
+        if (empty($payload['email_verified']) || ($payload['email_verified'] !== 'true' && $payload['email_verified'] !== true)) {
+            return null;
+        }
+
+        return $payload;
     }
 
     public static function escapeHtml($value) {

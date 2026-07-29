@@ -20,7 +20,7 @@ if ($method === 'GET') {
         $anyo = isset($_GET['anyo']) ? (int)$_GET['anyo'] : null;
         $gastos = listarGastos($anyo);
         $categorias = listarCategorias();
-        $ciclos = listarCiclos();
+        $ciclos = listarTodosLosCiclos();
         v1Ok([
             'gastos' => $gastos,
             'categorias' => $categorias,
@@ -28,6 +28,17 @@ if ($method === 'GET') {
         ]);
     }
 } elseif ($method === 'POST') {
+    // Validate action is provided
+    if (empty($action)) {
+        v1Error('Acción no especificada.', 400, 'validation');
+    }
+
+    // Validate action is supported
+    $validActions = ['create'];
+    if (!in_array($action, $validActions, true)) {
+        v1Error('Acción inválida: ' . Security::escapeHtml($action), 400, 'validation');
+    }
+
     if ($action === 'create') {
         $idCategoria = (int)($_POST['idCategoria'] ?? 0);
         $idCiclo = !empty($_POST['idCiclo']) ? (int)$_POST['idCiclo'] : null;
@@ -78,7 +89,7 @@ if ($method === 'GET') {
             $archivoJustificante = json_encode([$nombreArchivo]);
         }
 
-        $id = insertarGasto($idCategoria, $idCiclo, $concepto, $importe, $fecha, $tipoJustificante, $numeroReferencia, $archivoJustificante, $observaciones);
+        $id = insertarGasto($idCategoria, $idCiclo, $concepto, $importe, $fecha, $tipoJustificante, $numeroReferencia, $archivoJustificante, $observaciones, $uid, $type);
         if ($id) {
             v1Ok(['message' => 'Gasto registrado correctamente', 'idGasto' => $id], 201);
         } else {

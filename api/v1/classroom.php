@@ -80,11 +80,28 @@ if ($action === 'download') {
     // download link either), so it's out of scope here.
     $kind = (string)($_GET['kind'] ?? 'recurso');
     if ($kind === 'entrega' || $kind === 'correccion') {
-        if ($type !== 'estudiante') v1Error('Only estudiantes can use this action.', 403, 'forbidden');
+        if (!in_array($type, ['estudiante', 'profesor', 'director', 'secretaria'], true)) {
+            v1Error('Role not permitted.', 403, 'forbidden');
+        }
+        
         $idTarea = (int)($_GET['id'] ?? 0);
         if ($idTarea <= 0) v1Error('id is required.', 400, 'validation');
-        $entrega = obtenerEntregaAula($idTarea, $uid);
+        
+        $targetUid = $uid;
+        if ($type !== 'estudiante') {
+            $targetUid = (int)($_GET['idEstudiante'] ?? 0);
+            if ($targetUid <= 0) v1Error('idEstudiante is required for staff.', 400, 'validation');
+        }
+        
+        $entrega = obtenerEntregaAula($idTarea, $targetUid);
         if (!$entrega) v1Error('Submission not found.', 404, 'not_found');
+        
+        if ($type === 'profesor') {
+            $tarea = obtenerTareaPorIdAula($idTarea);
+            if (!$tarea || !classroomModuloAutorizado('profesor', $uid, (int)$tarea['idModulo'])) {
+                v1Error('You do not teach this module.', 403, 'forbidden');
+            }
+        }
 
         $campo = $kind === 'entrega' ? 'archivoEntrega' : 'archivoCorreccion';
         $nombreArchivo = $entrega[$campo] ?? null;

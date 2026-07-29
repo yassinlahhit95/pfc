@@ -8,7 +8,7 @@ import 'api_exception.dart';
 ///   flutter run --dart-define=API_BASE_URL=http://10.0.2.2
 /// (Android emulator reaches the host machine's Laragon via 10.0.2.2, not
 /// pfc.test/localhost.) Defaults to the production domain.
-const _defaultBaseUrl = 'http://10.0.2.2/pfc';
+const _defaultBaseUrl = 'https://aulapro.yassin.agency';
 const String apiBaseUrl =
     String.fromEnvironment('API_BASE_URL', defaultValue: _defaultBaseUrl);
 

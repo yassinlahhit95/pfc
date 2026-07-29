@@ -157,6 +157,25 @@ include_once __DIR__ . "/../comunes/nav.php";
                     : '<span class="texto-suave">Sin observaciones registradas.</span>' ?>
             </div>
         </div>
+        <!-- Idioma de la plataforma -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-globe"></i> Preferencia de Idioma / Language
+            </div>
+            <div class="detalle-fila" style="align-items:center;">
+                <span class="detalle-label">Idioma del Sistema</span>
+                <span class="detalle-valor">
+                    <form action="../../../controladores/cambiar_idioma.php" method="POST" id="formLanguageProfileAdmin" style="margin:0;">
+                        <select name="lang" onchange="document.getElementById('formLanguageProfileAdmin').submit();" class="select-idioma" style="padding: 6px 12px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: .9rem; background: var(--bg-card); color: var(--text); cursor:pointer; font-weight:600;">
+                            <option value="es" <?= I18n::getLang() === 'es' ? 'selected' : '' ?>>Español</option>
+                            <option value="eu" <?= I18n::getLang() === 'eu' ? 'selected' : '' ?>>Euskera</option>
+                            <option value="ca" <?= I18n::getLang() === 'ca' ? 'selected' : '' ?>>Catalán</option>
+                            <option value="en" <?= I18n::getLang() === 'en' ? 'selected' : '' ?>>Inglés</option>
+                        </select>
+                    </form>
+                </span>
+            </div>
+        </div>
 
     </div><!-- /detalle-grid -->
 </div>

@@ -77,6 +77,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <i class="fas fa-route"></i> Reiniciar tour
                 </button>
             </form>
+            <a href="../pagos/historialEstudiante.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-secundario">
+                <i class="fas fa-file-invoice-dollar"></i> Historial de Pagos
+            </a>
             <a href="verEstudiantes.php" class="boton-secundario">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>

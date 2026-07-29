@@ -57,7 +57,20 @@ class GastosScreen extends ConsumerWidget {
                     child: Icon(Icons.shopping_bag_outlined, color: _hexToColor(gasto.colorCategoria)),
                   ),
                   title: Text(gasto.concepto, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('${gasto.nombreCategoria} • ${gasto.fecha}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${gasto.nombreCategoria} • ${gasto.fecha}'),
+                      if (gasto.nombreCreador != null)
+                        Text(
+                          'Registrado por: ${gasto.nombreCreador}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: scheme.onSurfaceVariant.withValues(alpha: 0.8),
+                          ),
+                        ),
+                    ],
+                  ),
                   trailing: Text(
                     formatCurrency.format(gasto.importe),
                     style: TextStyle(

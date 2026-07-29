@@ -20,28 +20,53 @@ if (isset($_POST['actualizarArticulo'])) {
     $idArticulo     = (int)($_POST['idArticulo'] ?? 0);
     $nombreArticulo = trim($_POST['nombreArticulo']);
     $numeroSerie    = trim($_POST['numeroSerie']);
+    $estado         = trim($_POST['estado'] ?? '');
+    $cantidad       = max(1, (int)($_POST['cantidad'] ?? 1));
 
     $errores = [];
     if (empty($nombreArticulo)) $errores['nombreArticulo'] = "El nombre del artículo es un campo obligatorio.";
     if (empty($numeroSerie)) $errores['numeroSerie'] = "El número de serie es un campo obligatorio.";
     if (empty($errores) && checkArticuloExistente($numeroSerie, $idArticulo)) $errores['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
 
-    if (!empty($errores)) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_inventario'] = $_POST;
-    } else {
+    if (empty($errores)) {
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
-        $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
+        $estadoActual = !empty($estado) ? $estado : ($datosArticuloActual['estado'] ?? 'disponible');
 
-        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
+        $fotoActual = $datosArticuloActual['foto'] ?? null;
+        $foto = null;
+
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $dir = __DIR__ . '/../../../public/uploads/equipos/';
+            if (!is_dir($dir)) mkdir($dir, 0777, true);
+            $foto = uniqid('dev_') . '.jpg';
+            move_uploaded_file($_FILES['foto']['tmp_name'], $dir . $foto);
+            
+            if ($fotoActual && file_exists($dir . $fotoActual)) {
+                @unlink($dir . $fotoActual);
+            }
+        }
+
+        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual, $cantidad, $foto)) {
             registrarAccionSecretaria('actualizar', 'inventario', $idArticulo, $nombreArticulo);
-            $_SESSION['exito'] = "El artículo ha sido actualizado correctamente.";
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['ok' => true, 'msg' => 'El dispositivo ha sido actualizado correctamente.']);
+                exit;
+            }
+            $_SESSION['exito'] = "El dispositivo ha sido actualizado correctamente.";
             header("Location: ../../../vistas/secretaria/inventario/verInventario.php");
             exit;
         }
-        $_SESSION['errores'] = "Ocurrió un error al intentar actualizar el artículo.";
+        $errores = ['general' => 'Ocurrió un error al intentar actualizar el dispositivo.'];
     }
 
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => $errores['general'] ?? reset($errores), 'errores' => $errores, 'csrf_token' => Security::generateCSRFToken()]);
+        exit;
+    }
+    $_SESSION['errores'] = $errores;
+    $_SESSION['datos_inventario'] = $_POST;
     header("Location: ../../../vistas/secretaria/inventario/modificarArticulo.php?idArticulo=" . $idArticulo);
     exit;
 }

@@ -93,9 +93,32 @@ if ($method === 'GET') {
 
     if ($type === 'secretaria' || $type === 'director') {
         $idEstudiante = (int)($_GET['idEstudiante'] ?? 0);
-        if ($idEstudiante <= 0) v1Error('idEstudiante is required.', 400, 'validation');
-        $rows = listarAsistenciasFiltradas(null, null, $idEstudiante, null, null, null);
-        v1Ok(['attendance' => attendanceAttachJustifications($rows)]);
+        if ($idEstudiante > 0) {
+            $rows = listarAsistenciasFiltradas(null, null, $idEstudiante, null, null, null);
+            v1Ok(['attendance' => attendanceAttachJustifications($rows)]);
+        } else {
+            // Unified filtering for the center list
+            $filtros = [
+                'nivel' => (int)($_GET['nivel'] ?? 0),
+                'idCiclo' => (int)($_GET['ciclo'] ?? 0),
+                'anio' => trim($_GET['anio'] ?? ''),
+                'grupo' => (int)($_GET['grupo'] ?? 0),
+                'q' => trim($_GET['q'] ?? ''),
+                'estado' => trim($_GET['estado'] ?? ''),
+                'fechaDesde' => trim($_GET['fechaDesde'] ?? ''),
+                'fechaHasta' => trim($_GET['fechaHasta'] ?? '')
+            ];
+            $limit = min(max((int)($_GET['limit'] ?? 20), 1), 100);
+            $offset = max((int)($_GET['offset'] ?? 0), 0);
+            
+            $result = listarAsistenciasFiltradasV2($filtros, $limit, $offset);
+            v1Ok([
+                'attendance' => attendanceAttachJustifications($result['rows']),
+                'total' => $result['total'],
+                'limit' => $limit,
+                'offset' => $offset
+            ]);
+        }
     }
 
     v1Error('This endpoint is not available for this role.', 403, 'forbidden');

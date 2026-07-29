@@ -18,9 +18,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE INVENTARIO</h1>
+    <h1>GESTIÓN DE DISPOSITIVOS</h1>
     <button type="button" class="boton-primario" data-nuevo-articulo>
-        <i class="fas fa-plus"></i> NUEVO ARTÍCULO
+        <i class="fas fa-plus"></i> NUEVO DISPOSITIVO
     </button>
 </div>
 
@@ -30,8 +30,10 @@ include_once __DIR__ . "/../comunes/nav.php";
         <table class="tabla-datos" id="tablaInventario">
             <thead>
                 <tr>
+                    <th>Imagen</th>
                     <th>Nombre</th>
                     <th>Número Serie</th>
+                    <th>Cantidad</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -42,32 +44,44 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($todosLosArticulos as $articulo) { ?>
                     <tr>
+                        <td>
+                            <?php if (!empty($articulo['foto'])): ?>
+                                <img src="/public/uploads/equipos/<?= Security::escapeHtml($articulo['foto']) ?>" alt="Imagen" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                            <?php else: ?>
+                                <div style="width: 40px; height: 40px; background: #eee; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999;"><i class="fas fa-image"></i></div>
+                            <?php endif; ?>
+                        </td>
                         <td><b><?= Security::escapeHtml($articulo['nombreArticulo']) ?></b></td>
                         <td><?= Security::escapeHtml($articulo['numeroSerie'] ?? '') ?></td>
+                        <td><?= (int)$articulo['cantidad'] ?></td>
                         <td>
                             <?php
-                            $claseEstado = "activo-verde";
-                            if ($articulo['estado'] != 'disponible') { $claseEstado = "inactivo-rojo"; }
+                            $disponibles = $articulo['cantidad'] - $articulo['prestados'];
+                            $claseEstado = $disponibles > 0 ? "activo-verde" : "inactivo-rojo";
+                            $textoEstado = $disponibles > 0 ? "Disponible ($disponibles)" : "Agotado";
                             ?>
                             <span class="indicador-estado <?= $claseEstado ?>">
-                                <?= Security::escapeHtml($articulo['estado']) ?>
+                                <?= Security::escapeHtml($textoEstado) ?>
                             </span>
                         </td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="#"
-                                       data-editar-articulo
-                                       data-id="<?= (int)$articulo['idArticulo'] ?>"
-                                       data-nombre="<?= Security::escapeHtml($articulo['nombreArticulo']) ?>"
-                                       data-serie="<?= Security::escapeHtml($articulo['numeroSerie'] ?? '') ?>"><i class="fas fa-edit"></i> Editar</a>
-                                    <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="#"
-                                       data-modal-borrar
-                                       data-id="<?= (int)$articulo['idArticulo'] ?>"
-                                       data-tipo="Artículo"
-                                       data-nombre="<?= Security::escapeHtml($articulo['nombreArticulo']) ?>"
+                                     <a class="recurso-menu-item" href="#"
+                                        data-editar-articulo
+                                        data-id="<?= (int)$articulo['idArticulo'] ?>"
+                                        data-nombre="<?= Security::escapeHtml($articulo['nombreArticulo']) ?>"
+                                        data-serie="<?= Security::escapeHtml($articulo['numeroSerie'] ?? '') ?>"
+                                        data-estado="<?= Security::escapeHtml($articulo['estado'] ?? 'disponible') ?>"
+                                        data-cantidad="<?= (int)$articulo['cantidad'] ?>"
+                                        data-foto="<?= Security::escapeHtml($articulo['foto'] ?? '') ?>"><i class="fas fa-edit"></i> Editar</a>
+                                     <div class="recurso-menu-sep"></div>
+                                     <a class="recurso-menu-item peligro" href="#"
+                                        data-modal-borrar
+                                        data-id="<?= (int)$articulo['idArticulo'] ?>"
+                                        data-tipo="Dispositivo"
+                                        data-nombre="<?= Security::escapeHtml($articulo['nombreArticulo']) ?>"
                                        data-url="/controladores/admin/inventario/borrar.php"
                                        data-campo="idArticulo"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
@@ -81,16 +95,16 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<!-- Modal: Nuevo / Editar Artículo -->
+<!-- Modal: Nuevo / Editar Dispositivo -->
 <div id="modal-articulo" class="modal-backdrop" role="dialog" aria-modal="true">
     <div class="modal-caja" style="max-width:480px;text-align:left;">
-        <h3 class="modal-titulo" id="modal-articulo-titulo" style="text-align:center;margin-bottom:18px;">Nuevo Artículo</h3>
+        <h3 class="modal-titulo" id="modal-articulo-titulo" style="text-align:center;margin-bottom:18px;">Nuevo Dispositivo</h3>
         <form id="form-articulo">
             <input type="hidden" id="art-csrf" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" id="art-id" value="">
             <div class="formulario">
                 <div class="campo">
-                    <label for="art-nombre">Nombre del Artículo</label>
+                    <label for="art-nombre">Nombre del Dispositivo</label>
                     <input type="text" id="art-nombre" placeholder="Ej: Portátil HP ProBook">
                     <span class="campo-error" id="art-nombre-error" style="display:none;"></span>
                 </div>
@@ -100,7 +114,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <span class="campo-error" id="art-serie-error" style="display:none;"></span>
                 </div>
                 <div class="campo">
+                    <label for="art-cantidad">Cantidad</label>
+                    <input type="number" id="art-cantidad" value="1" min="1">
+                </div>
+                <div class="campo" id="campo-estado" style="display:none;">
+                    <label for="art-estado">Estado</label>
+                    <select id="art-estado">
+                        <option value="disponible">Disponible</option>
+                        <option value="prestado">Prestado</option>
+                        <option value="de baja">De baja</option>
+                    </select>
+                </div>
+                <div class="campo">
                     <label for="art-foto">Fotografía (Opcional)</label>
+                    <div id="preview-foto" style="margin-bottom: 10px; display: none;">
+                        <img src="" id="img-preview" alt="Preview" style="max-width: 100px; border-radius: 4px;">
+                    </div>
                     <input type="file" id="art-foto" name="foto" accept="image/*">
                 </div>
             </div>
@@ -126,6 +155,11 @@ iniciarPaginacion('tablaInventario', 15);
     var $id      = $('#art-id');
     var $nombre  = $('#art-nombre');
     var $serie   = $('#art-serie');
+    var $cantidad = $('#art-cantidad');
+    var $estado  = $('#art-estado');
+    var $campoEstado = $('#campo-estado');
+    var $previewFoto = $('#preview-foto');
+    var $imgPreview  = $('#img-preview');
     var $guardar = $('#modal-articulo-guardar');
 
     function abrirModal(datos) {
@@ -133,8 +167,25 @@ iniciarPaginacion('tablaInventario', 15);
         $id.val(datos.id || '');
         $nombre.val(datos.nombre || '');
         $serie.val(datos.serie || '');
+        $cantidad.val(datos.cantidad || 1);
+        
+        if (datos.id) {
+            $estado.val(datos.estado || 'disponible');
+            $campoEstado.show();
+        } else {
+            $campoEstado.hide();
+        }
+        
+        if (datos.foto) {
+            $imgPreview.attr('src', '/public/uploads/equipos/' + datos.foto);
+            $previewFoto.show();
+        } else {
+            $imgPreview.attr('src', '');
+            $previewFoto.hide();
+        }
+
         $('#art-nombre-error, #art-serie-error').hide().text('');
-        $titulo.text(datos.id ? 'Editar Artículo' : 'Nuevo Artículo');
+        $titulo.text(datos.id ? 'Editar Dispositivo' : 'Nuevo Dispositivo');
         $modal.removeClass('modal-cerrando').addClass('modal-abierto');
     }
 
@@ -151,7 +202,14 @@ iniciarPaginacion('tablaInventario', 15);
     $(document).on('click', '[data-editar-articulo]', function (e) {
         e.preventDefault();
         var $btn = $(this);
-        abrirModal({ id: $btn.data('id'), nombre: $btn.data('nombre'), serie: $btn.data('serie') });
+        abrirModal({ 
+            id: $btn.data('id'), 
+            nombre: $btn.data('nombre'), 
+            serie: $btn.data('serie'),
+            estado: $btn.data('estado'),
+            cantidad: $btn.data('cantidad'),
+            foto: $btn.data('foto')
+        });
     });
 
     $('#modal-articulo-cancelar').on('click', cerrarModal);
@@ -170,6 +228,11 @@ iniciarPaginacion('tablaInventario', 15);
         payload.append('csrf_token', $('#art-csrf').val());
         payload.append('nombreArticulo', $nombre.val());
         payload.append('numeroSerie', $serie.val());
+        payload.append('cantidad', $cantidad.val());
+        
+        if (idArticulo) {
+            payload.append('estado', $estado.val());
+        }
         
         var fotoFile = $('#art-foto')[0].files[0];
         if (fotoFile) {

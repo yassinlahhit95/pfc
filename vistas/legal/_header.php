@@ -1,8 +1,11 @@
 <?php
+require_once __DIR__ . '/../../include/Security.php';
+Security::initSession();
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/configuracion.php';
 require_once __DIR__ . '/../../include/FeatureGuard.php';
 require_once __DIR__ . '/../../include/AssetMin.php';
+require_once __DIR__ . '/../../include/I18n.php';
 $cfg = obtenerConfiguracionCentro();
 $nombreCentro = $cfg['nombreCentro'] ?? 'AulaPro';
 $emailCentro  = $cfg['emailCentro']  ?? '';
@@ -59,17 +62,25 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
         
         <!-- Desktop Nav links -->
         <nav class="legal-nav-links">
-            <a href="/vistas/legal/aviso-legal.php"<?= ($legal_pagina ?? '') === 'aviso-legal' ? ' class="activo"' : '' ?>>Aviso Legal</a>
-            <a href="/vistas/legal/politica-de-privacidad.php"<?= ($legal_pagina ?? '') === 'privacidad' ? ' class="activo"' : '' ?>>Privacidad</a>
-            <a href="/vistas/legal/politica-de-cookies.php"<?= ($legal_pagina ?? '') === 'cookies' ? ' class="activo"' : '' ?>>Cookies</a>
-            <a href="/vistas/legal/politica-de-gestion.php"<?= ($legal_pagina ?? '') === 'gestion' ? ' class="activo"' : '' ?>>Política de Gestión</a>
+            <a href="/vistas/legal/aviso-legal.php"<?= ($legal_pagina ?? '') === 'aviso-legal' ? ' class="activo"' : '' ?>><?= __('Aviso Legal', 'Aviso Legal') ?></a>
+            <a href="/vistas/legal/politica-de-privacidad.php"<?= ($legal_pagina ?? '') === 'privacidad' ? ' class="activo"' : '' ?>><?= __('privacidad', 'Privacidad') ?></a>
+            <a href="/vistas/legal/politica-de-cookies.php"<?= ($legal_pagina ?? '') === 'cookies' ? ' class="activo"' : '' ?>><?= __('cookies', 'Cookies') ?></a>
+            <a href="/vistas/legal/politica-de-gestion.php"<?= ($legal_pagina ?? '') === 'gestion' ? ' class="activo"' : '' ?>><?= __('gestion', 'Política de Gestión') ?></a>
         </nav>
         
         <!-- Desktop CTAs + Burger Button -->
         <div class="legal-nav-cta">
-            <a class="legal-access" href="/vistas/login.php">Acceso</a>
+            <form action="/controladores/cambiar_idioma.php" method="POST" style="margin:0; display:inline-block; margin-right: 12px;" id="legalLangForm">
+                 <select name="lang" onchange="document.getElementById('legalLangForm').submit();" style="padding:5px 8px; border-radius:8px; border:1.5px solid #e2e8f0; font-size:.85rem; background:#fff; cursor:pointer; font-weight:600; color:#475569;">
+                    <option value="es" <?= I18n::getLang() === 'es' ? 'selected' : '' ?>>ES</option>
+                    <option value="eu" <?= I18n::getLang() === 'eu' ? 'selected' : '' ?>>EU</option>
+                    <option value="ca" <?= I18n::getLang() === 'ca' ? 'selected' : '' ?>>CA</option>
+                    <option value="en" <?= I18n::getLang() === 'en' ? 'selected' : '' ?>>EN</option>
+                 </select>
+            </form>
+            <a class="legal-access" href="/vistas/login.php"><?= __('Acceso', 'Acceso') ?></a>
             <?php if ($prematriculaHabilitada): ?>
-            <a class="legal-btn-primary" href="/vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
+            <a class="legal-btn-primary" href="/vistas/admisiones/pre-matricula.php"><?= __('Pre-matrícula', 'Pre-matrícula') ?></a>
             <?php endif; ?>
             
             <!-- Burger (visible only on mobile) -->

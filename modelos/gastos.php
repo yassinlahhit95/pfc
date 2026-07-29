@@ -93,10 +93,13 @@ function listarGastos($anyo = null, $idCategoria = null, $idCiclo = null) {
     }
 
     $sql = "SELECT g.*, cg.nombre AS nombreCategoria, cg.color,
-                   c.nombreCiclo, c.abreviaturaCiclo
+                   c.nombreCiclo, c.abreviaturaCiclo,
+                   COALESCE(d.nombreDirector, s.nombreSecretaria) AS nombreCreador
             FROM gastos g
             JOIN categorias_gasto cg ON g.idCategoria = cg.idCategoria
             LEFT JOIN ciclos c ON g.idCiclo = c.idCiclo
+            LEFT JOIN directores d ON g.creadoPorRol = 'director' AND g.creadoPorId = d.idDirector
+            LEFT JOIN secretarias s ON g.creadoPorRol = 'secretaria' AND g.creadoPorId = s.idSecretaria
             WHERE " . implode(' AND ', $where) . "
             ORDER BY g.fecha DESC, g.idGasto DESC";
 
@@ -115,10 +118,13 @@ function obtenerGastoPorId($id) {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con,
         "SELECT g.*, cg.nombre AS nombreCategoria, cg.color,
-                c.nombreCiclo, c.abreviaturaCiclo
+                c.nombreCiclo, c.abreviaturaCiclo,
+                COALESCE(d.nombreDirector, s.nombreSecretaria) AS nombreCreador
          FROM gastos g
          JOIN categorias_gasto cg ON g.idCategoria = cg.idCategoria
          LEFT JOIN ciclos c ON g.idCiclo = c.idCiclo
+         LEFT JOIN directores d ON g.creadoPorRol = 'director' AND g.creadoPorId = d.idDirector
+         LEFT JOIN secretarias s ON g.creadoPorRol = 'secretaria' AND g.creadoPorId = s.idSecretaria
          WHERE g.idGasto = ?");
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
@@ -130,16 +136,17 @@ function obtenerGastoPorId($id) {
 // ══════════════════════════════════════════════════════════════════════
 
 function insertarGasto($idCategoria, $idCiclo, $concepto, $importe, $fecha,
-                        $tipoJustificante, $numeroReferencia, $archivoJustificante, $observaciones) {
+                        $tipoJustificante, $numeroReferencia, $archivoJustificante, $observaciones,
+                        $creadoPorId = null, $creadoPorRol = null) {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con,
         "INSERT INTO gastos
             (idCategoria, idCiclo, concepto, importe, fecha,
-             tipoJustificante, numeroReferencia, archivoJustificante, observaciones)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    mysqli_stmt_bind_param($stmt, "iisdsssss",
+             tipoJustificante, numeroReferencia, archivoJustificante, observaciones, creadoPorId, creadoPorRol)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "iisdsssssis",
         $idCategoria, $idCiclo, $concepto, $importe, $fecha,
-        $tipoJustificante, $numeroReferencia, $archivoJustificante, $observaciones);
+        $tipoJustificante, $numeroReferencia, $archivoJustificante, $observaciones, $creadoPorId, $creadoPorRol);
     return mysqli_stmt_execute($stmt) ? mysqli_insert_id($con) : false;
 }
 

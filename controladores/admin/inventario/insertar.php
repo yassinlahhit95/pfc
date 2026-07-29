@@ -26,6 +26,7 @@ if (isset($_POST['guardarArticulo'])) {
     }
     $nombre      = trim($_POST['nombreArticulo']);
     $numeroSerie = trim($_POST['numeroSerie']);
+    $cantidad    = max(1, (int)($_POST['cantidad'] ?? 1));
 
     $errores = [];
     if (empty($nombre))      $errores['nombreArticulo'] = "El nombre del artículo es un campo obligatorio.";
@@ -44,7 +45,7 @@ if (isset($_POST['guardarArticulo'])) {
             move_uploaded_file($_FILES['foto']['tmp_name'], $dir . $foto);
         }
 
-        if (insertarArticulo($nombre, $numeroSerie, $foto)) {
+        if (insertarArticulo($nombre, $numeroSerie, $cantidad, $foto)) {
             registrarAccion('insertar', 'inventario', null, "$nombre · S/N:$numeroSerie");
             if ($isAjax) {
                 header('Content-Type: application/json');

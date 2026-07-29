@@ -100,6 +100,25 @@ function v1AuthHeader(): string {
 function v1Auth(): array {
     $header = v1AuthHeader();
     if (!$header || stripos($header, 'Bearer ') !== 0) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['rol'])) {
+            $rol = strtolower($_SESSION['rol']);
+            $user_type = match($rol) {
+                'administrador' => 'admin',
+                'secretaria' => 'secretaria',
+                'director' => 'director',
+                'profesor' => 'profesor',
+                default => 'estudiante'
+            };
+            $user_id = 0;
+            if ($user_type === 'profesor') $user_id = (int)($_SESSION['idProfesor'] ?? 0);
+            elseif ($user_type === 'director') $user_id = (int)($_SESSION['idDirector'] ?? 0);
+            elseif ($user_type === 'secretaria') $user_id = (int)($_SESSION['idSecretaria'] ?? 0);
+            
+            return ['user_type' => $user_type, 'user_id' => $user_id];
+        }
         v1Error('Missing or malformed Authorization header.', 401, 'unauthenticated');
     }
     $token = trim(substr($header, 7));

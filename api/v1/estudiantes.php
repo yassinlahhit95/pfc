@@ -12,7 +12,7 @@ require_once __DIR__ . '/../../modelos/estudiantes.php';
 $auth = v1Auth();
 ['user_type' => $type, 'user_id' => $uid] = $auth;
 
-if ($type !== 'director' && $type !== 'secretaria') {
+if (!in_array($type, ['director', 'secretaria', 'admin', 'profesor'])) {
     v1Error('This endpoint is not available for this role.', 403, 'forbidden');
 }
 
@@ -23,6 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $limit  = min(max((int)($_GET['limit']  ?? 20), 1), 100);
 $offset = max((int)($_GET['offset'] ?? 0), 0);
 $ciclo  = (int)($_GET['ciclo'] ?? 0);
+$nivel  = (int)($_GET['nivel'] ?? 0);
+$grupo  = (int)($_GET['grupo'] ?? 0);
+$anio   = trim($_GET['anio'] ?? '');
 $status = strtolower(trim($_GET['status'] ?? ''));
 $q      = trim($_GET['q'] ?? '');
 
@@ -33,10 +36,50 @@ $where = ["(e.eliminado = 0 OR e.eliminado IS NULL)"];
 $params = [];
 $types = '';
 
+if ($type === 'profesor' && $uid > 0) {
+    // Check if professor is tutor
+    $isTutor = false;
+    $idCicloTutor = 0;
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    if (!empty($_SESSION['esTutor']) && !empty($_SESSION['idCicloTutor'])) {
+        $isTutor = true;
+        $idCicloTutor = (int)$_SESSION['idCicloTutor'];
+    }
+
+    if ($isTutor && $idCicloTutor > 0) {
+        $where[] = 'e.idCiclo = ?';
+        $params[] = $idCicloTutor;
+        $types .= 'i';
+    } else {
+        $where[] = '(e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?) OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))';
+        $params[] = $uid;
+        $params[] = $uid;
+        $types .= 'ii';
+    }
+}
+
 if ($ciclo > 0) {
     $where[] = 'e.idCiclo = ?';
     $params[] = $ciclo;
     $types .= 'i';
+}
+
+if ($nivel > 0) {
+    $where[] = 'c.idNivel = ?';
+    $params[] = $nivel;
+    $types .= 'i';
+}
+
+if ($grupo > 0) {
+    $where[] = 'e.idGrupo = ?';
+    $params[] = $grupo;
+    $types .= 'i';
+}
+
+if ($anio !== '') {
+    $where[] = 'e.anioEstudio = ?';
+    $params[] = $anio;
+    $types .= 's';
 }
 
 if ($status === 'inactivo') {
@@ -55,9 +98,10 @@ $whereClause = implode(' AND ', $where);
 
 $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.emailEstudiante, e.telefonoEstudiante,
                e.idCiclo, c.nombreCiclo, c.abreviaturaCiclo, c.idNivel,
-               e.curso, e.anioEstudio, e.eliminado, e.fechaAltaEstudiante
+               e.curso, e.anioEstudio, e.eliminado, e.fechaAltaEstudiante, g.nombreGrupo
         FROM estudiantes e
         JOIN ciclos c ON e.idCiclo = c.idCiclo
+        LEFT JOIN grupos g ON e.idGrupo = g.idGrupo
         WHERE $whereClause
         ORDER BY e.nombreEstudiante ASC
         LIMIT ? OFFSET ?";
@@ -108,6 +152,7 @@ foreach ($rows as $row) {
         'idNivel' => (int)$row['idNivel'],
         'curso' => $row['curso'],
         'anioEstudio' => $row['anioEstudio'],
+        'nombreGrupo' => $row['nombreGrupo'] ?? 'Sin grupo',
         'estado' => $row['eliminado'] ? 'inactivo' : 'activo',
         'fechaAlta' => $row['fechaAltaEstudiante'],
     ];

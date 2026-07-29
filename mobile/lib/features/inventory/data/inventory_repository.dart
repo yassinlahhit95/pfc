@@ -8,6 +8,7 @@ class Device {
     required this.nombre,
     required this.numeroSerie,
     required this.estado,
+    required this.cantidad,
     this.foto,
   });
 
@@ -16,6 +17,7 @@ class Device {
         nombre: json['nombreArticulo'] as String? ?? '',
         numeroSerie: json['numeroSerie'] as String? ?? '',
         estado: json['estado'] as String? ?? '',
+        cantidad: json['cantidad'] as int? ?? 1,
         foto: json['foto'] as String?,
       );
 
@@ -23,6 +25,7 @@ class Device {
   final String nombre;
   final String numeroSerie;
   final String estado;
+  final int cantidad;
   final String? foto;
 }
 
@@ -53,26 +56,7 @@ class Loan {
   final String estadoPrestamo;
 }
 
-class InventoryItem {
-  const InventoryItem({
-    required this.id,
-    required this.nombre,
-    required this.descripcion,
-    required this.cantidad,
-  });
-
-  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(
-        id: json['idInventario'] as int,
-        nombre: json['nombreArticulo'] as String? ?? '',
-        descripcion: json['descripcion'] as String?,
-        cantidad: json['cantidad'] as int? ?? 0,
-      );
-
-  final int id;
-  final String nombre;
-  final String? descripcion;
-  final int cantidad;
-}
+// Removed InventoryItem
 
 class InventoryRepository {
   InventoryRepository(this._client);
@@ -104,12 +88,14 @@ class InventoryRepository {
   Future<void> addDevice({
     required String nombreArticulo,
     required String numeroSerie,
+    required int cantidad,
     String? fotoBase64,
   }) {
     return _client.post('/inventory.php', data: {
       'action': 'add_device',
       'nombreArticulo': nombreArticulo,
       'numeroSerie': numeroSerie,
+      'cantidad': cantidad,
       if (fotoBase64 != null) 'fotoBase64': fotoBase64,
     });
   }
@@ -119,6 +105,7 @@ class InventoryRepository {
     required String nombreArticulo,
     required String numeroSerie,
     required String estado,
+    required int cantidad,
     String? fotoBase64,
   }) {
     return _client.post('/inventory.php', data: {
@@ -127,6 +114,7 @@ class InventoryRepository {
       'nombreArticulo': nombreArticulo,
       'numeroSerie': numeroSerie,
       'estado': estado,
+      'cantidad': cantidad,
       if (fotoBase64 != null) 'fotoBase64': fotoBase64,
     });
   }
@@ -138,56 +126,7 @@ class InventoryRepository {
     });
   }
 
-  // Generic inventory items CRUD
-  Future<List<InventoryItem>> fetchItems({int limit = 100, int offset = 0}) async {
-    final data = await _client.get('/inventory.php', query: {
-      'action': 'items',
-      'limit': limit,
-      'offset': offset,
-    });
-    return (data['items'] as List).cast<Map<String, dynamic>>().map(InventoryItem.fromJson).toList();
-  }
-
-  Future<InventoryItem> fetchItem(int id) async {
-    final data = await _client.get('/inventory.php', query: {'action': 'item', 'id': id});
-    return InventoryItem.fromJson((data['item'] as Map).cast<String, dynamic>());
-  }
-
-  Future<int> createItem({
-    required String nombre,
-    String? descripcion,
-    int cantidad = 0,
-  }) async {
-    final data = await _client.post('/inventory.php', data: {
-      'action': 'create_item',
-      'nombreArticulo': nombre,
-      if (descripcion != null) 'descripcion': descripcion,
-      'cantidad': cantidad,
-    });
-    return data['id'] as int;
-  }
-
-  Future<void> updateItem({
-    required int id,
-    required String nombre,
-    String? descripcion,
-    int? cantidad,
-  }) {
-    return _client.post('/inventory.php', data: {
-      'action': 'update_item',
-      'idInventario': id,
-      'nombreArticulo': nombre,
-      if (descripcion != null) 'descripcion': descripcion,
-      if (cantidad != null) 'cantidad': cantidad,
-    });
-  }
-
-  Future<void> deleteItem(int id) {
-    return _client.post('/inventory.php', data: {
-      'action': 'delete_item',
-      'idInventario': id,
-    });
-  }
+  // Removed generic item methods
 }
 
 final inventoryRepositoryProvider = Provider<InventoryRepository>(
@@ -202,10 +141,4 @@ final loansProvider = FutureProvider.autoDispose<List<Loan>>(
   (ref) => ref.read(inventoryRepositoryProvider).fetchLoans(),
 );
 
-final inventoryItemsProvider = FutureProvider.autoDispose.family<InventoryItem, int>(
-  (ref, id) => ref.read(inventoryRepositoryProvider).fetchItem(id),
-);
-
-final inventoryItemsListProvider = FutureProvider.autoDispose<List<InventoryItem>>(
-  (ref) => ref.read(inventoryRepositoryProvider).fetchItems(),
-);
+// Removed generic item providers

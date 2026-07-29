@@ -10,6 +10,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/attendance_repository.dart';
+import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
 
 // For Consumer in AttendanceScreen
@@ -205,34 +206,61 @@ class _AttendanceCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final color = _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
     final date = DateTime.tryParse(record.fecha);
+    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: Space.md),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(record.nombreModulo, style: const TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 2),
-                Text(
-                  [
-                    if (date != null) DateFormat('d MMM yyyy').format(date) else record.fecha,
-                    if (record.nombreProfesor.isNotEmpty) record.nombreProfesor,
-                  ].join(' · '),
-                  style: Theme.of(context).textTheme.bodySmall,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(record.nombreModulo, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 2),
+                    Text(
+                      [
+                        if (date != null) DateFormat('d MMM yyyy').format(date) else record.fecha,
+                        if (record.nombreProfesor.isNotEmpty) record.nombreProfesor,
+                      ].join(' · '),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ),
-                if (record.justificacion != null) ...[
-                  const SizedBox(height: Space.md),
-                  _JustificationBox(justificacion: record.justificacion!),
-                ],
-              ],
-            ),
+              ),
+              const SizedBox(width: Space.sm),
+              StatusPill(label: _estadoLabels[record.estado] ?? record.estado, color: color),
+            ],
           ),
-          const SizedBox(width: Space.sm),
-          StatusPill(label: _estadoLabels[record.estado] ?? record.estado, color: color),
+          if (record.justificacion != null) ...[
+            const SizedBox(height: Space.md),
+            _JustificationBox(justificacion: record.justificacion!),
+          ],
+          if ((role == UserRole.tutor || role == UserRole.director || role == UserRole.secretaria) && record.canJustify) ...[
+            const SizedBox(height: Space.md),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final sent = await showJustifySheet(
+                    context,
+                    ref,
+                    idAsistencia: record.id,
+                    subtitulo: '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
+                  );
+                  if (sent) {
+                    ref.invalidate(attendanceMineProvider);
+                  }
+                },
+                icon: const Icon(Icons.add_a_photo_outlined, size: 16),
+                label: const Text('Justificar falta'),
+              ),
+            ),
+          ],
         ],
       ),
     );

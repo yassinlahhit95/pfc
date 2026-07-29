@@ -33,6 +33,7 @@ dependencies:
   # Stripe) actually use; the default platform Roboto/San Francisco fallback
   # is a big part of why an app reads as "generic Material template".
   google_fonts: ^6.2.1
+  google_sign_in: ^6.2.1
 
   # Native file picker for entrega uploads (PDF/DOCX/TXT). Pinned to 10.x+,
   # not the 8.x line pub resolves to by default — 8.x's Android AAR is built
@@ -54,6 +55,7 @@ dependencies:
   # or terminated — with the app foregrounded (the common case while
   # actively using it) nothing appears unless we show one ourselves.
   flutter_local_notifications: ^22.2.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

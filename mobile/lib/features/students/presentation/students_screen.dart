@@ -5,19 +5,58 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/profile_detail_sheet.dart';
+import '../../../core/utils/debounce.dart';
 import '../data/students_repository.dart';
+import '../../attendance/presentation/center_attendance_screen.dart' show lookupsProvider;
 
-class StudentsScreen extends StatefulWidget {
+class StudentsFilters {
+  const StudentsFilters({
+    this.nivel,
+    this.ciclo,
+    this.anio,
+    this.grupo,
+    this.estado,
+    this.q,
+  });
+
+  final int? nivel;
+  final int? ciclo;
+  final String? anio;
+  final int? grupo;
+  final String? estado;
+  final String? q;
+
+  StudentsFilters copyWith({
+    int? nivel,
+    int? ciclo,
+    String? anio,
+    int? grupo,
+    String? estado,
+    String? q,
+  }) {
+    return StudentsFilters(
+      nivel: nivel ?? this.nivel,
+      ciclo: ciclo ?? this.ciclo,
+      anio: anio ?? this.anio,
+      grupo: grupo ?? this.grupo,
+      estado: estado ?? this.estado,
+      q: q ?? this.q,
+    );
+  }
+}
+
+final studentsFiltersProvider = StateProvider<StudentsFilters>((ref) => const StudentsFilters());
+
+class StudentsScreen extends ConsumerStatefulWidget {
   const StudentsScreen({super.key});
 
   @override
-  State<StudentsScreen> createState() => _StudentsScreenState();
+  ConsumerState<StudentsScreen> createState() => _StudentsScreenState();
 }
 
-class _StudentsScreenState extends State<StudentsScreen> {
+class _StudentsScreenState extends ConsumerState<StudentsScreen> {
   late ScrollController _scrollController;
-  String _searchQuery = '';
-  String? _selectedStatus;
+  final Debounce _debounce = Debounce();
   int _currentOffset = 0;
   static const int _pageSize = 20;
 
@@ -25,162 +64,246 @@ class _StudentsScreenState extends State<StudentsScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      final filters = ref.read(studentsFiltersProvider);
+      final asyncData = ref.read(studentsProvider(
+        (
+          limit: _pageSize,
+          offset: _currentOffset,
+          cicloId: filters.ciclo,
+          nivelId: filters.nivel,
+          status: filters.estado,
+          query: filters.q,
+        ),
+      ));
+      
+      if (asyncData.hasValue && asyncData.value != null) {
+        final total = asyncData.value!.total;
+        if (total > _currentOffset + _pageSize) {
+          // Debounce the load to prevent rapid multiple increments
+          _debounce(const Duration(milliseconds: 300), () {
+            setState(() => _currentOffset += _pageSize);
+          });
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _debounce.cancel();
     super.dispose();
+  }
+
+  void _showFiltersSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => const _StudentsFiltersSheet(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final filters = ref.watch(studentsFiltersProvider);
+    final studentsAsync = ref.watch(
+      studentsProvider(
+        (
+          limit: _pageSize,
+          offset: _currentOffset,
+          cicloId: filters.ciclo,
+          nivelId: filters.nivel,
+          status: filters.estado,
+          query: filters.q,
+        ),
+      ),
+    );
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Alumnos')),
-      body: Consumer(
-        builder: (context, ref, _) {
-          final studentsAsync = ref.watch(
-            studentsProvider(
-              (
-                limit: _pageSize,
-                offset: _currentOffset,
-                cicloId: null,
-                status: _selectedStatus,
-                query: _searchQuery.isNotEmpty ? _searchQuery : null,
-              ),
-            ),
-          );
-
-          return AsyncView<({List<Student> students, int total})>(
-            value: studentsAsync,
-            onRetry: () => ref.invalidate(
-              studentsProvider(
-                (
-                  limit: _pageSize,
-                  offset: _currentOffset,
-                  cicloId: null,
-                  status: _selectedStatus,
-                  query: _searchQuery.isNotEmpty ? _searchQuery : null,
+      appBar: AppBar(
+        title: const Text('Alumnos'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () => _showFiltersSheet(context),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(Space.md),
+            child: TextField(
+              onChanged: (value) {
+                _debounce(const Duration(milliseconds: 500), () {
+                  ref.read(studentsFiltersProvider.notifier).state = filters.copyWith(q: value);
+                  setState(() => _currentOffset = 0);
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Buscar por nombre...',
+                prefixIcon: const Icon(Icons.search),
+                contentPadding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(Radii.md),
+                  borderSide: BorderSide.none,
                 ),
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
             ),
-            data: (context, data) {
-              if (data.students.isEmpty) {
-                return const EmptyState(icon: Icons.people_outlined, title: 'Sin alumnos registrados');
-              }
-
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(Space.md),
-                    child: Column(
-                      children: [
-                        // Search bar
-                        TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              _searchQuery = value;
-                              _currentOffset = 0;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Buscar por nombre...',
-                            prefixIcon: const Icon(Icons.search),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(Radii.md),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                          ),
-                        ),
-                        const SizedBox(height: Space.md),
-                        // Status filter
-                        SizedBox(
-                          height: 36,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              _FilterChip(
-                                label: 'Todos',
-                                isSelected: _selectedStatus == null,
-                                onPressed: () => setState(() {
-                                  _selectedStatus = null;
-                                  _currentOffset = 0;
-                                }),
-                              ),
-                              const SizedBox(width: Space.sm),
-                              _FilterChip(
-                                label: 'Activos',
-                                isSelected: _selectedStatus == 'activo',
-                                onPressed: () => setState(() {
-                                  _selectedStatus = 'activo';
-                                  _currentOffset = 0;
-                                }),
-                              ),
-                              const SizedBox(width: Space.sm),
-                              _FilterChip(
-                                label: 'Inactivos',
-                                isSelected: _selectedStatus == 'inactivo',
-                                onPressed: () => setState(() {
-                                  _selectedStatus = 'inactivo';
-                                  _currentOffset = 0;
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      itemCount: data.students.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
-                      itemBuilder: (context, index) {
-                        final student = data.students[index];
-                        return _StudentCard(student: student);
-                      },
-                    ),
-                  ),
-                  if (data.total > _currentOffset + _pageSize)
-                    Padding(
-                      padding: const EdgeInsets.all(Space.md),
-                      child: ElevatedButton.icon(
-                        onPressed: () => setState(() => _currentOffset += _pageSize),
-                        icon: const Icon(Icons.arrow_downward),
-                        label: const Text('Cargar más'),
+          ),
+          Expanded(
+            child: AsyncView<({List<Student> students, int total})>(
+              value: studentsAsync,
+              onRetry: () => ref.invalidate(studentsProvider),
+              data: (context, data) {
+                if (data.students.isEmpty) {
+                  return const EmptyState(icon: Icons.people_outlined, title: 'Sin alumnos registrados');
+                }
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        controller: _scrollController,
+                        itemCount: data.students.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                        itemBuilder: (context, index) {
+                          final student = data.students[index];
+                          return _StudentCard(student: student);
+                        },
                       ),
                     ),
-                ],
-              );
-            },
-          );
-        },
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({required this.label, required this.isSelected, required this.onPressed});
-  final String label;
-  final bool isSelected;
-  final VoidCallback onPressed;
+class _StudentsFiltersSheet extends ConsumerStatefulWidget {
+  const _StudentsFiltersSheet();
+
+  @override
+  ConsumerState<_StudentsFiltersSheet> createState() => _StudentsFiltersSheetState();
+}
+
+class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
+  int? _nivel;
+  int? _ciclo;
+  String? _anio;
+  int? _grupo;
+  String? _estado;
+
+  @override
+  void initState() {
+    super.initState();
+    final filters = ref.read(studentsFiltersProvider);
+    _nivel = filters.nivel;
+    _ciclo = filters.ciclo;
+    _anio = filters.anio;
+    _grupo = filters.grupo;
+    _estado = filters.estado;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (_) => onPressed(),
-      backgroundColor: scheme.surfaceContainerHighest,
-      selectedColor: scheme.primary,
-      labelStyle: TextStyle(
-        color: isSelected ? scheme.onPrimary : scheme.onSurfaceVariant,
+    final lookupsAsync = ref.watch(lookupsProvider);
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 16,
+        right: 16,
+        top: 16,
+      ),
+      child: lookupsAsync.when(
+        loading: () => const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
+        error: (e, st) => const SizedBox(height: 200, child: Center(child: Text('Error cargando filtros'))),
+        data: (lookups) {
+          final niveles = lookups['niveles'] as List? ?? [];
+          final ciclos = lookups['ciclos'] as List? ?? [];
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text('Filtros', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<int?>(
+                value: _nivel,
+                decoration: const InputDecoration(labelText: 'Nivel'),
+                items: [
+                  const DropdownMenuItem(value: null, child: Text('Todos los niveles')),
+                  ...niveles.map((n) => DropdownMenuItem(value: n['idNivel'] as int, child: Text(n['nombreNivel']))),
+                ],
+                onChanged: (val) => setState(() => _nivel = val),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<int?>(
+                value: _ciclo,
+                decoration: const InputDecoration(labelText: 'Ciclo'),
+                items: [
+                  const DropdownMenuItem(value: null, child: Text('Todos los ciclos')),
+                  ...ciclos.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo']))),
+                ],
+                onChanged: (val) => setState(() => _ciclo = val),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String?>(
+                value: _estado,
+                decoration: const InputDecoration(labelText: 'Estado'),
+                items: const [
+                  DropdownMenuItem(value: null, child: Text('Todos los estados')),
+                  DropdownMenuItem(value: 'activo', child: Text('Activos')),
+                  DropdownMenuItem(value: 'inactivo', child: Text('Inactivos')),
+                ],
+                onChanged: (val) => setState(() => _estado = val),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        ref.read(studentsFiltersProvider.notifier).state = const StudentsFilters();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Limpiar'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        final currentFilters = ref.read(studentsFiltersProvider);
+                        ref.read(studentsFiltersProvider.notifier).state = currentFilters.copyWith(
+                          nivel: _nivel,
+                          ciclo: _ciclo,
+                          anio: _anio,
+                          grupo: _grupo,
+                          estado: _estado,
+                        );
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Aplicar'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+            ],
+          );
+        },
       ),
     );
   }

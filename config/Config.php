@@ -85,6 +85,7 @@ class Config {
         $this->config['APP_DEBUG']        = filter_var($this->env('APP_DEBUG', 'false'), FILTER_VALIDATE_BOOLEAN);
         $this->config['SESSION_TIMEOUT']  = intval($this->env('SESSION_TIMEOUT', '3600'));
         $this->config['APP_KEY']          = $this->env('APP_KEY', '') ?: $this->generateAppKey();
+        $this->config['GOOGLE_CLIENT_ID'] = $this->env('GOOGLE_CLIENT_ID', '');
     }
 
     private function loadEnvFile($path) {

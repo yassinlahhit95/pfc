@@ -196,8 +196,14 @@ function _nav_active_admin($check) {
 
       <a href="../asistencias/verAsistencias.php" class="nav-item<?= _nav_active_admin('asistencias') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-        <span class="nav-label">Asistencias</span>
+        <span class="nav-label"><?= __('attendance', 'Asistencias') ?></span>
         <?php if (_nav_active_admin('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
+      <a href="../asistencias/justificaciones.php" class="nav-item<?= _nav_active_admin('justificaciones') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+        <span class="nav-label"><?= __('justificaciones', 'Justificaciones') ?></span>
+        <?php if (_nav_active_admin('justificaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <?php if (FeatureGuard::check('feature_prematricula')): ?>
@@ -295,6 +301,14 @@ function _nav_active_admin($check) {
       <!-- RECURSOS -->
       <span class="nav-section-title">RECURSOS</span>
 
+      <?php if (FeatureGuard::check('feature_gastos')): ?>
+      <a href="../gastos/verGastos.php" class="nav-item<?= _nav_active_admin('gastos') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+        <span class="nav-label">Gastos</span>
+        <?php if (_nav_active_admin('gastos') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
+
       <?php if (FeatureGuard::check('feature_inventario')): ?>
       <a href="../inventario/verInventario.php" class="nav-item<?= _nav_active_admin('inventario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
@@ -357,13 +371,18 @@ function _nav_active_admin($check) {
     </nav>
 
     <nav class="sidebar-bottom-nav">
+      <a href="../../ayuda.php" class="nav-item<?= ($seccion ?? '') === 'ayuda' ? ' active' : '' ?>">
+        <span class="nav-ico"><i class="fas fa-question-circle" style="font-size:1.15rem;"></i></span>
+        <span class="nav-label"><?= __('help_center', 'Centro de Ayuda') ?></span>
+        <?php if (($seccion ?? '') === 'ayuda') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
       <a href="../directores/verDetallesDirectores.php?id=<?= (int)$_SESSION['idAdmin'] ?>" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-        <span class="nav-label">Mi Perfil</span>
+        <span class="nav-label"><?= __('my_profile', 'Mi Perfil') ?></span>
       </a>
       <a href="../../../controladores/logout.php" class="nav-item nav-item-logout">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></span>
-        <span class="nav-label">Cerrar Sesión</span>
+        <span class="nav-label"><?= __('logout', 'Cerrar Sesión') ?></span>
       </a>
     </nav>
   </aside>
@@ -399,6 +418,17 @@ function _nav_active_admin($check) {
             <kbd class="search-kbd">⌘K</kbd>
           </label>
           <ul class="search-results" id="search-results" hidden></ul>
+        </div>
+        <!-- Language Switcher -->
+        <div class="lang-wrap" style="position:relative; display:inline-block; margin-right:8px;">
+          <form action="../../../controladores/cambiar_idioma.php" method="POST" id="formLanguageAdmin" style="margin:0;">
+             <select name="lang" onchange="document.getElementById('formLanguageAdmin').submit();" style="padding:5px 8px; border-radius:8px; border:1.5px solid var(--border); font-size:.85rem; background:var(--bg-card); color:var(--text); cursor:pointer; font-weight:600; outline:none; font-family:inherit;">
+                <option value="es" <?= I18n::getLang() === 'es' ? 'selected' : '' ?>>ES</option>
+                <option value="eu" <?= I18n::getLang() === 'eu' ? 'selected' : '' ?>>EU</option>
+                <option value="ca" <?= I18n::getLang() === 'ca' ? 'selected' : '' ?>>CA</option>
+                <option value="en" <?= I18n::getLang() === 'en' ? 'selected' : '' ?>>EN</option>
+             </select>
+          </form>
         </div>
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_client.dart';
+import '../../../core/utils/cache_extension.dart';
 
 class Student {
   const Student({
@@ -49,6 +50,7 @@ class StudentsRepository {
     int limit = 20,
     int offset = 0,
     int? cicloId,
+    int? nivelId,
     String? status,
     String? query,
   }) async {
@@ -56,6 +58,7 @@ class StudentsRepository {
       'limit': limit.toString(),
       'offset': offset.toString(),
       if (cicloId != null) 'ciclo': cicloId.toString(),
+      if (nivelId != null) 'nivel': nivelId.toString(),
       if (status != null && status.isNotEmpty) 'status': status,
       if (query != null && query.isNotEmpty) 'q': query,
     };
@@ -76,12 +79,16 @@ final studentsRepositoryProvider = Provider<StudentsRepository>(
 );
 
 final studentsProvider = FutureProvider.autoDispose
-    .family<({List<Student> students, int total}), ({int limit, int offset, int? cicloId, String? status, String? query})>(
-  (ref, params) => ref.read(studentsRepositoryProvider).fetchStudents(
+    .family<({List<Student> students, int total}), ({int limit, int offset, int? cicloId, int? nivelId, String? status, String? query})>(
+  (ref, params) {
+    ref.cacheFor(const Duration(minutes: 5));
+    return ref.read(studentsRepositoryProvider).fetchStudents(
         limit: params.limit,
         offset: params.offset,
         cicloId: params.cicloId,
+        nivelId: params.nivelId,
         status: params.status,
         query: params.query,
-      ),
+      );
+  },
 );

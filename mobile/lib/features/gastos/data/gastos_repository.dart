@@ -15,7 +15,7 @@ class CategoriaGasto {
 
   factory CategoriaGasto.fromJson(Map<String, dynamic> json) {
     return CategoriaGasto(
-      idCategoria: json['idCategoria'] as int,
+      idCategoria: int.tryParse(json['idCategoria'].toString()) ?? 0,
       nombre: json['nombre'] as String? ?? '',
       color: json['color'] as String? ?? '#808080',
     );
@@ -35,6 +35,7 @@ class Gasto {
     required this.nombreCategoria,
     required this.colorCategoria,
     required this.archivoJustificante,
+    this.nombreCreador,
   });
 
   factory Gasto.fromJson(Map<String, dynamic> json) {
@@ -46,6 +47,7 @@ class Gasto {
       nombreCategoria: json['nombreCategoria'] as String? ?? 'Desconocida',
       colorCategoria: json['color'] as String? ?? '#808080',
       archivoJustificante: json['archivoJustificante'] as String?,
+      nombreCreador: json['nombreCreador'] as String?,
     );
   }
 
@@ -56,6 +58,7 @@ class Gasto {
   final String nombreCategoria;
   final String colorCategoria;
   final String? archivoJustificante;
+  final String? nombreCreador;
 }
 
 class GastosRepository {

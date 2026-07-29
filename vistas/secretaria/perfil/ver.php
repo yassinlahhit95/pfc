@@ -1,4 +1,6 @@
-﻿<?php
+<?php
+declare(strict_types=1);
+
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -7,21 +9,22 @@ require_once __DIR__ . "/../../../modelos/secretarias.php";
 
 $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 
-$titulo_pagina = "AULAPRO | MI PERFIL";
+require_once __DIR__ . "/../../../include/I18n.php";
+$titulo_pagina = "AULAPRO | " . __('my_profile', 'MI PERFIL');
 $seccion = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MI PERFIL</h1>
-    <a href="editar.php" class="boton-primario"><i class="fas fa-pen"></i> EDITAR PERFIL</a>
+    <h1><?= __('my_profile', 'MI PERFIL') ?></h1>
+    <a href="editar.php" class="boton-primario"><i class="fas fa-pen"></i> <?= __('edit_profile', 'EDITAR PERFIL') ?></a>
 </div>
 
 <?php if (!$secretaria): ?>
 <div class="panel">
     <div class="panel-vacio">
         <div class="panel-vacio-icono"><i class="fas fa-user-slash"></i></div>
-        <div class="panel-vacio-titulo">Perfil no encontrado</div>
+        <div class="panel-vacio-titulo"><?= __('profile_not_found', 'Perfil no encontrado') ?></div>
     </div>
 </div>
 <?php else:
@@ -38,9 +41,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div style="color:var(--mut);font-size:.9rem;margin-top:4px;"><?= Security::escapeHtml($secretaria['emailSecretaria']) ?></div>
             <div style="margin-top:8px;">
                 <?php if ($secretaria['activoSecretaria']): ?>
-                <span class="texto-estado verde">Activo</span>
+                <span class="texto-estado verde"><?= __('active', 'Activo') ?></span>
                 <?php else: ?>
-                <span class="texto-estado rojo">Inactivo</span>
+                <span class="texto-estado rojo"><?= __('inactive', 'Inactivo') ?></span>
                 <?php endif; ?>
                 <span class="texto-estado gris" style="margin-left:8px;">Secretaría</span>
             </div>
@@ -49,18 +52,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <div class="titulo-tarjeta"><h3>Información de la cuenta</h3></div>
+    <div class="titulo-tarjeta"><h3><?= __('personal_data', 'Datos Personales') ?></h3></div>
     <div class="fila-datos">
         <div class="dato">
-            <span class="dato-label">Nombre completo</span>
+            <span class="dato-label"><?= __('full_name', 'Nombre completo') ?></span>
             <span class="dato-valor"><?= Security::escapeHtml($secretaria['nombreSecretaria']) ?></span>
         </div>
         <div class="dato">
-            <span class="dato-label">Correo electrónico</span>
+            <span class="dato-label"><?= __('email', 'Correo electrónico') ?></span>
             <span class="dato-valor"><?= Security::escapeHtml($secretaria['emailSecretaria']) ?></span>
         </div>
         <div class="dato">
-            <span class="dato-label">Estado</span>
+            <span class="dato-label"><?= __('estado', 'Estado') ?></span>
             <span class="dato-valor">
                 <?= $secretaria['activoSecretaria'] ? '<span class="texto-estado verde">Activo</span>' : '<span class="texto-estado rojo">Inactivo</span>' ?>
             </span>
@@ -71,22 +74,42 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
     <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
-        <a href="editar.php" class="boton-primario" style="margin-right:10px;"><i class="fas fa-pen"></i> Editar perfil</a>
-        <a href="../../../vistas/cambiar_password.php" class="boton-secundario"><i class="fas fa-lock"></i> Cambiar contraseña</a>
+        <a href="editar.php" class="boton-primario" style="margin-right:10px;"><i class="fas fa-pen"></i> <?= __('edit', 'Editar') ?></a>
+        <a href="../../../vistas/cambiar_password.php" class="boton-secundario"><i class="fas fa-lock"></i> <?= __('change_password', 'Cambiar contraseña') ?></a>
+    </div>
+</div>
+
+<!-- Language Selector Panel -->
+<div class="panel" style="margin-top:20px;">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-globe"></i> <?= __('language', 'Idioma') ?></h3>
+    </div>
+    <div class="fila-datos">
+        <div class="nombre-detalle"><?= __('select_language', 'Selecciona el idioma del sistema') ?></div>
+        <div class="valor-detalle">
+            <form action="../../../controladores/cambiar_idioma.php" method="POST" id="formLanguageProfile">
+                <select name="lang" onchange="document.getElementById('formLanguageProfile').submit();" class="select-idioma" style="padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--border); font-size: .9rem; background: var(--bg-card); color: var(--text); cursor:pointer; font-weight:600;">
+                    <option value="es" <?= I18n::getLang() === 'es' ? 'selected' : '' ?>><?= __('spanish', 'Español') ?></option>
+                    <option value="eu" <?= I18n::getLang() === 'eu' ? 'selected' : '' ?>><?= __('basque', 'Euskera') ?></option>
+                    <option value="ca" <?= I18n::getLang() === 'ca' ? 'selected' : '' ?>><?= __('catalan', 'Catalán') ?></option>
+                    <option value="en" <?= I18n::getLang() === 'en' ? 'selected' : '' ?>><?= __('english', 'Inglés') ?></option>
+                </select>
+            </form>
+        </div>
     </div>
 </div>
 
 <div class="panel" style="margin-top:20px;">
-    <div class="titulo-tarjeta"><h3><i class="fas fa-shield-alt"></i> Seguridad de la cuenta</h3></div>
+    <div class="titulo-tarjeta"><h3><i class="fas fa-shield-alt"></i> <?= __('security', 'Seguridad de la cuenta') ?></h3></div>
     <div class="fila-datos">
         <div class="dato">
-            <span class="dato-label">Verificación en dos pasos (2FA)</span>
+            <span class="dato-label"><?= __('two_factor', 'Verificación en dos pasos (2FA)') ?></span>
             <span class="dato-valor">
                 <?php if (!empty($secretaria['mfa_enabled'])): ?>
-                    <span style="color:var(--verde);font-weight:600;"><i class="fas fa-check-circle"></i> Activada</span>
+                    <span style="color:var(--verde);font-weight:600;"><i class="fas fa-check-circle"></i> <?= __('active', 'Activada') ?></span>
                 <?php else: ?>
                     <a href="../../auth/mfa_configurar.php" class="boton-secundario" style="font-size:.85rem;padding:6px 14px;">
-                        <i class="fas fa-lock"></i> Activar 2FA
+                        <i class="fas fa-lock"></i> <?= __('enable_2fa', 'Activar 2FA') ?>
                     </a>
                 <?php endif; ?>
             </span>

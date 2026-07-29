@@ -69,7 +69,18 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
 
   Future<void> _whatsapp() async {
     if (widget.telefono == null || widget.telefono!.isEmpty) return;
-    final url = Uri.parse('https://wa.me/${widget.telefono}');
+    
+    // Clean non-digit characters
+    String phone = widget.telefono!.replaceAll(RegExp(r'\D'), '');
+    
+    // Default to Spain (+34) if it's a 9-digit local number
+    if (phone.length == 9 && !phone.startsWith('34')) {
+      phone = '34$phone';
+    } else if (phone.startsWith('00')) {
+      phone = phone.substring(2);
+    }
+
+    final url = Uri.parse('https://wa.me/$phone');
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }

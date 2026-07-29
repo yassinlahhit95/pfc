@@ -189,6 +189,9 @@ include __DIR__ . '/../comunes/nav.php';
                         <?php if (!empty($gasto['numeroReferencia'])): ?>
                             <br><small class="texto-suave">Ref: <?= Security::escapeHtml($gasto['numeroReferencia']) ?></small>
                         <?php endif; ?>
+                        <?php if (!empty($gasto['nombreCreador'])): ?>
+                            <br><small class="texto-suave"><i class="fas fa-user" style="font-size:0.8em"></i> <?= Security::escapeHtml($gasto['nombreCreador']) ?></small>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <span class="gasto-cat-chip" style="--cat-color:<?= Security::escapeHtml($gasto['color'] ?? '#94a3b8') ?>">

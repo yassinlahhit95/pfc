@@ -45,8 +45,10 @@ Future<bool> showCobrarPagoSheet(
   required double deudaActual,
 }) async {
   final montoController = TextEditingController(text: deudaActual.toStringAsFixed(2));
-  final proximoPagoController = TextEditingController();
-  String tipoPago = 'unico';
+  final proximoPagoController = TextEditingController(
+    text: DateFormat('yyyy-MM-dd').format(DateTime(DateTime.now().year, DateTime.now().month + 1, DateTime.now().day)),
+  );
+  String tipoPago = 'mensual';
   File? archivo;
 
   final sent = await showModalBottomSheet<bool>(
@@ -85,7 +87,18 @@ Future<bool> showCobrarPagoSheet(
                 ],
                 onChanged: (val) {
                   if (val != null) {
-                    setSheetState(() => tipoPago = val);
+                    setSheetState(() {
+                      tipoPago = val;
+                      if (val == 'unico') {
+                        proximoPagoController.clear();
+                      } else {
+                        DateTime nextDate = DateTime.now();
+                        if (val == 'mensual') nextDate = DateTime(nextDate.year, nextDate.month + 1, nextDate.day);
+                        else if (val == 'trimestral') nextDate = DateTime(nextDate.year, nextDate.month + 3, nextDate.day);
+                        else if (val == 'semestral') nextDate = DateTime(nextDate.year, nextDate.month + 6, nextDate.day);
+                        proximoPagoController.text = DateFormat('yyyy-MM-dd').format(nextDate);
+                      }
+                    });
                   }
                 },
               ),

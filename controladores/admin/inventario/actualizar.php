@@ -27,6 +27,8 @@ if (isset($_POST['actualizarArticulo'])) {
     $idArticulo     = (int)($_POST['idArticulo'] ?? 0);
     $nombreArticulo = trim($_POST['nombreArticulo']);
     $numeroSerie    = trim($_POST['numeroSerie']);
+    $estado         = trim($_POST['estado'] ?? '');
+    $cantidad       = max(1, (int)($_POST['cantidad'] ?? 1));
 
     $errores = [];
     if (empty($nombreArticulo)) $errores['nombreArticulo'] = "El nombre del artículo es un campo obligatorio.";
@@ -35,7 +37,7 @@ if (isset($_POST['actualizarArticulo'])) {
 
     if (empty($errores)) {
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
-        $estadoActual = $datosArticuloActual['estado'] ?? 'disponible';
+        $estadoActual = !empty($estado) ? $estado : ($datosArticuloActual['estado'] ?? 'disponible');
         $fotoActual = $datosArticuloActual['foto'] ?? null;
         $foto = null;
 
@@ -51,7 +53,7 @@ if (isset($_POST['actualizarArticulo'])) {
             }
         }
 
-        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual, $foto)) {
+        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual, $cantidad, $foto)) {
             registrarAccion('actualizar', 'inventario', $idArticulo, $nombreArticulo);
             if ($isAjax) {
                 header('Content-Type: application/json');

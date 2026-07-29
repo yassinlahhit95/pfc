@@ -1,179 +1,249 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
-require_once __DIR__ . "/../../../modelos/asistencias.php";
-require_once __DIR__ . "/../../../modelos/ciclos.php";
-require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$exito   = $_SESSION['exito']   ?? '';
+$exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$idCiclo      = (int)($_GET['idCiclo']    ?? 0) ?: null;
-$idModulo     = (int)($_GET['idModulo']   ?? 0) ?: null;
-$idEstudiante = (int)($_GET['idEstudiante'] ?? 0) ?: null;
-$fechaDesde   = preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fechaDesde'] ?? '') ? $_GET['fechaDesde'] : '';
-$fechaHasta   = preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fechaHasta'] ?? '') ? $_GET['fechaHasta'] : '';
-$estadosPermitidos = ['presente', 'ausente', 'retraso', 'justificado'];
-$estado       = in_array($_GET['estado'] ?? '', $estadosPermitidos, true) ? $_GET['estado'] : '';
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
+require_once __DIR__ . "/../../../modelos/grupos.php";
 
-$ciclos      = listarTodosLosCiclos();
-$modulos     = $idCiclo ? listarModulosPorCiclo($idCiclo) : [];
-$estudiantesCiclo = $idCiclo ? listarEstudiantesPorCiclo($idCiclo) : [];
-
-$asistencias = listarAsistenciasFiltradas(
-    $idCiclo, $idModulo, $idEstudiante,
-    $fechaDesde ?: null,
-    $fechaHasta ?: null,
-    $estado ?: null
-);
-
-$titulo_pagina = "AulaPro | Asistencias";
-$seccion       = "asistencias";
-require_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "AULAPRO | LISTADO DE ASISTENCIAS";
+$seccion = 'asistencias';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-  <div>
-    <h1><i class="fas fa-clipboard-check"></i> Registro de Asistencias</h1>
-  </div>
-  <a href="../../../controladores/admin/asistencias/exportarCSV.php?<?= http_build_query(array_filter([
-    'idCiclo' => $idCiclo, 'idModulo' => $idModulo, 'idEstudiante' => $idEstudiante,
-    'fechaDesde' => $fechaDesde, 'fechaHasta' => $fechaHasta, 'estado' => $estado
-  ])) ?>" class="boton-secundario">
-    <i class="fas fa-download"></i> Exportar CSV
-  </a>
+    <div>
+        <h1>REGISTRO DE ASISTENCIAS</h1>
+    </div>
 </div>
 
+<?php
+$listaDeCiclosParaFiltro = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
+$listaGruposFiltro = listarTodosLosGrupos();
+
+$con = obtenerConexion();
+$resCursosUnicos = mysqli_query($con, "SELECT DISTINCT nombre FROM cursos_academicos ORDER BY orden ASC, nombre ASC");
+$aniosDisponibles = [];
+if ($resCursosUnicos) {
+    while ($fila = mysqli_fetch_assoc($resCursosUnicos)) {
+        $aniosDisponibles[] = $fila['nombre'];
+    }
+}
+?>
+
 <div class="panel margen-abajo">
-  <form method="GET" action="" class="formulario" id="form-filtros-asistencias">
-    <div class="form-fila">
-      <div class="campo">
-        <label for="sel-ciclo-asist">Ciclo</label>
-        <select name="idCiclo" id="sel-ciclo-asist" onchange="this.form.submit()">
-          <option value="">Todos los ciclos</option>
-          <?php foreach ($ciclos as $ciclo): ?>
-          <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= $idCiclo === (int)$ciclo['idCiclo'] ? 'selected' : '' ?>>
-            <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
-          </option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <?php if ($idCiclo && $modulos): ?>
-      <div class="campo">
-        <label for="sel-modulo-asist">Módulo</label>
-        <select name="idModulo" id="sel-modulo-asist" onchange="this.form.submit()">
-          <option value="">Todos los módulos</option>
-          <?php foreach ($modulos as $modulo): ?>
-          <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
-            <?= Security::escapeHtml($modulo['nombreModulo']) ?>
-          </option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <?php endif; ?>
-      <?php if ($idCiclo && $estudiantesCiclo): ?>
-      <div class="campo">
-        <label for="sel-estudiante-asist">Estudiante</label>
-        <select name="idEstudiante" id="sel-estudiante-asist" onchange="this.form.submit()">
-          <option value="">Todos los estudiantes</option>
-          <?php foreach ($estudiantesCiclo as $estudiante): ?>
-          <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $idEstudiante === (int)$estudiante['idEstudiante'] ? 'selected' : '' ?>>
-            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
-          </option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <?php elseif ($idEstudiante): ?>
-        <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
-      <?php endif; ?>
+    <div class="caja caja-libre espacio-grande">
+        <div class="campo relleno">
+            <label for="selectFiltroNivel">FILTRAR POR NIVEL:</label>
+            <select id="selectFiltroNivel" onchange="aplicarFiltrosAsistencias(true)">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
+                    <option value="<?= Security::escapeHtml($nivelFiltro['idNivel']) ?>">
+                        <?= Security::escapeHtml($nivelFiltro['nombreNivel']) ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo relleno">
+            <label for="selectFiltroCiclo">FILTRAR POR CICLO:</label>
+            <select id="selectFiltroCiclo" onchange="aplicarFiltrosAsistencias(true)">
+                <option value="">-- Todos los Ciclos --</option>
+                <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                    <option value="<?= Security::escapeHtml($cicloFiltro['idCiclo']) ?>">
+                        <?= mb_strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo']), 'UTF-8') ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo relleno">
+            <label for="selectFiltroAnio">FILTRAR POR AÑO:</label>
+            <select id="selectFiltroAnio" onchange="aplicarFiltrosAsistencias(true)">
+                <option value="">-- Todos los Años --</option>
+                <?php foreach ($aniosDisponibles as $anioFiltro): ?>
+                    <option value="<?= Security::escapeHtml($anioFiltro) ?>">
+                        <?= Security::escapeHtml($anioFiltro) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="campo relleno">
+            <label for="selectFiltroGrupo">FILTRAR POR GRUPO:</label>
+            <select id="selectFiltroGrupo" onchange="aplicarFiltrosAsistencias(true)">
+                <option value="">-- Todos los Grupos --</option>
+                <?php foreach ($listaGruposFiltro as $grupoFiltro): ?>
+                    <option value="<?= Security::escapeHtml($grupoFiltro['idGrupo']) ?>">
+                        <?= Security::escapeHtml($grupoFiltro['nombreGrupo']) ?> (<?= Security::escapeHtml($grupoFiltro['abreviaturaCiclo']) ?>)
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        
+        <div class="campo relleno" style="margin-top: 15px;">
+            <label for="selectFiltroEstado">ESTADO:</label>
+            <select id="selectFiltroEstado" onchange="aplicarFiltrosAsistencias(true)">
+                <option value="">-- Todos los estados --</option>
+                <option value="presente">Presente</option>
+                <option value="ausente">Ausente</option>
+                <option value="retraso">Retraso</option>
+                <option value="justificado">Justificado</option>
+            </select>
+        </div>
+
+        <div class="campo relleno" style="margin-top: 15px;">
+            <label for="inputFiltroNombre">BUSCAR ESTUDIANTE:</label>
+            <input type="text" id="inputFiltroNombre" placeholder="Buscar..." oninput="debounceAplicarFiltros()" style="width: 100%;">
+        </div>
     </div>
-    <div class="form-fila">
-      <div class="campo">
-        <label for="sel-estado-asist">Estado</label>
-        <select name="estado" id="sel-estado-asist" onchange="this.form.submit()">
-          <option value="">Todos los estados</option>
-          <option value="presente" <?= $estado === 'presente' ? 'selected' : '' ?>>Presente</option>
-          <option value="ausente" <?= $estado === 'ausente' ? 'selected' : '' ?>>Ausente</option>
-          <option value="retraso" <?= $estado === 'retraso' ? 'selected' : '' ?>>Retraso</option>
-          <option value="justificado" <?= $estado === 'justificado' ? 'selected' : '' ?>>Justificado</option>
-        </select>
-      </div>
-      <div class="campo">
-        <label for="fecha-desde-asist">Desde</label>
-        <input type="date" name="fechaDesde" id="fecha-desde-asist" value="<?= Security::escapeHtml($fechaDesde) ?>">
-      </div>
-      <div class="campo">
-        <label for="fecha-hasta-asist">Hasta</label>
-        <input type="date" name="fechaHasta" id="fecha-hasta-asist" value="<?= Security::escapeHtml($fechaHasta) ?>">
-      </div>
-    </div>
-    <div class="acciones">
-      <button type="submit" class="boton-primario"><i class="fas fa-search"></i> Filtrar</button>
-      <a href="verAsistencias.php" class="boton-secundario">Limpiar</a>
-    </div>
-  </form>
 </div>
 
 <div class="panel">
-  <?php if (empty($asistencias)): ?>
-  <div class="panel-vacio">
-    <div class="panel-vacio-icono"><i class="fas fa-clipboard-check"></i></div>
-    <div class="panel-vacio-titulo">Sin registros</div>
-    <div class="panel-vacio-desc">Aplica los filtros para ver registros de asistencia, o espera a que los profesores registren sus sesiones.</div>
-  </div>
-  <?php else: ?>
-  <div class="contenedor-tabla">
-    <table class="tabla-datos" id="tablaAsistencias">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Estudiante</th>
-          <th>Módulo</th>
-          <th>Ciclo</th>
-          <th>Estado</th>
-          <th>Observación</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($asistencias as $asistencia): ?>
-        <tr>
-          <td><?= Security::escapeHtml(date('d/m/Y', strtotime($asistencia['fecha']))) ?></td>
-          <td><?= Security::escapeHtml($asistencia['nombreEstudiante']) ?></td>
-          <td><?= Security::escapeHtml($asistencia['nombreModulo']) ?></td>
-          <td><?= Security::escapeHtml($asistencia['nombreCiclo']) ?></td>
-          <td>
-            <?php
-            $chip = match($asistencia['estado']) {
-                'presente'    => 'verde',
-                'ausente'     => 'rojo',
-                'retraso'     => 'naranja',
-                'justificado' => 'azul',
-                default       => 'gris',
-            };
-            $label = match($asistencia['estado']) {
-                'presente'    => 'Presente',
-                'ausente'     => 'Ausente',
-                'retraso'     => 'Retraso',
-                'justificado' => 'Justificado',
-                default       => $asistencia['estado'],
-            };
-            ?>
-            <span class="texto-estado <?= $chip ?>"><?= Security::escapeHtml($label) ?></span>
-          </td>
-          <td><?= Security::escapeHtml($asistencia['observacion'] ?? '') ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
-  <p class="texto-suave" style="padding:8px 0;font-size:.83rem;"><?= count($asistencias) ?> registro(s) mostrado(s)</p>
-  <?php endif; ?>
+    <div class="contenedor-tabla">
+        <table class="tabla-datos" id="tablaAsistencias">
+            <thead>
+                <tr>
+                    <th>FECHA</th>
+                    <th>HORA</th>
+                    <th>ESTADO</th>
+                    <th>ESTUDIANTE</th>
+                    <th>MÓDULO</th>
+                    <th>PROFESOR</th>
+                    <th>OBSERVACIÓN</th>
+                    <th>JUSTIFICANTE</th>
+                </tr>
+            </thead>
+            <tbody id="asistencias-tbody">
+                <tr>
+                    <td colspan="7" class="vacio" id="empty-state">Selecciona uno o más filtros para mostrar asistencias.</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="cargar-mas-container" style="text-align:center; padding: 20px; display:none;">
+            <button type="button" class="boton-secundario" id="btn-cargar-mas" onclick="cargarMasAsistencias()">Cargar más</button>
+        </div>
+    </div>
 </div>
 
-<?php require_once __DIR__ . "/../comunes/footer.php"; ?>
+<?php include '../comunes/footer.php'; ?>
 <script>
-if (document.getElementById('tablaAsistencias')) {
-    iniciarPaginacion('tablaAsistencias', 25);
+let currentOffset = 0;
+const limit = 20;
+let hasMore = true;
+let debounceTimer;
+
+function debounceAplicarFiltros() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function() {
+        aplicarFiltrosAsistencias(true);
+    }, 500);
+}
+
+function aplicarFiltrosAsistencias(resetOffset) {
+    var idNivel = $('#selectFiltroNivel').val();
+    var idCiclo = $('#selectFiltroCiclo').val();
+    var anio = $('#selectFiltroAnio').val();
+    var idGrupo = $('#selectFiltroGrupo').val();
+    var q = $('#inputFiltroNombre').val();
+    var estado = $('#selectFiltroEstado').val();
+
+    if (!idNivel && !idCiclo && !anio && !idGrupo && !q && !estado) {
+        $('#asistencias-tbody').html('<tr><td colspan="7" class="vacio" id="empty-state">Selecciona uno o más filtros para mostrar asistencias.</td></tr>');
+        $('#cargar-mas-container').hide();
+        return;
+    }
+
+    if (resetOffset) {
+        currentOffset = 0;
+        $('#asistencias-tbody').html('<tr><td colspan="7" class="vacio" id="empty-state">Cargando...</td></tr>');
+    }
+
+    $.ajax({
+        url: '/api/v1/attendance.php',
+        type: 'GET',
+        data: {
+            nivel: idNivel,
+            ciclo: idCiclo,
+            anio: anio,
+            grupo: idGrupo,
+            estado: estado,
+            q: q,
+            limit: limit,
+            offset: currentOffset
+        },
+        dataType: 'json'
+    }).done(function(res) {
+        if (resetOffset) {
+            $('#asistencias-tbody').empty();
+        }
+        if (res && res.attendance) {
+            renderAsistencias(res.attendance);
+            if (res.attendance.length < limit) {
+                hasMore = false;
+                $('#cargar-mas-container').hide();
+            } else {
+                hasMore = true;
+                $('#cargar-mas-container').show();
+            }
+            if (resetOffset && res.attendance.length === 0) {
+                 $('#asistencias-tbody').html('<tr><td colspan="7" class="vacio" id="empty-state">No se encontraron asistencias con esos filtros.</td></tr>');
+            }
+        }
+    }).fail(function() {
+        if (window.Toast) Toast.show('Error al cargar asistencias', 'error');
+    });
+}
+
+function cargarMasAsistencias() {
+    if (!hasMore) return;
+    currentOffset += limit;
+    var btn = $('#btn-cargar-mas');
+    var oldText = btn.text();
+    btn.text('Cargando...').prop('disabled', true);
+    
+    aplicarFiltrosAsistencias(false);
+    
+    setTimeout(function() {
+        btn.text(oldText).prop('disabled', false);
+    }, 500);
+}
+
+function renderAsistencias(asistencias) {
+    var tbody = $('#asistencias-tbody');
+    
+    asistencias.forEach(function(asist) {
+        var tr = $('<tr>');
+        
+        var d = new Date(asist.fecha);
+        var fechaStr = d.toLocaleDateString('es-ES') + ' ' + (asist.fechaRegistro ? asist.fechaRegistro.substring(11, 16) : '');
+        tr.append('<td>' + fechaStr + '</td>');
+        tr.append('<td>' + (asist.hora ? asist.hora.substring(0, 5) : '—') + '</td>');
+        
+        var estadoClase = 'gris';
+        var estadoLabel = '—';
+        if(asist.estado === 'presente') { estadoClase = 'verde'; estadoLabel = 'Presente'; }
+        if(asist.estado === 'ausente') { estadoClase = 'rojo'; estadoLabel = 'Ausente'; }
+        if(asist.estado === 'retraso') { estadoClase = 'naranja'; estadoLabel = 'Retraso'; }
+        if(asist.estado === 'justificado') { estadoClase = 'azul'; estadoLabel = 'Justificado'; }
+        
+        tr.append('<td><span class="texto-estado ' + estadoClase + '">' + estadoLabel + '</span></td>');
+        tr.append('<td><b>' + (asist.nombreEstudiante || '').toUpperCase() + '</b></td>');
+        tr.append('<td>' + (asist.nombreModulo || '') + '<br><small class="texto-suave">' + (asist.nombreCiclo || '') + '</small></td>');
+        tr.append('<td>' + (asist.nombreProfesor || '') + '</td>');
+        
+        var obs = asist.observacion ? asist.observacion : (asist.justificacion ? asist.justificacion.motivo : '');
+        tr.append('<td><small class="texto-suave">' + obs + '</small></td>');
+        
+        var just = '';
+        if (asist.justificacion && asist.justificacion.archivo_url) {
+            just = '<a href="' + asist.justificacion.archivo_url + '" target="_blank" class="boton-secundario boton-pequeno"><i class="fas fa-file-alt"></i> Ver</a>';
+        }
+        tr.append('<td>' + just + '</td>');
+        
+        tbody.append(tr);
+    });
 }
 </script>

@@ -28,7 +28,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> with Widget
   bool _sending = false;
   bool _polling = false;
   Object? _error;
-  AppLifecycleState? _lastLifecycleState;
+  AppLifecycleState _lastLifecycleState = AppLifecycleState.resumed;
 
   @override
   void initState() {
@@ -152,6 +152,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> with Widget
     }
 
     _inputController.clear();
+    setState(() { _sending = true; });
     try {
       final repo = ref.read(chatRepositoryProvider);
       await repo.sendMessage(convId: widget.convId, contenido: text);
@@ -166,6 +167,10 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> with Widget
         setState(() {
           _messages.removeWhere((m) => m.pending && m.contenido == text);
         });
+      }
+    } finally {
+      if (mounted) {
+        setState(() { _sending = false; });
       }
     }
   }

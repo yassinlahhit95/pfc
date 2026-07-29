@@ -32,8 +32,8 @@ $where = [];
 $params = [];
 $types = '';
 
-// Note: profesores table doesn't have an 'activo' field like estudiantes,
-// so we ignore status filtering for now. Future: add soft-delete support.
+// No soft-delete column for profesores
+$where[] = "1=1";
 
 if ($q) {
     $where[] = "p.nombreProfesor LIKE ?";
@@ -41,7 +41,7 @@ if ($q) {
     $types .= 's';
 }
 
-$whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+$whereClause = 'WHERE ' . implode(' AND ', $where);
 
 $sql = "SELECT p.idProfesor, p.nombreProfesor, p.emailProfesor,
                p.telefonoProfesor, p.esTutor, p.idCicloTutor,

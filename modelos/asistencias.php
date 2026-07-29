@@ -3,12 +3,13 @@ require_once __DIR__ . "/conectar.php";
 
 function guardarAsistenciasMasivo(int $idModulo, int $idProfesor, string $fecha, array $registros): bool {
     $con = obtenerConexion();
-    $sql = "INSERT INTO asistencias (idEstudiante, idModulo, idProfesor, fecha, estado, observacion)
-            VALUES (?, ?, ?, ?, ?, ?)
+    $sql = "INSERT INTO asistencias (idEstudiante, idModulo, idProfesor, fecha, hora, estado, observacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
               idProfesor = VALUES(idProfesor),
               estado     = VALUES(estado),
               observacion = VALUES(observacion),
+              hora = VALUES(hora),
               fechaRegistro = NOW()";
     $stmt = mysqli_prepare($con, $sql);
     if (!$stmt) return false;
@@ -18,10 +19,11 @@ function guardarAsistenciasMasivo(int $idModulo, int $idProfesor, string $fecha,
         $idEst  = (int)($registro['idEstudiante'] ?? 0);
         $estado = $registro['estado'] ?? 'presente';
         $obs    = $registro['observacion'] ?? null;
+        $hora   = !empty($registro['hora']) ? $registro['hora'] : null;
         if (!in_array($estado, ['presente','ausente','retraso','justificado'], true)) {
             $estado = 'presente';
         }
-        mysqli_stmt_bind_param($stmt, "iiisss", $idEst, $idModulo, $idProfesor, $fecha, $estado, $obs);
+        mysqli_stmt_bind_param($stmt, "iiissss", $idEst, $idModulo, $idProfesor, $fecha, $hora, $estado, $obs);
         if (!mysqli_stmt_execute($stmt)) { $ok = false; break; }
     }
     return $ok;
@@ -30,7 +32,7 @@ function guardarAsistenciasMasivo(int $idModulo, int $idProfesor, string $fecha,
 function listarAsistenciasPorModuloFecha(int $idModulo, string $fecha): array {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con,
-        "SELECT idEstudiante, COALESCE(estado, 'sin_registrar') AS estado, observacion
+        "SELECT idEstudiante, COALESCE(estado, 'sin_registrar') AS estado, observacion, hora
          FROM   asistencias
          WHERE  idModulo = ? AND fecha = ?");
     if (!$stmt) return [];
@@ -61,7 +63,7 @@ function listarEstudiantesDeModulo(int $idModulo): array {
     return $rows;
 }
 
-function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstudiante, ?string $fechaDesde, ?string $fechaHasta, ?string $estado = null): array {
+function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstudiante, ?string $fechaDesde, ?string $fechaHasta, ?string $estado = null, ?int $idProfesor = null): array {
     $con = obtenerConexion();
     $where = ["1=1"];
     $params = [];
@@ -91,6 +93,10 @@ function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstud
         $where[] = "a.estado = ?";
         $types .= "s"; $params[] = $estado;
     }
+    if ($idProfesor) {
+        $where[] = "a.idProfesor = ?";
+        $types .= "i"; $params[] = $idProfesor;
+    }
 
     $sql = "SELECT a.idAsistencia, a.fecha, a.estado, a.observacion, a.fechaRegistro,
                    e.idEstudiante, e.nombreEstudiante,
@@ -115,6 +121,108 @@ function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstud
     $rows = [];
     while ($row = mysqli_fetch_assoc($res)) $rows[] = $row;
     return $rows;
+}
+
+function listarAsistenciasFiltradasV2(array $filtros, int $limit = 50, int $offset = 0): array {
+    $con = obtenerConexion();
+    $where = ["1=1"];
+    $params = [];
+    $types  = "";
+
+    if (!empty($filtros['idCiclo'])) {
+        $where[] = "m.idCiclo = ?";
+        $types .= "i"; $params[] = (int)$filtros['idCiclo'];
+    }
+    if (!empty($filtros['idModulo'])) {
+        $where[] = "a.idModulo = ?";
+        $types .= "i"; $params[] = (int)$filtros['idModulo'];
+    }
+    if (!empty($filtros['idEstudiante'])) {
+        $where[] = "a.idEstudiante = ?";
+        $types .= "i"; $params[] = (int)$filtros['idEstudiante'];
+    }
+    if (!empty($filtros['fechaDesde'])) {
+        $where[] = "a.fecha >= ?";
+        $types .= "s"; $params[] = $filtros['fechaDesde'];
+    }
+    if (!empty($filtros['fechaHasta'])) {
+        $where[] = "a.fecha <= ?";
+        $types .= "s"; $params[] = $filtros['fechaHasta'];
+    }
+    if (!empty($filtros['estado'])) {
+        $where[] = "a.estado = ?";
+        $types .= "s"; $params[] = $filtros['estado'];
+    }
+    if (!empty($filtros['idProfesor'])) {
+        $where[] = "a.idProfesor = ?";
+        $types .= "i"; $params[] = (int)$filtros['idProfesor'];
+    }
+    if (!empty($filtros['nivel'])) {
+        $where[] = "c.idNivel = ?";
+        $types .= "i"; $params[] = (int)$filtros['nivel'];
+    }
+    if (!empty($filtros['grupo'])) {
+        $where[] = "e.idGrupo = ?";
+        $types .= "i"; $params[] = (int)$filtros['grupo'];
+    }
+    if (!empty($filtros['anio'])) {
+        $where[] = "e.anioEstudio = ?";
+        $types .= "s"; $params[] = $filtros['anio'];
+    }
+    if (!empty($filtros['q'])) {
+        $where[] = "e.nombreEstudiante LIKE ?";
+        $types .= "s"; $params[] = '%' . $filtros['q'] . '%';
+    }
+
+    $sql = "SELECT a.idAsistencia, a.fecha, a.hora, a.estado, a.observacion, a.fechaRegistro,
+                   e.idEstudiante, e.nombreEstudiante,
+                   m.idModulo, m.nombreModulo,
+                   c.nombreCiclo,
+                   p.nombreProfesor
+            FROM   asistencias a
+            JOIN   estudiantes e ON e.idEstudiante = a.idEstudiante
+            JOIN   modulos m     ON m.idModulo     = a.idModulo
+            JOIN   ciclos c      ON c.idCiclo      = m.idCiclo
+            JOIN   profesores p  ON p.idProfesor   = a.idProfesor
+            WHERE  " . implode(" AND ", $where) . "
+            ORDER BY a.fecha DESC, e.nombreEstudiante, m.nombreModulo
+            LIMIT ? OFFSET ?";
+
+    $types .= "ii";
+    $params[] = $limit;
+    $params[] = $offset;
+
+    $stmt = mysqli_prepare($con, $sql);
+    if (!empty($types)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $rows = [];
+    while ($row = mysqli_fetch_assoc($res)) $rows[] = $row;
+    
+    // Total count for pagination
+    $countSql = "SELECT COUNT(*) as total
+                 FROM asistencias a
+                 JOIN estudiantes e ON e.idEstudiante = a.idEstudiante
+                 JOIN modulos m ON m.idModulo = a.idModulo
+                 JOIN ciclos c ON c.idCiclo = m.idCiclo
+                 WHERE " . implode(" AND ", $where);
+    
+    $countParams = array_slice($params, 0, count($params) - 2);
+    $countTypes = substr($types, 0, strlen($types) - 2);
+    
+    $countStmt = mysqli_prepare($con, $countSql);
+    if (!empty($countTypes)) {
+        mysqli_stmt_bind_param($countStmt, $countTypes, ...$countParams);
+    }
+    mysqli_stmt_execute($countStmt);
+    $countRow = mysqli_fetch_assoc(mysqli_stmt_get_result($countStmt));
+    
+    return [
+        'rows' => $rows,
+        'total' => (int)($countRow['total'] ?? 0)
+    ];
 }
 
 function contarResumenAsistencia(int $idEstudiante, ?int $idModulo = null): array {

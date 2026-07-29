@@ -27,11 +27,12 @@ function listarTodosLosPrestamos() {
 
 function listarArticulos() {
     $con = obtenerConexion();
-    $sql = "SELECT idDispositivo AS idArticulo, nombreDispositivo AS nombreArticulo,
-                   numeroSerie, estadoDispositivo AS estado, foto
-            FROM dispositivos
-            WHERE deleted_at IS NULL
-            ORDER BY idDispositivo ASC";
+    $sql = "SELECT d.idDispositivo AS idArticulo, d.nombreDispositivo AS nombreArticulo,
+                   d.numeroSerie, d.estadoDispositivo AS estado, d.foto, d.cantidad,
+                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) AS prestados
+            FROM dispositivos d
+            WHERE d.deleted_at IS NULL
+            ORDER BY d.idDispositivo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -44,9 +45,10 @@ function listarArticulos() {
 
 function obtenerArticuloPorId($idArticulo) {
     $con = obtenerConexion();
-    $sql = "SELECT idDispositivo AS idArticulo, nombreDispositivo AS nombreArticulo,
-                   numeroSerie, estadoDispositivo AS estado, foto
-            FROM dispositivos WHERE idDispositivo = ? AND deleted_at IS NULL";
+    $sql = "SELECT d.idDispositivo AS idArticulo, d.nombreDispositivo AS nombreArticulo,
+                   d.numeroSerie, d.estadoDispositivo AS estado, d.foto, d.cantidad,
+                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) AS prestados
+            FROM dispositivos d WHERE d.idDispositivo = ? AND d.deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     mysqli_stmt_execute($stmt);
@@ -58,11 +60,11 @@ function obtenerArticuloPorId($idArticulo) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarArticulo($nombreArticulo, $numeroSerie, $foto = null) {
+function insertarArticulo($nombreArticulo, $numeroSerie, $cantidad = 1, $foto = null) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo, foto) VALUES (?, ?, 'disponible', ?)";
+    $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo, cantidad, foto) VALUES (?, ?, 'disponible', ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sss", $nombreArticulo, $numeroSerie, $foto);
+    mysqli_stmt_bind_param($stmt, "ssis", $nombreArticulo, $numeroSerie, $cantidad, $foto);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -70,19 +72,20 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
-        $stmt = mysqli_prepare($con, "SELECT idDispositivo FROM dispositivos WHERE idDispositivo = ? AND estadoDispositivo = 'disponible' AND deleted_at IS NULL");
+        $stmt = mysqli_prepare($con, "
+            SELECT d.cantidad,
+                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) as prestados
+            FROM dispositivos d WHERE d.idDispositivo = ? AND d.deleted_at IS NULL FOR UPDATE
+        ");
         mysqli_stmt_bind_param($stmt, "i", $idArticulo);
         mysqli_stmt_execute($stmt);
         $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-        if (!$fila) throw new \RuntimeException('dispositivo no disponible');
+        if (!$fila) throw new \RuntimeException('dispositivo no encontrado');
+        if ($fila['prestados'] >= $fila['cantidad']) throw new \RuntimeException('no hay stock disponible');
 
         $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, idDispositivo, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'activo')");
         mysqli_stmt_bind_param($stmt2, "iis", $idEstudiante, $idArticulo, $fechaPrestamo);
         if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert prestamos');
-
-        $stmt3 = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?");
-        mysqli_stmt_bind_param($stmt3, "i", $idArticulo);
-        if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('update dispositivos');
 
         mysqli_commit($con);
         return true;
@@ -96,11 +99,11 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoDispositivo, $foto = null) {
+function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoDispositivo, $cantidad = 1, $foto = null) {
     $con = obtenerConexion();
-    $sql = "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=?, foto=COALESCE(?, foto) WHERE idDispositivo=?";
+    $sql = "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=?, cantidad=?, foto=COALESCE(?, foto) WHERE idDispositivo=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssi", $nombreArticulo, $numeroSerie, $estadoDispositivo, $foto, $idArticulo);
+    mysqli_stmt_bind_param($stmt, "sssisi", $nombreArticulo, $numeroSerie, $estadoDispositivo, $cantidad, $foto, $idArticulo);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -119,10 +122,6 @@ function devolverPrestamo($idPrestamo) {
         $stmt2 = mysqli_prepare($con, "UPDATE prestamos SET fechaDevolucion = ?, estadoPrestamo = 'devuelto' WHERE idPrestamo = ?");
         mysqli_stmt_bind_param($stmt2, "si", $fechaHoy, $idPrestamo);
         if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('update prestamos');
-
-        $stmt3 = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE idDispositivo = ?");
-        mysqli_stmt_bind_param($stmt3, "i", $idDispositivo);
-        if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('update dispositivos');
 
         mysqli_commit($con);
         return true;

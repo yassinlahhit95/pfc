@@ -33,6 +33,7 @@ class AttendanceRecord {
   const AttendanceRecord({
     required this.id,
     required this.fecha,
+    this.hora,
     required this.estado,
     required this.observacion,
     required this.idEstudiante,
@@ -46,6 +47,7 @@ class AttendanceRecord {
   factory AttendanceRecord.fromJson(Map<String, dynamic> json) => AttendanceRecord(
         id: json['idAsistencia'] as int,
         fecha: json['fecha'] as String? ?? '',
+        hora: json['hora'] as String?,
         estado: json['estado'] as String? ?? '',
         observacion: json['observacion'] as String?,
         idEstudiante: json['idEstudiante'] as int? ?? 0,
@@ -60,6 +62,7 @@ class AttendanceRecord {
 
   final int id;
   final String fecha;
+  final String? hora;
   final String estado; // presente | ausente | retraso | justificado
   final String? observacion;
   final int idEstudiante;
@@ -140,6 +143,37 @@ class AttendanceRepository {
   Future<List<AttendanceRecord>> fetchForStudent(int idEstudiante) async {
     final data = await _client.get('/attendance.php', query: {'idEstudiante': idEstudiante});
     return (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList();
+  }
+
+  Future<({List<AttendanceRecord> attendance, int total})> fetchCenterAttendance({
+    int? limit,
+    int? offset,
+    int? nivel,
+    int? ciclo,
+    String? anio,
+    int? grupo,
+    String? q,
+    String? estado,
+  }) async {
+    final query = <String, dynamic>{
+      if (limit != null) 'limit': limit,
+      if (offset != null) 'offset': offset,
+      if (nivel != null) 'nivel': nivel,
+      if (ciclo != null) 'ciclo': ciclo,
+      if (anio != null && anio.isNotEmpty) 'anio': anio,
+      if (grupo != null) 'grupo': grupo,
+      if (q != null && q.isNotEmpty) 'q': q,
+      if (estado != null && estado.isNotEmpty) 'estado': estado,
+    };
+    final data = await _client.get('/attendance.php', query: query);
+    return (
+      attendance: (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList(),
+      total: data['total'] as int? ?? 0,
+    );
+  }
+
+  Future<Map<String, dynamic>> fetchLookups() async {
+    return _client.get('/lookups.php');
   }
 
   Future<void> submitAttendance({

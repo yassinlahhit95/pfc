@@ -120,8 +120,25 @@
             data.admin_password = $pwInput.val();
         }
 
+        var url = config.url;
+        if (url.indexOf('/') === 0) {
+            var base = '';
+            var idx = window.location.pathname.indexOf('/vistas/');
+            if (idx !== -1) {
+                base = window.location.pathname.substring(0, idx);
+            } else {
+                idx = window.location.pathname.indexOf('/controladores/');
+                if (idx !== -1) {
+                    base = window.location.pathname.substring(0, idx);
+                }
+            }
+            if (base && url.indexOf(base + '/') !== 0) {
+                url = base + url;
+            }
+        }
+
         $.ajax({
-            url:      config.url,
+            url:      url,
             type:     'POST',
             data:     data,
             dataType: 'json',

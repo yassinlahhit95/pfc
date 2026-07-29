@@ -67,6 +67,9 @@ include __DIR__ . '/../comunes/nav.php';
             <button type="button" class="boton-peligro" onclick="confirmarEliminar(<?= $idEstudiante ?>, '<?= Security::escapeHtml(addslashes($nombreCompleto)) ?>')">
                 <i class="fas fa-trash-alt"></i> Eliminar
             </button>
+            <a href="../pagos/historialEstudiante.php?idEstudiante=<?= $idEstudiante ?>" class="boton-secundario">
+                <i class="fas fa-file-invoice-dollar"></i> Historial de Pagos
+            </a>
             <a href="verEstudiantes.php" class="boton-secundario">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
