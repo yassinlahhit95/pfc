@@ -106,7 +106,6 @@ class HomeScreen extends ConsumerWidget {
 
       if (isBackOffice) _NavItem(Icons.people_outlined, t['nav_alumnos']!, t['nav_alumnos_sub']!, const StudentsScreen()),
       if (isBackOffice) _NavItem(Icons.fact_check_outlined, t['nav_asistencias_centro']!, t['nav_asistencias_centro_sub']!, const CenterAttendanceScreen()),
-      if (hasStaffJustify) _NavItem(Icons.edit_document, t['nav_justificar']!, t['nav_justificar_sub']!, const StaffJustifyScreen()),
       if (isBackOffice) _NavItem(Icons.school_outlined, t['nav_profesores']!, t['nav_profesores_sub']!, const TeachersScreen()),
       if (isBackOffice) _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!, t['nav_inventario_sub']!, const InventoryScreen()),
     ];

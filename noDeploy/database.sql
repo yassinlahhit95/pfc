@@ -1,4 +1,11 @@
-﻿-- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
+﻿mysqldump : mysqldump: [Warning] Using a password on the command line interface can be insecure.
+En línea: 1 Carácter: 336
++ ... \noDeploy"; mysqldump -h localhost -u yassjjzw_adminpfc -p"Yassin1995 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (mysqldump: [War...an be insecure.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+-- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
 --
 -- Host: localhost    Database: yassjjzw_pfc
 -- ------------------------------------------------------
@@ -14,6 +21,7 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+mysqldump: Error: 'Access denied; you need (at least one of) the PROCESS privilege(s) for this operation' when trying to dump tablespaces
 
 --
 -- Table structure for table `academic_config`
@@ -25,7 +33,7 @@ DROP TABLE IF EXISTS `academic_config`;
 CREATE TABLE `academic_config` (
   `idConfig` int NOT NULL AUTO_INCREMENT,
   `idCentro` int DEFAULT NULL,
-  `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Configuraci├│n acad├®mica',
+  `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Configuración académica',
   `anioAcademico` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tipoEducacion` enum('grado_basico','grado_medio','grado_superior','colegio','otro') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
   `activo` tinyint(1) NOT NULL DEFAULT '1',
@@ -35,16 +43,6 @@ CREATE TABLE `academic_config` (
   KEY `idx_ac_centro_activo` (`idCentro`,`activo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `academic_config`
---
-
-LOCK TABLES `academic_config` WRITE;
-/*!40000 ALTER TABLE `academic_config` DISABLE KEYS */;
-INSERT INTO `academic_config` VALUES (1,NULL,'Configuraci├│n heredada (auto-generada)',NULL,'otro',1,'2026-07-21 16:23:31','2026-07-21 16:23:31');
-/*!40000 ALTER TABLE `academic_config` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `academic_periods`
@@ -74,16 +72,6 @@ CREATE TABLE `academic_periods` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `academic_periods`
---
-
-LOCK TABLES `academic_periods` WRITE;
-/*!40000 ALTER TABLE `academic_periods` DISABLE KEYS */;
-INSERT INTO `academic_periods` VALUES (1,1,'1┬¬ Evaluaci├│n','evaluacion',NULL,NULL,1,1,0,100.00,NULL),(2,1,'2┬¬ Evaluaci├│n','evaluacion',NULL,NULL,3,1,0,100.00,NULL),(3,1,'Recuperaci├│n 1┬¬ Evaluaci├│n','recuperacion',NULL,NULL,2,1,0,100.00,1),(4,1,'Recuperaci├│n 2┬¬ Evaluaci├│n','recuperacion',NULL,NULL,4,1,0,100.00,2);
-/*!40000 ALTER TABLE `academic_periods` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `academic_templates`
 --
 
@@ -102,16 +90,6 @@ CREATE TABLE `academic_templates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `academic_templates`
---
-
-LOCK TABLES `academic_templates` WRITE;
-/*!40000 ALTER TABLE `academic_templates` DISABLE KEYS */;
-INSERT INTO `academic_templates` VALUES (1,'Est├índar FP Grado Medio','Configuraci├│n de partida para ciclos de Grado Medio: 2 evaluaciones + recuperaci├│n, examen 75% / reto 25%, aprobado 5.','{\"config\": {\"activo\": 1, \"nombre\": \"Configuraci├│n heredada (auto-generada)\", \"creadoEn\": \"2026-07-21 18:23:31\", \"idCentro\": null, \"idConfig\": 1, \"actualizadoEn\": \"2026-07-21 18:23:31\", \"anioAcademico\": null, \"tipoEducacion\": \"grado_medio\"}, \"periods\": [{\"peso\": \"100.00\", \"tipo\": \"evaluacion\", \"orden\": 1, \"nombre\": \"1┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 1, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": null}, {\"peso\": \"100.00\", \"tipo\": \"recuperacion\", \"orden\": 2, \"nombre\": \"Recuperaci├│n 1┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 3, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": 1}, {\"peso\": \"100.00\", \"tipo\": \"evaluacion\", \"orden\": 3, \"nombre\": \"2┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 2, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": null}, {\"peso\": \"100.00\", \"tipo\": \"recuperacion\", \"orden\": 4, \"nombre\": \"Recuperaci├│n 2┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 4, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": 2}], \"tfg_config\": {\"idConfig\": 1, \"habilitado\": 1, \"notaMinima\": \"5.00\", \"idConfigTFG\": 1, \"pesoEnMedia\": \"1.00\", \"requiereComite\": 0, \"requiereDefensa\": 0, \"permiteRecuperacion\": 1}, \"grading_policy\": {\"idConfig\": 1, \"decimales\": 2, \"escalaMax\": \"10.00\", \"escalaMin\": \"0.00\", \"idPolitica\": 1, \"notaAprobado\": \"5.00\", \"pesoTfgEnMedia\": \"1.00\"}, \"promotion_rule\": {\"idRegla\": 1, \"idConfig\": 1, \"notaMinimaGlobal\": \"5.00\", \"requiereTodosModulos\": 1, \"permiteModulosPendientes\": 0}, \"assessment_types\": [{\"peso\": \"3.00\", \"orden\": 1, \"idTipo\": 1, \"nombre\": \"Examen\", \"origen\": \"examen\", \"visible\": 1, \"idConfig\": 1, \"notaMaxima\": \"10.00\", \"obligatorio\": 1, \"recuperable\": 1, \"aprobadoMinimo\": null, \"incluirEnMedia\": 1, \"editableDirector\": 1, \"editableProfesor\": 1}, {\"peso\": \"1.00\", \"orden\": 2, \"idTipo\": 2, \"nombre\": \"Reto\", \"origen\": \"reto\", \"visible\": 1, \"idConfig\": 1, \"notaMaxima\": \"10.00\", \"obligatorio\": 0, \"recuperable\": 1, \"aprobadoMinimo\": null, \"incluirEnMedia\": 1, \"editableDirector\": 1, \"editableProfesor\": 1}], \"challenge_config\": {\"idConfig\": 1, \"pesoDefecto\": \"1.00\", \"idConfigReto\": 1, \"permiteFases\": 0, \"permiteGrupal\": 0, \"evaluacionPares\": 0, \"requiereRubrica\": 0}, \"internship_config\": {\"idConfig\": 1, \"habilitado\": 0, \"idConfigFCT\": 1, \"pesoEnMedia\": \"0.00\", \"metodoEvaluacion\": \"ambos\", \"horasRequeridasDefecto\": 0, \"requiereAprobarParaTitular\": 1}}',1,'2026-07-21 16:23:31'),(2,'Est├índar FP Grado Superior','Configuraci├│n de partida para ciclos de Grado Superior: misma estructura que Grado Medio, totalmente editable tras aplicarla.','{\"config\": {\"activo\": 1, \"nombre\": \"Configuraci├│n heredada (auto-generada)\", \"creadoEn\": \"2026-07-21 18:23:31\", \"idCentro\": null, \"idConfig\": 1, \"actualizadoEn\": \"2026-07-21 18:23:31\", \"anioAcademico\": null, \"tipoEducacion\": \"grado_superior\"}, \"periods\": [{\"peso\": \"100.00\", \"tipo\": \"evaluacion\", \"orden\": 1, \"nombre\": \"1┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 1, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": null}, {\"peso\": \"100.00\", \"tipo\": \"recuperacion\", \"orden\": 2, \"nombre\": \"Recuperaci├│n 1┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 3, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": 1}, {\"peso\": \"100.00\", \"tipo\": \"evaluacion\", \"orden\": 3, \"nombre\": \"2┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 2, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": null}, {\"peso\": \"100.00\", \"tipo\": \"recuperacion\", \"orden\": 4, \"nombre\": \"Recuperaci├│n 2┬¬ Evaluaci├│n\", \"visible\": 1, \"fechaFin\": null, \"idConfig\": 1, \"bloqueado\": 0, \"idPeriodo\": 4, \"fechaInicio\": null, \"idPeriodoRecuperaDe\": 2}], \"tfg_config\": {\"idConfig\": 1, \"habilitado\": 1, \"notaMinima\": \"5.00\", \"idConfigTFG\": 1, \"pesoEnMedia\": \"1.00\", \"requiereComite\": 0, \"requiereDefensa\": 0, \"permiteRecuperacion\": 1}, \"grading_policy\": {\"idConfig\": 1, \"decimales\": 2, \"escalaMax\": \"10.00\", \"escalaMin\": \"0.00\", \"idPolitica\": 1, \"notaAprobado\": \"5.00\", \"pesoTfgEnMedia\": \"1.00\"}, \"promotion_rule\": {\"idRegla\": 1, \"idConfig\": 1, \"notaMinimaGlobal\": \"5.00\", \"requiereTodosModulos\": 1, \"permiteModulosPendientes\": 0}, \"assessment_types\": [{\"peso\": \"3.00\", \"orden\": 1, \"idTipo\": 1, \"nombre\": \"Examen\", \"origen\": \"examen\", \"visible\": 1, \"idConfig\": 1, \"notaMaxima\": \"10.00\", \"obligatorio\": 1, \"recuperable\": 1, \"aprobadoMinimo\": null, \"incluirEnMedia\": 1, \"editableDirector\": 1, \"editableProfesor\": 1}, {\"peso\": \"1.00\", \"orden\": 2, \"idTipo\": 2, \"nombre\": \"Reto\", \"origen\": \"reto\", \"visible\": 1, \"idConfig\": 1, \"notaMaxima\": \"10.00\", \"obligatorio\": 0, \"recuperable\": 1, \"aprobadoMinimo\": null, \"incluirEnMedia\": 1, \"editableDirector\": 1, \"editableProfesor\": 1}], \"challenge_config\": {\"idConfig\": 1, \"pesoDefecto\": \"1.00\", \"idConfigReto\": 1, \"permiteFases\": 0, \"permiteGrupal\": 0, \"evaluacionPares\": 0, \"requiereRubrica\": 0}, \"internship_config\": {\"idConfig\": 1, \"habilitado\": 0, \"idConfigFCT\": 1, \"pesoEnMedia\": \"0.00\", \"metodoEvaluacion\": \"ambos\", \"horasRequeridasDefecto\": 0, \"requiereAprobarParaTitular\": 1}}',1,'2026-07-21 16:23:31');
-/*!40000 ALTER TABLE `academic_templates` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `account_lockout`
 --
 
@@ -126,16 +104,6 @@ CREATE TABLE `account_lockout` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `account_lockout`
---
-
-LOCK TABLES `account_lockout` WRITE;
-/*!40000 ALTER TABLE `account_lockout` DISABLE KEYS */;
-INSERT INTO `account_lockout` VALUES ('laura@aulapro.com',4,1784840639,NULL);
-/*!40000 ALTER TABLE `account_lockout` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `anuncios`
@@ -155,16 +123,6 @@ CREATE TABLE `anuncios` (
   KEY `idx_anuncio_fecha` (`fechaAnuncio`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `anuncios`
---
-
-LOCK TABLES `anuncios` WRITE;
-/*!40000 ALTER TABLE `anuncios` DISABLE KEYS */;
-INSERT INTO `anuncios` VALUES (1,'Bienvenida al A├▒o Acad├®mico 2026/2027','Les damos la m├ís cordial bienvenida a todos los estudiantes y profesores a este nuevo a├▒o acad├®mico. Las clases comienzan el 15 de Septiembre a las 8:30.','2026-07-27 17:36:17','2026-10-31','todos'),(2,'Entrega de Proyectos TFG','Se recuerda a los estudiantes de 2┬║ a├▒o que el plazo m├íximo para la subida del TFG y su documentaci├│n al Aula Virtual es el 15 de Junio.','2026-07-27 17:36:17','2027-06-15','estudiantes'),(3,'Reuni├│n Extraordinaria de Claustro','Estimados docentes, se convoca una reuni├│n extraordinaria de claustro para tratar las nuevas normativas de FP Dual el lunes 2 de Agosto a las 16:30.','2026-07-27 17:36:17','2026-08-03','profesores');
-/*!40000 ALTER TABLE `anuncios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `api_tokens`
@@ -188,16 +146,6 @@ CREATE TABLE `api_tokens` (
   KEY `idx_expires` (`expires_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `api_tokens`
---
-
-LOCK TABLES `api_tokens` WRITE;
-/*!40000 ALTER TABLE `api_tokens` DISABLE KEYS */;
-INSERT INTO `api_tokens` VALUES (1,'director',1,'99c0bc6f50e5dca133a3f2df5f06ea2d250bf6fa9b299e3d6564f29adbfe3ecf','Android','2026-07-23 18:22:43','2026-08-22 18:22:43','2026-07-23 18:22:44'),(4,'director',1,'dc86f9a8d7466b44afbfbd53d8c3fbf0a4e13c678174f5f9c690d9e0e9a4ff68','','2026-07-23 18:28:47','2026-08-22 18:28:47','2026-07-23 18:28:47'),(5,'tutor',1,'aa695151610220e0b5007a378c70bf384f356319c31ff2db5e07f0a41630fd2b','','2026-07-23 18:28:47','2026-08-22 18:28:47','2026-07-23 18:28:47'),(8,'director',1,'1ee7f54e45391d4e4d55a24b407186163b0c5992c94104e6eaa248902a4397cc','','2026-07-23 18:40:17','2026-08-22 18:40:17','2026-07-23 18:40:17'),(9,'profesor',1,'3cac4f6184ac1cba8625e6db804537b72458220f6a530bc420b2cc565da72952','','2026-07-23 18:40:18','2026-08-22 18:40:18','2026-07-23 18:40:18'),(10,'director',1,'898c18e2fbe260264cb849b4494346a0caf42a09da936cc766ae03bf48e38740','Android','2026-07-23 18:47:32','2026-08-22 18:47:32','2026-07-23 18:51:01'),(15,'tutor',1,'d1c0f552e4dd21f3aa0fd127e694f96dfa549e026b5b1bbfe7b670704d1efa05','','2026-07-23 19:01:36','2026-08-22 19:01:36','2026-07-23 19:01:36'),(16,'profesor',1,'70085cf3d8a136404f6340782aa09ea9afa951c6774304ac97de7c295d181e30','','2026-07-23 19:01:36','2026-08-22 19:01:36','2026-07-23 19:01:36'),(17,'tutor',1,'3a8517515f692950e33968dde3a6e01b7b485cabbedfda37883b9e5d3dbcce38','','2026-07-23 19:02:14','2026-08-22 19:02:14','2026-07-23 19:02:15'),(18,'estudiante',3,'9714c7dfc31587e28c5cdbad742cb1c027766ec58b402026923cf0526ce29f6b','','2026-07-23 19:02:28','2026-08-22 19:02:28','2026-07-23 19:02:28'),(19,'profesor',1,'913d092defb4c92e11781ce80a9eacada0daa9f1804f681d57aca6d599cb1119','','2026-07-23 19:02:28','2026-08-22 19:02:28','2026-07-23 19:02:28'),(20,'director',1,'da14ae3b693c83e522ab2b9f911003a6de41e29aa0117b202fbec1f5aab91936','','2026-07-23 19:02:29','2026-08-22 19:02:29','2026-07-23 19:02:29'),(21,'profesor',1,'f609270be2c3487fcea8867ec1b8f5c21ab548bbb2cc31224a989998c9d7486a','','2026-07-23 19:04:22','2026-08-22 19:04:22','2026-07-23 19:04:22'),(22,'director',1,'a0293feccb6e81f27f90c1afea03dbc5ef376c50daf2f7b92f6511898226bd70','','2026-07-23 19:08:49','2026-08-22 19:08:49','2026-07-23 19:08:49'),(23,'director',1,'d66db94ef0c5dc418147469b89b52e59f9f72d9de8b338e0018cb56196b2c0c8','','2026-07-23 19:08:58','2026-08-22 19:08:58','2026-07-23 19:08:58'),(30,'estudiante',1,'8a62e25dd6c84fc41a27b90b1b1718e91d82b2380e4f28a4ae7b505940645767','','2026-07-23 19:42:23','2026-08-22 19:42:23','2026-07-23 19:42:23'),(31,'estudiante',1,'2e19cb79a10cfdfe401b0d195d63a66408de3f68d8049e4b7596d2b6f5722c10','','2026-07-23 19:42:24','2026-08-22 19:42:24',NULL),(32,'tutor',1,'1d579aa1d89579fd3b169e2232d04c3b6f0764dbda3cbbb193cf99e924b4c687','','2026-07-23 19:42:34','2026-08-22 19:42:34','2026-07-23 19:42:34'),(35,'tutor',1,'e58c27edc5025289cdebbc70f001a2808bbdfbc57f461c15eddf3a44a9c69ea5','Android','2026-07-23 21:51:16','2026-08-22 21:51:16','2026-07-23 21:54:56'),(36,'estudiante',2,'9c9da5c9a13190f93e7a8fe9d105dc4654fcc19a7adaae88c3981e3b8f45c616','','2026-07-23 22:05:02','2026-08-22 22:05:02','2026-07-23 22:05:02'),(37,'estudiante',2,'5d50c6a368f7545733e1d297f6d938273cec6c1a94c94f56818ffdf7f65dd363','','2026-07-23 22:05:20','2026-08-22 22:05:20','2026-07-23 22:05:20'),(38,'estudiante',2,'8967cb09781fa7c081c592cae5f1e1521cfacac2cc7338a6626dcb45103f5187','','2026-07-23 22:05:50','2026-08-22 22:05:50','2026-07-23 22:05:50'),(39,'estudiante',2,'4fdffd02e34612eec1c645813d0ae08dc85ff7ff339044c2db19b5ad3079d6f0','','2026-07-23 22:06:14','2026-08-22 22:06:14','2026-07-23 22:06:15'),(40,'tutor',2,'339443d9008100a8599d3159339ea32de030dab0a83f984ed2bb0e54f3fdaa7a','','2026-07-23 22:06:33','2026-08-22 22:06:33','2026-07-23 22:06:33'),(41,'profesor',2,'f71d43bdfffb3e5a674a2d8855679fc4abaadbe5cbd586ab6b1a50d1f2b61052','','2026-07-23 22:06:33','2026-08-22 22:06:33','2026-07-23 22:06:33'),(42,'profesor',1,'0dd02b69b57f5edd5ece99aca6fcd02fb5f786c605d59883221cda14c6c32011','Android','2026-07-23 22:20:52','2026-08-22 22:20:52','2026-07-23 23:43:26'),(43,'secretaria',1,'7cc5f823db354da192ffd759dbbec6ceaa1a3b98f0eab43609418864e0629b3b','','2026-07-23 23:03:59','2026-08-22 23:03:59','2026-07-23 23:04:40'),(44,'director',1,'373c27b3f1c28e5bde7f061c5791cb9eeae7320e86b0ce0b34d6897a1ca00fef','','2026-07-23 23:04:24','2026-08-22 23:04:24','2026-07-23 23:06:28'),(45,'profesor',2,'c7face573e51e73706cb85a691089332b2fe7be9b40b8474a30641ffe4d95eb4','','2026-07-23 23:04:24','2026-08-22 23:04:24','2026-07-23 23:04:59'),(46,'estudiante',2,'d9d9e2ebf85ee7ae31241528f18be2495cc64da33c74489eb0902f6ab2f4bee5','','2026-07-23 23:04:24','2026-08-22 23:04:24','2026-07-23 23:06:28'),(47,'tutor',1,'76ae15b721b71e9b2028733897bd71a15e1915860946ec647c195a4fad643dfd','','2026-07-23 23:04:24','2026-08-22 23:04:24','2026-07-23 23:04:42'),(48,'director',1,'911675bec53ba63c8cbad1f7e9eba5f58aaa48359eaffbe76566f0e38c1e66f6','','2026-07-24 01:01:40','2026-08-23 01:01:40','2026-07-24 01:01:49'),(49,'director',1,'28a50fe39e1339bedabfbf5a90db2322647618582516a1d4fb766d0480eee3eb','Android','2026-07-24 01:08:19','2026-08-23 01:08:19','2026-07-24 01:09:50'),(50,'estudiante',2,'34ebbfb5071a035a688c1aefe35ebe00c7813bf88429a20ee62fed79df6e2a1d','Android','2026-07-24 02:45:40','2026-08-23 02:45:40','2026-07-24 03:04:44'),(51,'director',1,'7a29b0c91c24d426687d50ad53171691528b3edbbe22f7ca0879508d2d7f9350','claude-audit','2026-07-24 19:27:18','2026-08-23 19:27:18','2026-07-24 19:31:38'),(52,'estudiante',1,'d9fae6d8e172f463a8c3eee6480aaa2fa5663c06b48f956794a5b24787b0fdcd','','2026-07-24 19:47:29','2026-08-23 19:47:29','2026-07-24 19:47:31'),(53,'estudiante',1,'110d1ed40b131f3cc746af0cef073324c2664bdee9a6f9f74ad24b1a15447ef4','','2026-07-24 19:47:46','2026-08-23 19:47:46','2026-07-24 19:47:47'),(54,'director',1,'d66be5fd028fce95051bf0b7a12675a03e158a16b6384e0b9d0d2e31ed4d77f3','','2026-07-24 20:40:12','2026-08-23 20:40:12','2026-07-24 20:40:12'),(55,'director',1,'1cf55157ac412921e4bf713284ae5a167254e5bd0a51c9c5727eda8c3a2d2a92','','2026-07-24 21:00:47','2026-08-23 21:00:47','2026-07-24 21:01:03'),(56,'profesor',1,'2b2dcbf16574deb71c653561b20f72bc85a95114ea8b8582c3589300b18790bc','','2026-07-24 21:01:20','2026-08-23 21:01:20','2026-07-24 21:01:21'),(57,'director',1,'6d3d20ef2b6b6f94366bb0e327d15831b5fc04ff681a42f7e448144d7c1e083d','','2026-07-24 21:18:18','2026-08-23 21:18:18','2026-07-24 21:18:18');
-/*!40000 ALTER TABLE `api_tokens` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `asistencias`
@@ -224,16 +172,6 @@ CREATE TABLE `asistencias` (
   KEY `idProfesor` (`idProfesor`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `asistencias`
---
-
-LOCK TABLES `asistencias` WRITE;
-/*!40000 ALTER TABLE `asistencias` DISABLE KEYS */;
-INSERT INTO `asistencias` VALUES (1,1,3,1,'profesor',NULL,'2026-07-26','presente','Lleg├│ a la hora correcta','2026-07-27 15:36:17',NULL),(2,2,3,1,'profesor',NULL,'2026-07-26','retraso','Lleg├│ 15 minutos tarde por tr├ífico','2026-07-27 15:36:17',NULL),(3,3,1,2,'profesor',NULL,'2026-07-26','presente',NULL,'2026-07-27 15:36:17',NULL),(4,4,1,2,'profesor',NULL,'2026-07-26','ausente','No comunic├│ la falta','2026-07-27 15:36:17',NULL),(5,1,4,1,'profesor',NULL,'2026-07-27','presente',NULL,'2026-07-27 15:36:17',NULL),(6,2,4,1,'profesor',NULL,'2026-07-27','justificado','Tiene justificante de cita m├®dica','2026-07-27 15:36:17',NULL),(7,1,1,1,'profesor',NULL,'2026-07-25','ausente','Sin justificaci├│n','2026-07-28 13:24:46',NULL),(8,1,2,2,'profesor',NULL,'2026-07-22','presente',NULL,'2026-07-28 13:24:46',NULL),(9,2,1,1,'profesor',NULL,'2026-07-24','justificado','Cita m├®dica','2026-07-28 13:24:46',NULL),(10,2,2,2,'profesor',NULL,'2026-07-20','retraso','Autob├║s con retraso','2026-07-28 13:24:46',NULL),(11,3,4,1,'profesor',NULL,'2026-07-23','presente',NULL,'2026-07-28 13:24:46',NULL),(12,3,2,2,'profesor',NULL,'2026-07-26','ausente',NULL,'2026-07-28 13:24:46',NULL),(13,4,2,2,'profesor',NULL,'2026-07-25','retraso','Tr├ífico','2026-07-28 13:24:46',NULL),(14,4,3,1,'profesor',NULL,'2026-07-22','justificado','Justificante m├®dico','2026-07-28 13:24:46',NULL),(15,5,7,3,'profesor',NULL,'2026-07-27','ausente','Sin aviso','2026-07-28 13:24:46',NULL),(16,5,9,4,'profesor',NULL,'2026-07-24','presente',NULL,'2026-07-28 13:24:46',NULL),(17,5,10,2,'profesor',NULL,'2026-07-21','justificado','Cita m├®dica','2026-07-28 13:24:46',NULL),(18,6,7,3,'profesor',NULL,'2026-07-26','presente',NULL,'2026-07-28 13:24:46',NULL),(19,6,9,4,'profesor',NULL,'2026-07-23','retraso','Lleg├│ tarde','2026-07-28 13:24:46',NULL),(20,6,10,2,'profesor',NULL,'2026-07-19','ausente',NULL,'2026-07-28 13:24:46',NULL);
-/*!40000 ALTER TABLE `asistencias` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `assessment_types`
@@ -264,16 +202,6 @@ CREATE TABLE `assessment_types` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `assessment_types`
---
-
-LOCK TABLES `assessment_types` WRITE;
-/*!40000 ALTER TABLE `assessment_types` DISABLE KEYS */;
-INSERT INTO `assessment_types` VALUES (1,1,'Examen',10.00,3.00,NULL,1,1,1,1,1,1,'examen',1),(2,1,'Reto',10.00,1.00,NULL,0,1,1,1,1,1,'reto',2);
-/*!40000 ALTER TABLE `assessment_types` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_almacenamiento_ciclo`
 --
 
@@ -287,15 +215,6 @@ CREATE TABLE `aula_almacenamiento_ciclo` (
   CONSTRAINT `fk_aulaalm_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_almacenamiento_ciclo`
---
-
-LOCK TABLES `aula_almacenamiento_ciclo` WRITE;
-/*!40000 ALTER TABLE `aula_almacenamiento_ciclo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_almacenamiento_ciclo` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_analytics`
@@ -322,15 +241,6 @@ CREATE TABLE `aula_analytics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_analytics`
---
-
-LOCK TABLES `aula_analytics` WRITE;
-/*!40000 ALTER TABLE `aula_analytics` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_analytics` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_archivo_accesos`
 --
 
@@ -350,16 +260,6 @@ CREATE TABLE `aula_archivo_accesos` (
   CONSTRAINT `fk_aulaacc_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_archivo_accesos`
---
-
-LOCK TABLES `aula_archivo_accesos` WRITE;
-/*!40000 ALTER TABLE `aula_archivo_accesos` DISABLE KEYS */;
-INSERT INTO `aula_archivo_accesos` VALUES (1,1,1,'descarga','2026-07-23 18:35:13'),(2,1,1,'descarga','2026-07-23 18:56:08'),(3,1,1,'descarga','2026-07-23 19:31:27');
-/*!40000 ALTER TABLE `aula_archivo_accesos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_archivo_versiones`
@@ -385,15 +285,6 @@ CREATE TABLE `aula_archivo_versiones` (
   CONSTRAINT `fk_aulaver_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_archivo_versiones`
---
-
-LOCK TABLES `aula_archivo_versiones` WRITE;
-/*!40000 ALTER TABLE `aula_archivo_versiones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_archivo_versiones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_archivos`
@@ -429,16 +320,6 @@ CREATE TABLE `aula_archivos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_archivos`
---
-
-LOCK TABLES `aula_archivos` WRITE;
-/*!40000 ALTER TABLE `aula_archivos` DISABLE KEYS */;
-INSERT INTO `aula_archivos` VALUES (1,'demo_apuntes_prog.txt','Apuntes - Tema 1 Introduccion.txt','txt',282,'Apuntes de la primera unidad',1,1,1,1,0,0,NULL,'2026-07-23 18:35:03'),(2,'demo_guia_ejercicios.txt','Guia de Ejercicios - Bloque 1.txt','txt',299,'Ejercicios practicos para entregar',1,1,1,1,0,0,NULL,'2026-07-23 18:35:03');
-/*!40000 ALTER TABLE `aula_archivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_asistencia_sesion`
 --
 
@@ -461,15 +342,6 @@ CREATE TABLE `aula_asistencia_sesion` (
   CONSTRAINT `fk_aulasis_sesion` FOREIGN KEY (`idSesion`) REFERENCES `aula_sesiones_vivas` (`idSesion`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_asistencia_sesion`
---
-
-LOCK TABLES `aula_asistencia_sesion` WRITE;
-/*!40000 ALTER TABLE `aula_asistencia_sesion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_asistencia_sesion` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_carpetas`
@@ -501,16 +373,6 @@ CREATE TABLE `aula_carpetas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_carpetas`
---
-
-LOCK TABLES `aula_carpetas` WRITE;
-/*!40000 ALTER TABLE `aula_carpetas` DISABLE KEYS */;
-INSERT INTO `aula_carpetas` VALUES (1,'Material del curso',1,1,NULL,'#4F46E5','folder',0,0,NULL,'2026-07-23 18:35:03');
-/*!40000 ALTER TABLE `aula_carpetas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_comentarios`
 --
 
@@ -530,15 +392,6 @@ CREATE TABLE `aula_comentarios` (
   CONSTRAINT `fk_aulacomen_entr` FOREIGN KEY (`idEntrega`) REFERENCES `aula_entregas` (`idEntrega`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_comentarios`
---
-
-LOCK TABLES `aula_comentarios` WRITE;
-/*!40000 ALTER TABLE `aula_comentarios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_comentarios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_entregas`
@@ -568,16 +421,6 @@ CREATE TABLE `aula_entregas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_entregas`
---
-
-LOCK TABLES `aula_entregas` WRITE;
-/*!40000 ALTER TABLE `aula_entregas` DISABLE KEYS */;
-INSERT INTO `aula_entregas` VALUES (1,1,1,'practica_1_ana_silva.zip','Profesor, adjunto la pr├íctica resuelta. He a├▒adido como extra una vista HTML b├ísica para probar las validaciones.',1,'2026-07-25 17:36:17',8.80,'corregida','Excelente c├│digo, muy limpio y estructurado. Los extras est├ín muy bien implementados.',NULL),(2,1,2,'practica_1_david_ortiz.zip','Hola Juan, aqu├¡ tiene mi entrega de PHP. Un saludo.',1,'2026-07-25 17:36:17',7.20,'corregida','Buen trabajo en general. Ten cuidado con los nombres de variables y la indentaci├│n.',NULL),(3,2,1,'api_rest_ana_silva.zip','He dise├▒ado los endpoints seg├║n los est├índares REST. Se incluye archivo OpenAPI (Swagger) de documentaci├│n.',1,'2026-07-26 17:36:17',NULL,'enviada',NULL,NULL),(4,3,1,'dom_ana_silva.zip','Adjunto c├│digo JS listo. He implementado delegaci├│n de eventos en la tabla para optimizar rendimiento.',1,'2026-07-27 05:36:17',9.60,'corregida','Fant├ístico uso de delegaci├│n de eventos y modularizaci├│n del script JS. ┬íEnhorabuena!',NULL);
-/*!40000 ALTER TABLE `aula_entregas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_favoritos`
 --
 
@@ -598,15 +441,6 @@ CREATE TABLE `aula_favoritos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_favoritos`
---
-
-LOCK TABLES `aula_favoritos` WRITE;
-/*!40000 ALTER TABLE `aula_favoritos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_favoritos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_kanban_estado`
 --
 
@@ -625,15 +459,6 @@ CREATE TABLE `aula_kanban_estado` (
   CONSTRAINT `fk_kanban_tarea` FOREIGN KEY (`idTarea`) REFERENCES `aula_tareas` (`idTarea`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_kanban_estado`
---
-
-LOCK TABLES `aula_kanban_estado` WRITE;
-/*!40000 ALTER TABLE `aula_kanban_estado` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_kanban_estado` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_notificaciones`
@@ -657,16 +482,6 @@ CREATE TABLE `aula_notificaciones` (
   KEY `idx_aula_notif_usr` (`idUsuario`,`tipoUsuario`,`leida`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_notificaciones`
---
-
-LOCK TABLES `aula_notificaciones` WRITE;
-/*!40000 ALTER TABLE `aula_notificaciones` DISABLE KEYS */;
-INSERT INTO `aula_notificaciones` VALUES (1,1,'estudiante','archivo_subido','Nuevo archivo en Programaci├│n','1 ha subido: Prueba de subida.txt',0,3,'archivo','2026-07-24 02:37:13'),(2,2,'estudiante','archivo_subido','Nuevo archivo en Programaci├│n','1 ha subido: Prueba de subida.txt',0,3,'archivo','2026-07-24 02:37:13'),(3,4,'estudiante','archivo_subido','Nuevo archivo en Programaci├│n','1 ha subido: Prueba de subida.txt',0,3,'archivo','2026-07-24 02:37:13'),(4,5,'estudiante','archivo_subido','Nuevo archivo en Programaci├│n','1 ha subido: Prueba de subida.txt',0,3,'archivo','2026-07-24 02:37:13'),(5,6,'estudiante','archivo_subido','Nuevo archivo en Programaci├│n','1 ha subido: Prueba de subida.txt',0,3,'archivo','2026-07-24 02:37:13'),(6,7,'estudiante','archivo_subido','Nuevo archivo en Programaci├│n','1 ha subido: Prueba de subida.txt',0,3,'archivo','2026-07-24 02:37:13');
-/*!40000 ALTER TABLE `aula_notificaciones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_retos`
@@ -693,15 +508,6 @@ CREATE TABLE `aula_retos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_retos`
---
-
-LOCK TABLES `aula_retos` WRITE;
-/*!40000 ALTER TABLE `aula_retos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_retos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_retos_entregas`
 --
 
@@ -725,15 +531,6 @@ CREATE TABLE `aula_retos_entregas` (
   CONSTRAINT `aula_retos_entregas_ibfk_2` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_retos_entregas`
---
-
-LOCK TABLES `aula_retos_entregas` WRITE;
-/*!40000 ALTER TABLE `aula_retos_entregas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_retos_entregas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_sesiones_vivas`
@@ -763,16 +560,6 @@ CREATE TABLE `aula_sesiones_vivas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_sesiones_vivas`
---
-
-LOCK TABLES `aula_sesiones_vivas` WRITE;
-/*!40000 ALTER TABLE `aula_sesiones_vivas` DISABLE KEYS */;
-INSERT INTO `aula_sesiones_vivas` VALUES (1,3,1,'Resoluci├│n de Dudas: API REST','Revisi├│n grupal y soluci├│n de dudas sobre c├│mo dise├▒ar e integrar los verbos y c├│digos de respuesta en endpoints.','2026-07-29','11:00:00','https://meet.google.com/xyz-pdq-abc','Google Meet','programada','2026-07-27 17:36:17'),(2,4,1,'Taller JavaScript: Programaci├│n As├¡ncrona','Explicaci├│n detallada y pr├íctica sobre el flujo con Event Loop, Promises, Fetch API y Async/Await.','2026-07-30','10:00:00','https://meet.google.com/uvw-xyz-rst','Google Meet','programada','2026-07-27 17:36:17');
-/*!40000 ALTER TABLE `aula_sesiones_vivas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_tareas`
 --
 
@@ -795,16 +582,6 @@ CREATE TABLE `aula_tareas` (
   CONSTRAINT `fk_aulatar_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_tareas`
---
-
-LOCK TABLES `aula_tareas` WRITE;
-/*!40000 ALTER TABLE `aula_tareas` DISABLE KEYS */;
-INSERT INTO `aula_tareas` VALUES (1,'Estructuras de Control en PHP','Desarrollar una biblioteca b├ísica de validaci├│n de datos utilizando sentencias condicionales, bucles anidados y arrays asociativos.',3,1,NULL,1,'2026-07-27 17:36:17'),(2,'Dise├▒o e Implementaci├│n de API REST','Crear una API RESTful para la gesti├│n de productos con soporte para operaciones CRUD y respuestas estructuradas en formato JSON.',3,1,NULL,1,'2026-07-27 17:36:17'),(3,'Manipulaci├│n Din├ímica del DOM','Desarrollar una aplicaci├│n interactiva simple en JavaScript que agregue, elimine y filtre elementos de una tabla usando eventos y selectores nativos.',4,1,NULL,1,'2026-07-27 17:36:17'),(4,'Maquetaci├│n Avanzada con CSS Grid','Crear un dashboard de administraci├│n responsive utilizando exclusivamente CSS Grid y Flexbox para organizar la cuadr├¡cula.',5,3,NULL,1,'2026-07-27 17:36:17');
-/*!40000 ALTER TABLE `aula_tareas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_versiones_entrega`
@@ -830,15 +607,6 @@ CREATE TABLE `aula_versiones_entrega` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_versiones_entrega`
---
-
-LOCK TABLES `aula_versiones_entrega` WRITE;
-/*!40000 ALTER TABLE `aula_versiones_entrega` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_versiones_entrega` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aulas`
 --
 
@@ -859,16 +627,6 @@ CREATE TABLE `aulas` (
   UNIQUE KEY `uk_aula_codigo` (`codigoAula`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aulas`
---
-
-LOCK TABLES `aulas` WRITE;
-/*!40000 ALTER TABLE `aulas` DISABLE KEYS */;
-INSERT INTO `aulas` (`idAula`, `planta`, `numero`, `nombreAula`, `tipoAula`, `capacidad`, `activa`) VALUES (1,1,1,'Laboratorio Inform├ítica I','laboratorio',25,1),(2,1,2,'Laboratorio Inform├ítica II','laboratorio',25,1),(3,2,1,'Aula de Teor├¡a 201','teoria',30,1),(4,2,2,'Taller de Hardware','taller',20,1);
-/*!40000 ALTER TABLE `aulas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `blog_posts`
@@ -898,16 +656,6 @@ CREATE TABLE `blog_posts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `blog_posts`
---
-
-LOCK TABLES `blog_posts` WRITE;
-/*!40000 ALTER TABLE `blog_posts` DISABLE KEYS */;
-INSERT INTO `blog_posts` VALUES (1,'Apertura del Centro Formativo','apertura','Comienza un nuevo a├▒o con gran ilusi├│n.','El d├¡a 15 damos el pistoletazo de salida...','','','',1,1,'2026-09-01 00:00:00','2026-07-23 16:05:10','2026-07-23 16:05:10');
-/*!40000 ALTER TABLE `blog_posts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `boletines_log`
 --
 
@@ -930,15 +678,6 @@ CREATE TABLE `boletines_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `boletines_log`
---
-
-LOCK TABLES `boletines_log` WRITE;
-/*!40000 ALTER TABLE `boletines_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `boletines_log` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `calificaciones_ce`
 --
 
@@ -957,16 +696,6 @@ CREATE TABLE `calificaciones_ce` (
   CONSTRAINT `calificaciones_ce_ibfk_2` FOREIGN KEY (`idCE`) REFERENCES `criterios_evaluacion` (`idCE`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `calificaciones_ce`
---
-
-LOCK TABLES `calificaciones_ce` WRITE;
-/*!40000 ALTER TABLE `calificaciones_ce` DISABLE KEYS */;
-INSERT INTO `calificaciones_ce` VALUES (1,1,1,9.50);
-/*!40000 ALTER TABLE `calificaciones_ce` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `calificaciones_modulos`
@@ -995,16 +724,6 @@ CREATE TABLE `calificaciones_modulos` (
   CONSTRAINT `fk_cm_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `calificaciones_modulos`
---
-
-LOCK TABLES `calificaciones_modulos` WRITE;
-/*!40000 ALTER TABLE `calificaciones_modulos` DISABLE KEYS */;
-INSERT INTO `calificaciones_modulos` VALUES (1,1,1,8.50,NULL,NULL,NULL,NULL,'CO',NULL,NULL,NULL);
-/*!40000 ALTER TABLE `calificaciones_modulos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `calificaciones_periodo`
@@ -1036,15 +755,6 @@ CREATE TABLE `calificaciones_periodo` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `calificaciones_periodo`
---
-
-LOCK TABLES `calificaciones_periodo` WRITE;
-/*!40000 ALTER TABLE `calificaciones_periodo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `calificaciones_periodo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `calificaciones_retos`
 --
 
@@ -1063,15 +773,6 @@ CREATE TABLE `calificaciones_retos` (
   CONSTRAINT `fk_cr_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `calificaciones_retos`
---
-
-LOCK TABLES `calificaciones_retos` WRITE;
-/*!40000 ALTER TABLE `calificaciones_retos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `calificaciones_retos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `calificaciones_tfg`
@@ -1093,15 +794,6 @@ CREATE TABLE `calificaciones_tfg` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `calificaciones_tfg`
---
-
-LOCK TABLES `calificaciones_tfg` WRITE;
-/*!40000 ALTER TABLE `calificaciones_tfg` DISABLE KEYS */;
-/*!40000 ALTER TABLE `calificaciones_tfg` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `categorias_gasto`
 --
 
@@ -1117,16 +809,6 @@ CREATE TABLE `categorias_gasto` (
   PRIMARY KEY (`idCategoria`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `categorias_gasto`
---
-
-LOCK TABLES `categorias_gasto` WRITE;
-/*!40000 ALTER TABLE `categorias_gasto` DISABLE KEYS */;
-INSERT INTO `categorias_gasto` VALUES (1,'Licencias de Software',5000.00,'#0ea5e9',1),(2,'Material e Instrumentos de Laboratorio',10000.00,'#10b981',1),(3,'Material de Oficina e Imprenta',2000.00,'#f59e0b',1),(4,'Infraestructura, Servidores y Cableado',8000.00,'#ef4444',1);
-/*!40000 ALTER TABLE `categorias_gasto` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `challenge_config`
@@ -1150,16 +832,6 @@ CREATE TABLE `challenge_config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `challenge_config`
---
-
-LOCK TABLES `challenge_config` WRITE;
-/*!40000 ALTER TABLE `challenge_config` DISABLE KEYS */;
-INSERT INTO `challenge_config` VALUES (1,1,1.00,0,0,0,0);
-/*!40000 ALTER TABLE `challenge_config` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `chat_conversaciones`
 --
 
@@ -1179,16 +851,6 @@ CREATE TABLE `chat_conversaciones` (
   KEY `idx_conv_last` (`last_message_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `chat_conversaciones`
---
-
-LOCK TABLES `chat_conversaciones` WRITE;
-/*!40000 ALTER TABLE `chat_conversaciones` DISABLE KEYS */;
-INSERT INTO `chat_conversaciones` VALUES (1,'profesor',1,'estudiante',1,'2026-07-27 17:26:17'),(2,'profesor',1,'estudiante',2,'2026-07-27 16:36:17');
-/*!40000 ALTER TABLE `chat_conversaciones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `chat_mensajes`
@@ -1215,16 +877,6 @@ CREATE TABLE `chat_mensajes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `chat_mensajes`
---
-
-LOCK TABLES `chat_mensajes` WRITE;
-/*!40000 ALTER TABLE `chat_mensajes` DISABLE KEYS */;
-INSERT INTO `chat_mensajes` VALUES (1,1,'estudiante',1,'Hola profesor, ┬┐el lunes es festivo o hay entrega normal de la pr├íctica 2?',1,'2026-07-27 17:06:17'),(2,1,'profesor',1,'Hola Ana. Es d├¡a lectivo normal, por lo tanto la entrega se mantiene para las 23:59 de ese d├¡a.',1,'2026-07-27 17:11:17'),(3,1,'estudiante',1,'Perfecto, ya la tengo casi lista. Muchas gracias por la aclaraci├│n.',0,'2026-07-27 17:26:17'),(4,2,'estudiante',2,'Hola Juan, tengo un fallo al validar el token en la pr├íctica de REST. ┬┐Me podr├¡a guiar un poco?',1,'2026-07-27 16:36:17'),(5,2,'profesor',1,'Hola David. Revisa la cabecera \"Authorization\" en tu middleware. Aseg├║rate de separar el prefijo \"Bearer \" del token propiamente dicho.',0,'2026-07-27 16:51:17');
-/*!40000 ALTER TABLE `chat_mensajes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `ciclo_profesor`
 --
 
@@ -1240,16 +892,6 @@ CREATE TABLE `ciclo_profesor` (
   CONSTRAINT `fk_rel_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ciclo_profesor`
---
-
-LOCK TABLES `ciclo_profesor` WRITE;
-/*!40000 ALTER TABLE `ciclo_profesor` DISABLE KEYS */;
-INSERT INTO `ciclo_profesor` VALUES (1,1),(1,2),(2,3),(3,3);
-/*!40000 ALTER TABLE `ciclo_profesor` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ciclos`
@@ -1271,16 +913,6 @@ CREATE TABLE `ciclos` (
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ciclos`
---
-
-LOCK TABLES `ciclos` WRITE;
-/*!40000 ALTER TABLE `ciclos` DISABLE KEYS */;
-INSERT INTO `ciclos` VALUES (1,'Desarrollo de Aplicaciones Web','DAW',1200.00,1,1,NULL),(2,'Desarrollo de Aplicaciones Multiplataforma','DAM',1200.00,1,1,NULL),(3,'Sistemas Microinform├íticos y Redes','SMR',900.00,2,1,NULL);
-/*!40000 ALTER TABLE `ciclos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `cola_emails`
@@ -1307,15 +939,6 @@ CREATE TABLE `cola_emails` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cola_emails`
---
-
-LOCK TABLES `cola_emails` WRITE;
-/*!40000 ALTER TABLE `cola_emails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cola_emails` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `configuracion_centro`
 --
 
@@ -1324,7 +947,7 @@ DROP TABLE IF EXISTS `configuracion_centro`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `configuracion_centro` (
   `idConfig` int NOT NULL DEFAULT '1',
-  `nombreCentro` varchar(200) DEFAULT 'Centro de Formaci├│n Profesional',
+  `nombreCentro` varchar(200) DEFAULT 'Centro de Formación Profesional',
   `codigoCentro` varchar(50) DEFAULT '',
   `nifCifCentro` varchar(20) NOT NULL DEFAULT '',
   `direccionCentro` varchar(200) DEFAULT '',
@@ -1370,16 +993,6 @@ CREATE TABLE `configuracion_centro` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `configuracion_centro`
---
-
-LOCK TABLES `configuracion_centro` WRITE;
-/*!40000 ALTER TABLE `configuracion_centro` DISABLE KEYS */;
-INSERT INTO `configuracion_centro` VALUES (1,'AulaPro Formaci├│n Profesional','CENTRO001','B12345678','Av. de la Innovaci├│n 42','Madrid','28042','912345678','info@aulapro.com','2026-2027','','','','Aviso legal: Este es un entorno de demostraci├│n de AulaPro.','Carlos Mendoza',1,1,1,1,'active',NULL,0,NULL,'info',NULL,NULL,NULL,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1);
-/*!40000 ALTER TABLE `configuracion_centro` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `consentimientos`
 --
 
@@ -1397,15 +1010,6 @@ CREATE TABLE `consentimientos` (
   CONSTRAINT `fk_consentimiento_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `consentimientos`
---
-
-LOCK TABLES `consentimientos` WRITE;
-/*!40000 ALTER TABLE `consentimientos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `consentimientos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `criterios_evaluacion`
@@ -1426,16 +1030,6 @@ CREATE TABLE `criterios_evaluacion` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `criterios_evaluacion`
---
-
-LOCK TABLES `criterios_evaluacion` WRITE;
-/*!40000 ALTER TABLE `criterios_evaluacion` DISABLE KEYS */;
-INSERT INTO `criterios_evaluacion` VALUES (1,1,'CE1.a','Declara variables y estructuras de control.'),(2,2,'CE2.a','Instancia clases y usa herencia.');
-/*!40000 ALTER TABLE `criterios_evaluacion` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `cursos_academicos`
 --
 
@@ -1452,16 +1046,6 @@ CREATE TABLE `cursos_academicos` (
   CONSTRAINT `cursos_academicos_ibfk_1` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `cursos_academicos`
---
-
-LOCK TABLES `cursos_academicos` WRITE;
-/*!40000 ALTER TABLE `cursos_academicos` DISABLE KEYS */;
-INSERT INTO `cursos_academicos` VALUES (1,1,'1┬║ DAW',1),(2,1,'2┬║ DAW',2),(3,2,'1┬║ DAM',1),(4,2,'2┬║ DAM',2),(5,3,'1┬║ SMR',1),(6,3,'2┬║ SMR',2);
-/*!40000 ALTER TABLE `cursos_academicos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `directores`
@@ -1494,16 +1078,6 @@ CREATE TABLE `directores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `directores`
---
-
-LOCK TABLES `directores` WRITE;
-/*!40000 ALTER TABLE `directores` DISABLE KEYS */;
-INSERT INTO `directores` VALUES (1,'Carlos Mendoza','admin@aulapro.com','$2y$10$Gp4xQNd.vwU/YaqDxWrvF.pzy/MKEcfSVR1LP6e2nu0lQAgn4NnoC','600111222','12345678A','1980-05-15','2024-09-01','Calle Mayor 1','Madrid','28001','Director General de AulaPro',NULL,0,NULL,NULL);
-/*!40000 ALTER TABLE `directores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `dispositivos`
 --
 
@@ -1524,16 +1098,6 @@ CREATE TABLE `dispositivos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `dispositivos`
---
-
-LOCK TABLES `dispositivos` WRITE;
-/*!40000 ALTER TABLE `dispositivos` DISABLE KEYS */;
-INSERT INTO `dispositivos` VALUES (1,'Port├ítil Dell Latitude','DL-2025-001','disponible',NULL,1,NULL),(2,'Port├ítil Lenovo ThinkPad','LN-2025-002','prestado',NULL,1,NULL);
-/*!40000 ALTER TABLE `dispositivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `estudiante_tutor`
 --
 
@@ -1550,16 +1114,6 @@ CREATE TABLE `estudiante_tutor` (
   CONSTRAINT `fk_et_tut` FOREIGN KEY (`idTutor`) REFERENCES `tutores` (`idTutor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `estudiante_tutor`
---
-
-LOCK TABLES `estudiante_tutor` WRITE;
-/*!40000 ALTER TABLE `estudiante_tutor` DISABLE KEYS */;
-INSERT INTO `estudiante_tutor` VALUES (1,1,'Padre'),(2,2,'Madre'),(3,3,'Madre');
-/*!40000 ALTER TABLE `estudiante_tutor` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `estudiantes`
@@ -1583,7 +1137,7 @@ CREATE TABLE `estudiantes` (
   `observacionesEstudiante` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `idCiclo` int DEFAULT NULL,
   `curso` enum('Grado Medio','Grado Superior') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `anioEstudio` enum('1┬║','2┬║') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `anioEstudio` enum('1º','2º') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `idCurso` int DEFAULT NULL,
   `archivoTFG` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tituloTFG` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1606,16 +1160,6 @@ CREATE TABLE `estudiantes` (
   CONSTRAINT `fk_estudiantes_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `estudiantes`
---
-
-LOCK TABLES `estudiantes` WRITE;
-/*!40000 ALTER TABLE `estudiantes` DISABLE KEYS */;
-INSERT INTO `estudiantes` VALUES (1,'Ana Silva','ana.silva@aulapro.com','$2y$12$KvgcgImetxRJJLTc8LPaauhIUxjvmQlfLPbROwcC0rAfxKq6DkqUy','600666777','56789012E','2005-04-10','2024-09-01','Calle Verde 5','Madrid','28005','Delegada de clase. Excelente rendimiento acad├®mico.',1,'Grado Superior','2┬║',2,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL,2,NULL),(2,'David Ortiz','david.ortiz@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600777888','67890123F','2005-09-18','2024-09-01','Calle Azul 6','Madrid','28006','Participativo y muy interesado en dise├▒o Frontend.',1,'Grado Superior','2┬║',2,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL,2,NULL),(3,'Elena Pastor','elena.pastor@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600888999','78901234G','2006-01-22','2025-09-01','Calle Roja 7','Madrid','28007','Inter├®s en frameworks modernos y dise├▒o UI/UX.',1,'Grado Superior','1┬║',1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL,1,NULL),(4,'Javier Ruiz','javier.ruiz@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600999000','89012345H','2006-05-30','2025-09-01','Calle Amarilla 8','Madrid','28008','Tiene conocimientos previos de programaci├│n autodidacta.',1,'Grado Superior','1┬║',1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL,1,NULL),(5,'Luc├¡a Mendez','lucia.mendez@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600000111','90123456I','2005-11-05','2024-09-01','Calle Naranja 9','Madrid','28009','Estudiante de 2┬║ DAM. Interesada en desarrollo de videojuegos.',2,'Grado Superior','2┬║',4,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL,3,NULL),(6,'Sergio Abad','sergio.abad@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600111000','01234567J','2005-02-14','2024-09-01','Calle Violeta 10','Madrid','28010','Inter├®s en administraci├│n de servidores y redes.',2,'Grado Superior','2┬║',4,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL,3,NULL);
-/*!40000 ALTER TABLE `estudiantes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `eventos`
@@ -1641,16 +1185,6 @@ CREATE TABLE `eventos` (
   KEY `idx_evento_fecha` (`fechaEvento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `eventos`
---
-
-LOCK TABLES `eventos` WRITE;
-/*!40000 ALTER TABLE `eventos` DISABLE KEYS */;
-INSERT INTO `eventos` VALUES (1,'Exposici├│n de Proyectos de Fin de Grado','Defensa de los Proyectos TFG/Proyectos Integradores ante el comit├® evaluador.','2026-06-20','09:00:00','Sal├│n de Actos - Edificio Central',1,'publica',NULL,1,'2026-07-28 12:11:21','2026-07-28 12:11:21'),(2,'Jornada Informativa: Inicio de FCT','Charla obligatoria sobre el proceso, documentaci├│n y pautas a seguir durante el periodo de pr├ícticas FCT.','2026-02-15','12:30:00','Laboratorio Inform├ítica I',1,'publica',NULL,1,'2026-07-28 12:11:21','2026-07-28 12:11:21'),(3,'Conferencia: Salidas Laborales en el ├ümbito Web','Charla tecnol├│gica a cargo de directores de desarrollo y talento de Tech Solutions.','2026-07-30','16:00:00','Sal├│n de Actos',1,'publica',NULL,1,'2026-07-28 12:11:21','2026-07-28 12:11:21'),(4,'Prueba Evento',NULL,'2026-08-15','10:00:00',NULL,1,'publica','{}',0,'2026-07-28 12:11:28','2026-07-28 12:13:30'),(5,'Prueba Actualizado',NULL,'2026-08-15','10:00:00',NULL,1,'publica','{}',0,'2026-07-28 12:11:48','2026-07-28 12:11:48'),(6,'Prueba Actualizado',NULL,'2026-08-15','10:00:00',NULL,1,'publica','{}',0,'2026-07-28 12:12:55','2026-07-28 12:12:55'),(7,'Solo profesores',NULL,'2026-09-01',NULL,NULL,1,'roles','{\"roles\": [\"profesor\"]}',0,'2026-07-28 12:13:06','2026-07-28 12:13:06'),(8,'Solo usuario 1',NULL,'2026-09-02',NULL,NULL,1,'personalizado','{\"usuarios_custom\": [1, 2, 3]}',0,'2026-07-28 12:13:06','2026-07-28 12:13:06'),(12,'Updated Title','Evento de prueba Task16','2026-07-28','10:00:00','Aula QA',1,'roles','{\"roles\": [\"profesor\"]}',0,'2026-07-28 12:59:05','2026-07-28 13:08:01'),(17,'QA Cron Test','','2026-07-28','10:00:00','Aula QA',1,'publica',NULL,0,'2026-07-28 13:08:35','2026-07-28 13:21:37'),(18,'QA Secretaria Test Edited','','2026-08-01',NULL,'',1,'publica',NULL,0,'2026-07-28 13:13:06','2026-07-28 13:13:20'),(19,'Reuni├│n Consejo Acad├®mico','Revisi├│n de avances y problemas acad├®micos del cuatrimestre','2026-07-31','10:00:00','Sala de Juntas',1,'roles','{\"roles\": [\"director\", \"profesor\"]}',1,'2026-07-28 13:24:46','2026-07-28 13:24:46'),(20,'Entrega de Retos Finales','├Ültima fecha para entregar los retos del ciclo','2026-08-04','23:59:59','Plataforma Virtual',1,'publica',NULL,1,'2026-07-28 13:24:46','2026-07-28 13:24:46'),(21,'Jornada de Tutor├¡a','Sesi├│n de tutor├¡a individual con estudiantes','2026-08-02','14:00:00','Oficina de Tutor├¡a',1,'roles','{\"roles\": [\"tutor\"]}',1,'2026-07-28 13:24:46','2026-07-28 13:24:46'),(22,'Charla de Orientaci├│n Laboral','Salidas profesionales y mercado de trabajo del sector','2026-08-11','09:30:00','Sal├│n de Actos',1,'publica',NULL,1,'2026-07-28 13:24:46','2026-07-28 13:24:46'),(23,'Reuni├│n de Padres y Tutores','Seguimiento individual del alumnado con tutores legales','2026-08-18','17:00:00','Aula 201',1,'personalizado','{\"usuarios_custom\": [{\"id\": 1, \"tipo\": \"estudiante\"}, {\"id\": 2, \"tipo\": \"estudiante\"}]}',1,'2026-07-28 13:24:46','2026-07-28 13:24:46');
-/*!40000 ALTER TABLE `eventos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `fct`
@@ -1691,16 +1225,6 @@ CREATE TABLE `fct` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `fct`
---
-
-LOCK TABLES `fct` WRITE;
-/*!40000 ALTER TABLE `fct` DISABLE KEYS */;
-INSERT INTO `fct` VALUES (1,1,1,'Tech Solutions S.L.',1,'Ram├│n G├│mez','ramon.gomez@techsolutions.com','655987654','Madrid','2026-03-01','2026-06-30',400,400,9.20,1,'Excelente desempe├▒o en el stack de desarrollo backend con PHP.',1,1,'2026-07-27 17:36:17'),(2,2,1,'Global Web Developers',2,'Sof├¡a Mart├¡nez','sofia.martinez@globalweb.com','655654321','Madrid','2026-03-01','2026-06-30',400,260,NULL,NULL,'Buen ritmo en maquetaci├│n. En progreso continuo.',1,1,'2026-07-27 17:36:17');
-/*!40000 ALTER TABLE `fct` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `fct_diarios`
 --
 
@@ -1724,16 +1248,6 @@ CREATE TABLE `fct_diarios` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `fct_diarios`
---
-
-LOCK TABLES `fct_diarios` WRITE;
-/*!40000 ALTER TABLE `fct_diarios` DISABLE KEYS */;
-INSERT INTO `fct_diarios` VALUES (1,1,'2026-07-24',8.00,'Configuraci├│n del entorno de desarrollo local con Docker. Clonado del repositorio y primer contacto con el esquema de base de datos.','aprobado','Buen comienzo. Entorno configurado correctamente.',NULL,'2026-07-27 15:36:17'),(2,1,'2026-07-25',8.00,'Desarrollo de los endpoints de la API de autenticaci├│n y validaci├│n de tokens JWT.','aprobado','C├│digo limpio y siguiendo las directrices de seguridad.',NULL,'2026-07-27 15:36:17'),(3,1,'2026-07-26',8.00,'Creaci├│n de pruebas unitarias para los controladores de usuarios y resoluci├│n de bugs menores en el middleware.','pendiente',NULL,NULL,'2026-07-27 15:36:17');
-/*!40000 ALTER TABLE `fct_diarios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `fp_empresas`
 --
 
@@ -1752,16 +1266,6 @@ CREATE TABLE `fp_empresas` (
   PRIMARY KEY (`idEmpresa`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fp_empresas`
---
-
-LOCK TABLES `fp_empresas` WRITE;
-/*!40000 ALTER TABLE `fp_empresas` DISABLE KEYS */;
-INSERT INTO `fp_empresas` VALUES (1,'Tech Solutions S.L.','B12345678','Parque Tecnol├│gico, Edificio A','Marta Garc├¡a','600123456','marta.garcia@techsolutions.com',1),(2,'Global Web Developers','B87654321','Avenida de la Inform├ítica 10','Luis Naranjo','600987654','luis.naranjo@globalweb.com',1);
-/*!40000 ALTER TABLE `fp_empresas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `gastos`
@@ -1794,16 +1298,6 @@ CREATE TABLE `gastos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `gastos`
---
-
-LOCK TABLES `gastos` WRITE;
-/*!40000 ALTER TABLE `gastos` DISABLE KEYS */;
-INSERT INTO `gastos` VALUES (1,1,1,'Licencias JetBrains IDE (25 licencias acad├®micas)',450.00,'2026-07-12','Factura','JET-2026-001',NULL,'Uso exclusivo para DAW/DAM','2026-07-27 17:36:17',NULL,NULL),(2,2,3,'Componentes de red (Switches administrables y Cat 6)',1200.00,'2026-07-15','Factura','NET-2026-104',NULL,'Para laboratorio del ciclo SMR','2026-07-27 17:36:17',NULL,NULL),(3,3,NULL,'Lote de folios, bol├¡grafos, t├│ners y carpetas de secretar├¡a',185.50,'2026-07-17','Ticket','OFF-9923',NULL,'Material de oficina general','2026-07-27 17:36:17',NULL,NULL);
-/*!40000 ALTER TABLE `gastos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `grading_policies`
 --
 
@@ -1825,16 +1319,6 @@ CREATE TABLE `grading_policies` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `grading_policies`
---
-
-LOCK TABLES `grading_policies` WRITE;
-/*!40000 ALTER TABLE `grading_policies` DISABLE KEYS */;
-INSERT INTO `grading_policies` VALUES (1,1,0.00,10.00,5.00,0,1.00);
-/*!40000 ALTER TABLE `grading_policies` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `grupos`
 --
 
@@ -1851,16 +1335,6 @@ CREATE TABLE `grupos` (
   CONSTRAINT `fk_grupos_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `grupos`
---
-
-LOCK TABLES `grupos` WRITE;
-/*!40000 ALTER TABLE `grupos` DISABLE KEYS */;
-INSERT INTO `grupos` VALUES (1,'DAW-A',1,'1┬║'),(2,'DAW-B',1,'2┬║'),(3,'DAM-A',2,'2┬║');
-/*!40000 ALTER TABLE `grupos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `historial_secretarias`
@@ -1883,16 +1357,6 @@ CREATE TABLE `historial_secretarias` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `historial_secretarias`
---
-
-LOCK TABLES `historial_secretarias` WRITE;
-/*!40000 ALTER TABLE `historial_secretarias` DISABLE KEYS */;
-INSERT INTO `historial_secretarias` VALUES (1,1,'rechazar_comprobante','pagos','ID: 2 Foto borrosa, vuelve a subir','2026-07-26 17:38:51'),(2,1,'insertar','eventos','ID: 18 QA Secretaria Test','2026-07-28 15:13:06'),(3,1,'actualizar','eventos','ID: 18 QA Secretaria Test Edited','2026-07-28 15:13:20'),(4,1,'borrar','eventos','ID: 18 QA Secretaria Test Edited','2026-07-28 15:13:20');
-/*!40000 ALTER TABLE `historial_secretarias` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `horario_franjas`
 --
 
@@ -1912,16 +1376,6 @@ CREATE TABLE `horario_franjas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `horario_franjas`
---
-
-LOCK TABLES `horario_franjas` WRITE;
-/*!40000 ALTER TABLE `horario_franjas` DISABLE KEYS */;
-INSERT INTO `horario_franjas` VALUES (1,1,'08:00:00','09:00:00',0),(2,1,'09:00:00','10:00:00',0),(3,1,'10:00:00','11:00:00',0),(4,1,'11:00:00','11:30:00',1),(5,1,'11:30:00','12:30:00',0),(6,1,'12:30:00','13:30:00',0),(7,1,'13:30:00','14:30:00',0);
-/*!40000 ALTER TABLE `horario_franjas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `horarios`
 --
 
@@ -1931,7 +1385,7 @@ DROP TABLE IF EXISTS `horarios`;
 CREATE TABLE `horarios` (
   `idHorario` int NOT NULL AUTO_INCREMENT,
   `idCiclo` int NOT NULL,
-  `diaSemana` enum('Lunes','Martes','Mi├®rcoles','Jueves','Viernes') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `diaSemana` enum('Lunes','Martes','Miércoles','Jueves','Viernes') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `horaInicio` time NOT NULL,
   `horaFin` time NOT NULL,
   `idModulo` int DEFAULT NULL,
@@ -1949,16 +1403,6 @@ CREATE TABLE `horarios` (
   CONSTRAINT `fk_horario_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `horarios`
---
-
-LOCK TABLES `horarios` WRITE;
-/*!40000 ALTER TABLE `horarios` DISABLE KEYS */;
-INSERT INTO `horarios` VALUES (79,1,'Lunes','08:30:00','10:30:00',1,1,1,'2026-07-24 01:57:30'),(80,1,'Lunes','10:30:00','12:30:00',2,2,1,'2026-07-24 01:57:30'),(81,1,'Lunes','12:30:00','14:30:00',3,1,1,'2026-07-24 01:57:30'),(82,1,'Martes','08:30:00','10:30:00',1,1,1,'2026-07-24 01:57:30'),(83,1,'Martes','10:30:00','12:30:00',2,2,1,'2026-07-24 01:57:30'),(84,1,'Martes','12:30:00','14:30:00',3,1,1,'2026-07-24 01:57:30'),(85,1,'Mi├®rcoles','08:30:00','10:30:00',1,1,1,'2026-07-24 01:57:30'),(86,1,'Mi├®rcoles','10:30:00','12:30:00',2,2,1,'2026-07-24 01:57:30'),(87,1,'Mi├®rcoles','12:30:00','14:30:00',3,1,1,'2026-07-24 01:57:30'),(88,1,'Jueves','08:30:00','10:30:00',1,1,1,'2026-07-24 01:57:30'),(89,1,'Jueves','10:30:00','12:30:00',2,2,1,'2026-07-24 01:57:30'),(90,1,'Jueves','12:30:00','14:30:00',3,1,1,'2026-07-24 01:57:30'),(91,1,'Viernes','08:30:00','10:30:00',1,1,1,'2026-07-24 01:57:30'),(92,1,'Viernes','10:30:00','12:30:00',2,2,1,'2026-07-24 01:57:30'),(93,1,'Viernes','12:30:00','14:30:00',3,1,1,'2026-07-24 01:57:30'),(154,2,'Lunes','08:30:00','10:30:00',7,3,2,'2026-07-28 15:22:35'),(155,2,'Lunes','10:30:00','12:30:00',9,4,2,'2026-07-28 15:22:35'),(156,2,'Lunes','12:30:00','14:30:00',10,2,2,'2026-07-28 15:22:35'),(157,2,'Martes','08:30:00','10:30:00',7,3,2,'2026-07-28 15:22:35'),(158,2,'Martes','10:30:00','12:30:00',9,4,2,'2026-07-28 15:22:35'),(159,2,'Martes','12:30:00','14:30:00',10,2,2,'2026-07-28 15:22:35'),(160,2,'Mi├®rcoles','08:30:00','10:30:00',7,3,2,'2026-07-28 15:22:35'),(161,2,'Mi├®rcoles','10:30:00','12:30:00',9,4,2,'2026-07-28 15:22:35'),(162,2,'Mi├®rcoles','12:30:00','14:30:00',10,2,2,'2026-07-28 15:22:35'),(163,2,'Jueves','08:30:00','10:30:00',7,3,2,'2026-07-28 15:22:35'),(164,2,'Jueves','10:30:00','12:30:00',9,4,2,'2026-07-28 15:22:35'),(165,2,'Jueves','12:30:00','14:30:00',10,2,2,'2026-07-28 15:22:35'),(166,2,'Viernes','08:30:00','10:30:00',7,3,2,'2026-07-28 15:22:35'),(167,2,'Viernes','10:30:00','12:30:00',9,4,2,'2026-07-28 15:22:35'),(168,2,'Viernes','12:30:00','14:30:00',10,2,2,'2026-07-28 15:22:35'),(184,3,'Lunes','15:00:00','17:00:00',8,5,3,'2026-07-28 15:24:46'),(185,3,'Lunes','17:00:00','19:00:00',11,4,3,'2026-07-28 15:24:46'),(186,3,'Lunes','19:00:00','21:00:00',12,3,3,'2026-07-28 15:24:46'),(187,3,'Martes','15:00:00','17:00:00',8,5,3,'2026-07-28 15:24:46'),(188,3,'Martes','17:00:00','19:00:00',11,4,3,'2026-07-28 15:24:46'),(189,3,'Martes','19:00:00','21:00:00',12,3,3,'2026-07-28 15:24:46'),(190,3,'Mi├®rcoles','15:00:00','17:00:00',8,5,3,'2026-07-28 15:24:46'),(191,3,'Mi├®rcoles','17:00:00','19:00:00',11,4,3,'2026-07-28 15:24:46'),(192,3,'Mi├®rcoles','19:00:00','21:00:00',12,3,3,'2026-07-28 15:24:46'),(193,3,'Jueves','15:00:00','17:00:00',8,5,3,'2026-07-28 15:24:46'),(194,3,'Jueves','17:00:00','19:00:00',11,4,3,'2026-07-28 15:24:46'),(195,3,'Jueves','19:00:00','21:00:00',12,3,3,'2026-07-28 15:24:46'),(196,3,'Viernes','15:00:00','17:00:00',8,5,3,'2026-07-28 15:24:46'),(197,3,'Viernes','17:00:00','19:00:00',11,4,3,'2026-07-28 15:24:46'),(198,3,'Viernes','19:00:00','21:00:00',12,3,3,'2026-07-28 15:24:46');
-/*!40000 ALTER TABLE `horarios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `internship_config`
@@ -1982,16 +1426,6 @@ CREATE TABLE `internship_config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `internship_config`
---
-
-LOCK TABLES `internship_config` WRITE;
-/*!40000 ALTER TABLE `internship_config` DISABLE KEYS */;
-INSERT INTO `internship_config` VALUES (1,1,0,0,'ambos',0.00,1);
-/*!40000 ALTER TABLE `internship_config` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `inventario`
 --
 
@@ -2007,15 +1441,6 @@ CREATE TABLE `inventario` (
   PRIMARY KEY (`idInventario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `inventario`
---
-
-LOCK TABLES `inventario` WRITE;
-/*!40000 ALTER TABLE `inventario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `inventario` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `justificaciones_falta`
@@ -2047,16 +1472,6 @@ CREATE TABLE `justificaciones_falta` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `justificaciones_falta`
---
-
-LOCK TABLES `justificaciones_falta` WRITE;
-/*!40000 ALTER TABLE `justificaciones_falta` DISABLE KEYS */;
-INSERT INTO `justificaciones_falta` VALUES (1,3,3,'Cita m├®dica adjunta.',NULL,'ausente','aprobada','estudiante',NULL,3,NULL,NULL,'2026-10-03 13:00:00','2026-10-04 07:00:00'),(2,1,1,'Problema de transporte.',NULL,'ausente','aprobada','estudiante',NULL,1,NULL,'','2026-10-02 08:00:00','2026-07-23 17:02:28'),(3,2,2,'Cita medica, adjunto justificante','demo_justificante_elena.pdf','ausente','pendiente','estudiante',NULL,NULL,NULL,NULL,'2026-07-23 20:06:04',NULL);
-/*!40000 ALTER TABLE `justificaciones_falta` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `landing_ciclos`
 --
 
@@ -2086,16 +1501,6 @@ CREATE TABLE `landing_ciclos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `landing_ciclos`
---
-
-LOCK TABLES `landing_ciclos` WRITE;
-/*!40000 ALTER TABLE `landing_ciclos` DISABLE KEYS */;
-INSERT INTO `landing_ciclos` VALUES (1,'Desarrollo de Aplicaciones Web','desarrollo-de-aplicaciones-web','Grado Superior','Aprende a dise├▒ar, crear y mantener aplicaciones web modernas y seguras.','<p>En este ciclo aprender├ís a dominar tanto el frontend (HTML, CSS, JS, React) como el backend (PHP, Node, SQL) para convertirte en un Full-Stack Developer muy demandado por el mercado.</p>','','1200Ôé¼ / a├▒o','2 A├▒os (2000 horas)','Presencial / Online',1,1,1,'2026-07-27 15:36:17','2026-07-27 15:36:17'),(2,'Desarrollo de Aplicaciones Multiplataforma','desarrollo-de-aplicaciones-multiplataforma','Grado Superior','Convi├®rtete en desarrollador de apps m├│viles, de escritorio y videojuegos.','<p>Domina lenguajes como Java, C# y Kotlin para crear software robusto multiplataforma. Incluye programaci├│n de interfaces gr├íficas avanzadas y acceso a datos.</p>','','1200Ôé¼ / a├▒o','2 A├▒os (2000 horas)','Presencial',1,1,2,'2026-07-27 15:36:17','2026-07-27 15:36:17'),(3,'Sistemas Microinform├íticos y Redes','sistemas-microinformaticos-y-redes','Grado Medio','Montaje de hardware, instalaci├│n de redes y soporte t├®cnico.','<p>F├│rmate como t├®cnico de sistemas. Aprender├ís a montar servidores, administrar redes locales, configurar routers y resolver incidencias de hardware en empresas.</p>','','900Ôé¼ / a├▒o','2 A├▒os (2000 horas)','Presencial',1,0,3,'2026-07-27 15:36:17','2026-07-27 15:36:17');
-/*!40000 ALTER TABLE `landing_ciclos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `landing_config`
 --
 
@@ -2115,16 +1520,6 @@ CREATE TABLE `landing_config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `landing_config`
---
-
-LOCK TABLES `landing_config` WRITE;
-/*!40000 ALTER TABLE `landing_config` DISABLE KEYS */;
-INSERT INTO `landing_config` VALUES (1,NULL,NULL,NULL,NULL,NULL,'2026-07-21 16:23:31');
-/*!40000 ALTER TABLE `landing_config` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `landing_secciones`
 --
 
@@ -2142,15 +1537,6 @@ CREATE TABLE `landing_secciones` (
   KEY `idx_landing_version_orden` (`version`,`orden`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `landing_secciones`
---
-
-LOCK TABLES `landing_secciones` WRITE;
-/*!40000 ALTER TABLE `landing_secciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `landing_secciones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `log_acciones`
@@ -2176,16 +1562,6 @@ CREATE TABLE `log_acciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `log_acciones`
---
-
-LOCK TABLES `log_acciones` WRITE;
-/*!40000 ALTER TABLE `log_acciones` DISABLE KEYS */;
-INSERT INTO `log_acciones` VALUES (1,1,'add_franja','horario',1,'19:00-19:30','172.20.10.2','2026-07-24 02:18:17'),(2,1,'remove_franja','horario',1,'19:00','172.20.10.2','2026-07-24 02:18:17'),(3,NULL,'insertar','anuncios',NULL,'Prueba API movil','127.0.0.1','2026-07-24 21:00:47'),(6,1,'insertar','eventos',12,'QA Test Evento Fase1','127.0.0.1','2026-07-28 14:59:06'),(7,1,'actualizar','eventos',12,'Updated Title','127.0.0.1','2026-07-28 14:59:23'),(8,1,'borrar','eventos',12,'Updated Title','127.0.0.1','2026-07-28 15:08:01'),(9,1,'insertar','eventos',17,'QA Cron Test','127.0.0.1','2026-07-28 15:08:35'),(10,1,'borrar','eventos',17,'QA Cron Test','127.0.0.1','2026-07-28 15:21:37');
-/*!40000 ALTER TABLE `log_acciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `login_intentos`
 --
 
@@ -2202,15 +1578,6 @@ CREATE TABLE `login_intentos` (
   UNIQUE KEY `uk_ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `login_intentos`
---
-
-LOCK TABLES `login_intentos` WRITE;
-/*!40000 ALTER TABLE `login_intentos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `login_intentos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `modulo_profesor`
@@ -2231,16 +1598,6 @@ CREATE TABLE `modulo_profesor` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `modulo_profesor`
---
-
-LOCK TABLES `modulo_profesor` WRITE;
-/*!40000 ALTER TABLE `modulo_profesor` DISABLE KEYS */;
-INSERT INTO `modulo_profesor` VALUES (1,2),(2,2),(3,1),(4,1),(5,3),(6,2),(7,3),(8,3);
-/*!40000 ALTER TABLE `modulo_profesor` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `modulo_reto`
 --
 
@@ -2258,16 +1615,6 @@ CREATE TABLE `modulo_reto` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `modulo_reto`
---
-
-LOCK TABLES `modulo_reto` WRITE;
-/*!40000 ALTER TABLE `modulo_reto` DISABLE KEYS */;
-INSERT INTO `modulo_reto` VALUES (1,1),(2,1);
-/*!40000 ALTER TABLE `modulo_reto` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `modulos`
 --
 
@@ -2281,8 +1628,8 @@ CREATE TABLE `modulos` (
   `horasMaximas` int DEFAULT NULL,
   `idCiclo` int NOT NULL,
   `idCurso` int DEFAULT NULL,
-  `tipoModulo` enum('Espec├¡fico','Transversal','Proyecto','Empresa') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Espec├¡fico',
-  `cursoAnio` enum('1┬║','2┬║') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '1┬║',
+  `tipoModulo` enum('Específico','Transversal','Proyecto','Empresa') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Específico',
+  `cursoAnio` enum('1º','2º') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '1º',
   `creditosECTS` int DEFAULT '0',
   PRIMARY KEY (`idModulo`),
   KEY `idx_modulo_ciclo` (`idCiclo`),
@@ -2290,16 +1637,6 @@ CREATE TABLE `modulos` (
   CONSTRAINT `fk_modulos_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `modulos`
---
-
-LOCK TABLES `modulos` WRITE;
-/*!40000 ALTER TABLE `modulos` DISABLE KEYS */;
-INSERT INTO `modulos` VALUES (1,'Programaci├│n','PRG',240,1,1,'Espec├¡fico','1┬║',10),(2,'Bases de Datos','BD',180,1,1,'Espec├¡fico','1┬║',8),(3,'Desarrollo Web en Entorno Servidor','DWES',180,1,2,'Espec├¡fico','2┬║',9),(4,'Desarrollo Web en Entorno Cliente','DWEC',140,1,2,'Espec├¡fico','2┬║',7),(5,'Dise├▒o de Interfaces Web','DIW',120,1,2,'Espec├¡fico','2┬║',6),(6,'Entornos de Desarrollo','ED',90,1,1,'Espec├¡fico','1┬║',4),(7,'Programaci├│n Multimedia y Dispositivos M├│viles','PMDM',120,2,4,'Espec├¡fico','2┬║',6),(8,'Montaje y Mantenimiento de Equipos','MME',150,3,5,'Espec├¡fico','1┬║',8),(9,'Acceso a Datos','AD',160,2,4,'Espec├¡fico','2┬║',7),(10,'Desarrollo de Interfaces','DI',160,2,4,'Espec├¡fico','2┬║',7),(11,'Redes Locales','RL',130,3,5,'Espec├¡fico','1┬║',6),(12,'Sistemas Operativos Monopuesto','SOM',130,3,5,'Espec├¡fico','1┬║',6);
-/*!40000 ALTER TABLE `modulos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `niveles`
@@ -2314,16 +1651,6 @@ CREATE TABLE `niveles` (
   PRIMARY KEY (`idNivel`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `niveles`
---
-
-LOCK TABLES `niveles` WRITE;
-/*!40000 ALTER TABLE `niveles` DISABLE KEYS */;
-INSERT INTO `niveles` VALUES (1,'Grado Superior'),(2,'Grado Medio'),(3,'Grado B├ísico'),(4,'Colegio (Primaria/ESO/Bachillerato)');
-/*!40000 ALTER TABLE `niveles` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `notificaciones_recordatorios`
@@ -2346,16 +1673,6 @@ CREATE TABLE `notificaciones_recordatorios` (
   PRIMARY KEY (`idNotificacionRecordatorio`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `notificaciones_recordatorios`
---
-
-LOCK TABLES `notificaciones_recordatorios` WRITE;
-/*!40000 ALTER TABLE `notificaciones_recordatorios` DISABLE KEYS */;
-INSERT INTO `notificaciones_recordatorios` VALUES (6,17,1,'director',37,'2026-07-28 15:08:53',NULL,1,'pendiente','2026-07-28 13:08:53'),(7,17,1,'profesor',37,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(8,17,2,'profesor',37,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(9,17,3,'profesor',37,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(10,17,1,'secretaria',37,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(11,17,1,'director',38,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(12,17,1,'profesor',38,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(13,17,2,'profesor',38,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(14,17,3,'profesor',38,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(15,17,1,'secretaria',38,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(16,17,1,'director',39,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(17,17,1,'profesor',39,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(18,17,2,'profesor',39,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(19,17,3,'profesor',39,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53'),(20,17,1,'secretaria',39,'2026-07-28 15:08:53',NULL,0,'pendiente','2026-07-28 13:08:53');
-/*!40000 ALTER TABLE `notificaciones_recordatorios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `pagos`
@@ -2384,16 +1701,6 @@ CREATE TABLE `pagos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pagos`
---
-
-LOCK TABLES `pagos` WRITE;
-/*!40000 ALTER TABLE `pagos` DISABLE KEYS */;
-INSERT INTO `pagos` VALUES (1,1,NULL,NULL,2500.00,'2026-08-15',NULL,'unico',NULL,NULL,'aprobado',NULL),(2,2,NULL,NULL,2500.00,'2026-08-20',NULL,'unico',NULL,NULL,'aprobado',NULL);
-/*!40000 ALTER TABLE `pagos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `password_resets`
 --
 
@@ -2416,15 +1723,6 @@ CREATE TABLE `password_resets` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `password_resets`
---
-
-LOCK TABLES `password_resets` WRITE;
-/*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
-/*!40000 ALTER TABLE `password_resets` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `pre_matricula_archivos`
 --
 
@@ -2445,15 +1743,6 @@ CREATE TABLE `pre_matricula_archivos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pre_matricula_archivos`
---
-
-LOCK TABLES `pre_matricula_archivos` WRITE;
-/*!40000 ALTER TABLE `pre_matricula_archivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pre_matricula_archivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `pre_matriculas`
 --
 
@@ -2468,7 +1757,7 @@ CREATE TABLE `pre_matriculas` (
   `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `idCiclo` int NOT NULL,
-  `curso` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '1┬║',
+  `curso` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '1º',
   `nombreTutor` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dniTutor` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailTutor` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -2484,16 +1773,6 @@ CREATE TABLE `pre_matriculas` (
   CONSTRAINT `fk_pm_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `pre_matriculas`
---
-
-LOCK TABLES `pre_matriculas` WRITE;
-/*!40000 ALTER TABLE `pre_matriculas` DISABLE KEYS */;
-INSERT INTO `pre_matriculas` VALUES (1,'77777771Z','Nuevo Alumno 1','Mart├¡n Silva','nuevo1@aulapro.com','677111222',1,'Primero',NULL,NULL,NULL,NULL,NULL,'pendiente','','2026-08-01 10:00:00'),(2,'77777772Z','Nuevo Alumno 2','Garc├¡a L├│pez','nuevo2@aulapro.com','677222333',2,'Segundo',NULL,NULL,NULL,NULL,NULL,'aceptada',NULL,'2026-08-02 11:30:00');
-/*!40000 ALTER TABLE `pre_matriculas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `prestamos`
@@ -2517,16 +1796,6 @@ CREATE TABLE `prestamos` (
   CONSTRAINT `fk_pres_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `prestamos`
---
-
-LOCK TABLES `prestamos` WRITE;
-/*!40000 ALTER TABLE `prestamos` DISABLE KEYS */;
-INSERT INTO `prestamos` VALUES (1,1,'LN-2025-002','2026-09-15',NULL,'en curso',2,NULL),(2,3,'DL-2025-001','2026-07-23','2026-07-23','devuelto',1,NULL);
-/*!40000 ALTER TABLE `prestamos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `profesores`
@@ -2561,16 +1830,6 @@ CREATE TABLE `profesores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `profesores`
---
-
-LOCK TABLES `profesores` WRITE;
-/*!40000 ALTER TABLE `profesores` DISABLE KEYS */;
-INSERT INTO `profesores` VALUES (1,'Juan P├®rez','juan.perez@aulapro.com','$2y$12$NoDoFaNeZT43YYAR1XnAGOEhZHc9NGdJXxGc.JOceS21paDUZnQRq','600333444','23456789B','1985-10-20','2024-09-01','Calle Secundaria 2','Madrid','28002','Profesor especialista en Backend. Tutor de 2┬║ DAW.',NULL,1,1,0,NULL,NULL),(2,'Mar├¡a Rodr├¡guez','maria.rodriguez@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600444555','34567890C','1988-03-12','2024-09-01','Avenida Principal 3','Madrid','28003','Profesora de programaci├│n e iniciaci├│n al desarrollo.',NULL,0,NULL,0,NULL,NULL),(3,'Pedro Mart├¡nez','pedro.martinez@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','600555666','45678901D','1982-07-25','2024-09-01','Paseo del Prado 4','Madrid','28004','Profesor de multiplataforma y hardware. Tutor de 2┬║ DAM.',NULL,1,2,0,NULL,NULL),(4,'Laura G├│mez','laura.gomez@aulapro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'56789012E',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL),(5,'Miguel Torres','miguel.torres@aulapro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'67890123F',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,NULL);
-/*!40000 ALTER TABLE `profesores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `promotion_rules`
 --
 
@@ -2590,16 +1849,6 @@ CREATE TABLE `promotion_rules` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `promotion_rules`
---
-
-LOCK TABLES `promotion_rules` WRITE;
-/*!40000 ALTER TABLE `promotion_rules` DISABLE KEYS */;
-INSERT INTO `promotion_rules` VALUES (1,1,1,5.00,0);
-/*!40000 ALTER TABLE `promotion_rules` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `rate_limits`
 --
 
@@ -2617,16 +1866,6 @@ CREATE TABLE `rate_limits` (
   UNIQUE KEY `uq_scope_ip` (`scope`,`ip`)
 ) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rate_limits`
---
-
-LOCK TABLES `rate_limits` WRITE;
-/*!40000 ALTER TABLE `rate_limits` DISABLE KEYS */;
-INSERT INTO `rate_limits` VALUES (1,'api_login','172.20.10.3',1,1784853940,NULL),(2,'apiv1_99c0bc6f','172.20.10.3',3,1784823764,NULL),(3,'api_login','172.20.10.2',1,1784847700,NULL),(4,'apiv1_e1ad8f35','172.20.10.2',6,1784824108,NULL),(5,'apiv1_7b039a22','172.20.10.2',3,1784824126,NULL),(6,'chat_send_estudiante_1','172.20.10.2',1,1784824126,NULL),(7,'apiv1_dc86f9a8','172.20.10.2',1,1784824127,NULL),(8,'apiv1_aa695151','172.20.10.2',1,1784824127,NULL),(9,'apiv1_d88f0c49','172.20.10.2',5,1784824513,NULL),(10,'apiv1_d062516a','172.20.10.2',1,1784824526,NULL),(11,'apiv1_1ee7f54e','172.20.10.2',1,1784824817,NULL),(12,'apiv1_3cac4f61','172.20.10.2',1,1784824818,NULL),(13,'apiv1_898c18e2','172.20.10.3',3,1784825438,NULL),(14,'chat_send_admin_1','172.20.10.3',1,1784825263,NULL),(15,'apiv1_6255e3e5','172.20.10.2',5,1784825554,NULL),(16,'apiv1_04eb4a84','172.20.10.2',1,1784825768,NULL),(17,'apiv1_30747044','172.20.10.2',1,1784826096,NULL),(18,'apiv1_d1c0f552','172.20.10.2',1,1784826096,NULL),(19,'apiv1_70085cf3','172.20.10.2',1,1784826096,NULL),(20,'apiv1_3a851751','172.20.10.2',2,1784826135,NULL),(21,'apiv1_9714c7df','172.20.10.2',1,1784826148,NULL),(22,'apiv1_913d092d','172.20.10.2',2,1784826148,NULL),(23,'apiv1_da14ae3b','172.20.10.2',3,1784826149,NULL),(24,'apiv1_f609270b','172.20.10.2',1,1784826262,NULL),(25,'apiv1_a0293fec','172.20.10.2',3,1784826529,NULL),(26,'apiv1_d66db94e','172.20.10.2',2,1784826538,NULL),(27,'apiv1_c1e12e34','172.20.10.3',21,1784827760,NULL),(28,'apiv1_73676419','172.20.10.3',1,1784828397,NULL),(29,'chat_send_estudiante_1','172.20.10.3',2,1784827918,NULL),(30,'apiv1_b06c58f5','172.20.10.2',5,1784828490,NULL),(31,'apiv1_69bf054b','172.20.10.2',2,1784828527,NULL),(32,'apiv1_8a62e25d','172.20.10.2',1,1784828543,NULL),(33,'apiv1_1d579aa1','172.20.10.2',1,1784828554,NULL),(34,'apiv1_168c54b9','172.20.10.3',20,1784836110,NULL),(35,'apiv1_ff523a84','172.20.10.3',17,1784836201,NULL),(36,'apiv1_e58c27ed','172.20.10.3',4,1784836472,NULL),(37,'apiv1_9c9da5c9','172.20.10.2',1,1784837102,NULL),(38,'apiv1_5d50c6a3','172.20.10.2',1,1784837120,NULL),(39,'apiv1_8967cb09','172.20.10.2',2,1784837150,NULL),(40,'apiv1_4fdffd02','172.20.10.2',1,1784837175,NULL),(41,'apiv1_339443d9','172.20.10.2',1,1784837193,NULL),(42,'apiv1_f71d43bd','172.20.10.2',1,1784837193,NULL),(43,'apiv1_0dd02b69','172.20.10.3',3,1784842991,NULL),(44,'apiv1_7cc5f823','172.20.10.2',2,1784840680,NULL),(45,'apiv1_373c27b3','172.20.10.2',2,1784840788,NULL),(46,'apiv1_c7face57','172.20.10.2',5,1784840681,NULL),(47,'apiv1_d9d9e2eb','172.20.10.2',3,1784840788,NULL),(48,'apiv1_76ae15b7','172.20.10.2',4,1784840682,NULL),(49,'chat_send_estudiante_2','172.20.10.2',1,1784840699,NULL),(50,'apiv1_911675be','172.20.10.2',3,1784847701,NULL),(51,'apiv1_28a50fe3','172.20.10.3',4,1784848165,NULL),(52,'apiv1_34ebbfb5','172.20.10.3',1,1784855084,NULL),(53,'chat_send_estudiante_2','172.20.10.3',1,1784853950,NULL),(54,'api_login','127.0.0.1',1,1784920698,NULL),(55,'apiv1_7a29b0c9','127.0.0.1',1,1784914298,NULL),(56,'apiv1_d9fae6d8','127.0.0.1',3,1784915251,NULL),(57,'apiv1_110d1ed4','127.0.0.1',1,1784915267,NULL),(58,'apiv1_d66be5fd','127.0.0.1',2,1784918412,NULL),(59,'apiv1_1cf55157','127.0.0.1',2,1784919647,NULL),(60,'apiv1_2b2dcbf1','127.0.0.1',1,1784919681,NULL),(61,'apiv1_6d3d20ef','127.0.0.1',3,1784920698,NULL),(62,'apiv1_d223dc88','127.0.0.1',4,1785080278,NULL),(63,'apiv1_2a9b6632','127.0.0.1',2,1785080105,NULL),(64,'apiv1_a582c74b','127.0.0.1',2,1785080279,NULL),(65,'apiv1_f85bae39','127.0.0.1',2,1785080329,NULL);
-/*!40000 ALTER TABLE `rate_limits` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `reclamaciones`
@@ -2658,16 +1897,6 @@ CREATE TABLE `reclamaciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `reclamaciones`
---
-
-LOCK TABLES `reclamaciones` WRITE;
-/*!40000 ALTER TABLE `reclamaciones` DISABLE KEYS */;
-INSERT INTO `reclamaciones` VALUES (1,1,1,NULL,'estudiante','Revisi├│n nota Tarea 1','Creo que el ejercicio 3 est├í correcto.','2026-10-15 10:00:00','atendido',1,NULL),(2,1,1,1,'estudiante','Revisi├│n nota Tarea 1','Gracias por revisarlo','2026-07-23 18:28:46','atendido',1,'');
-/*!40000 ALTER TABLE `reclamaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `recordatorios`
 --
 
@@ -2685,16 +1914,6 @@ CREATE TABLE `recordatorios` (
   UNIQUE KEY `uk_evento_tipo` (`idEvento`,`tipo_recordatorio`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `recordatorios`
---
-
-LOCK TABLES `recordatorios` WRITE;
-/*!40000 ALTER TABLE `recordatorios` DISABLE KEYS */;
-INSERT INTO `recordatorios` VALUES (1,5,'24h_antes',1440,1,'2026-07-28 12:11:48'),(2,5,'1h_antes',60,0,'2026-07-28 12:11:48'),(3,5,'en_inicio',0,0,'2026-07-28 12:11:48'),(4,6,'24h_antes',1440,1,'2026-07-28 12:12:55'),(5,6,'1h_antes',60,0,'2026-07-28 12:12:55'),(6,6,'en_inicio',0,0,'2026-07-28 12:12:55'),(7,7,'24h_antes',1440,0,'2026-07-28 12:13:06'),(8,7,'1h_antes',60,0,'2026-07-28 12:13:06'),(9,7,'en_inicio',0,0,'2026-07-28 12:13:06'),(10,8,'24h_antes',1440,0,'2026-07-28 12:13:06'),(11,8,'1h_antes',60,0,'2026-07-28 12:13:06'),(12,8,'en_inicio',0,0,'2026-07-28 12:13:06'),(16,10,'24h_antes',1440,0,'2026-07-28 12:55:17'),(17,10,'1h_antes',60,0,'2026-07-28 12:55:17'),(18,10,'en_inicio',0,0,'2026-07-28 12:55:17'),(19,11,'24h_antes',1440,0,'2026-07-28 12:55:17'),(20,11,'1h_antes',60,0,'2026-07-28 12:55:17'),(21,11,'en_inicio',0,0,'2026-07-28 12:55:17'),(22,12,'24h_antes',1440,1,'2026-07-28 12:59:05'),(23,12,'1h_antes',60,0,'2026-07-28 12:59:05'),(24,12,'en_inicio',0,0,'2026-07-28 12:59:05'),(37,17,'24h_antes',1440,1,'2026-07-28 13:08:35'),(38,17,'1h_antes',60,1,'2026-07-28 13:08:35'),(39,17,'en_inicio',0,1,'2026-07-28 13:08:35'),(40,18,'24h_antes',1440,0,'2026-07-28 13:13:06'),(41,18,'1h_antes',60,0,'2026-07-28 13:13:06'),(42,18,'en_inicio',0,0,'2026-07-28 13:13:06'),(43,19,'24h_antes',1440,1,'2026-07-28 13:24:46'),(44,20,'24h_antes',1440,1,'2026-07-28 13:24:46'),(45,21,'24h_antes',1440,1,'2026-07-28 13:24:46'),(46,22,'24h_antes',1440,1,'2026-07-28 13:24:46'),(47,23,'24h_antes',1440,1,'2026-07-28 13:24:46'),(50,19,'1h_antes',60,1,'2026-07-28 13:24:46'),(51,20,'1h_antes',60,1,'2026-07-28 13:24:46'),(52,21,'1h_antes',60,1,'2026-07-28 13:24:46'),(53,22,'1h_antes',60,1,'2026-07-28 13:24:46'),(54,23,'1h_antes',60,1,'2026-07-28 13:24:46'),(57,19,'en_inicio',0,1,'2026-07-28 13:24:46'),(58,21,'en_inicio',0,1,'2026-07-28 13:24:46'),(59,23,'en_inicio',0,1,'2026-07-28 13:24:46'),(60,20,'en_inicio',0,0,'2026-07-28 13:24:46'),(61,22,'en_inicio',0,0,'2026-07-28 13:24:46');
-/*!40000 ALTER TABLE `recordatorios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `resultados_aprendizaje`
@@ -2718,16 +1937,6 @@ CREATE TABLE `resultados_aprendizaje` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `resultados_aprendizaje`
---
-
-LOCK TABLES `resultados_aprendizaje` WRITE;
-/*!40000 ALTER TABLE `resultados_aprendizaje` DISABLE KEYS */;
-INSERT INTO `resultados_aprendizaje` VALUES (1,1,'RA1','Programa aplicaciones b├ísicas.',50,NULL),(2,1,'RA2','Usa POO en Java.',50,NULL);
-/*!40000 ALTER TABLE `resultados_aprendizaje` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `reto_archivos`
 --
 
@@ -2747,15 +1956,6 @@ CREATE TABLE `reto_archivos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `reto_archivos`
---
-
-LOCK TABLES `reto_archivos` WRITE;
-/*!40000 ALTER TABLE `reto_archivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `reto_archivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `retos`
 --
 
@@ -2771,16 +1971,6 @@ CREATE TABLE `retos` (
   PRIMARY KEY (`idReto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `retos`
---
-
-LOCK TABLES `retos` WRITE;
-/*!40000 ALTER TABLE `retos` DISABLE KEYS */;
-INSERT INTO `retos` VALUES (1,'Crear E-Commerce desde cero','2026-01-01','2026-12-31',100);
-/*!40000 ALTER TABLE `retos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rgpd_eliminaciones`
@@ -2804,15 +1994,6 @@ CREATE TABLE `rgpd_eliminaciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rgpd_eliminaciones`
---
-
-LOCK TABLES `rgpd_eliminaciones` WRITE;
-/*!40000 ALTER TABLE `rgpd_eliminaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rgpd_eliminaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `rgpd_solicitudes`
 --
 
@@ -2834,15 +2015,6 @@ CREATE TABLE `rgpd_solicitudes` (
   KEY `idx_estado` (`estado`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rgpd_solicitudes`
---
-
-LOCK TABLES `rgpd_solicitudes` WRITE;
-/*!40000 ALTER TABLE `rgpd_solicitudes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rgpd_solicitudes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `secretarias`
@@ -2870,16 +2042,6 @@ CREATE TABLE `secretarias` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `secretarias`
---
-
-LOCK TABLES `secretarias` WRITE;
-/*!40000 ALTER TABLE `secretarias` DISABLE KEYS */;
-INSERT INTO `secretarias` VALUES (1,'Laura G├│mez','laura.gomez@aulapro.com','$2y$12$4H2Qo1/AFoW4f1oMOVBgauHxMMKa2dWes6FoLoKsWlSPSIwO.jNIC',1,NULL,0,NULL,'2026-07-27 17:36:16',0,NULL,NULL);
-/*!40000 ALTER TABLE `secretarias` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tfg_config`
 --
 
@@ -2902,16 +2064,6 @@ CREATE TABLE `tfg_config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tfg_config`
---
-
-LOCK TABLES `tfg_config` WRITE;
-/*!40000 ALTER TABLE `tfg_config` DISABLE KEYS */;
-INSERT INTO `tfg_config` VALUES (1,1,1,0,0,5.00,1.00,1);
-/*!40000 ALTER TABLE `tfg_config` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tours_completados`
 --
 
@@ -2928,16 +2080,6 @@ CREATE TABLE `tours_completados` (
   UNIQUE KEY `uniq_usuario_tour` (`idUsuario`,`tipoUsuario`,`tour_key`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tours_completados`
---
-
-LOCK TABLES `tours_completados` WRITE;
-/*!40000 ALTER TABLE `tours_completados` DISABLE KEYS */;
-INSERT INTO `tours_completados` VALUES (1,1,'admin','primeros_pasos_v1','2026-07-28 14:50:26');
-/*!40000 ALTER TABLE `tours_completados` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tutores`
@@ -2966,16 +2108,6 @@ CREATE TABLE `tutores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tutores`
---
-
-LOCK TABLES `tutores` WRITE;
-/*!40000 ALTER TABLE `tutores` DISABLE KEYS */;
-INSERT INTO `tutores` VALUES (1,'Pedro Silva','pedro.silva@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','655111222','A1234567B',NULL,0,NULL,1,'2026-07-27 17:36:17',0,NULL,NULL),(2,'Marta Ortiz','marta.ortiz@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','655222333','B2345678C',NULL,0,NULL,2,'2026-07-27 17:36:17',0,NULL,NULL),(3,'Carmen Pastor','carmen.pastor@aulapro.com','$2y$10$PugX2tbyWKGALOu735cnru2cB.jFIbHL3diNQzTSGLvZAmkcDVblu','655333444','C3456789D',NULL,0,NULL,3,'2026-07-27 17:36:17',0,NULL,NULL);
-/*!40000 ALTER TABLE `tutores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `verificaciones_log`
 --
 
@@ -2992,15 +2124,6 @@ CREATE TABLE `verificaciones_log` (
   KEY `idx_verif_ip_fecha` (`ip`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `verificaciones_log`
---
-
-LOCK TABLES `verificaciones_log` WRITE;
-/*!40000 ALTER TABLE `verificaciones_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `verificaciones_log` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -3011,4 +2134,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-29  1:15:02
+-- Dump completed on 2026-07-29 15:48:57
