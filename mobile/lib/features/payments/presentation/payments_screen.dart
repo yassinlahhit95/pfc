@@ -109,8 +109,8 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
 
         // if nivel is selected, show only ciclos for that nivel; else show all ciclos
         final cicloOptions = _nivel != null
-            ? (ciclosByNivel[_nivel] ?? <String>{}).toList()..sort()
-            : ciclosByNivel.values.expand((c) => c).toSet().toList()..sort();
+            ? ((ciclosByNivel[_nivel] ?? <String>{}).toList()..sort())
+            : (ciclosByNivel.values.expand((c) => c).toSet().toList()..sort());
 
         // reset ciclo if it's no longer valid for the selected nivel
         if (_nivel != null && !cicloOptions.contains(_ciclo)) {
