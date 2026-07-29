@@ -188,11 +188,13 @@
     }
 
     function escHtmlMsg(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\n/g, '<br>');
+        return (window.AulaProUtils && window.AulaProUtils.escapeHtmlWithLineBreaks)
+            ? window.AulaProUtils.escapeHtmlWithLineBreaks(str)
+            : String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>');
     }
 
     // ── Init ─────────────────────────────────────────────────────────

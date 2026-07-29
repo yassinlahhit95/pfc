@@ -189,6 +189,9 @@
     }
 
     function escapeHtml(text) {
+        if (window.AulaProUtils && window.AulaProUtils.escapeHtml) {
+            return window.AulaProUtils.escapeHtml(text);
+        }
         var div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;

@@ -20,6 +20,21 @@
     },
 
     /**
+     * Escape HTML and preserve line breaks as <br> tags.
+     * Used in message display, comments, etc. where newlines should be visible.
+     */
+    escapeHtmlWithLineBreaks: function(str) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+      return String(str || '').replace(/[&<>"']/g, c => map[c]).replace(/\n/g, '<br>');
+    },
+
+    /**
      * Retrieve CSRF token from common input selectors.
      * Checks: [name="csrf_token"], [name="modal_csrf"], #csrf-token
      */

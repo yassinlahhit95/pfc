@@ -20,6 +20,9 @@ var Horario = (function () {
     }
 
     function escapar(texto) {
+        if (window.AulaProUtils && window.AulaProUtils.escapeHtml) {
+            return window.AulaProUtils.escapeHtml(texto);
+        }
         return $('<div>').text(texto == null ? '' : texto).html();
     }
 
