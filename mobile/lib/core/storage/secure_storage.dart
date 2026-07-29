@@ -32,6 +32,7 @@ class SecureStorage {
 
   Future<String?> readToken() => _storage.read(key: _keyToken);
   Future<String?> readUserType() => _storage.read(key: _keyUserType);
+  Future<String?> readExpiresAt() => _storage.read(key: _keyExpiresAt);
   Future<int?> readUserId() async {
     final raw = await _storage.read(key: _keyUserId);
     return raw == null ? null : int.tryParse(raw);

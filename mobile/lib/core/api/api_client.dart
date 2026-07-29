@@ -48,24 +48,46 @@ class ApiClient {
 
   /// Runs [request] and translates Dio/HTTP failures into [ApiException] /
   /// [ApiConnectionException] so callers only ever handle two error types.
+  /// Automatically retries transient network failures up to 3 times with
+  /// exponential backoff (1s, 2s, 4s).
   Future<Map<String, dynamic>> call(
     Future<Response<dynamic>> Function() request,
   ) async {
-    try {
-      final response = await request();
-      final data = response.data;
-      if (data is Map<String, dynamic>) return data;
-      throw const ApiConnectionException('Unexpected response shape.');
-    } on DioException catch (e) {
-      final data = e.response?.data;
-      if (data is Map<String, dynamic> && data['ok'] == false) {
-        throw ApiException(
-          message: (data['error'] as String?) ?? 'Unknown error.',
-          code: (data['code'] as String?) ?? 'error',
-          statusCode: e.response?.statusCode ?? 0,
-        );
+    int retries = 0;
+    const maxRetries = 3;
+
+    while (true) {
+      try {
+        final response = await request();
+        final data = response.data;
+        if (data is Map<String, dynamic>) return data;
+        throw const ApiConnectionException('Unexpected response shape.');
+      } on DioException catch (e) {
+        final data = e.response?.data;
+
+        // Always throw API errors (4xx/5xx with error response) — don't retry
+        if (data is Map<String, dynamic> && data['ok'] == false) {
+          throw ApiException(
+            message: (data['error'] as String?) ?? 'Unknown error.',
+            code: (data['code'] as String?) ?? 'error',
+            statusCode: e.response?.statusCode ?? 0,
+          );
+        }
+
+        // Retry transient network errors (connection timeout, receive timeout)
+        final isTransient = e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.receiveTimeout;
+
+        if (isTransient && retries < maxRetries) {
+          retries++;
+          // Exponential backoff: 1s, 2s, 4s
+          await Future.delayed(Duration(seconds: 1 << (retries - 1)));
+          continue;
+        }
+
+        // Non-transient error or max retries reached
+        throw ApiConnectionException(e.message ?? 'Network error.');
       }
-      throw ApiConnectionException(e.message ?? 'Network error.');
     }
   }
 

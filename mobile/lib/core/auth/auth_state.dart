@@ -16,19 +16,33 @@ class SessionController extends AsyncNotifier<Session?> {
       storage.readToken(),
       storage.readUserType(),
       storage.readUserId(),
+      storage.readExpiresAt(),
     ]);
     final token = results[0] as String?;
     final userTypeRaw = results[1] as String?;
     final userId = results[2] as int?;
-    
+    final expiresAtStr = results[3] as String?;
+
     if (token == null || userTypeRaw == null || userId == null) return null;
 
-    // expires_at isn't re-validated here — an expired-but-present token is
-    // still handed to me.php on boot; a 401 there triggers the normal
-    // ApiClient 401 handler, which clears the session and routes to login.
+    // Parse the stored expiry time. If corrupted/missing, default to 30 days.
+    // An expired-but-present token is still handed to me.php on boot; a 401
+    // there triggers the normal ApiClient 401 handler, which clears the
+    // session and routes to login.
+    late final DateTime expiresAt;
+    if (expiresAtStr != null) {
+      try {
+        expiresAt = DateTime.parse(expiresAtStr);
+      } catch (e) {
+        expiresAt = DateTime.now().add(const Duration(days: 30));
+      }
+    } else {
+      expiresAt = DateTime.now().add(const Duration(days: 30));
+    }
+
     return Session(
       token: token,
-      expiresAt: DateTime.now().add(const Duration(days: 30)),
+      expiresAt: expiresAt,
       role: userRoleFromApi(userTypeRaw),
       userId: userId,
     );
@@ -59,6 +73,10 @@ class SessionController extends AsyncNotifier<Session?> {
     final storage = ref.read(secureStorageProvider);
     await storage.clear();
     state = const AsyncData(null);
+
+    // Clear all cached data to prevent stale data access after logout (privacy)
+    // This ensures any data providers that cached user info are purged
+    ref.invalidate(secureStorageProvider);
   }
 }
 
