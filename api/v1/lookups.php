@@ -40,7 +40,7 @@ if ($resCiclos) {
 }
 
 // Fetch Grupos
-$resGrupos = mysqli_query($con, "SELECT idGrupo, idCiclo, nombreGrupo, anio FROM grupos ORDER BY nombreGrupo ASC");
+$resGrupos = mysqli_query($con, "SELECT idGrupo, idCiclo, nombreGrupo, anioEstudio FROM grupos ORDER BY nombreGrupo ASC");
 $grupos = [];
 if ($resGrupos) {
     while ($row = mysqli_fetch_assoc($resGrupos)) {
@@ -48,7 +48,7 @@ if ($resGrupos) {
             'idGrupo' => (int)$row['idGrupo'],
             'idCiclo' => (int)$row['idCiclo'],
             'nombreGrupo' => $row['nombreGrupo'],
-            'anio' => $row['anio']
+            'anioEstudio' => $row['anioEstudio']
         ];
     }
 }
