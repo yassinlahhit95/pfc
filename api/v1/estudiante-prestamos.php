@@ -18,6 +18,10 @@ if (!$idEstudiante) {
     v1Error('idEstudiante requerido', 400, 'invalid_request');
 }
 
+if ($usuario['user_type'] === 'estudiante' && $usuario['user_id'] !== $idEstudiante) {
+    v1Error('Forbidden', 403, 'access_denied');
+}
+
 require_once __DIR__ . '/../../modelos/conectar.php';
 
 $con = obtenerConexion();
