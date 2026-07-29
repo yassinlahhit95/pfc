@@ -44,6 +44,15 @@ if (!$ciclo || empty($resultados)) {
     exit;
 }
 
+// Security: Limit export size (prevent memory exhaustion)
+// Typical grades export: ~500 students × 100 bytes = 50KB, max reasonable ~10MB
+$maxRowsToExport = 10000;
+if (count($resultados) > $maxRowsToExport) {
+    $_SESSION['errores'] = "Demasiados registros para exportar en un único archivo. Contacte al administrador.";
+    header("Location: ../../../vistas/admin/academico/resultadosFinales.php?idCiclo=$idCiclo");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // GENERACIÓN DEL EXCEL
 // ══════════════════════════════════════════════════════════════════════
@@ -72,14 +81,26 @@ $estilo_cabecera = [
 $hoja->getStyle('A1:F1')->applyFromArray($estilo_cabecera);
 
 // ── Filas de datos ──
+// Security: Prevent formula injection (= + - @) in cell values
+$sanitizeForExcel = function($value) {
+    if (!is_string($value)) return $value;
+    $value = (string)$value;
+    if (strlen($value) === 0) return $value;
+    $firstChar = $value[0];
+    if (in_array($firstChar, ['=', '+', '-', '@'], true)) {
+        return "'" . $value; // Excel: single quote forces text, blocks formula
+    }
+    return $value;
+};
+
 $fila = 2;
 foreach ($resultados as $r) {
-    $hoja->setCellValue('A' . $fila, $r['nombreEstudiante']);
+    $hoja->setCellValue('A' . $fila, $sanitizeForExcel($r['nombreEstudiante']));
     $hoja->setCellValue('B' . $fila, $r['media_modulos']);
     $hoja->setCellValue('C' . $fila, $r['media_retos']);
     $hoja->setCellValue('D' . $fila, $r['nota_tfg'] ?? '—');
     $hoja->setCellValue('E' . $fila, $r['promedio_global']);
-    $hoja->setCellValue('F' . $fila, $r['estado_global']);
+    $hoja->setCellValue('F' . $fila, $sanitizeForExcel($r['estado_global']));
 
     $colorFondo = match($r['estado_global']) {
         'APROBADO'  => 'FFD1FAE5',

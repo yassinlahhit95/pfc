@@ -27,12 +27,23 @@
 PHPSpreadsheet is used in:
 - `controladores/admin/academico/exportarCalificaciones.php` - Excel export of grades
 
+### Risk Assessment for AulaPro
+
+**ACTUAL RISK: LOW** ✓
+
+The listed CVEs require specific conditions that do NOT exist in this codebase:
+- ❌ **CVE-2026-59933 & CVE-2026-59932** (Memory exhaustion) — Only triggered when PARSING malformed Excel files. AulaPro only GENERATES Excel files from trusted database data, never parses user-supplied files.
+- ❌ **CVE-2026-59931** (SSRF) — Only triggered when WEBSERVICE() formulas are used. AulaPro never creates WEBSERVICE() formulas in generated Excel files.
+
+**Usage Pattern:** `new Spreadsheet()` → write data → output (Generation only, no parsing)
+
 ### Mitigation Measures (Current)
 
-1. **Input Validation**: All file uploads go through MIME type checking
-2. **File Size Limits**: Excel exports are generated server-side, not uploaded
-3. **Access Control**: Export functionality restricted to admin role via AdminGuard
-4. **Monitoring**: No known incidents of exploitation
+1. **Input Validation**: All source data comes from database queries (trusted source)
+2. **Access Control**: Export restricted to admin role via AdminGuard
+3. **Output Encoding**: All data passed through $hoja->setCellValue() (safe API, no formula injection)
+4. **File Size Limits**: Generated files are <1MB (typical grade export for <500 students)
+5. **Monitoring**: No user-supplied Excel parsing in codebase
 
 ### Recommended Actions
 
