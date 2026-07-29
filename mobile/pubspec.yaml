@@ -11,16 +11,16 @@ dependencies:
     sdk: flutter
 
   # State management
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: ^2.6.1
 
   # Networking
   dio: ^5.4.3+1
 
   # Routing
-  go_router: ^14.2.0
+  go_router: ^14.8.1
 
   # Secure token storage (Keystore-backed on Android)
-  flutter_secure_storage: ^9.2.2
+  flutter_secure_storage: ^9.2.4
 
   # Light local cache for last-fetched JSON blobs (instant cold-start display)
   shared_preferences: ^2.2.3
@@ -32,14 +32,15 @@ dependencies:
   # Inter — the typeface premium SaaS products (Linear, Notion, Vercel,
   # Stripe) actually use; the default platform Roboto/San Francisco fallback
   # is a big part of why an app reads as "generic Material template".
-  google_fonts: ^6.2.1
-  google_sign_in: ^6.2.1
+  google_fonts: ^6.3.3
+  google_sign_in: ^6.3.0
 
   # Native file picker for entrega uploads (PDF/DOCX/TXT). Pinned to 10.x+,
   # not the 8.x line pub resolves to by default — 8.x's Android AAR is built
   # against compileSdk 34, which conflicts with flutter_plugin_android_lifecycle
   # (a transitive dep of firebase_messaging below) requiring compileSdk 36+.
-  file_picker: ^10.1.2
+  # Updated to 10.2.0+ which uses Flutter's built-in Kotlin Gradle Plugin.
+  file_picker: ^10.2.0
 
   # Camera/gallery capture for payment comprobantes and staff-submitted
   # attendance justifications (photograph a paper note in person).
@@ -50,7 +51,7 @@ dependencies:
   # NotificationsService) — the manual Firebase-console step is documented
   # in mobile/README.md, not a build-time requirement.
   firebase_core: ^3.6.0
-  firebase_messaging: ^15.1.3
+  firebase_messaging: ^15.2.10
   # FCM only auto-displays a tray notification when the app is backgrounded
   # or terminated — with the app foregrounded (the common case while
   # actively using it) nothing appears unless we show one ourselves.
@@ -60,7 +61,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
