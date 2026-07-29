@@ -75,7 +75,7 @@ if ($campoFondo !== '') {
     </div>
     <?php if (($variante === 'split' || $variante === 'promo') && $imgUrl): ?>
     <div class="lp-hero-visual">
-      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt=""<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="<?= Security::escapeHtml($contenido['titulo'] ?? 'Hero image') ?>"<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
     </div>
     <?php endif; ?>
   </div>

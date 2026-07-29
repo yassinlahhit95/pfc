@@ -54,7 +54,7 @@ if (!empty($cfg['telefonoCentro'])) {
     <div class="lp-footer-col lp-footer-col-marca">
       <div class="lp-footer-marca">
         <?php if ($logoUrl): ?>
-        <img src="<?= Security::escapeHtml($logoUrl) ?>" alt="" class="lp-footer-logo">
+        <img src="<?= Security::escapeHtml($logoUrl) ?>" alt="<?= Security::escapeHtml($cfg['nombreCentro']) ?> - Logotipo" class="lp-footer-logo">
         <?php endif; ?>
         <strong><?= Security::escapeHtml($cfg['nombreCentro']) ?></strong>
       </div>

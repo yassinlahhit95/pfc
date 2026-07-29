@@ -107,7 +107,7 @@ if ($ciclo) {
               ); ?>
           <article class="lp-blog-card lp-ciclo-card">
             <a class="lp-blog-card-media" href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($rel['slug']) ?>">
-              <img loading="lazy" src="<?= Security::escapeHtml($imgRel) ?>" alt="">
+              <img loading="lazy" src="<?= Security::escapeHtml($imgRel) ?>" alt="<?= Security::escapeHtml($rel['titulo']) ?>">
               <span class="lp-blog-card-placeholder"><i class="fas fa-graduation-cap"></i></span>
               <span class="lp-blog-chip"><?= Security::escapeHtml($rel['etiqueta']) ?></span>
             </a>
@@ -122,7 +122,7 @@ if ($ciclo) {
     </section>
   </article>
     <?php include __DIR__ . '/landing/_footer.php';
-    exit; ?>
+    exit;
 }
 
 // Slug no encontrado → volvemos al listado
@@ -160,11 +160,13 @@ include __DIR__ . '/landing/_nav.php';
   <section class="lp-sec lp-blog-listado" id="ciclos">
     <div class="lp-contenedor">
 
+      <?php if (empty($ciclos)): ?>
       <div class="lp-blog-vacio">
         <i class="fas fa-graduation-cap"></i>
         <h2>Todavía no hay ciclos publicados</h2>
         <p>Muy pronto publicaremos aquí nuestra oferta formativa completa.</p>
       </div>
+      <?php else: ?>
       <div class="lp-blog-grid">
         <?php foreach ($ciclos as $cicloItem):
             $img = R2Client::imagenUrl(
@@ -174,7 +176,7 @@ include __DIR__ . '/landing/_nav.php';
             ); ?>
         <article class="lp-blog-card lp-ciclo-card">
           <a class="lp-blog-card-media" href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($cicloItem['slug']) ?>">
-            <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="">
+            <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="<?= Security::escapeHtml($cicloItem['titulo']) ?>">
             <span class="lp-blog-card-placeholder"><i class="fas fa-graduation-cap"></i></span>
             <span class="lp-blog-chip"><?= Security::escapeHtml($cicloItem['etiqueta']) ?></span>
           </a>
@@ -197,6 +199,7 @@ include __DIR__ . '/landing/_nav.php';
         <?php endfor; ?>
         <a href="<?= Security::escapeHtml(cicloUrl($pagina + 1)) ?>" class="lp-blog-pag-btn" aria-label="Siguiente"><i class="fas fa-angle-right"></i></a>
       </nav>
+      <?php endif; ?>
     </div>
   </section>
-include __DIR__ . '/landing/_footer.php';
+<?php include __DIR__ . '/landing/_footer.php'; ?>

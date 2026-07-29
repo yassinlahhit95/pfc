@@ -113,7 +113,7 @@ if ($post) {
               ); ?>
           <article class="lp-blog-card">
             <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($rel['slug']) ?>">
-              <img loading="lazy" src="<?= Security::escapeHtml($imgRel) ?>" alt="">
+              <img loading="lazy" src="<?= Security::escapeHtml($imgRel) ?>" alt="<?= Security::escapeHtml($rel['titulo']) ?>">
               <span class="lp-blog-card-placeholder"><i class="far fa-newspaper"></i></span>
               <span class="lp-blog-chip"><?= Security::escapeHtml($rel['categoria']) ?></span>
             </a>
@@ -131,7 +131,7 @@ if ($post) {
     </section>
   </article>
     <?php include __DIR__ . '/landing/_footer.php';
-    exit; ?>
+    exit;
 }
 
 // Slug no encontrado → volvemos al listado
@@ -184,11 +184,13 @@ include __DIR__ . '/landing/_nav.php';
         </a>
         <?php endforeach; ?>
       </nav>
+      <?php if (empty($posts)): ?>
       <div class="lp-blog-vacio">
         <i class="far fa-newspaper"></i>
         <h2>Todavía no hay entradas<?= $categoria !== '' ? ' en esta categoría' : '' ?></h2>
         <p>Muy pronto publicaremos aquí las noticias y novedades del centro.</p>
       </div>
+      <?php else: ?>
       <div class="lp-blog-grid">
         <?php foreach ($posts as $i => $postItem):
             $img = R2Client::imagenUrl(
@@ -199,7 +201,7 @@ include __DIR__ . '/landing/_nav.php';
             $destacada = $pagina === 1 && $i === 0 && $categoria === ''; ?>
         <article class="lp-blog-card<?= $destacada ? ' lp-blog-card-destacada' : '' ?>">
           <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($postItem['slug']) ?>">
-            <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="">
+            <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="<?= Security::escapeHtml($postItem['titulo']) ?>">
             <span class="lp-blog-card-placeholder"><i class="far fa-newspaper"></i></span>
             <span class="lp-blog-chip"><?= Security::escapeHtml($postItem['categoria']) ?></span>
           </a>
@@ -224,6 +226,7 @@ include __DIR__ . '/landing/_nav.php';
         <?php endfor; ?>
         <a href="<?= Security::escapeHtml(blogUrl($pagina + 1, $categoria)) ?>" class="lp-blog-pag-btn" aria-label="Siguiente"><i class="fas fa-angle-right"></i></a>
       </nav>
+      <?php endif; ?>
     </div>
   </section>
 <?php include __DIR__ . '/landing/_footer.php'; ?>

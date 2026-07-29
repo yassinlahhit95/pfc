@@ -34,7 +34,7 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
       ?>
       <article class="lp-tarjeta lp-ciclo">
         <?php if ($imgUrl): ?>
-        <div class="lp-ciclo-foto"><img src="<?= Security::escapeHtml($imgUrl) ?>" alt="" loading="lazy"<?= landing_lb_field($preview, "items.$i.imagen", 'imagen') ?>></div>
+        <div class="lp-ciclo-foto"><img src="<?= Security::escapeHtml($imgUrl) ?>" alt="<?= Security::escapeHtml($item['titulo'] ?? '') ?>" loading="lazy"<?= landing_lb_field($preview, "items.$i.imagen", 'imagen') ?>></div>
         <?php endif; ?>
         <div class="lp-ciclo-cuerpo">
           <?php if (!empty($item['etiqueta'])): ?>

@@ -29,7 +29,7 @@ $items  = $contenido['items'] ?? [];
     </div>
     <?php if ($imgUrl): ?>
     <div class="lp-fpdual-visual">
-      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt=""<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="<?= Security::escapeHtml($contenido['titulo'] ?? 'Formación Profesional Dual') ?>"<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
     </div>
     <?php endif; ?>
   </div>

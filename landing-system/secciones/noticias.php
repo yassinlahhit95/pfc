@@ -42,7 +42,7 @@ try {
       <article class="lp-blog-card">
         <a class="lp-blog-card-media" href="<?= Security::escapeHtml($enlace) ?>">
           <?php if ($img): ?>
-          <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="">
+          <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="<?= Security::escapeHtml($noticia['titulo']) ?>">
           <?php else: ?>
           <span class="lp-blog-card-placeholder"><i class="far fa-newspaper"></i></span>
           <?php endif; ?>

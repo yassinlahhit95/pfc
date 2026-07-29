@@ -111,7 +111,7 @@ $mostrarTopbar = ($ajustes['mostrarTopbar'] ?? 'si') === 'si';
   <div class="lp-nav-movil-header">
     <a href="<?= $homePrefix ?: '/' ?>#inicio" class="lp-marca">
       <?php if ($logoUrl): ?>
-      <img src="<?= Security::escapeHtml($logoUrl) ?>" alt="" class="lp-marca-logo">
+      <img src="<?= Security::escapeHtml($logoUrl) ?>" alt="<?= Security::escapeHtml($cfg['nombreCentro']) ?> - Logotipo" class="lp-marca-logo">
       <?php else: ?>
       <span class="lp-marca-icono"><i class="fas fa-graduation-cap"></i></span>
       <?php endif; ?>

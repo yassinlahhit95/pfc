@@ -12,7 +12,7 @@ if ($variante === 'foto' && !$imgUrl) $variante = 'grid';
   <div class="lp-contenedor<?= $variante === 'foto' ? ' lp-icono-foto-split' : '' ?>">
     <?php if ($variante === 'foto'): ?>
     <div class="lp-icono-foto-visual">
-      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt=""<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="<?= Security::escapeHtml($contenido['titulo'] ?? 'Por qué elegirnos') ?>"<?= landing_lb_field($preview, 'imagen', 'imagen') ?>>
     </div>
     <div>
       <div class="lp-sec-cabecera" style="text-align: left; margin: 0 0 32px;">
