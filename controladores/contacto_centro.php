@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once __DIR__ . '/comunes/email_helper.php';
 require_once __DIR__ . '/../include/RateLimiter.php';
+require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../modelos/conectar.php';
 require_once __DIR__ . '/../modelos/configuracion.php';
 
@@ -21,6 +22,15 @@ require_once __DIR__ . '/../modelos/configuracion.php';
 if (!RateLimiter::allow(obtenerConexion(), 'contacto_centro', 5, 300, 900)) {
     http_response_code(429);
     echo json_encode(['ok' => false, 'msg' => 'Demasiadas solicitudes. Por favor, espera unos minutos.']);
+    exit;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN CSRF
+// ══════════════════════════════════════════════════════════════════════
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '', false)) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e intenta de nuevo.']);
     exit;
 }
 

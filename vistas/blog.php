@@ -89,7 +89,9 @@ if ($post) {
       <div class="lp-articulo-cuerpo">
         <p class="lp-articulo-entradilla"><?= nl2br(Security::escapeHtml($post['resumen'])) ?></p>
         <?= $post['contenido'] /* ya saneado con HtmlSanitizer al guardar */ ?>
-        <p><?= nl2br(Security::escapeHtml(trim($parrafo))) ?></p>
+        <?php foreach ($parrafos as $parrafo): ?>
+          <p><?= nl2br(Security::escapeHtml(trim($parrafo))) ?></p>
+        <?php endforeach; ?>
       </div>
 
       <footer class="lp-articulo-pie">
@@ -103,6 +105,7 @@ if ($post) {
           <h2>Seguir leyendo</h2>
         </div>
         <div class="lp-blog-grid">
+          <?php foreach ($relacionados as $rel):
               $imgRel = R2Client::imagenUrl(
                   __DIR__ . '/../public/uploads/blog/' . basename($rel['imagen']),
                   $rel['imagen'] !== '' ? '/public/uploads/blog/' . basename($rel['imagen']) : '',
@@ -122,12 +125,13 @@ if ($post) {
               <span class="lp-blog-leer">Leer entrada <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>
   </article>
-    include __DIR__ . '/landing/_footer.php';
-    exit;
+    <?php include __DIR__ . '/landing/_footer.php';
+    exit; ?>
 }
 
 // Slug no encontrado → volvemos al listado
@@ -173,10 +177,12 @@ include __DIR__ . '/landing/_nav.php';
 
       <nav class="lp-blog-cats" aria-label="Categorías">
         <a href="<?= blogUrl() ?>" class="lp-blog-cat<?= $categoria === '' ? ' activa' : '' ?>">Todas</a>
+        <?php foreach ($categorias as $categoriaItem): ?>
         <a href="<?= Security::escapeHtml(blogUrl(1, $categoriaItem['categoria'])) ?>"
            class="lp-blog-cat<?= $categoria === $categoriaItem['categoria'] ? ' activa' : '' ?>">
           <?= Security::escapeHtml($categoriaItem['categoria']) ?> <span><?= (int)$categoriaItem['total'] ?></span>
         </a>
+        <?php endforeach; ?>
       </nav>
       <div class="lp-blog-vacio">
         <i class="far fa-newspaper"></i>
@@ -184,6 +190,7 @@ include __DIR__ . '/landing/_nav.php';
         <p>Muy pronto publicaremos aquí las noticias y novedades del centro.</p>
       </div>
       <div class="lp-blog-grid">
+        <?php foreach ($posts as $i => $postItem):
             $img = R2Client::imagenUrl(
                 __DIR__ . '/../public/uploads/blog/' . basename($postItem['imagen']),
                 $postItem['imagen'] !== '' ? '/public/uploads/blog/' . basename($postItem['imagen']) : '',
@@ -206,14 +213,17 @@ include __DIR__ . '/landing/_nav.php';
             <span class="lp-blog-leer">Leer entrada <i class="fas fa-arrow-right"></i></span>
           </div>
         </article>
+        <?php endforeach; ?>
       </div>
 
       <nav class="lp-blog-paginacion" aria-label="Paginación">
         <a href="<?= Security::escapeHtml(blogUrl($pagina - 1, $categoria)) ?>" class="lp-blog-pag-btn" aria-label="Anterior"><i class="fas fa-angle-left"></i></a>
+        <?php for ($n = 1; $n <= $totalPags; $n++): ?>
         <a href="<?= Security::escapeHtml(blogUrl($n, $categoria)) ?>"
            class="lp-blog-pag-btn<?= $n === $pagina ? ' activa' : '' ?>"<?= $n === $pagina ? ' aria-current="page"' : '' ?>><?= $n ?></a>
+        <?php endfor; ?>
         <a href="<?= Security::escapeHtml(blogUrl($pagina + 1, $categoria)) ?>" class="lp-blog-pag-btn" aria-label="Siguiente"><i class="fas fa-angle-right"></i></a>
       </nav>
     </div>
   </section>
-include __DIR__ . '/landing/_footer.php';
+<?php include __DIR__ . '/landing/_footer.php'; ?>

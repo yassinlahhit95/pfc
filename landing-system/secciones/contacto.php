@@ -87,6 +87,8 @@ if (!$mostrarFormulario && !$mostrarMapa) {
 
       <?php if ($mostrarFormulario): ?>
       <form class="lp-contacto-form" id="lp-form-contacto" method="POST" action="/controladores/contacto_centro.php" novalidate>
+        <!-- CSRF token for security -->
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <!-- Campo honeypot -->
         <input type="text" name="website" class="lp-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 

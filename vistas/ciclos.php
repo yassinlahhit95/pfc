@@ -99,6 +99,7 @@ if ($ciclo) {
           <h2>Otros ciclos</h2>
         </div>
         <div class="lp-blog-grid">
+          <?php foreach ($relacionados as $rel):
               $imgRel = R2Client::imagenUrl(
                   __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($rel['imagen']),
                   $rel['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($rel['imagen']) : '',
@@ -115,12 +116,13 @@ if ($ciclo) {
               <span class="lp-blog-leer">Ver ficha <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>
   </article>
-    include __DIR__ . '/landing/_footer.php';
-    exit;
+    <?php include __DIR__ . '/landing/_footer.php';
+    exit; ?>
 }
 
 // Slug no encontrado → volvemos al listado
@@ -164,6 +166,7 @@ include __DIR__ . '/landing/_nav.php';
         <p>Muy pronto publicaremos aquí nuestra oferta formativa completa.</p>
       </div>
       <div class="lp-blog-grid">
+        <?php foreach ($ciclos as $cicloItem):
             $img = R2Client::imagenUrl(
                 __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']),
                 $cicloItem['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']) : '',
@@ -183,12 +186,15 @@ include __DIR__ . '/landing/_nav.php';
             <span class="lp-blog-leer">Ver ficha <i class="fas fa-arrow-right"></i></span>
           </div>
         </article>
+        <?php endforeach; ?>
       </div>
 
       <nav class="lp-blog-paginacion" aria-label="Paginación">
         <a href="<?= Security::escapeHtml(cicloUrl($pagina - 1)) ?>" class="lp-blog-pag-btn" aria-label="Anterior"><i class="fas fa-angle-left"></i></a>
+        <?php for ($n = 1; $n <= $totalPags; $n++): ?>
         <a href="<?= Security::escapeHtml(cicloUrl($n)) ?>"
            class="lp-blog-pag-btn<?= $n === $pagina ? ' activa' : '' ?>"<?= $n === $pagina ? ' aria-current="page"' : '' ?>><?= $n ?></a>
+        <?php endfor; ?>
         <a href="<?= Security::escapeHtml(cicloUrl($pagina + 1)) ?>" class="lp-blog-pag-btn" aria-label="Siguiente"><i class="fas fa-angle-right"></i></a>
       </nav>
     </div>
