@@ -170,7 +170,7 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
 <?php if ($googleClientId) { ?>
 <script>
 function handleGoogleCredential(response) {
