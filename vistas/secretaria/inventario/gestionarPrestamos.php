@@ -56,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <?php
                             $claseEstado = "inactivo-rojo";
-                            if ($prestamo['estadoPrestamo'] == 'activo') { $claseEstado = "activo-verde"; }
+                            if ($prestamo['estadoPrestamo'] == 'en curso') { $claseEstado = "activo-verde"; }
                             ?>
                             <span class="indicador-estado <?= $claseEstado ?>">
                                 <?= Security::escapeHtml($prestamo['estadoPrestamo']) ?>
@@ -66,7 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <?php if ($prestamo['estadoPrestamo'] == 'activo') { ?>
+                                    <?php if ($prestamo['estadoPrestamo'] == 'en curso') { ?>
                                     <form action="../../../controladores/secretaria/inventario/devolver.php" method="POST" style="margin:0">
                                         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="idPrestamo" value="<?= (int)$prestamo['idPrestamo'] ?>">

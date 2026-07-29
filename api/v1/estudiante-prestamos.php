@@ -25,7 +25,7 @@ $sql = "
     SELECT p.idPrestamo, p.idDispositivo, d.nombreDispositivo, p.fechaPrestamo
     FROM prestamos p
     JOIN dispositivos d ON p.idDispositivo = d.idDispositivo
-    WHERE p.idEstudiante = ? AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL
+    WHERE p.idEstudiante = ? AND p.estadoPrestamo = 'en curso' AND p.deleted_at IS NULL
     ORDER BY p.fechaPrestamo DESC
 ";
 

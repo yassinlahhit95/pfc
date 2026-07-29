@@ -129,7 +129,7 @@ function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
         'total_retos' => "SELECT COUNT(*) FROM retos",
         'total_anuncios' => "SELECT COUNT(*) FROM anuncios",
         'total_inventario' => "SELECT COUNT(*) FROM dispositivos",
-        'total_prestamos' => "SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'activo'",
+        'total_prestamos' => "SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso'",
         'total_pagos' => "SELECT COUNT(*) FROM pagos",
         'total_mensajes' => "SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')",
         'total_sin_leer' => "SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))",

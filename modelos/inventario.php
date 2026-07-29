@@ -29,7 +29,7 @@ function listarArticulos() {
     $con = obtenerConexion();
     $sql = "SELECT d.idDispositivo AS idArticulo, d.nombreDispositivo AS nombreArticulo,
                    d.numeroSerie, d.estadoDispositivo AS estado, d.foto, d.cantidad,
-                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) AS prestados
+                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'en curso' AND p.deleted_at IS NULL) AS prestados
             FROM dispositivos d
             WHERE d.deleted_at IS NULL
             ORDER BY d.idDispositivo ASC";
@@ -47,7 +47,7 @@ function obtenerArticuloPorId($idArticulo) {
     $con = obtenerConexion();
     $sql = "SELECT d.idDispositivo AS idArticulo, d.nombreDispositivo AS nombreArticulo,
                    d.numeroSerie, d.estadoDispositivo AS estado, d.foto, d.cantidad,
-                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) AS prestados
+                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'en curso' AND p.deleted_at IS NULL) AS prestados
             FROM dispositivos d WHERE d.idDispositivo = ? AND d.deleted_at IS NULL";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
@@ -75,7 +75,7 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
         // Verificar que el estudiante no tenga ya un préstamo activo de este dispositivo
         $stmtCheck = mysqli_prepare($con, "
             SELECT COUNT(*) as cnt FROM prestamos
-            WHERE idEstudiante = ? AND idDispositivo = ? AND estadoPrestamo = 'activo' AND deleted_at IS NULL
+            WHERE idEstudiante = ? AND idDispositivo = ? AND estadoPrestamo = 'en curso' AND deleted_at IS NULL
         ");
         mysqli_stmt_bind_param($stmtCheck, "ii", $idEstudiante, $idArticulo);
         mysqli_stmt_execute($stmtCheck);
@@ -84,7 +84,7 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
 
         $stmt = mysqli_prepare($con, "
             SELECT d.cantidad,
-                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) as prestados
+                   (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'en curso' AND p.deleted_at IS NULL) as prestados
             FROM dispositivos d WHERE d.idDispositivo = ? AND d.deleted_at IS NULL FOR UPDATE
         ");
         mysqli_stmt_bind_param($stmt, "i", $idArticulo);
@@ -93,7 +93,7 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
         if (!$fila) throw new \RuntimeException('dispositivo no encontrado');
         if ($fila['prestados'] >= $fila['cantidad']) throw new \RuntimeException('no hay stock disponible');
 
-        $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, idDispositivo, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'activo')");
+        $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, idDispositivo, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')");
         mysqli_stmt_bind_param($stmt2, "iis", $idEstudiante, $idArticulo, $fechaPrestamo);
         if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert prestamos');
 

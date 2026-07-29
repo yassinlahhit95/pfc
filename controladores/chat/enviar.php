@@ -79,6 +79,12 @@ if ($destToken) {
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
+// Fetch the actual message from DB to get the real timestamp (matches what
+// the JS will fetch on poll), avoiding timestamp mismatch bugs.
+$st = mysqli_prepare($_con, 'SELECT * FROM chat_mensajes WHERE id = ?');
+mysqli_stmt_bind_param($st, 'i', $newId);
+mysqli_stmt_execute($st);
+$msgRow = mysqli_fetch_assoc(mysqli_stmt_get_result($st)) ?: [];
 $msg = [
     'id'              => $newId,
     'conversacion_id' => $convId,
@@ -86,7 +92,7 @@ $msg = [
     'emisor_id'       => $myId,
     'emisor_nombre'   => $emisorNombre,
     'contenido'       => $contenido,
-    'fecha'           => date('Y-m-d H:i:s'),
+    'fecha'           => $msgRow['fecha'] ?? date('Y-m-d H:i:s'),
     'leido'           => 0,
 ];
 
