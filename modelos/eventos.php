@@ -350,3 +350,40 @@ function listarTodosEventos(array $filtros = []): array {
     mysqli_stmt_close($stmt);
     return $lista;
 }
+
+// Eventos para director/admin filtrados por rango de fechas en SQL.
+function listarEventosDirector(?string $fechaInicio = null, ?string $fechaFin = null): array {
+    $con = obtenerConexion();
+    $sql   = "SELECT * FROM eventos WHERE activo = 1";
+    $tipos = '';
+    $valores = [];
+
+    if ($fechaInicio !== null) {
+        $sql      .= " AND fechaEvento >= ?";
+        $tipos    .= 's';
+        $valores[] = $fechaInicio;
+    }
+    if ($fechaFin !== null) {
+        $sql      .= " AND fechaEvento <= ?";
+        $tipos    .= 's';
+        $valores[] = $fechaFin;
+    }
+    $sql .= " ORDER BY fechaEvento ASC, horaEvento ASC";
+
+    $stmt = mysqli_prepare($con, $sql);
+    if (!$stmt) {
+        error_log("Error al preparar listarEventosDirector: " . mysqli_error($con));
+        return [];
+    }
+    if ($valores) {
+        mysqli_stmt_bind_param($stmt, $tipos, ...$valores);
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log("Error al ejecutar listarEventosDirector: " . mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        return [];
+    }
+    $lista = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+    mysqli_stmt_close($stmt);
+    return $lista;
+}

@@ -33,13 +33,9 @@ if ($upcoming) {
 
 // Misma regla de visibilidad que la web: el director gestiona el calendario
 // entero, el resto de roles solo ve lo que le corresponde según
-// tipo_visibilidad/audiencia_json. Antes esto consultaba `eventos` a pelo, sin
-// filtro de audiencia ni de baja lógica.
+// tipo_visibilidad/audiencia_json.
 if ($usuario['user_type'] === 'director') {
-    $rows = listarTodosEventos(['solo_activos' => true]);
-    if ($from) $rows = array_filter($rows, fn($e) => $e['fechaEvento'] >= $from);
-    if ($to)   $rows = array_filter($rows, fn($e) => $e['fechaEvento'] <= $to);
-    usort($rows, fn($a, $b) => [$a['fechaEvento'], $a['horaEvento']] <=> [$b['fechaEvento'], $b['horaEvento']]);
+    $rows = listarEventosDirector($from, $to);
 } else {
     $rows = obtenerEventosParaUsuario((int)$usuario['user_id'], $usuario['user_type'], $from, $to);
 }

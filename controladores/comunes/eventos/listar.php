@@ -19,16 +19,20 @@ $end   = trim($_GET['end'] ?? '') ?: null;
 
 [$idUsuario, $tipoUsuario] = eventosUsuarioSesion();
 
-if ($tipoUsuario === 'director') {
-    $eventos = listarTodosEventos(['solo_activos' => true]);
-    if ($start !== null) $eventos = array_values(array_filter($eventos, fn($e) => $e['fechaEvento'] >= $start));
-    if ($end   !== null) $eventos = array_values(array_filter($eventos, fn($e) => $e['fechaEvento'] <= $end));
-} elseif (!$tipoUsuario) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'msg' => 'Sesión expirada. Por favor recarga la página.']);
+try {
+    if ($tipoUsuario === 'director') {
+        $eventos = listarEventosDirector($start, $end);
+    } elseif (!$tipoUsuario) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'msg' => 'Sesión expirada. Por favor recarga la página.']);
+        exit;
+    } else {
+        $eventos = obtenerEventosParaUsuario($idUsuario, $tipoUsuario, $start, $end);
+    }
+    echo json_encode(['ok' => true, 'eventos' => $eventos]);
+} catch (Throwable $e) {
+    error_log("eventos/listar.php error: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'msg' => 'Error al obtener eventos']);
     exit;
-} else {
-    $eventos = obtenerEventosParaUsuario($idUsuario, $tipoUsuario, $start, $end);
 }
-
-echo json_encode(['ok' => true, 'eventos' => $eventos]);
