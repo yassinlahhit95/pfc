@@ -39,8 +39,9 @@ dependencies:
   # not the 8.x line pub resolves to by default — 8.x's Android AAR is built
   # against compileSdk 34, which conflicts with flutter_plugin_android_lifecycle
   # (a transitive dep of firebase_messaging below) requiring compileSdk 36+.
-  # Updated to 11.0.2+ which uses Flutter's built-in Kotlin Gradle Plugin.
-  file_picker: ^11.0.2
+  # Kept at 10.3.10 — later versions change the API (no FilePicker.platform).
+  # KGP warning is a future concern, not blocking current builds.
+  file_picker: ^10.3.10
 
   # Camera/gallery capture for payment comprobantes and staff-submitted
   # attendance justifications (photograph a paper note in person).
