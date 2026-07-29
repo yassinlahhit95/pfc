@@ -72,6 +72,16 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
+        // Verificar que el estudiante no tenga ya un préstamo activo de este dispositivo
+        $stmtCheck = mysqli_prepare($con, "
+            SELECT COUNT(*) as cnt FROM prestamos
+            WHERE idEstudiante = ? AND idDispositivo = ? AND estadoPrestamo = 'activo' AND deleted_at IS NULL
+        ");
+        mysqli_stmt_bind_param($stmtCheck, "ii", $idEstudiante, $idArticulo);
+        mysqli_stmt_execute($stmtCheck);
+        $checkResult = mysqli_fetch_assoc(mysqli_stmt_get_result($stmtCheck));
+        if ($checkResult['cnt'] > 0) throw new \RuntimeException('El estudiante ya tiene un préstamo activo de este dispositivo');
+
         $stmt = mysqli_prepare($con, "
             SELECT d.cantidad,
                    (SELECT COUNT(*) FROM prestamos p WHERE p.idDispositivo = d.idDispositivo AND p.estadoPrestamo = 'activo' AND p.deleted_at IS NULL) as prestados

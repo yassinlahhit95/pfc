@@ -27,13 +27,18 @@ if (isset($_POST['registrarPrestamo'])) {
     if (empty($fechaPrestamo)) $errores['fechaPrestamo'] = "La fecha del préstamo es un campo obligatorio.";
 
     if (empty($errores)) {
-        if (registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo)) {
-            registrarAccion('prestar', 'inventario', $idArticulo, "Estudiante #$idEstudiante");
-            $_SESSION['exito'] = "El préstamo ha sido registrado correctamente.";
-            header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
-            exit;
+        try {
+            if (registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo)) {
+                registrarAccion('prestar', 'inventario', $idArticulo, "Estudiante #$idEstudiante");
+                $_SESSION['exito'] = "El préstamo ha sido registrado correctamente.";
+                header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
+                exit;
+            }
+            $_SESSION['errores'] = "Ocurrió un error al intentar registrar el préstamo.";
+        } catch (\Throwable $e) {
+            $_SESSION['errores'] = $e->getMessage();
+            $_SESSION['datos_prestamo'] = $_POST;
         }
-        $_SESSION['errores'] = "Ocurrió un error al intentar registrar el préstamo.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_prestamo'] = $_POST;
