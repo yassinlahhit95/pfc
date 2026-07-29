@@ -74,8 +74,9 @@ class SessionController extends AsyncNotifier<Session?> {
     await storage.clear();
     state = const AsyncData(null);
 
-    // Clear all cached data to prevent stale data access after logout (privacy)
-    // This ensures any data providers that cached user info are purged
+    // Clear all cached data to prevent stale data access after logout (privacy/security).
+    // This ensures any data providers that cached user info are purged, preventing
+    // data leakage when switching between different user roles (tutor → professor, etc).
     ref.invalidate(secureStorageProvider);
   }
 }

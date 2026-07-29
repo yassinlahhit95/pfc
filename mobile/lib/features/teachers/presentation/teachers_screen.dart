@@ -7,14 +7,14 @@ import '../../../core/widgets/profile_detail_sheet.dart';
 import '../../../core/utils/debounce.dart';
 import '../data/teachers_repository.dart';
 
-class TeachersScreen extends StatefulWidget {
+class TeachersScreen extends ConsumerStatefulWidget {
   const TeachersScreen({super.key});
 
   @override
-  State<TeachersScreen> createState() => _TeachersScreenState();
+  ConsumerState<TeachersScreen> createState() => _TeachersScreenState();
 }
 
-class _TeachersScreenState extends State<TeachersScreen> {
+class _TeachersScreenState extends ConsumerState<TeachersScreen> {
   late ScrollController _scrollController;
   final Debounce _debounce = Debounce();
   String _searchQuery = '';
@@ -31,11 +31,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-      // Just flag we need more data. But we need to use ref.read inside build, so we can't do it easily from State.
-      // Wait, ConsumerState is needed to access ref inside _onScroll!
-      // I'll leave the debounce logic but I need to convert it to ConsumerState.
-      // Wait, _TeachersScreenState is currently just State<TeachersScreen> but uses Consumer inside build.
-      // To do pagination elegantly, I can debounce the setState.
+      // Debounce pagination to avoid rapid multiple increments
       _debounce(const Duration(milliseconds: 300), () {
         setState(() {
           // Incrementing offset triggers Consumer rebuild which triggers fetch
@@ -70,6 +66,17 @@ class _TeachersScreenState extends State<TeachersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final teachersAsync = ref.watch(
+      teachersProvider(
+        (
+          limit: _pageSize,
+          offset: _currentOffset,
+          status: _selectedStatus,
+          query: _searchQuery.isNotEmpty ? _searchQuery : null,
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profesores'),
@@ -80,78 +87,63 @@ class _TeachersScreenState extends State<TeachersScreen> {
           ),
         ],
       ),
-      body: Consumer(
-        builder: (context, ref, _) {
-          final teachersAsync = ref.watch(
-            teachersProvider(
-              (
-                limit: _pageSize,
-                offset: _currentOffset,
-                status: _selectedStatus,
-                query: _searchQuery.isNotEmpty ? _searchQuery : null,
-              ),
+      body: AsyncView<({List<Teacher> teachers, int total})>(
+        value: teachersAsync,
+        onRetry: () => ref.invalidate(
+          teachersProvider(
+            (
+              limit: _pageSize,
+              offset: _currentOffset,
+              status: _selectedStatus,
+              query: _searchQuery.isNotEmpty ? _searchQuery : null,
             ),
-          );
-
-          return AsyncView<({List<Teacher> teachers, int total})>(
-            value: teachersAsync,
-            onRetry: () => ref.invalidate(
-              teachersProvider(
-                (
-                  limit: _pageSize,
-                  offset: _currentOffset,
-                  status: _selectedStatus,
-                  query: _searchQuery.isNotEmpty ? _searchQuery : null,
+          ),
+        ),
+        data: (context, data) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Space.md),
+                child: TextField(
+                  onChanged: (value) {
+                    _debounce(const Duration(milliseconds: 500), () {
+                      setState(() {
+                        _searchQuery = value;
+                        _currentOffset = 0;
+                      });
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Buscar por nombre...',
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Radii.md),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  ),
                 ),
               ),
-            ),
-            data: (context, data) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(Space.md),
-                    child: TextField(
-                      onChanged: (value) {
-                        _debounce(const Duration(milliseconds: 500), () {
-                          setState(() {
-                            _searchQuery = value;
-                            _currentOffset = 0;
-                          });
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Buscar por nombre...',
-                        prefixIcon: const Icon(Icons.search),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Radii.md),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              Expanded(
+                child: data.teachers.isEmpty
+                    ? const EmptyState(
+                        icon: Icons.school_outlined,
+                        title: 'Sin profesores registrados',
+                        description: 'No hay profesores que coincidan con la búsqueda',
+                      )
+                    : ListView.separated(
+                        controller: _scrollController,
+                        itemCount: data.teachers.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                        itemBuilder: (context, index) {
+                          final teacher = data.teachers[index];
+                          return _TeacherCard(teacher: teacher);
+                        },
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: data.teachers.isEmpty
-                        ? const EmptyState(
-                            icon: Icons.school_outlined,
-                            title: 'Sin profesores registrados',
-                            description: 'No hay profesores que coincidan con la búsqueda',
-                          )
-                        : ListView.separated(
-                            controller: _scrollController,
-                            itemCount: data.teachers.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
-                            itemBuilder: (context, index) {
-                              final teacher = data.teachers[index];
-                              return _TeacherCard(teacher: teacher);
-                            },
-                          ),
-                  ),
-                ],
-              );
-            },
+              ),
+            ],
           );
         },
       ),
@@ -193,7 +185,7 @@ class _TeachersFiltersSheetState extends State<_TeachersFiltersSheet> {
           const Text('Filtros', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           DropdownButtonFormField<String?>(
-            value: _status,
+            initialValue: _status,
             decoration: const InputDecoration(labelText: 'Estado'),
             items: const [
               DropdownMenuItem(value: null, child: Text('Todos los estados')),

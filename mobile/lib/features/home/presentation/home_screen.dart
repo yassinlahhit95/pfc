@@ -20,7 +20,6 @@ import '../../grades/presentation/grades_screen.dart';
 import '../../inventory/presentation/inventory_screen.dart';
 import '../../payments/presentation/payments_screen.dart';
 import '../../payments/presentation/my_payments_screen.dart';
-import '../../payments/presentation/pagos_proximos_screen.dart';
 import '../../messages/presentation/messages_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
