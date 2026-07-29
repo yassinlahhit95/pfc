@@ -11,6 +11,12 @@ class Security {
     const RATE_LIMIT_WINDOW    = 300;   // 5 minutos
 
     public static function initSession() {
+        // Validate database encoding to prevent tilde corruption
+        require_once __DIR__ . '/EncodingValidator.php';
+        if (!EncodingValidator::validateConnection()) {
+            error_log("WARNING: Database connection charset may not be UTF-8. Tilde corruption risk.");
+        }
+
         // Enviar cabeceras de seguridad globales
         if (!headers_sent()) {
             header('X-Frame-Options: SAMEORIGIN');
