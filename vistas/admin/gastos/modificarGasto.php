@@ -74,8 +74,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="tipoJustificante">Tipo de justificante</label>
             <select name="tipoJustificante" id="tipoJustificante">
                 <?php foreach (['factura'=>'Factura','ticket'=>'Ticket','recibo'=>'Recibo','otro'=>'Otro'] as $valorTipo => $nombreTipo): ?>
-                <option value="<?= $valorTipo ?>" <?= $gasto['tipoJustificante'] === $valorTipo ? 'selected' : '' ?>>
-                    <?= $nombreTipo ?>
+                <option value="<?= Security::escapeHtml($valorTipo) ?>" <?= $gasto['tipoJustificante'] === $valorTipo ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($nombreTipo) ?>
                 </option>
                 <?php endforeach; ?>
             </select>

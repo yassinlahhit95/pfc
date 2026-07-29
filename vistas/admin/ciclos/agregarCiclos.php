@@ -56,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <select id="tipoFormacion" name="tipoFormacion" required>
                         <option value="">-- Seleccionar tipo --</option>
                         <?php foreach (FPSystem::TIPOS as $tipo): ?>
-                            <option value="<?= $tipo ?>" <?php if (($datos['tipoFormacion'] ?? '') === $tipo) { ?>selected<?php } ?>>
+                            <option value="<?= Security::escapeHtml($tipo) ?>" <?php if (($datos['tipoFormacion'] ?? '') === $tipo) { ?>selected<?php } ?>>
                                 <?= Security::escapeHtml(FPSystem::getLabel($tipo)) ?>
                             </option>
                         <?php endforeach; ?>

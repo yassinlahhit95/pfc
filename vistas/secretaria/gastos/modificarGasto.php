@@ -83,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php
                     $selTipo = $datos['tipoJustificante'] ?? $gasto['tipoJustificante'] ?? 'factura';
                     foreach (['factura' => 'Factura', 'ticket' => 'Ticket', 'recibo' => 'Recibo', 'otro' => 'Otro'] as $val => $lbl): ?>
-                    <option value="<?= $val ?>" <?= ($selTipo === $val) ? 'selected' : '' ?>><?= $lbl ?></option>
+                    <option value="<?= Security::escapeHtml($val) ?>" <?= ($selTipo === $val) ? 'selected' : '' ?>><?= Security::escapeHtml($lbl) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

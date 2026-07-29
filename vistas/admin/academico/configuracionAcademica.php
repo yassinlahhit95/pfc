@@ -60,7 +60,7 @@ if (!empty($todasConfigs)):
     <label for="aw-select-config" style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);"><i class="fas fa-sliders" style="color:var(--accent);margin-right:6px;"></i> Configuración académica en edición:</label>
     <select id="aw-select-config" onchange="window.location.href = '?idConfig=' + this.value" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; background: var(--surface-2); color: var(--text);">
         <?php foreach ($todasConfigs as $cfg): ?>
-            <option value="<?= $cfg['idConfig'] ?>" <?= (int)$cfg['idConfig'] === (int)$idConfig ? 'selected' : '' ?>>
+            <option value="<?= Security::escapeHtml($cfg['idConfig']) ?>" <?= (int)$cfg['idConfig'] === (int)$idConfig ? 'selected' : '' ?>>
                 <?= Security::escapeHtml($cfg['nombre']) ?> <?= !empty($cfg['anioAcademico']) ? '('.Security::escapeHtml($cfg['anioAcademico']).')' : '' ?>
                 <?= $cfg['activo'] ? ' [ACTIVA]' : '' ?>
             </option>

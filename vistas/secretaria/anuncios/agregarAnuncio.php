@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="dirigidoA">Dirigido a</label>
                 <select name="dirigidoA" id="dirigidoA">
                     <?php foreach (['todos' => 'Todos', 'estudiantes' => 'Estudiantes', 'profesores' => 'Profesores', 'tutores' => 'Familias'] as $val => $lbl): ?>
-                    <option value="<?= $val ?>" <?= (($datos['dirigidoA'] ?? 'todos') === $val) ? 'selected' : '' ?>><?= $lbl ?></option>
+                    <option value="<?= Security::escapeHtml($val) ?>" <?= (($datos['dirigidoA'] ?? 'todos') === $val) ? 'selected' : '' ?>><?= Security::escapeHtml($lbl) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

@@ -157,7 +157,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <select id="franjaInicio" class="hf-sel">
                             <option value="">— hora —</option>
                             <?php foreach ($freeStarts as $slot): ?>
-                                <option value="<?= $slot ?>"><?= $slot ?></option>
+                                <option value="<?= Security::escapeHtml($slot) ?>"><?= Security::escapeHtml($slot) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

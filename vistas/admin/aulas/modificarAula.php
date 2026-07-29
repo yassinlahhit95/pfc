@@ -39,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <label for="planta">Planta</label>
                     <select name="planta" id="planta">
                         <?php for ($planta = 0; $planta <= 5; $planta++) { ?>
-                            <option value="<?= $planta ?>" <?= (($datos['planta'] ?? 1) == $planta) ? 'selected' : '' ?>>
+                            <option value="<?= Security::escapeHtml($planta) ?>" <?= (($datos['planta'] ?? 1) == $planta) ? 'selected' : '' ?>>
                                 <?= $planta === 0 ? 'Planta Baja (0)' : 'Planta ' . $planta ?>
                             </option>
                         <?php } ?>
@@ -69,7 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php
                         $tipos = ['teoria' => 'Teoría', 'laboratorio' => 'Laboratorio', 'taller' => 'Taller', 'otro' => 'Otro'];
                         foreach ($tipos as $valorTipo => $nombreTipo) { ?>
-                            <option value="<?= $valorTipo ?>" <?= (($datos['tipoAula'] ?? 'teoria') == $valorTipo) ? 'selected' : '' ?>><?= $nombreTipo ?></option>
+                            <option value="<?= Security::escapeHtml($valorTipo) ?>" <?= (($datos['tipoAula'] ?? 'teoria') == $valorTipo) ? 'selected' : '' ?>><?= Security::escapeHtml($nombreTipo) ?></option>
                         <?php } ?>
                     </select>
                     <?= fieldError($errores, 'tipoAula') ?>
