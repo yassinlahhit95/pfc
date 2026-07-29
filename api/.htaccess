@@ -12,10 +12,17 @@
 # It only needs a manual edit if APP_URL is ever changed by hand-editing
 # .env directly instead of through one of those two paths.
 <IfModule mod_headers.c>
+    # CORS configuration (auto-synced with APP_URL via install wizard)
     Header always set Access-Control-Allow-Origin "https://aulapro.yassin.agency"
     Header always set Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS"
     Header always set Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With, X-API-Key, X-Timestamp, X-Signature"
     Header always set Access-Control-Max-Age "86400"
+    Header always set Access-Control-Allow-Credentials "true"
+
+    # Security headers for API responses
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set X-XSS-Protection "1; mode=block"
 
     # Respond immediately to OPTIONS preflight without hitting PHP
     <If "%{REQUEST_METHOD} == 'OPTIONS'">

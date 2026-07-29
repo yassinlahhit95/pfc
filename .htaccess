@@ -59,4 +59,13 @@ Options -Indexes
     # envía, así que no hay riesgo de "atascar" el navegador en HTTPS para
     # un host de desarrollo sin TLS.
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+
+    # Security headers
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Prevent MIME type sniffing
+    Header always set X-Permitted-Cross-Domain-Policies "none"
 </IfModule>
