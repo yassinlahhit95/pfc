@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
+require_once __DIR__ . '/../../../include/Security.php';
 // GET /controladores/comunes/eventos/obtener.php?id=N
 // Detalle de un evento (para el modal de edición del calendario). Accesible
 // a los 5 roles con sesión iniciada — el propio dato ya está filtrado por
 // obtenerEventoPorId (activo=1); no hay guard de rol único porque estudiante/
 // tutor/profesor también consultan el calendario, no solo admin/secretaría.
-require_once __DIR__ . '/../../../include/Security.php';
 Security::initSession();
 
 header('Content-Type: application/json; charset=utf-8');

@@ -1,4 +1,7 @@
-<?php
+    <?php renderStep($csrfToken); ?>
+require_once __DIR__ . '/../modelos/conectar.php';
+require_once __DIR__ . '/../include/Security.php';
+require_once __DIR__ . '/lib/helpers.php';
 // ══════════════════════════════════════════════════════════════════════
 // Asistente de instalación — punto de entrada único.
 // Máquina de estados de 5 pasos vía $_SESSION['install_step']. Cada paso
@@ -6,9 +9,6 @@
 // Antes de renderizar NADA se comprueban los dos candados independientes
 // (installIsLocked()) — ver install/lib/helpers.php.
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/lib/helpers.php';
-require_once __DIR__ . '/../include/Security.php';
-
 if (installIsLocked()) {
     header('Location: /vistas/login.php');
     exit;
@@ -60,17 +60,11 @@ $tituloPaso = ['', 'Entorno', 'Base de datos', 'Cuenta de administrador', 'Datos
   <div class="install-card">
     <div class="install-brand">Aula<b>Pro</b></div>
     <div class="install-steps">
-      <?php for ($i = 1; $i <= 5; $i++): ?>
         <span class="install-step-dot<?= $i === $paso ? ' activo' : '' ?><?= $i < $paso ? ' hecho' : '' ?>"><?= $i ?></span>
-      <?php endfor; ?>
     </div>
     <h1><?= htmlspecialchars($tituloPaso) ?></h1>
 
-    <?php if ($errores): ?>
       <div class="install-alerta-error"><?= htmlspecialchars($errores) ?></div>
-    <?php endif; ?>
-
-    <?php renderStep($csrfToken); ?>
   </div>
 </body>
 </html>

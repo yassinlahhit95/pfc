@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . "/../../include/Security.php";
+require_once __DIR__ . "/../../modelos/password_reset.php";
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . "/../../include/Security.php";
-require_once __DIR__ . "/../../modelos/password_reset.php";
 Security::initSession();
 
 // ══════════════════════════════════════════════════════════════════════

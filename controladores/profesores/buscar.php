@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 if (empty($_SESSION['idProfesor'])) { http_response_code(403); echo json_encode([]); exit; }
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); echo json_encode([]); exit; }

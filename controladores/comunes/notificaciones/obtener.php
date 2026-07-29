@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
+require_once __DIR__ . '/../../../include/Security.php';
 // GET /controladores/comunes/notificaciones/obtener.php
 // Recordatorios de eventos no leídos del usuario de la sesión actual, para el
 // widget de campana del calendario. Usa notificaciones_recordatorios (ver
 // modelos/notificacionesRecordatorios.php) — NO confundir con la campana
 // genérica (modelos/notificaciones.php), son sistemas y tablas distintos.
-require_once __DIR__ . '/../../../include/Security.php';
 Security::initSession();
 
 header('Content-Type: application/json; charset=utf-8');

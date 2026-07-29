@@ -1,11 +1,11 @@
 <?php
-// Sirve un archivo TFG para visualizaci�n o descarga.
-// Verifica permisos de Estudiante, Profesor, Secretar�a o Admin.
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../modelos/tfg.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../include/FileServer.php";
-
+// Sirve un archivo TFG para visualizaci�n o descarga.
+// Verifica permisos de Estudiante, Profesor, Secretar�a o Admin.
 $idEstudianteReq = intval($_GET['id'] ?? 0);
 $modo            = ($_GET['modo'] ?? 'ver') === 'descarga' ? 'descarga' : 'ver';
 

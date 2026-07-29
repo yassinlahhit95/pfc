@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
 require_once __DIR__ . "/../../../include/Security.php";
 Security::initSession();
 if (empty($_SESSION['idSecretaria'])) {

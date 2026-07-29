@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../modelos/conectar.php';
+require_once __DIR__ . "/../include/Security.php";
+require_once __DIR__ . "/../include/BotGuard.php";
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . "/../include/Security.php";
-require_once __DIR__ . "/../include/BotGuard.php";
 Security::initSession();
 require_once __DIR__ . "/../include/AccountLockout.php";
 // Logger es opcional; el login debe funcionar aunque Logger.php no exista en el servidor

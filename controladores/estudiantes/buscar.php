@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 if (empty($_SESSION['idEstudiante'])) {
     http_response_code(403);

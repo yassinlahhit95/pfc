@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
+require_once __DIR__ . '/../../../include/Security.php';
+require_once __DIR__ . '/../../../include/MfaService.php';
 // Exportación RGPD Art. 20 de los propios datos — disponible para los 5 roles.
 // Cada rol pasa primero por SU guard real (CSRF, suspensión, etc.) antes de
 // tocar la lógica compartida de abajo.
-require_once __DIR__ . '/../../../include/Security.php';
-require_once __DIR__ . '/../../../include/MfaService.php';
 Security::initSession();
 
 $actor = MfaService::sesionActual();

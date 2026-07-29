@@ -1,14 +1,13 @@
 <?php
-// ══════════════════════════════════════════════════════════════════════
-// PÁGINA DE CONTACTO SEPARADA
-// ══════════════════════════════════════════════════════════════════════
+require_once __DIR__ . '/../modelos/configuracion.php';
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../include/FeatureGuard.php';
-require_once __DIR__ . '/../modelos/configuracion.php';
 require_once __DIR__ . '/../modelos/landing.php';
 require_once __DIR__ . '/../include/landing/secciones.php';
 require_once __DIR__ . '/../include/landing/plantillas.php';
-
+// ══════════════════════════════════════════════════════════════════════
+// PÁGINA DE CONTACTO SEPARADA
+// ══════════════════════════════════════════════════════════════════════
 $cfg = obtenerConfiguracionCentro();
 
 // Si la landing está desactivada, mostramos fallback

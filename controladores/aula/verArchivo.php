@@ -1,11 +1,11 @@
 <?php
-// Sirve un recurso del aula para visualización (inline) o descarga (attachment).
-// Registra el acceso del estudiante para control de lectura y estadísticas de uso.
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . "/../../include/Security.php"; // enforces session fingerprint + idle timeout
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../modelos/modulos.php";
 require_once __DIR__ . "/../../include/FileServer.php";
-
+// Sirve un recurso del aula para visualización (inline) o descarga (attachment).
+// Registra el acceso del estudiante para control de lectura y estadísticas de uso.
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN Y PERMISOS
 // ══════════════════════════════════════════════════════════════════════

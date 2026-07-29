@@ -1,4 +1,5 @@
-<?php
+            <?php } ?>
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/AssetMin.php";
 require_once __DIR__ . "/../../modelos/password_reset.php";
@@ -50,16 +51,11 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Introduce tu nueva contraseña</p>
             </div>
 
-            <?php if ($error) { ?>
             <div class="error-alerta"><?= Security::escapeHtml($error) ?></div>
-            <?php } ?>
-
-            <?php if (!$resetRow) { ?>
             <div class="error-alerta">
                 Este enlace ha caducado o ya fue usado.
                 <a href="solicitar_reset.php" style="color:inherit;text-decoration:underline;">Solicitar uno nuevo</a>.
             </div>
-            <?php } else { ?>
             <form action="../../controladores/auth/confirmar_reset.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
                 <input type="hidden" name="token"      value="<?= Security::escapeHtml($token) ?>">
@@ -79,8 +75,6 @@ $csrfToken = Security::generateCSRFToken();
                 </div>
                 <button type="submit" class="boton-acceso">Guardar nueva contraseña</button>
             </form>
-            <?php } ?>
-
             <a href="../login.php" class="enlace-volver" style="display:block;margin-top:16px;text-align:center;">Volver al inicio de sesión</a>
         </div>
 

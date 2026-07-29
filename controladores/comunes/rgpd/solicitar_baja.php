@@ -1,8 +1,9 @@
 <?php
-// Solicitud de eliminación de datos (Art. 17) — disponible para los 5 roles.
-// Nunca borra nada: crea una solicitud pendiente que revisa un admin manualmente.
+require_once __DIR__ . '/../../../modelos/conectar.php';
 require_once __DIR__ . '/../../../include/Security.php';
 require_once __DIR__ . '/../../../include/MfaService.php';
+// Solicitud de eliminación de datos (Art. 17) — disponible para los 5 roles.
+// Nunca borra nada: crea una solicitud pendiente que revisa un admin manualmente.
 Security::initSession();
 
 $actor = MfaService::sesionActual();

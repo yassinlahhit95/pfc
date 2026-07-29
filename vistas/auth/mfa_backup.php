@@ -1,4 +1,5 @@
-<?php
+      <?php endforeach; ?>
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/MfaService.php';
 Security::initSession();
@@ -50,9 +51,7 @@ unset($_SESSION['mfa_backup_plain']); // se muestran una sola vez
     <p class="sub">Te permiten acceder si pierdes el teléfono. Cada uno sirve una sola vez.</p>
     <div class="warn"><i class="fas fa-triangle-exclamation"></i> No se volverán a mostrar. Guárdalos en un lugar seguro <b>ahora</b>.</div>
     <div class="codes">
-      <?php foreach ($codes as $codigo): ?>
         <span><?= Security::escapeHtml($codigo) ?></span>
-      <?php endforeach; ?>
     </div>
     <a class="btn" href="<?= Security::escapeHtml($actor['home']) ?>">Ya los he guardado, continuar</a>
   </div>

@@ -1,10 +1,9 @@
-<?php
+    <?php endif; ?>
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
 require_once __DIR__ . '/../../include/MfaService.php';
-require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
-
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\SvgWriter;
 
@@ -79,10 +78,7 @@ $esObligatorio = !empty($_SESSION['mfa_setup_required']);
 
     <div class="banner">Escanea el código con Google Authenticator, Microsoft Authenticator o Authy.</div>
 
-    <?php if ($errores): ?>
       <div class="alert"><?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?></div>
-    <?php endif; ?>
-
     <ol>
       <li>Abre tu app de autenticación.</li>
       <li>Escanea este código QR:</li>

@@ -1,16 +1,16 @@
 <?php
-// ══════════════════════════════════════════════════════════════════════
-// DEPENDENCIAS
-// ══════════════════════════════════════════════════════════════════════
-ob_start();
-session_start();
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../modelos/directores.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/tutores.php";
 require_once __DIR__ . "/../../modelos/secretarias.php";
-
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
+ob_start();
+session_start();
 ob_clean();
 header('Content-Type: application/json');
 

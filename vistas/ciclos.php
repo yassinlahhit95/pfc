@@ -1,18 +1,17 @@
 <?php
-// ══════════════════════════════════════════════════════════════════════
-// CATÁLOGO PÚBLICO DE CICLOS
-// ══════════════════════════════════════════════════════════════════════
-// /vistas/ciclos.php              → listado del catálogo completo
-// /vistas/ciclos.php?ciclo=slug   → ficha de detalle de un ciclo
+require_once __DIR__ . '/../modelos/configuracion.php';
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../include/FeatureGuard.php';
-require_once __DIR__ . '/../modelos/configuracion.php';
 require_once __DIR__ . '/../modelos/landing.php';
 require_once __DIR__ . '/../modelos/landingCiclos.php';
 require_once __DIR__ . '/../include/landing/secciones.php';
 require_once __DIR__ . '/../include/landing/plantillas.php';
 require_once __DIR__ . '/../include/R2Client.php';
-
+// ══════════════════════════════════════════════════════════════════════
+// CATÁLOGO PÚBLICO DE CICLOS
+// ══════════════════════════════════════════════════════════════════════
+// /vistas/ciclos.php              → listado del catálogo completo
+// /vistas/ciclos.php?ciclo=slug   → ficha de detalle de un ciclo
 $cfg = obtenerConfiguracionCentro();
 
 if (!FeatureGuard::check('feature_landing')) {
@@ -70,31 +69,19 @@ if ($ciclo) {
           <i class="fas fa-angle-right"></i>
           <a href="/vistas/ciclos.php">Catálogo de ciclos</a>
         </nav>
-        <?php if ($ciclo['etiqueta'] !== ''): ?>
         <span class="lp-blog-chip"><?= Security::escapeHtml($ciclo['etiqueta']) ?></span>
-        <?php endif; ?>
         <h1><?= Security::escapeHtml($ciclo['titulo']) ?></h1>
-        <?php if ($ciclo['duracion'] !== '' || $ciclo['modalidad'] !== '' || $ciclo['precio'] !== ''): ?>
         <div class="lp-ciclo-badges">
-          <?php if ($ciclo['duracion'] !== ''): ?><span class="lp-ciclo-badge"><i class="far fa-clock"></i> <?= Security::escapeHtml($ciclo['duracion']) ?></span><?php endif; ?>
-          <?php if ($ciclo['modalidad'] !== ''): ?><span class="lp-ciclo-badge"><i class="fas fa-chalkboard"></i> <?= Security::escapeHtml($ciclo['modalidad']) ?></span><?php endif; ?>
-          <?php if ($ciclo['precio'] !== ''): ?><span class="lp-ciclo-badge lp-ciclo-badge-precio"><i class="fas fa-tag"></i> <?= Security::escapeHtml($ciclo['precio']) ?></span><?php endif; ?>
         </div>
-        <?php endif; ?>
       </div>
     </header>
 
     <div class="lp-contenedor lp-articulo-contenedor">
-      <?php if ($imgCiclo): ?>
       <figure class="lp-articulo-portada">
         <img src="<?= Security::escapeHtml($imgCiclo) ?>" alt="<?= Security::escapeHtml($ciclo['titulo']) ?>">
       </figure>
-      <?php endif; ?>
-
       <div class="lp-articulo-cuerpo">
-        <?php if ($ciclo['resumen'] !== ''): ?>
         <p class="lp-articulo-entradilla"><?= nl2br(Security::escapeHtml($ciclo['resumen'])) ?></p>
-        <?php endif; ?>
         <?= $ciclo['descripcion'] /* ya saneado con HtmlSanitizer al guardar */ ?>
       </div>
 
@@ -106,14 +93,12 @@ if ($ciclo) {
       </footer>
     </div>
 
-    <?php if (!empty($relacionados)): ?>
     <section class="lp-sec lp-blog-relacionados">
       <div class="lp-contenedor">
         <div class="lp-sec-cabecera">
           <h2>Otros ciclos</h2>
         </div>
         <div class="lp-blog-grid">
-          <?php foreach ($relacionados as $rel):
               $imgRel = R2Client::imagenUrl(
                   __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($rel['imagen']),
                   $rel['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($rel['imagen']) : '',
@@ -121,28 +106,19 @@ if ($ciclo) {
               ); ?>
           <article class="lp-blog-card lp-ciclo-card">
             <a class="lp-blog-card-media" href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($rel['slug']) ?>">
-              <?php if ($imgRel): ?>
               <img loading="lazy" src="<?= Security::escapeHtml($imgRel) ?>" alt="">
-              <?php else: ?>
               <span class="lp-blog-card-placeholder"><i class="fas fa-graduation-cap"></i></span>
-              <?php endif; ?>
-              <?php if ($rel['etiqueta'] !== ''): ?>
               <span class="lp-blog-chip"><?= Security::escapeHtml($rel['etiqueta']) ?></span>
-              <?php endif; ?>
             </a>
             <div class="lp-blog-card-body">
               <h3><a href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($rel['slug']) ?>"><?= Security::escapeHtml($rel['titulo']) ?></a></h3>
-              <?php if ($rel['precio'] !== ''): ?><p class="lp-ciclo-precio-tarjeta"><?= Security::escapeHtml($rel['precio']) ?></p><?php endif; ?>
               <span class="lp-blog-leer">Ver ficha <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
-          <?php endforeach; ?>
         </div>
       </div>
     </section>
-    <?php endif; ?>
   </article>
-<?php
     include __DIR__ . '/landing/_footer.php';
     exit;
 }
@@ -182,15 +158,12 @@ include __DIR__ . '/landing/_nav.php';
   <section class="lp-sec lp-blog-listado" id="ciclos">
     <div class="lp-contenedor">
 
-      <?php if (empty($ciclos)): ?>
       <div class="lp-blog-vacio">
         <i class="fas fa-graduation-cap"></i>
         <h2>Todavía no hay ciclos publicados</h2>
         <p>Muy pronto publicaremos aquí nuestra oferta formativa completa.</p>
       </div>
-      <?php else: ?>
       <div class="lp-blog-grid">
-        <?php foreach ($ciclos as $cicloItem):
             $img = R2Client::imagenUrl(
                 __DIR__ . '/../public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']),
                 $cicloItem['imagen'] !== '' ? '/public/uploads/ofertaCiclos/' . basename($cicloItem['imagen']) : '',
@@ -198,48 +171,26 @@ include __DIR__ . '/landing/_nav.php';
             ); ?>
         <article class="lp-blog-card lp-ciclo-card">
           <a class="lp-blog-card-media" href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($cicloItem['slug']) ?>">
-            <?php if ($img): ?>
             <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="">
-            <?php else: ?>
             <span class="lp-blog-card-placeholder"><i class="fas fa-graduation-cap"></i></span>
-            <?php endif; ?>
-            <?php if ($cicloItem['etiqueta'] !== ''): ?>
             <span class="lp-blog-chip"><?= Security::escapeHtml($cicloItem['etiqueta']) ?></span>
-            <?php endif; ?>
           </a>
           <div class="lp-blog-card-body">
             <div class="lp-blog-meta">
-              <?php if ($cicloItem['duracion'] !== ''): ?><span><i class="far fa-clock"></i> <?= Security::escapeHtml($cicloItem['duracion']) ?></span><?php endif; ?>
-              <?php if ($cicloItem['modalidad'] !== ''): ?><span><i class="fas fa-chalkboard"></i> <?= Security::escapeHtml($cicloItem['modalidad']) ?></span><?php endif; ?>
             </div>
             <h2><a href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($cicloItem['slug']) ?>"><?= Security::escapeHtml($cicloItem['titulo']) ?></a></h2>
-            <?php if ($cicloItem['resumen'] !== ''): ?>
             <p><?= Security::escapeHtml(mb_substr($cicloItem['resumen'], 0, 140)) ?><?= mb_strlen($cicloItem['resumen']) > 140 ? '…' : '' ?></p>
-            <?php endif; ?>
-            <?php if ($cicloItem['precio'] !== ''): ?><p class="lp-ciclo-precio-tarjeta"><?= Security::escapeHtml($cicloItem['precio']) ?></p><?php endif; ?>
             <span class="lp-blog-leer">Ver ficha <i class="fas fa-arrow-right"></i></span>
           </div>
         </article>
-        <?php endforeach; ?>
       </div>
 
-      <?php if ($totalPags > 1): ?>
       <nav class="lp-blog-paginacion" aria-label="Paginación">
-        <?php if ($pagina > 1): ?>
         <a href="<?= Security::escapeHtml(cicloUrl($pagina - 1)) ?>" class="lp-blog-pag-btn" aria-label="Anterior"><i class="fas fa-angle-left"></i></a>
-        <?php endif; ?>
-        <?php for ($n = 1; $n <= $totalPags; $n++): ?>
         <a href="<?= Security::escapeHtml(cicloUrl($n)) ?>"
            class="lp-blog-pag-btn<?= $n === $pagina ? ' activa' : '' ?>"<?= $n === $pagina ? ' aria-current="page"' : '' ?>><?= $n ?></a>
-        <?php endfor; ?>
-        <?php if ($pagina < $totalPags): ?>
         <a href="<?= Security::escapeHtml(cicloUrl($pagina + 1)) ?>" class="lp-blog-pag-btn" aria-label="Siguiente"><i class="fas fa-angle-right"></i></a>
-        <?php endif; ?>
       </nav>
-      <?php endif; ?>
-      <?php endif; ?>
-
     </div>
   </section>
-<?php
 include __DIR__ . '/landing/_footer.php';

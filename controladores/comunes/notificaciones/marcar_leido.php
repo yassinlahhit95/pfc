@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
+require_once __DIR__ . '/../../../include/Security.php';
 // POST /controladores/comunes/notificaciones/marcar_leido.php — { idNotificacion }
 // Marca como leído un recordatorio de evento (notificaciones_recordatorios) del
 // usuario de la sesión actual.
-require_once __DIR__ . '/../../../include/Security.php';
 Security::initSession();
 
 header('Content-Type: application/json; charset=utf-8');

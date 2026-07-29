@@ -1,6 +1,7 @@
 <?php
-ob_start();
+require_once __DIR__ . '/../modelos/conectar.php';
 require_once __DIR__ . '/Security.php';
+ob_start();
 // Security::initSession() (not a bare session_start()) so the cookie-hardening
 // flags (Secure/HttpOnly/SameSite/strict_mode) actually get applied — calling
 // session_start() before Security.php loaded used to skip them silently.

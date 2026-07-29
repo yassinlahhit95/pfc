@@ -1,8 +1,8 @@
-<?php
+            <?php } ?>
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/BotGuard.php";
 require_once __DIR__ . "/../../include/AssetMin.php";
-
 if (isset($_SESSION['idAdmin']))      { header("Location: ../admin/inicio/dashboard.php");      exit; }
 if (isset($_SESSION['idProfesor']))   { header("Location: ../profesores/inicio/dashboard.php");  exit; }
 if (isset($_SESSION['idEstudiante'])) { header("Location: ../estudiantes/inicio/dashboard.php"); exit; }
@@ -47,14 +47,8 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Te enviaremos las instrucciones por email</p>
             </div>
 
-            <?php if ($exito) { ?>
             <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($exito) ?></div>
-            <?php } ?>
-            <?php if ($error) { ?>
             <div class="error-alerta"><?= Security::escapeHtml($error) ?></div>
-            <?php } ?>
-
-            <?php if (!$exito) { ?>
             <form action="../../controladores/auth/solicitar_reset.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
                 <?= BotGuard::renderFields() ?>
@@ -64,8 +58,6 @@ $csrfToken = Security::generateCSRFToken();
                 </div>
                 <button type="submit" class="boton-acceso">Enviar instrucciones</button>
             </form>
-            <?php } ?>
-
             <a href="../login.php" class="enlace-volver" style="display:block;margin-top:16px;text-align:center;">Volver al inicio de sesión</a>
         </div>
 

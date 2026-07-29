@@ -1,4 +1,4 @@
-<?php
+            <?php } ?>
 require_once __DIR__ . "/../../config/Config.php";
 require_once __DIR__ . "/../../include/Security.php";
 Security::initSession();
@@ -354,12 +354,10 @@ $warningLogs = Logger::getTail('warning.log', 20);
                     </span>
                 </span>
             </div>
-            <?php if ($dbError) { ?>
             <div class="info-row" style="color: var(--red);">
                 <span class="info-label">Error DB</span>
                 <span class="info-value"><?= Security::escapeHtml($dbError) ?></span>
             </div>
-            <?php } ?>
             <div class="info-row">
                 <span class="info-label">Resets en BD</span>
                 <span class="info-value"><?= (int)$resetsCount ?> registros</span>

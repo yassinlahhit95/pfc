@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 // No usa Guards de rol: debe ser accesible cuando must_change_password está activo.
-require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 require_once __DIR__ . '/../../modelos/conectar.php';
 

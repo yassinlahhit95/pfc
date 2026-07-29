@@ -1,13 +1,13 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . '/../../include/Totp.php';
+require_once __DIR__ . '/../../include/MfaService.php';
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 // Segundo factor en el login (TOTP o código de respaldo), para cualquier rol.
 // Hasta superarlo no existe sesión concedida → sin acceso al sistema.
-require_once __DIR__ . '/../../include/Security.php';
-require_once __DIR__ . '/../../include/Totp.php';
-require_once __DIR__ . '/../../include/MfaService.php';
-require_once __DIR__ . '/../../modelos/conectar.php';
 Security::initSession();
 @include_once __DIR__ . '/../../include/Logger.php';
 if (!class_exists('Logger')) {

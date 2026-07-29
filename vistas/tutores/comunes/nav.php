@@ -1,11 +1,9 @@
-<?php
+      <?php
+require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
-require_once __DIR__ . "/../../../config/Config.php";
-require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/tours.php";
-
 $datosTutor_menu        = obtenerTutorPorId($_SESSION['idTutor']);
 $nombreUsuario_menu     = $datosTutor_menu['nombreTutor'] ?? 'Tutor';
 $estudiantes_menu       = listarEstudiantesPorTutor($_SESSION['idTutor']);
@@ -32,15 +30,11 @@ function _nav_active_tutor($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
-  <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
-  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
   <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
-  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
@@ -49,7 +43,6 @@ function _nav_active_tutor($check) {
 </head>
 <body>
 <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-<?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
     <span class="blob b1"></span>
@@ -67,66 +60,43 @@ function _nav_active_tutor($check) {
         }
       } catch (e) {}
     </script>
-    <?php $navBrandSubtitle = 'Portal Familias'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
-
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
       <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_tutor('inicio') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>
         <span class="nav-label">Mi Resumen</span>
-        <?php if (_nav_active_tutor('inicio') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <span class="nav-section-title">MIS HIJOS</span>
-      <?php foreach ($estudiantes_menu as $estudianteMenu):
         $esHijoActivo = ($seccion ?? '') === 'hijo' && (int)($idEstudiante ?? 0) === (int)$estudianteMenu['idEstudiante'];
       ?>
         <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" data-tour="hijo" class="nav-item<?= $esHijoActivo ? ' active' : '' ?>">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
           <span class="nav-label"><?= Security::escapeHtml(explode(' ', $estudianteMenu['nombreEstudiante'])[0]) ?></span>
-          <?php if ($esHijoActivo) { ?><span class="nav-rail"></span><?php } ?>
         </a>
-      <?php endforeach; ?>
-
       <span class="nav-section-title">CENTRO</span>
-      <?php if (FeatureGuard::check('feature_anuncios')): ?>
       <a href="../anuncios/lista.php" class="nav-item<?= _nav_active_tutor('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label">Anuncios</span>
-        <?php if (_nav_active_tutor('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_eventos')): ?>
       <a href="../eventos/lista.php" class="nav-item<?= _nav_active_tutor('eventos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label">Eventos</span>
-        <?php if (_nav_active_tutor('eventos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <span class="nav-section-title">GESTIÓN</span>
-      <?php if (FeatureGuard::check('feature_pagos')): ?>
       <a href="../pagos/misPagos.php" data-tour="pagos" class="nav-item<?= _nav_active_tutor('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos y Recibos</span>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_chat')) { ?>
       <a href="../mensajes/chat.php" data-tour="mensajeria" class="nav-item<?= _nav_active_tutor('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Mensajería Centro</span>
-        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
-        <?php if (_nav_active_tutor('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php } ?>
     </nav>
 
     <nav class="sidebar-bottom-nav">
       <a href="../../ayuda.php" class="nav-item<?= ($seccion ?? '') === 'ayuda' ? ' active' : '' ?>">
         <span class="nav-ico"><i class="fas fa-question-circle" style="font-size:1.15rem;"></i></span>
         <span class="nav-label"><?= __('help_center', 'Centro de Ayuda') ?></span>
-        <?php if (($seccion ?? '') === 'ayuda') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <a href="../perfil/ver.php" class="nav-item<?= _nav_active_tutor('perfil') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
@@ -190,7 +160,6 @@ function _nav_active_tutor($check) {
         <button class="icon-btn theme-btn" id="theme">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>
-        <?php if (FeatureGuard::check('feature_chat')): ?>
         <div class="notif-wrap">
           <button class="icon-btn" id="notif-btn" aria-label="Notificaciones">
             <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
@@ -198,26 +167,21 @@ function _nav_active_tutor($check) {
           </button>
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
-            <?php if ($totalChatNoLeidos_menu > 0): ?>
             <a href="../mensajes/chat.php" class="notif-item">
               <span class="notif-ico"><i class="fas fa-comment-dots"></i></span>
               <div class="notif-body">
                 <span class="notif-label">Tienes <?= $totalChatNoLeidos_menu ?> mensaje(s) sin leer</span>
               </div>
             </a>
-            <?php else: ?>
             <div class="notif-empty">Sin mensajes nuevos</div>
-            <?php endif; ?>
             <div class="notif-footer">
               <a href="../mensajes/chat.php">Ver mensajería</a>
             </div>
           </div>
         </div>
-        <?php endif; ?>
       </div>
     </header>
 
-    <?php // Las vistas de tutores definen $seccion (no $seccionActual)
     if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         $cw_rol = 'tutor';
         $cw_id = (int)$_SESSION['idTutor'];
@@ -227,8 +191,6 @@ function _nav_active_tutor($check) {
     endif; ?>
 
     <div class="content" id="main-content" tabindex="-1">
-      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
-      <?php if ($tourPendiente_menu): ?>
       <script>
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
@@ -242,8 +204,6 @@ function _nav_active_tutor($check) {
         ]
       };
       </script>
-      <?php endif; ?>
-      <?php
           $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data"

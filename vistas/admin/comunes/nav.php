@@ -1,16 +1,14 @@
-<?php
+      <?php endif; ?>
+require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../include/AssetMin.php";
-require_once __DIR__ . "/../../../config/Config.php";
-require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/tours.php";
-
 $datosAdmin_menu    = obtenerDirectorPorId($_SESSION['idAdmin']);
 
 $tourPendiente_menu = !tourEstaCompletado((int)$_SESSION['idAdmin'], 'admin', 'primeros_pasos_v1');
@@ -54,21 +52,15 @@ function _nav_active_admin($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
-  <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
-  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
   <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
   <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
-  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
-  <?php if (FeatureGuard::check('feature_chat')): ?>
   <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
-  <?php endif; ?>
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
   <script defer src="../../../public/js/core/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/aula-digital.js') ?>"></script>
@@ -77,7 +69,6 @@ function _nav_active_admin($check) {
 </head>
 <body>
 <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-<?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
@@ -94,15 +85,12 @@ function _nav_active_admin($check) {
         }
       } catch (e) {}
     </script>
-    <?php $navBrandSubtitle = 'Campus Suite'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
-
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <!-- Dashboard -->
       <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_admin('inicio') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>
         <span class="nav-label">Dashboard</span>
-        <?php if (_nav_active_admin('inicio') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- ACADÉMICO -->
@@ -111,252 +99,171 @@ function _nav_active_admin($check) {
       <a href="../estudiantes/verEstudiantes.php" data-tour="estudiantes" class="nav-item<?= _nav_active_admin('estudiantes') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Estudiantes</span>
-        <?php if (_nav_active_admin('estudiantes') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../ciclos/verCiclos.php" class="nav-item<?= _nav_active_admin('ciclos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
         <span class="nav-label">Ciclos Formativos</span>
-        <?php if (_nav_active_admin('ciclos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../modulos/verModulos.php" class="nav-item<?= _nav_active_admin('modulos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg></span>
         <span class="nav-label">Módulos</span>
-        <?php if (_nav_active_admin('modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_fp_dual')): ?>
       <a href="../fp_dual/verEmpresas.php" class="nav-item<?= _nav_active_admin('fp_dual') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span>
         <span class="nav-label">FP Dual</span>
-        <?php if (_nav_active_admin('fp_dual') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_retos')): ?>
       <a href="../retos/verRetos.php" class="nav-item<?= _nav_active_admin('retos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
         <span class="nav-label">Retos</span>
-        <?php if (_nav_active_admin('retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php $notasFlyoutActivo = in_array($seccion, ['notas_modulos', 'notas_retos', 'notas_tfg', 'resultados_modulos'], true); ?>
       <div class="nav-flyout-wrap">
         <button type="button" class="nav-item nav-flyout-btn<?= $notasFlyoutActivo ? ' active' : '' ?>" aria-haspopup="true" aria-expanded="false">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
           <span class="nav-label">Notas</span>
           <span class="nav-flyout-caret"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-          <?php if ($notasFlyoutActivo) { ?><span class="nav-rail"></span><?php } ?>
         </button>
         <div class="nav-flyout-menu">
           <a href="../academico/calificacionesModulos.php" class="nav-flyout-item<?= _nav_active_admin('notas_modulos') ?>"><i class="fas fa-chart-simple"></i> Notas Módulos</a>
-          <?php if (FeatureGuard::check('feature_retos')): ?>
           <a href="../academico/calificacionesRetos.php" class="nav-flyout-item<?= _nav_active_admin('notas_retos') ?>"><i class="fas fa-trophy"></i> Notas Retos</a>
-          <?php endif; ?>
           <a href="../academico/calificacionesTFG.php" class="nav-flyout-item<?= _nav_active_admin('notas_tfg') ?>"><i class="fas fa-graduation-cap"></i> Notas TFG</a>
           <a href="../academico/resultadosFinales.php" class="nav-flyout-item<?= _nav_active_admin('resultados_modulos') ?>"><i class="fas fa-flag-checkered"></i> Resultados Finales</a>
         </div>
       </div>
 
-      <?php if (FeatureGuard::check('feature_fct')): ?>
       <a href="../fct/lista.php" class="nav-item<?= _nav_active_admin('fct') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
         <span class="nav-label">FCT</span>
-        <?php if (_nav_active_admin('fct') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <a href="../academico/configuracionAcademica.php" class="nav-item<?= _nav_active_admin('configuracion_academica') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <span class="nav-label">Configuración Académica</span>
-        <?php if (_nav_active_admin('configuracion_academica') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../academico/regionalExporters.php" class="nav-item<?= _nav_active_admin('regional_exporters') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         <span class="nav-label">Gestión Regional (Euskadi)</span>
-        <?php if (_nav_active_admin('regional_exporters') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../academico/gestionarGrupos.php" class="nav-item<?= _nav_active_admin('gestionar_grupos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Aulas / Grupos</span>
-        <?php if (_nav_active_admin('gestionar_grupos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_horario')): ?>
       <a href="../horario/horario.php" class="nav-item<?= _nav_active_admin('horario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label">Cuadro Horario</span>
-        <?php if (_nav_active_admin('horario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <a href="../asistencias/verAsistencias.php" class="nav-item<?= _nav_active_admin('asistencias') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <span class="nav-label"><?= __('attendance', 'Asistencias') ?></span>
-        <?php if (_nav_active_admin('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../asistencias/justificaciones.php" class="nav-item<?= _nav_active_admin('justificaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
         <span class="nav-label"><?= __('justificaciones', 'Justificaciones') ?></span>
-        <?php if (_nav_active_admin('justificaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_prematricula')): ?>
       <a href="../admisiones/listado.php" class="nav-item<?= _nav_active_admin('admisiones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
         <span class="nav-label">Admisiones</span>
-        <?php if ($totalAdmisionesPendientes_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalAdmisionesPendientes_menu ?></span><?php } ?>
-        <?php if (_nav_active_admin('admisiones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <!-- PERSONAL -->
       <span class="nav-section-title">PERSONAL</span>
 
       <a href="../directores/verDirectores.php" class="nav-item<?= _nav_active_admin('directores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
         <span class="nav-label">Directores</span>
-        <?php if (_nav_active_admin('directores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../profesores/verProfesores.php" class="nav-item<?= _nav_active_admin('profesores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Profesores</span>
-        <?php if (_nav_active_admin('profesores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_admin('tutores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Sistema Parental</span>
-        <?php if (_nav_active_admin('tutores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../secretarias/verSecretarias.php" class="nav-item<?= _nav_active_admin('secretarias') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11v4M10 13h4"/></svg></span>
         <span class="nav-label">Secretarias</span>
-        <?php if (_nav_active_admin('secretarias') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- COMUNICACIÓN -->
       <span class="nav-section-title">COMUNICACIÓN</span>
 
-      <?php if (FeatureGuard::check('feature_anuncios')): ?>
       <a href="../anuncios/gestionAnuncios.php" class="nav-item<?= _nav_active_admin('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label">Avisos</span>
-        <?php if (_nav_active_admin('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_mensajes')): ?>
       <a href="../mensajes/lista.php" class="nav-item<?= _nav_active_admin('reclamaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
         <span class="nav-label">Mensajeria</span>
-        <?php if ($totalSinLeer_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalSinLeer_menu ?></span><?php } ?>
-        <?php if (_nav_active_admin('reclamaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_chat')): ?>
       <a href="../chat/index.php" class="nav-item<?= _nav_active_admin('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
-        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
-        <?php if (_nav_active_admin('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_eventos')): ?>
       <a href="../eventos/gestionEventos.php" class="nav-item<?= _nav_active_admin('eventos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label">Eventos</span>
-        <?php if (_nav_active_admin('eventos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <!-- FINANZAS -->
       <span class="nav-section-title">FINANZAS</span>
 
-      <?php if (FeatureGuard::check('feature_pagos')): ?>
       <a href="../pagos/verPagosGeneral.php" data-tour="pagos" class="nav-item<?= _nav_active_admin('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
-        <?php if (_nav_active_admin('pagos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_gastos')): ?>
       <a href="../gastos/verGastos.php" class="nav-item<?= _nav_active_admin('gastos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
         <span class="nav-label">Gastos</span>
-        <?php if (_nav_active_admin('gastos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <!-- RECURSOS -->
       <span class="nav-section-title">RECURSOS</span>
 
-      <?php if (FeatureGuard::check('feature_gastos')): ?>
       <a href="../gastos/verGastos.php" class="nav-item<?= _nav_active_admin('gastos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
         <span class="nav-label">Gastos</span>
-        <?php if (_nav_active_admin('gastos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_inventario')): ?>
       <a href="../inventario/verInventario.php" class="nav-item<?= _nav_active_admin('inventario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
         <span class="nav-label">Inventario</span>
-        <?php if (_nav_active_admin('inventario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../inventario/gestionarPrestamos.php" class="nav-item<?= _nav_active_admin('prestamos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span>
         <span class="nav-label">Préstamos</span>
-        <?php if (_nav_active_admin('prestamos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <a href="../aulas/gestionAulas.php" class="nav-item<?= _nav_active_admin('aulas') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></span>
         <span class="nav-label">Aulas</span>
-        <?php if (_nav_active_admin('aulas') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- DOCUMENTOS -->
       <span class="nav-section-title">DOCUMENTOS</span>
 
-      <?php if (FeatureGuard::check('feature_informes')): ?>
       <a href="../informes/informes.php" class="nav-item<?= _nav_active_admin('informes') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg></span>
         <span class="nav-label">Informes PDF</span>
-        <?php if (_nav_active_admin('informes') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <!-- PLATAFORMA -->
       <span class="nav-section-title">PLATAFORMA</span>
 
-      <?php $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rgpd', 'saas_estado'], true); ?>
       <div class="nav-flyout-wrap">
         <button type="button" class="nav-item nav-flyout-btn<?= $configFlyoutActivo ? ' active' : '' ?>" aria-haspopup="true" aria-expanded="false">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span>
           <span class="nav-label">Configuración</span>
           <span class="nav-flyout-caret"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-          <?php if ($configFlyoutActivo) { ?><span class="nav-rail"></span><?php } ?>
         </button>
         <div class="nav-flyout-menu">
-          <?php if (FeatureGuard::check('feature_landing')): ?>
           <a href="../landing/builder.php" class="nav-flyout-item<?= _nav_active_admin('landing') ?>"><i class="fas fa-earth-americas"></i> Página Web</a>
           <a href="../blog/gestionBlog.php" class="nav-flyout-item<?= _nav_active_admin('blog') ?>"><i class="fas fa-newspaper"></i> Blog</a>
           <a href="../ofertaCiclos/gestion.php" class="nav-flyout-item<?= _nav_active_admin('ofertaCiclos') ?>"><i class="fas fa-layer-group"></i> Catálogo de ciclos</a>
-          <?php endif; ?>
           <a href="../rgpd/index.php" class="nav-flyout-item<?= _nav_active_admin('rgpd') ?>"><i class="fas fa-shield-halved"></i> RGPD</a>
           <a href="../saas/estado.php" class="nav-flyout-item<?= _nav_active_admin('saas_estado') ?>"><i class="fas fa-server"></i> Estado SaaS</a>
         </div>
@@ -365,7 +272,6 @@ function _nav_active_admin($check) {
       <a href="../configuracion/configuracion.php" data-tour="configuracion" class="nav-item<?= _nav_active_admin('configuracion') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <span class="nav-label">Configuración del Centro</span>
-        <?php if (_nav_active_admin('configuracion') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
     </nav>
@@ -374,7 +280,6 @@ function _nav_active_admin($check) {
       <a href="../../ayuda.php" class="nav-item<?= ($seccion ?? '') === 'ayuda' ? ' active' : '' ?>">
         <span class="nav-ico"><i class="fas fa-question-circle" style="font-size:1.15rem;"></i></span>
         <span class="nav-label"><?= __('help_center', 'Centro de Ayuda') ?></span>
-        <?php if (($seccion ?? '') === 'ayuda') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <a href="../directores/verDetallesDirectores.php?id=<?= (int)$_SESSION['idAdmin'] ?>" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
@@ -440,9 +345,7 @@ function _nav_active_admin($check) {
           </button>
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
-            <?php if (!empty($mensajesNotifAdmin)): ?>
             <div class="notif-group-title">Mensajes sin leer</div>
-            <?php foreach ($mensajesNotifAdmin as $msgNotif): ?>
             <a href="../mensajes/lista.php" class="notif-item">
               <span class="notif-ico"><i class="fas fa-envelope"></i></span>
               <div class="notif-body">
@@ -451,10 +354,7 @@ function _nav_active_admin($check) {
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>
-            <?php endforeach; ?>
-            <?php else: ?>
             <div class="notif-empty">Sin mensajes nuevos</div>
-            <?php endif; ?>
             <div class="notif-footer">
               <a href="../mensajes/lista.php">Ver mensajería</a>
             </div>
@@ -463,7 +363,6 @@ function _nav_active_admin($check) {
       </div>
     </header>
 
-    <?php if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         $cw_rol = 'admin';
         $cw_id = (int)$_SESSION['idAdmin'];
         $cw_unreadCount = (int)$totalChatNoLeidos_menu;
@@ -471,8 +370,6 @@ function _nav_active_admin($check) {
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
     <div class="content" id="main-content" tabindex="-1">
-      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
-      <?php if ($tourPendiente_menu): ?>
       <script>
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
@@ -486,8 +383,6 @@ function _nav_active_admin($check) {
         ]
       };
       </script>
-      <?php endif; ?>
-      <?php
       // SaaS platform message banner — shown on every admin page
       if (class_exists('FeatureGuard')) {
           if (FeatureGuard::isSuspended()) {
@@ -524,7 +419,6 @@ function _nav_active_admin($check) {
           }
       }
       ?>
-      <?php if (isset($_SESSION['idAdmin'])) {
           $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data"
@@ -549,9 +443,6 @@ function _nav_active_admin($check) {
                 }
             }
         </script>
-      <?php } ?>
-
-      <?php if ($tourPendiente_menu): ?>
       <script>
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
@@ -564,4 +455,3 @@ function _nav_active_admin($check) {
         ]
       };
       </script>
-      <?php endif; ?>

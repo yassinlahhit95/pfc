@@ -1,4 +1,5 @@
-<?php
+    <?php endif; ?>
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 
@@ -45,10 +46,7 @@ $csrf = Security::generateCSRFToken();
     <h1>Verificación en dos pasos</h1>
     <p class="sub">Introduce el código de tu app de autenticación.</p>
 
-    <?php if ($errores): ?>
       <div class="alert"><?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?></div>
-    <?php endif; ?>
-
     <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrf) ?>">
     <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code"
            pattern="[0-9A-Za-z\- ]*" maxlength="9" autofocus placeholder="000000">

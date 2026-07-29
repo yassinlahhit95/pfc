@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
 // ══════════════════════════════════════════════════════════════════════
 // BÚSQUEDA GLOBAL DE TUTORES (topbar)
 // Devuelve JSON [{type, label, url}] para dashboard-shell.js
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 if (empty($_SESSION['idTutor'])) { http_response_code(403); echo json_encode([]); exit; }
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); echo json_encode([]); exit; }

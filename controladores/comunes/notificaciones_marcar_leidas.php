@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
 // POST /controladores/comunes/notificaciones_marcar_leidas.php — { ids: [1,2,3] }
 // Marca como leídas notificaciones genéricas (tabla `notificaciones`,
 // modelos/notificaciones.php) del usuario de la sesión actual. Llamado desde
@@ -6,7 +8,6 @@
 // ya muestra el mensaje completo, así que verlo ahí cuenta como "visto".
 // No toca mensajería/chat (tienen su propio flujo de lectura al navegar al
 // hilo), solo las filas de esta tabla genérica.
-require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 
 header('Content-Type: application/json; charset=utf-8');

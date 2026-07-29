@@ -1,16 +1,15 @@
 <?php
-// ══════════════════════════════════════════════════════════════════════
-// DEPENDENCIAS
-// ══════════════════════════════════════════════════════════════════════
-header('Content-Type: application/json');
+require_once __DIR__ . "/../../modelos/configuracion.php";
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/RateLimiter.php";
 require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/ciclos.php";
-require_once __DIR__ . "/../../modelos/configuracion.php";
 require_once __DIR__ . "/../../include/ImageOptimizer.php";
 require_once __DIR__ . "/../../include/R2Client.php";
-
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
+header('Content-Type: application/json');
 // ══════════════════════════════════════════════════════════════════════
 // LÍMITE DE TASA
 // ══════════════════════════════════════════════════════════════════════

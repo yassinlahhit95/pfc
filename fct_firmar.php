@@ -1,8 +1,7 @@
-<?php
-session_start();
-require_once __DIR__ . "/include/Security.php";
+    <?php endif; ?>
 require_once __DIR__ . "/modelos/conectar.php";
-
+require_once __DIR__ . "/include/Security.php";
+session_start();
 $token = trim($_GET['token'] ?? $_POST['token'] ?? '');
 $exito = '';
 $error = '';
@@ -234,17 +233,14 @@ if (empty($token)) {
         <p>Firma de Diario de Prácticas FCT / Dual</p>
     </div>
 
-    <?php if ($exito): ?>
         <div class="alerta alerta-exito" style="margin-bottom:0;">
             <i class="fas fa-check-circle fa-2x" style="margin-right:12px; vertical-align:middle;"></i>
             <span style="vertical-align:middle;"><?= Security::escapeHtml($exito) ?></span>
         </div>
-    <?php elseif ($error): ?>
         <div class="alerta alerta-error" style="margin-bottom:0;">
             <i class="fas fa-exclamation-circle fa-2x" style="margin-right:12px; vertical-align:middle;"></i>
             <span style="vertical-align:middle;"><?= Security::escapeHtml($error) ?></span>
         </div>
-    <?php else: ?>
         <div class="meta-grid">
             <div class="meta-item">
                 <span>Estudiante</span>
@@ -266,7 +262,6 @@ if (empty($token)) {
 
         <h3 class="actividades-titulo">Jornadas pendientes de firma</h3>
         <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
-            <?php foreach ($diarios as $d): ?>
                 <div class="jornada-item">
                     <div>
                         <span class="jornada-fecha"><?= date('d/m/Y', strtotime($d['fecha'])) ?></span>
@@ -274,7 +269,6 @@ if (empty($token)) {
                     </div>
                     <div class="jornada-desc"><?= nl2br(Security::escapeHtml($d['actividades'])) ?></div>
                 </div>
-            <?php endforeach; ?>
         </div>
 
         <form method="POST" action="fct_firmar.php">
@@ -294,7 +288,6 @@ if (empty($token)) {
                 </button>
             </div>
         </form>
-    <?php endif; ?>
 </div>
 
 </body>

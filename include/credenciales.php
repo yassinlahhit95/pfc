@@ -1,6 +1,6 @@
 <?php
+require_once __DIR__ . '/../modelos/conectar.php';
 require_once __DIR__ . '/Security.php';
-
 // ══════════════════════════════════════════════════════════════════════
 // GENERACIÓN DE CREDENCIALES
 // ══════════════════════════════════════════════════════════════════════

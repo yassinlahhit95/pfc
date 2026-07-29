@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
+require_once __DIR__ . '/../../../include/Security.php';
 // GET /controladores/comunes/eventos/listar.php?start=YYYY-MM-DD&end=YYYY-MM-DD
 // Eventos del calendario para el usuario de la sesión actual, en el rango de
 // fechas dado. Admin ve todos los eventos (gestión); el resto de roles ve
 // solo lo que le corresponde según tipo_visibilidad/audiencia_json del evento.
-require_once __DIR__ . '/../../../include/Security.php';
 Security::initSession();
 
 header('Content-Type: application/json; charset=utf-8');

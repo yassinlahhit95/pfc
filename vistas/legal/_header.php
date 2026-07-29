@@ -1,4 +1,5 @@
-<?php
+        <?php endif; ?>
+require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 require_once __DIR__ . '/../../modelos/conectar.php';
@@ -25,7 +26,6 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= AssetMin::urlAbs(__DIR__ . '/../..', '/public/css/features/legal.css') ?>">
-    <?php if (!empty($extra_css)) foreach ((array)$extra_css as $_css):
         // Cada entrada puede ser una URL simple (recurso propio) o
         // ['url' => ..., 'integrity' => ...] para un CDN externo (SRI).
         $_cssUrl  = is_array($_css) ? ($_css['url'] ?? '') : $_css;
@@ -33,7 +33,6 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
         if ($_cssUrl === '') continue;
     ?>
     <link rel="stylesheet" href="<?= htmlspecialchars($_cssUrl) ?>"<?= $_cssIntg ? ' integrity="' . htmlspecialchars($_cssIntg) . '" crossorigin="anonymous"' : '' ?>>
-    <?php endforeach; ?>
 </head>
 <body>
 
@@ -79,10 +78,7 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
                  </select>
             </form>
             <a class="legal-access" href="/vistas/login.php"><?= __('Acceso', 'Acceso') ?></a>
-            <?php if ($prematriculaHabilitada): ?>
             <a class="legal-btn-primary" href="/vistas/admisiones/pre-matricula.php"><?= __('Pre-matrícula', 'Pre-matrícula') ?></a>
-            <?php endif; ?>
-            
             <!-- Burger (visible only on mobile) -->
             <button class="legal-nav-burger" id="legal-nav-burger" aria-label="Abrir menú" aria-expanded="false">
                 <span class="legal-nav-burger-line"></span>
@@ -114,9 +110,7 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
     
     <div class="legal-nav-movil-ctas">
         <a href="/vistas/login.php" class="legal-access-btn"><i class="fas fa-sign-in-alt"></i> Acceso Plataforma</a>
-        <?php if ($prematriculaHabilitada): ?>
         <a href="/vistas/admisiones/pre-matricula.php" class="legal-btn-primary"><i class="fas fa-file-signature"></i> Pre-matrícula online</a>
-        <?php endif; ?>
     </div>
 </nav>
 

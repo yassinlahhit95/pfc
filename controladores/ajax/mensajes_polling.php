@@ -1,10 +1,10 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . '/../../modelos/reclamaciones.php';
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../include/Security.php';
-require_once __DIR__ . '/../../modelos/reclamaciones.php';
-
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('X-Content-Type-Options: nosniff');

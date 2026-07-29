@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../../modelos/conectar.php';
+require_once __DIR__ . '/../../../include/Security.php';
+require_once __DIR__ . '/../../../include/MfaService.php';
 // Marca un tour de onboarding como completado (terminado o saltado) para el
 // usuario actual, cualquiera que sea su rol — llamado por
 // public/js/core/onboarding-tour.js al terminar o pulsar "Saltar".
-require_once __DIR__ . '/../../../include/Security.php';
-require_once __DIR__ . '/../../../include/MfaService.php';
 Security::initSession();
 
 header('Content-Type: application/json; charset=utf-8');

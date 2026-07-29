@@ -1,19 +1,17 @@
 <?php
+require_once __DIR__ . '/modelos/conectar.php';
+require_once __DIR__ . '/include/Security.php';
+require_once __DIR__ . '/modelos/configuracion.php';
+require_once __DIR__ . '/include/FeatureGuard.php';
+require_once __DIR__ . '/modelos/landing.php';
+require_once __DIR__ . '/include/landing/secciones.php';
+require_once __DIR__ . '/include/landing/plantillas.php';
 // ══════════════════════════════════════════════════════════════════════
 // LANDING PÚBLICA DEL CENTRO — renderizada desde el constructor de landing
 // ══════════════════════════════════════════════════════════════════════
 // Renderiza las secciones publicadas (version='live') según la plantilla
 // elegida. Con ?preview=1 (solo sesión de admin) renderiza el borrador.
 // Load database connection BEFORE Security (which validates DB charset on init)
-require_once __DIR__ . '/modelos/conectar.php';
-require_once __DIR__ . '/modelos/configuracion.php';
-
-require_once __DIR__ . '/include/Security.php';
-require_once __DIR__ . '/include/FeatureGuard.php';
-require_once __DIR__ . '/modelos/landing.php';
-require_once __DIR__ . '/include/landing/secciones.php';
-require_once __DIR__ . '/include/landing/plantillas.php';
-
 $preview = isset($_GET['preview']);
 if ($preview) {
     if (session_status() === PHP_SESSION_NONE) session_start();

@@ -1,13 +1,13 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . '/../../include/Totp.php';
+require_once __DIR__ . '/../../include/MfaService.php';
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 // Activa MFA para cualquier rol: verifica el primer código TOTP, guarda el
 // secreto y genera códigos de respaldo (mostrados una sola vez).
-require_once __DIR__ . '/../../include/Security.php';
-require_once __DIR__ . '/../../include/Totp.php';
-require_once __DIR__ . '/../../include/MfaService.php';
-require_once __DIR__ . '/../../modelos/conectar.php';
 Security::initSession();
 
 // ══════════════════════════════════════════════════════════════════════

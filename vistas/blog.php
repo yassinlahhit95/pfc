@@ -1,18 +1,17 @@
 <?php
-// ══════════════════════════════════════════════════════════════════════
-// BLOG PÚBLICO DEL CENTRO
-// ══════════════════════════════════════════════════════════════════════
-// /vistas/blog.php            → listado con categorías y paginación
-// /vistas/blog.php?post=slug  → detalle de una entrada
+require_once __DIR__ . '/../modelos/configuracion.php';
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../include/FeatureGuard.php';
-require_once __DIR__ . '/../modelos/configuracion.php';
 require_once __DIR__ . '/../modelos/landing.php';
 require_once __DIR__ . '/../modelos/blog.php';
 require_once __DIR__ . '/../include/landing/secciones.php';
 require_once __DIR__ . '/../include/landing/plantillas.php';
 require_once __DIR__ . '/../include/R2Client.php';
-
+// ══════════════════════════════════════════════════════════════════════
+// BLOG PÚBLICO DEL CENTRO
+// ══════════════════════════════════════════════════════════════════════
+// /vistas/blog.php            → listado con categorías y paginación
+// /vistas/blog.php?post=slug  → detalle de una entrada
 $cfg = obtenerConfiguracionCentro();
 
 if (!FeatureGuard::check('feature_landing')) {
@@ -70,43 +69,27 @@ if ($post) {
           <a href="/">Inicio</a>
           <i class="fas fa-angle-right"></i>
           <a href="/vistas/blog.php">Blog</a>
-          <?php if ($post['categoria'] !== ''): ?>
           <i class="fas fa-angle-right"></i>
           <a href="/vistas/blog.php?categoria=<?= urlencode($post['categoria']) ?>"><?= Security::escapeHtml($post['categoria']) ?></a>
-          <?php endif; ?>
         </nav>
-        <?php if ($post['categoria'] !== ''): ?>
         <span class="lp-blog-chip"><?= Security::escapeHtml($post['categoria']) ?></span>
-        <?php endif; ?>
         <h1><?= Security::escapeHtml($post['titulo']) ?></h1>
         <div class="lp-articulo-meta">
           <span><i class="far fa-calendar"></i> <?= date('d/m/Y', strtotime($post['fechaPublicacion'])) ?></span>
-          <?php if ($post['autor'] !== ''): ?>
           <span><i class="far fa-user"></i> <?= Security::escapeHtml($post['autor']) ?></span>
-          <?php endif; ?>
           <span><i class="far fa-clock"></i> <?= $minLectura ?> min de lectura</span>
         </div>
       </div>
     </header>
 
     <div class="lp-contenedor lp-articulo-contenedor">
-      <?php if ($imgPost): ?>
       <figure class="lp-articulo-portada">
         <img src="<?= Security::escapeHtml($imgPost) ?>" alt="<?= Security::escapeHtml($post['titulo']) ?>">
       </figure>
-      <?php endif; ?>
-
       <div class="lp-articulo-cuerpo">
-        <?php if ($post['resumen'] !== ''): ?>
         <p class="lp-articulo-entradilla"><?= nl2br(Security::escapeHtml($post['resumen'])) ?></p>
-        <?php endif; ?>
-        <?php if ($contenidoEsHtml): ?>
         <?= $post['contenido'] /* ya saneado con HtmlSanitizer al guardar */ ?>
-        <?php else: ?>
-        <?php foreach ($parrafos as $parrafo): if (trim($parrafo) === '') continue; ?>
         <p><?= nl2br(Security::escapeHtml(trim($parrafo))) ?></p>
-        <?php endforeach; ?>
-        <?php endif; ?>
       </div>
 
       <footer class="lp-articulo-pie">
@@ -114,14 +97,12 @@ if ($post) {
       </footer>
     </div>
 
-    <?php if (!empty($relacionados)): ?>
     <section class="lp-sec lp-blog-relacionados">
       <div class="lp-contenedor">
         <div class="lp-sec-cabecera">
           <h2>Seguir leyendo</h2>
         </div>
         <div class="lp-blog-grid">
-          <?php foreach ($relacionados as $rel):
               $imgRel = R2Client::imagenUrl(
                   __DIR__ . '/../public/uploads/blog/' . basename($rel['imagen']),
                   $rel['imagen'] !== '' ? '/public/uploads/blog/' . basename($rel['imagen']) : '',
@@ -129,14 +110,9 @@ if ($post) {
               ); ?>
           <article class="lp-blog-card">
             <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($rel['slug']) ?>">
-              <?php if ($imgRel): ?>
               <img loading="lazy" src="<?= Security::escapeHtml($imgRel) ?>" alt="">
-              <?php else: ?>
               <span class="lp-blog-card-placeholder"><i class="far fa-newspaper"></i></span>
-              <?php endif; ?>
-              <?php if ($rel['categoria'] !== ''): ?>
               <span class="lp-blog-chip"><?= Security::escapeHtml($rel['categoria']) ?></span>
-              <?php endif; ?>
             </a>
             <div class="lp-blog-card-body">
               <div class="lp-blog-meta">
@@ -146,13 +122,10 @@ if ($post) {
               <span class="lp-blog-leer">Leer entrada <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
-          <?php endforeach; ?>
         </div>
       </div>
     </section>
-    <?php endif; ?>
   </article>
-<?php
     include __DIR__ . '/landing/_footer.php';
     exit;
 }
@@ -198,27 +171,19 @@ include __DIR__ . '/landing/_nav.php';
   <section class="lp-sec lp-blog-listado" id="blog">
     <div class="lp-contenedor">
 
-      <?php if (!empty($categorias)): ?>
       <nav class="lp-blog-cats" aria-label="Categorías">
         <a href="<?= blogUrl() ?>" class="lp-blog-cat<?= $categoria === '' ? ' activa' : '' ?>">Todas</a>
-        <?php foreach ($categorias as $categoriaItem): ?>
         <a href="<?= Security::escapeHtml(blogUrl(1, $categoriaItem['categoria'])) ?>"
            class="lp-blog-cat<?= $categoria === $categoriaItem['categoria'] ? ' activa' : '' ?>">
           <?= Security::escapeHtml($categoriaItem['categoria']) ?> <span><?= (int)$categoriaItem['total'] ?></span>
         </a>
-        <?php endforeach; ?>
       </nav>
-      <?php endif; ?>
-
-      <?php if (empty($posts)): ?>
       <div class="lp-blog-vacio">
         <i class="far fa-newspaper"></i>
         <h2>Todavía no hay entradas<?= $categoria !== '' ? ' en esta categoría' : '' ?></h2>
         <p>Muy pronto publicaremos aquí las noticias y novedades del centro.</p>
       </div>
-      <?php else: ?>
       <div class="lp-blog-grid">
-        <?php foreach ($posts as $i => $postItem):
             $img = R2Client::imagenUrl(
                 __DIR__ . '/../public/uploads/blog/' . basename($postItem['imagen']),
                 $postItem['imagen'] !== '' ? '/public/uploads/blog/' . basename($postItem['imagen']) : '',
@@ -227,49 +192,28 @@ include __DIR__ . '/landing/_nav.php';
             $destacada = $pagina === 1 && $i === 0 && $categoria === ''; ?>
         <article class="lp-blog-card<?= $destacada ? ' lp-blog-card-destacada' : '' ?>">
           <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($postItem['slug']) ?>">
-            <?php if ($img): ?>
             <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="">
-            <?php else: ?>
             <span class="lp-blog-card-placeholder"><i class="far fa-newspaper"></i></span>
-            <?php endif; ?>
-            <?php if ($postItem['categoria'] !== ''): ?>
             <span class="lp-blog-chip"><?= Security::escapeHtml($postItem['categoria']) ?></span>
-            <?php endif; ?>
           </a>
           <div class="lp-blog-card-body">
             <div class="lp-blog-meta">
               <span><i class="far fa-calendar"></i> <?= date('d/m/Y', strtotime($postItem['fechaPublicacion'])) ?></span>
-              <?php if ($postItem['autor'] !== ''): ?>
               <span><i class="far fa-user"></i> <?= Security::escapeHtml($postItem['autor']) ?></span>
-              <?php endif; ?>
             </div>
             <h2><a href="/vistas/blog.php?post=<?= Security::escapeHtml($postItem['slug']) ?>"><?= Security::escapeHtml($postItem['titulo']) ?></a></h2>
-            <?php if ($postItem['resumen'] !== ''): ?>
             <p><?= Security::escapeHtml(mb_substr($postItem['resumen'], 0, $destacada ? 260 : 140)) ?><?= mb_strlen($postItem['resumen']) > ($destacada ? 260 : 140) ? '…' : '' ?></p>
-            <?php endif; ?>
             <span class="lp-blog-leer">Leer entrada <i class="fas fa-arrow-right"></i></span>
           </div>
         </article>
-        <?php endforeach; ?>
       </div>
 
-      <?php if ($totalPags > 1): ?>
       <nav class="lp-blog-paginacion" aria-label="Paginación">
-        <?php if ($pagina > 1): ?>
         <a href="<?= Security::escapeHtml(blogUrl($pagina - 1, $categoria)) ?>" class="lp-blog-pag-btn" aria-label="Anterior"><i class="fas fa-angle-left"></i></a>
-        <?php endif; ?>
-        <?php for ($n = 1; $n <= $totalPags; $n++): ?>
         <a href="<?= Security::escapeHtml(blogUrl($n, $categoria)) ?>"
            class="lp-blog-pag-btn<?= $n === $pagina ? ' activa' : '' ?>"<?= $n === $pagina ? ' aria-current="page"' : '' ?>><?= $n ?></a>
-        <?php endfor; ?>
-        <?php if ($pagina < $totalPags): ?>
         <a href="<?= Security::escapeHtml(blogUrl($pagina + 1, $categoria)) ?>" class="lp-blog-pag-btn" aria-label="Siguiente"><i class="fas fa-angle-right"></i></a>
-        <?php endif; ?>
       </nav>
-      <?php endif; ?>
-      <?php endif; ?>
-
     </div>
   </section>
-<?php
 include __DIR__ . '/landing/_footer.php';

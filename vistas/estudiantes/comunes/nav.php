@@ -1,10 +1,9 @@
-<?php
+      <?php } ?>
+require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../include/FPSystem.php";
 require_once __DIR__ . "/../../../include/AssetMin.php";
-require_once __DIR__ . "/../../../config/Config.php";
-require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
@@ -16,7 +15,7 @@ require_once __DIR__ . "/../../../modelos/notificaciones.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../include/Cache.php";
 require_once __DIR__ . "/../../../modelos/tours.php";
-
+        require_once __DIR__ . "/../../../modelos/chat.php";
 $idEstudiante           = $_SESSION['idEstudiante'];
 $datosEstudiante_menu   = obtenerEstudiantePorId($idEstudiante);
 $idCicloEst_menu        = $datosEstudiante_menu['idCiclo'] ?? 0;
@@ -91,16 +90,12 @@ function _nav_active_est($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
-  <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
-  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
   <link rel="stylesheet" href="../../../public/css/features/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/aula-digital.css') ?>" />
   <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
-  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
   <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
@@ -112,7 +107,6 @@ function _nav_active_est($check) {
 </head>
 <body>
 <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-<?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 <div class="app" id="app">
   <div class="bg-mesh" aria-hidden="true">
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
@@ -129,8 +123,6 @@ function _nav_active_est($check) {
         }
       } catch (e) {}
     </script>
-    <?php $navBrandSubtitle = 'Campus Suite'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
-
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <!-- Inicio -->
@@ -139,147 +131,99 @@ function _nav_active_est($check) {
         <span class="nav-label">Ini      <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_est('inicio') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
         <span class="nav-label"><?= __('home', 'Inicio') ?></span>
-        <?php if (_nav_active_est('inicio') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- MIS ESTUDIOS -->
       <span class="nav-section-title"><?= __('mis_estudios', 'MIS ESTUDIOS') ?></span>
 
-      <?php if (FeatureGuard::check('feature_retos')): ?>
       <a href="../retos/lista.php" class="nav-item<?= _nav_active_est('retos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
         <span class="nav-label"><?= __('challenges', 'Retos') ?></span>
-        <?php if ($totalRetos_menu > 0) { ?><span class="nav-badge"><?= $totalRetos_menu ?></span><?php } ?>
-        <?php if (_nav_active_est('retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <a href="../calificaciones/lista.php" class="nav-item<?= (in_array($seccionActual ?? '', ['calificaciones', 'notas_retos', 'resultados_finales'])) ? ' active' : '' ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
         <span class="nav-label"><?= __('grades', 'Calificaciones') ?></span>
-        <?php if (in_array($seccionActual ?? '', ['calificaciones', 'notas_retos', 'resultados_finales'])) { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_subida_tfg') && FPSystem::isTFGYear($datosEstudiante_menu['anioEstudio'] ?? '')) { ?>
       <a href="../pfc/subir.php" class="nav-item<?= _nav_active_est('tfg') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
         <span class="nav-label"><?= __('my_tfg', 'Mi TFG') ?></span>
-        <?php if (_nav_active_est('tfg') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php } ?>
-
       <a href="../horario/horario.php" class="nav-item<?= _nav_active_est('horario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label"><?= __('schedule', 'Horario') ?></span>
-        <?php if (_nav_active_est('horario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../asistencias/lista.php" class="nav-item<?= _nav_active_est('asistencias') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <span class="nav-label"><?= __('my_attendance', 'Mis Faltas') ?></span>
-        <?php if (_nav_active_est('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_fct')): ?>
       <a href="../fct/diario.php" class="nav-item<?= _nav_active_est('fct_diario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
         <span class="nav-label"><?= __('my_fct_diary', 'Mi Diario FCT') ?></span>
-        <?php if (_nav_active_est('fct_diario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
       <!-- AULA DIGITAL -->
       <span class="nav-section-title"><?= __('digital_classroom', 'AULA DIGITAL') ?></span>
 
       <a href="../aula/sesiones.php" class="nav-item<?= _nav_active_est('aula_sesiones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
         <span class="nav-label"><?= __('digital_classroom', 'Aula Digital') ?></span>
-        <?php if (_nav_active_est('aula_sesiones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../aula/recursos.php" data-tour="recursos" class="nav-item<?= _nav_active_est('aula_recursos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label"><?= __('resources', 'Recursos') ?></span>
-        <?php if (_nav_active_est('aula_recursos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../aula/favoritos.php" class="nav-item<?= _nav_active_est('aula_favoritos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
         <span class="nav-label"><?= __('favorites', 'Favoritos') ?></span>
-        <?php if (_nav_active_est('aula_favoritos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../aula/tareas.php" class="nav-item<?= _nav_active_est('aula_tareas') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
         <span class="nav-label"><?= __('tasks', 'Tareas') ?></span>
-        <?php if (_nav_active_est('aula_tareas') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../aula/mis_entregas.php" data-tour="entregas" class="nav-item<?= _nav_active_est('aula_entregas') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg></span>
         <span class="nav-label"><?= __('my_submissions', 'Mis Entregas') ?></span>
-        <?php if (_nav_active_est('aula_entregas') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- PORTAL -->
       <span class="nav-section-title"><?= __('portal', 'PORTAL') ?></span>
 
-      <?php if (FeatureGuard::check('feature_anuncios')): ?>
       <a href="../anuncios/lista.php" class="nav-item<?= _nav_active_est('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label"><?= __('announcements', 'Anuncios') ?></span>
-        <?php if ($totalAnuncios_menu > 0) { ?><span class="nav-badge"><?= $totalAnuncios_menu ?></span><?php } ?>
-        <?php if (_nav_active_est('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_mensajes')): ?>
       <a href="../mensajes/lista.php" class="nav-item<?= _nav_active_est('reclamaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
         <span class="nav-label"><?= __('messaging', 'Mensajería') ?></span>
-        <?php if ($totalMensajes_menu > 0) { ?><span class="nav-badge<?= ($totalSinLeer_menu > 0) ? ' nav-badge-alert' : '' ?>"><?= $totalMensajes_menu ?></span><?php } ?>
-        <?php if (_nav_active_est('reclamaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
-      <?php if (FeatureGuard::check('feature_chat')) { ?>
       <a href="../chat/index.php" class="nav-item<?= _nav_active_est('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label"><?= __('chat', 'Chat') ?></span>
-        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
-        <?php if (_nav_active_est('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php } ?>
-
-      <?php if (FeatureGuard::check('feature_pagos')): ?>
       <a href="../pagos/lista.php" data-tour="pagos" class="nav-item<?= _nav_active_est('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label"><?= __('payments', 'Pagos') ?></span>
-        <?php if ($totalPagos_menu > 0) { ?><span class="nav-badge"><?= $totalPagos_menu ?></span><?php } ?>
-        <?php if (_nav_active_est('pagos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>hp endif; ?>
-
-      <?php if (FeatureGuard::check('feature_eventos')): ?>
       <a href="../eventos/lista.php" class="nav-item<?= _nav_active_est('eventos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>
         <span class="nav-label">Eventos</span>
-        <?php if (_nav_active_est('eventos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
-      <?php endif; ?>
-
     </nav>
 
     <nav class="sidebar-bottom-nav">
       <a href="../../ayuda.php" class="nav-item<?= ($seccionActual ?? '') === 'ayuda' ? ' active' : '' ?>">
         <span class="nav-ico"><i class="fas fa-question-circle" style="font-size:1.15rem;"></i></span>
         <span class="nav-label"><?= __('help_center', 'Centro de Ayuda') ?></span>
-        <?php if (($seccionActual ?? '') === 'ayuda') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <a href="../perfil/ver.php" class="nav-item<?= _nav_active_est('perfil') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
         <span class="nav-label"><?= __('my_profile', 'Mi Perfil') ?></span>
-        <?php if (_nav_active_est('perfil') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <a href="../../../controladores/logout.php" class="nav-item nav-item-logout">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></span>
@@ -346,9 +290,7 @@ function _nav_active_est($check) {
                data-aula-notif-ids="<?= Security::escapeHtml(implode(',', array_column($notifAula_menu, 'idNotificacion'))) ?>">
             <div class="notif-panel-head">Notificaciones</div>
 
-            <?php if (!empty($notifGenericas_menu)): ?>
             <div class="notif-group-title">Novedades</div>
-            <?php foreach ($notifGenericas_menu as $genNotif): ?>
             <a href="<?= Security::escapeHtml($genNotif['url'] ?: '#') ?>" class="notif-item">
               <span class="notif-ico"><i class="fas fa-bell"></i></span>
               <div class="notif-body">
@@ -357,12 +299,7 @@ function _nav_active_est($check) {
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>
-            <?php endforeach; ?>
-            <?php endif; ?>
-
-            <?php if (!empty($notifAula_menu)): ?>
             <div class="notif-group-title">Aula Digital</div>
-            <?php foreach ($notifAula_menu as $aulaNotif): ?>
             <a href="<?= Security::escapeHtml($aulaNotif['url']) ?>" class="notif-item">
               <span class="notif-ico"><i class="fas fa-chalkboard"></i></span>
               <div class="notif-body">
@@ -371,12 +308,7 @@ function _nav_active_est($check) {
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>
-            <?php endforeach; ?>
-            <?php endif; ?>
-
-            <?php if (!empty($mensajesNotif)): ?>
             <div class="notif-group-title">Mensajes sin leer</div>
-            <?php foreach ($mensajesNotif as $msgNotif): ?>
             <a href="../mensajes/detalles.php?id=<?= (int)$msgNotif['idReclamacion'] ?>" class="notif-item">
               <span class="notif-ico"><i class="fas fa-envelope"></i></span>
               <div class="notif-body">
@@ -385,12 +317,7 @@ function _nav_active_est($check) {
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>
-            <?php endforeach; ?>
-            <?php endif; ?>
-
-            <?php if (!empty($pagosNotif)): ?>
             <div class="notif-group-title">Pagos recientes</div>
-            <?php foreach ($pagosNotif as $pagoNotif): ?>
             <a href="../pagos/lista.php" class="notif-item notif-item--pago" data-pid="<?= (int)$pagoNotif['idPago'] ?>">
               <span class="notif-ico"><i class="fas fa-credit-card"></i></span>
               <div class="notif-body">
@@ -399,13 +326,7 @@ function _nav_active_est($check) {
               </div>
               <span class="notif-badge-new notif-pago-new">Nuevo</span>
             </a>
-            <?php endforeach; ?>
-            <?php endif; ?>
-
-            <?php if (empty($notifGenericas_menu) && empty($notifAula_menu) && empty($mensajesNotif) && empty($pagosNotif)): ?>
             <div class="notif-empty">Sin notificaciones nuevas</div>
-            <?php endif; ?>
-
             <div class="notif-footer">
               <a href="../mensajes/lista.php">Ver mensajería</a>
               <a href="../pagos/lista.php">Ver pagos</a>
@@ -416,8 +337,6 @@ function _nav_active_est($check) {
       </div>
     </header>
 
-    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
-        require_once __DIR__ . "/../../../modelos/chat.php";
         $cw_rol = 'estudiante';
         $cw_id = (int)$_SESSION['idEstudiante'];
         $cw_unreadCount = (int)chatContarNoLeidos('estudiante', $cw_id);
@@ -426,8 +345,6 @@ function _nav_active_est($check) {
     endif; ?>
 
     <div class="content" id="main-content" tabindex="-1">
-      <?php require __DIR__ . '/../../comunes/breadcrumb.php'; ?>
-      <?php if ($tourPendiente_menu): ?>
       <script>
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
@@ -441,8 +358,6 @@ function _nav_active_est($check) {
         ]
       };
       </script>
-      <?php endif; ?>
-      <?php if (isset($_SESSION['idEstudiante'])) {
           $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data" 
@@ -467,4 +382,3 @@ function _nav_active_est($check) {
                 }
             }
         </script>
-      <?php } ?>

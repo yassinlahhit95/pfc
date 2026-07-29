@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-
+require_once __DIR__ . '/../../modelos/conectar.php';
 // POST /api/v1/change-password.php — self-service password change, all 5 roles.
 // Body: { current_password, new_password }
 // Requires the current password (unlike the web's forced must_change_password

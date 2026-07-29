@@ -1,9 +1,9 @@
 <?php
+require_once __DIR__ . '/../../config/Config.php';
+require_once __DIR__ . '/../../include/Security.php';
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../config/Config.php';
-require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/chat.php';

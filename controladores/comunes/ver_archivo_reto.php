@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . "/../../modelos/retos.php";
+require_once __DIR__ . "/../../include/FileServer.php";
 // ══════════════════════════════════════════════════════════════════════
 // Sirve UN archivo individual de un reto (public/uploads/retos/ está
 // bloqueado a acceso directo por su .htaccess — "Require all denied" — y
@@ -9,10 +13,6 @@
 // el fichero en disco o solo en R2. Misma lógica de autorización que
 // descargar_zip_reto.php, reutilizada tal cual.
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../include/Security.php';
-require_once __DIR__ . "/../../modelos/retos.php";
-require_once __DIR__ . "/../../include/FileServer.php";
-
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 $idArchivo = (int)($_GET['id'] ?? 0);

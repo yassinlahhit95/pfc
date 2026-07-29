@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-
+require_once __DIR__ . '/../../modelos/conectar.php';
 // POST  /api/v1/auth.php  — login  → returns Bearer token
 // DELETE /api/v1/auth.php — logout → revokes current token
 
