@@ -114,7 +114,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 FilledButton(
                   onPressed: _saving ? null : _submit,
                   child: _saving
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                          ),
+                        )
                       : const Text('Guardar'),
                 ),
               ],

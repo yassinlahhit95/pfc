@@ -233,28 +233,31 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
           final niveles = lookups['niveles'] as List? ?? [];
           final ciclos = lookups['ciclos'] as List? ?? [];
 
+          final textTheme = Theme.of(context).textTheme;
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Filtros', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Filtros', style: textTheme.titleLarge),
               const SizedBox(height: 16),
               DropdownButtonFormField<int?>(
                 value: _nivel,
+                isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Nivel'),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Todos los niveles')),
-                  ...niveles.map((n) => DropdownMenuItem(value: n['idNivel'] as int, child: Text(n['nombreNivel']))),
+                  ...niveles.map((n) => DropdownMenuItem(value: n['idNivel'] as int, child: Text(n['nombreNivel'], overflow: TextOverflow.ellipsis, maxLines: 1))),
                 ],
                 onChanged: (val) => setState(() => _nivel = val),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int?>(
                 value: _ciclo,
+                isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Ciclo'),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Todos los ciclos')),
-                  ...ciclos.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo']))),
+                  ...ciclos.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo'], overflow: TextOverflow.ellipsis, maxLines: 1))),
                 ],
                 onChanged: (val) => setState(() => _ciclo = val),
               ),

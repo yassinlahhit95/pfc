@@ -160,7 +160,14 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
               FilledButton(
                 onPressed: _sending ? null : _send,
                 child: _sending
-                    ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    ? SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                        ),
+                      )
                     : const Text('Enviar mensaje'),
               ),
             ],

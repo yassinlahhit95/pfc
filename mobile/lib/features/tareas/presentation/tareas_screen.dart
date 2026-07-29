@@ -49,10 +49,10 @@ class _TareasScreenState extends ConsumerState<TareasScreen> {
                         try {
                           await ref.read(classroomRepositoryProvider).togglePublish(task.id);
                           ref.invalidate(allTasksProvider);
-                        } catch (_) {
+                        } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Error al cambiar el estado')),
+                              SnackBar(content: Text('Error al cambiar el estado: $e')),
                             );
                           }
                         }
@@ -88,8 +88,8 @@ class _GlobalTaskTile extends StatelessWidget {
 
     final isEntregado = task.estado == 'entregado' || task.estado == 'calificado';
     final estadoColor = task.estado == 'calificado'
-        ? Colors.blue
-        : (isEntregado ? Colors.green : (task.estado == 'borrador' ? Colors.orange : Colors.red));
+        ? AppColors.azulLight
+        : (isEntregado ? AppColors.verdeLight : (task.estado == 'borrador' ? AppColors.naranjaLight : AppColors.rojoLight));
 
     return Card(
       elevation: 0,
@@ -166,7 +166,7 @@ class _GlobalTaskTile extends StatelessWidget {
                     ),
                     Text(
                       '${task.totalCorregidas} corregidas',
-                      style: textTheme.bodySmall?.copyWith(color: Colors.green),
+                      style: textTheme.bodySmall?.copyWith(color: AppColors.verdeLight),
                     ),
                   ],
                 ),
@@ -181,9 +181,9 @@ class _GlobalTaskTile extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.stars_rounded, size: 16, color: Colors.amber.shade700),
+                      Icon(Icons.stars_rounded, size: 16, color: AppColors.naranjaLight),
                       const SizedBox(width: Space.sm),
-                      Text('Nota: ${task.nota}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Nota: ${task.nota}', style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),

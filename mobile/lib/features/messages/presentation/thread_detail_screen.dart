@@ -123,7 +123,14 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                   IconButton.filled(
                     onPressed: _sending ? null : _send,
                     icon: _sending
-                        ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        ? SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                            ),
+                          )
                         : const Icon(Icons.arrow_upward_rounded),
                   ),
                 ],

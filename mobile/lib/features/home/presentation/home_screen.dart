@@ -253,6 +253,7 @@ class HomeScreen extends ConsumerWidget {
             ref.invalidate(gradesProvider);
             ref.invalidate(scheduleProvider);
             ref.invalidate(pendingGradesCountProvider);
+            ref.invalidate(dashboardStatsProvider);
           },
           child: ListView(
           padding: const EdgeInsets.fromLTRB(Space.xl, Space.xl, Space.xl, Space.xxxl),
@@ -474,12 +475,10 @@ class _MetricCard extends StatelessWidget {
       ],
     );
 
-    return Expanded(
-      child: AppCard(
-        onTap: onTap,
-        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
-        child: cardContent,
-      ),
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
+      child: cardContent,
     );
   }
 }

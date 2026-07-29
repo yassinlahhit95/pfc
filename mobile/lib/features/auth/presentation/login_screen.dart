@@ -260,10 +260,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                   child: FilledButton(
                                     onPressed: isLoading ? null : _submit,
                                     child: isLoading
-                                        ? const SizedBox(
+                                        ? SizedBox(
                                             height: 20,
                                             width: 20,
-                                            child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.4,
+                                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                                            ),
                                           )
                                         : const Text('Entrar'),
                                   ),
@@ -426,7 +429,7 @@ class _AppMark extends StatelessWidget {
             boxShadow: cardShadow(scheme.brightness),
           ),
           alignment: Alignment.center,
-          child: const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 30),
+          child: Icon(Icons.auto_stories_rounded, color: Theme.of(context).colorScheme.onPrimary, size: 30),
         ),
         const SizedBox(height: Space.lg),
         Text('AulaPro', style: textTheme.headlineSmall),

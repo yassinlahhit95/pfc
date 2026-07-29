@@ -179,14 +179,14 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    height: 200, 
-                    color: Colors.grey.withOpacity(0.1),
+                    height: 200,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: const Center(child: CircularProgressIndicator()),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    height: 200, 
-                    color: Colors.grey.withOpacity(0.1),
-                    child: const Center(child: Icon(Icons.broken_image)),
+                    height: 200,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: Center(child: Icon(Icons.broken_image, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                   ),
                 ),
               )
@@ -198,7 +198,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   borderRadius: BorderRadius.circular(Radii.md),
                   border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                 ),
-                child: const Center(child: Icon(Icons.camera_alt_outlined, size: 40, color: Colors.grey)),
+                child: Center(child: Icon(Icons.camera_alt_outlined, size: 40, color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ),
               
             const SizedBox(height: Space.md),
@@ -225,7 +225,16 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             const SizedBox(height: Space.xxxl),
             FilledButton.icon(
               onPressed: _loading ? null : _submit,
-              icon: _loading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.save),
+              icon: _loading
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                      ),
+                    )
+                  : const Icon(Icons.save),
               label: Text(_loading ? 'Guardando...' : 'Guardar Dispositivo'),
             ),
           ],

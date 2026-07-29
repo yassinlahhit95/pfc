@@ -353,8 +353,14 @@ class _Composer extends StatelessWidget {
             IconButton.filled(
               onPressed: sending ? null : onSend,
               icon: sending
-                  ? const SizedBox(
-                      width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                      ),
+                    )
                   : const Icon(Icons.arrow_upward_rounded),
             ),
           ],

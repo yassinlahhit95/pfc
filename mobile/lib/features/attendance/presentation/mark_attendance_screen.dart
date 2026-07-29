@@ -37,8 +37,13 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
         _roster = result.roster;
         _loading = false;
       });
-    } catch (_) {
-      if (mounted) setState(() => _loading = false);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar el registro: $e')),
+        );
+        setState(() => _loading = false);
+      }
     }
   }
 
@@ -58,10 +63,11 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
           );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Asistencia guardada.')));
+        ref.invalidate(classroomModulesProvider);
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo guardar.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No se pudo guardar: $e')));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -89,7 +95,11 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                       initialValue: _selectedModule,
                       decoration: const InputDecoration(labelText: 'Módulo'),
                       items: [
-                        for (final m in modules) DropdownMenuItem(value: m, child: Text(m.nombre, overflow: TextOverflow.ellipsis)),
+                        for (final m in modules)
+                          DropdownMenuItem(
+                            value: m,
+                            child: Text(m.nombre, overflow: TextOverflow.ellipsis, maxLines: 1),
+                          ),
                       ],
                       onChanged: (m) {
                         setState(() => _selectedModule = m);
@@ -111,7 +121,7 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                         _loadRoster();
                       }
                     },
-                    icon: const Icon(Icons.calendar_today_outlined, size: 16),
+                    icon: const Icon(Icons.calendar_today_outlined, size: 20),
                     label: Text(DateFormat('d/MM').format(_selectedDate)),
                   ),
                 ],
@@ -143,7 +153,14 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                 FilledButton(
                   onPressed: _saving ? null : _submit,
                   child: _saving
-                      ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      ? SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                          ),
+                        )
                       : const Text('Guardar asistencia'),
                 ),
               ],

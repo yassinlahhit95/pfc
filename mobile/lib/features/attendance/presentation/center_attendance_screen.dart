@@ -190,26 +190,30 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
       ),
       child: lookupsAsync.when(
         loading: () => const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
-        error: (e, st) => SizedBox(
-          height: 200,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Error cargando filtros:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text(e.toString(), textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
-                ],
+        error: (e, st) {
+          final textTheme = Theme.of(context).textTheme;
+          return SizedBox(
+            height: 200,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Error cargando filtros:', style: textTheme.titleSmall),
+                    const SizedBox(height: 8),
+                    Text(e.toString(), textAlign: TextAlign.center, style: textTheme.bodySmall),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
         data: (lookups) {
           final niveles = lookups['niveles'] as List? ?? [];
           final ciclos = lookups['ciclos'] as List? ?? [];
           final grupos = lookups['grupos'] as List? ?? [];
+          final textTheme = Theme.of(context).textTheme;
 
           // ponytail: filter ciclos by selected nivel dynamically
           final ciclosByNivel = <int, List<Map<String, dynamic>>>{};
@@ -232,7 +236,7 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Filtros', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Filtros', style: textTheme.titleLarge),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<int?>(
                 value: _nivel,
@@ -335,8 +339,8 @@ class _CenterAttendanceCard extends ConsumerWidget {
       switch (record.estado) {
         case 'presente': return scheme.primary;
         case 'ausente': return scheme.error;
-        case 'retraso': return Colors.orange;
-        case 'justificado': return Colors.blue;
+        case 'retraso': return AppColors.naranjaLight;
+        case 'justificado': return AppColors.azulLight;
         default: return scheme.outline;
       }
     }
