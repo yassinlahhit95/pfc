@@ -296,9 +296,18 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
     try {
       await ref.read(inventoryRepositoryProvider).prestar(idArticulo: widget.device.id, idEstudiante: student.uid);
       if (mounted) Navigator.of(context).pop(true);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo registrar el préstamo.')));
+        final msg = e.toString();
+        String errorMsg = 'No se pudo registrar el préstamo.';
+        if (msg.contains('already has an active loan')) {
+          errorMsg = 'Este alumno ya tiene un préstamo activo de este dispositivo.';
+        } else if (msg.contains('No available stock')) {
+          errorMsg = 'No hay stock disponible del dispositivo.';
+        } else if (msg.contains('not available')) {
+          errorMsg = 'El dispositivo no está disponible.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMsg)));
       }
     }
   }

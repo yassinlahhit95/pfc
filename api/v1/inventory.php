@@ -48,9 +48,20 @@ if ($method === 'POST') {
         if ($articulo['estado'] !== 'disponible') {
             v1Error('This device is not available.', 409, 'validation');
         }
-        $ok = registrarPrestamo($idEstudiante, $idArticulo, date('Y-m-d'));
-        if (!$ok) v1Error('Could not register the loan.', 500, 'error');
-        v1Ok(['message' => 'Loan registered.'], 201);
+        try {
+            $ok = registrarPrestamo($idEstudiante, $idArticulo, date('Y-m-d'));
+            if (!$ok) v1Error('Could not register the loan.', 500, 'error');
+            v1Ok(['message' => 'Loan registered.'], 201);
+        } catch (Throwable $e) {
+            $msg = $e->getMessage();
+            if (str_contains($msg, 'préstamo activo')) {
+                v1Error('Student already has an active loan for this device.', 409, 'conflict');
+            }
+            if (str_contains($msg, 'no hay stock')) {
+                v1Error('No available stock for this device.', 409, 'conflict');
+            }
+            v1Error($msg ?: 'Could not register the loan.', 500, 'error');
+        }
     }
 
     if ($action === 'devolver') {

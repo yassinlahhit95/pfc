@@ -96,26 +96,53 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
-    <!-- Accesos rápidos -->
+    <!-- Accesos rápidos con 4 tarjetas principales -->
     <div class="panel">
-        <h2 style="font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--text);">Accesos rápidos</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <a href="../estudiantes/verEstudiantes.php" class="boton-secundario" style="text-align:center;justify-content:center;">
-                <i class="fas fa-user-graduate"></i> Estudiantes
+        <h2 style="font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--text);"><?= I18n::translate('quick_access', 'Acceso Rápido') ?></h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <a href="../gastos/verGastos.php" class="tile card-soft" style="--tint:#E67E22; text-decoration:none; padding:20px;">
+                <span class="tile-ico" style="font-size:1.8rem;margin-bottom:12px;">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                </span>
+                <span class="tile-body">
+                    <span class="tile-label"><?= I18n::translate('expenses', 'Gastos') ?></span>
+                    <span class="tile-desc"><?= I18n::translate('expenses_management', 'Gestión de gastos') ?></span>
+                </span>
             </a>
-            <?php if (FeatureGuard::check('feature_prematricula')): ?>
-            <a href="../admisiones/listado.php" class="boton-secundario" style="text-align:center;justify-content:center;">
-                <i class="fas fa-graduation-cap"></i> Admisiones
+            <a href="../pagos/verPagos.php" class="tile card-soft" style="--tint:#27AE60; text-decoration:none; padding:20px;">
+                <span class="tile-ico" style="font-size:1.8rem;margin-bottom:12px;">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                </span>
+                <span class="tile-body">
+                    <span class="tile-label"><?= I18n::translate('payments', 'Pagos') ?></span>
+                    <span class="tile-desc"><?= I18n::translate('payments_management', 'Gestión de pagos') ?></span>
+                </span>
             </a>
-            <?php endif; ?>
-            <a href="../pagos/verPagos.php" class="boton-secundario" style="text-align:center;justify-content:center;">
-                <i class="fas fa-euro-sign"></i> Pagos
+            <a href="../estudiantes/verEstudiantes.php" class="tile card-soft" style="--tint:#F59E0B; text-decoration:none; padding:20px;">
+                <span class="tile-ico" style="font-size:1.8rem;margin-bottom:12px;">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </span>
+                <span class="tile-body">
+                    <span class="tile-label"><?= I18n::translate('students', 'Alumnos') ?></span>
+                    <span class="tile-desc"><?= I18n::translate('student_management', 'Gestión de alumnos') ?></span>
+                </span>
             </a>
-            <a href="../mensajes/lista.php" class="boton-secundario" style="text-align:center;justify-content:center;">
-                <?php if ($mensajesSinLeer > 0): ?>
-                    <span class="texto-estado rojo" style="margin-right:4px;"><?= $mensajesSinLeer ?></span>
-                <?php endif; ?>
-                <i class="fas fa-envelope"></i> Mensajes
+            <a href="../profesores/verProfesores.php" class="tile card-soft" style="--tint:#3498DB; text-decoration:none; padding:20px;">
+                <span class="tile-ico" style="font-size:1.8rem;margin-bottom:12px;">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </span>
+                <span class="tile-body">
+                    <span class="tile-label"><?= I18n::translate('teachers', 'Profesores') ?></span>
+                    <span class="tile-desc"><?= I18n::translate('teacher_management', 'Gestión de profesores') ?></span>
+                </span>
             </a>
         </div>
     </div>
