@@ -16,6 +16,7 @@
     function pintarIcono() {
       var oscuro = document.documentElement.getAttribute('data-theme') === 'dark';
       btn.innerHTML = oscuro ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      btn.setAttribute('aria-pressed', oscuro ? 'true' : 'false');
     }
     pintarIcono();
 

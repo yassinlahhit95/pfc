@@ -176,10 +176,10 @@ include __DIR__ . '/landing/_nav.php';
     <div class="lp-contenedor">
 
       <nav class="lp-blog-cats" aria-label="Categorías">
-        <a href="<?= blogUrl() ?>" class="lp-blog-cat<?= $categoria === '' ? ' activa' : '' ?>">Todas</a>
+        <a href="<?= blogUrl() ?>" class="lp-blog-cat<?= $categoria === '' ? ' activa' : '' ?>"<?= $categoria === '' ? ' aria-current="page"' : '' ?>>Todas</a>
         <?php foreach ($categorias as $categoriaItem): ?>
         <a href="<?= Security::escapeHtml(blogUrl(1, $categoriaItem['categoria'])) ?>"
-           class="lp-blog-cat<?= $categoria === $categoriaItem['categoria'] ? ' activa' : '' ?>">
+           class="lp-blog-cat<?= $categoria === $categoriaItem['categoria'] ? ' activa' : '' ?>"<?= $categoria === $categoriaItem['categoria'] ? ' aria-current="page"' : '' ?>>
           <?= Security::escapeHtml($categoriaItem['categoria']) ?> <span><?= (int)$categoriaItem['total'] ?></span>
         </a>
         <?php endforeach; ?>

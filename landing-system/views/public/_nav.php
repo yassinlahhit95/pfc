@@ -87,7 +87,7 @@ $mostrarTopbar = ($ajustes['mostrarTopbar'] ?? 'si') === 'si';
 
     <!-- CTAs desktop + burger -->
     <div class="lp-nav-cta">
-      <button class="lp-btn-theme" id="lp-theme-toggle" aria-label="Cambiar tema">
+      <button class="lp-btn-theme" id="lp-theme-toggle" aria-label="Cambiar tema" aria-pressed="false">
         <i class="fas fa-moon"></i>
       </button>
       <a href="/vistas/login.php" class="lp-boton-fantasma">Acceso</a>
@@ -123,8 +123,12 @@ $mostrarTopbar = ($ajustes['mostrarTopbar'] ?? 'si') === 'si';
   </div>
 
   <div class="lp-nav-movil-links">
-    <?php foreach ($menuAnclas as $ancla => $info): ?>
-    <a href="<?= Security::escapeHtml($lpEnlaceMenu($info, $ancla)) ?>"><?= Security::escapeHtml($info['texto']) ?></a>
+    <?php foreach ($menuAnclas as $ancla => $info):
+        $enlace   = $lpEnlaceMenu($info, $ancla);
+        $esAncla  = $isHome && empty($info['url']) && empty($info['separado']);
+        $esActiva = ($ancla === 'noticias' && $isBlog);
+    ?>
+    <a href="<?= Security::escapeHtml($enlace) ?>"<?= $esActiva ? ' aria-current="page"' : '' ?>><?= Security::escapeHtml($info['texto']) ?></a>
     <?php endforeach; ?>
   </div>
 
