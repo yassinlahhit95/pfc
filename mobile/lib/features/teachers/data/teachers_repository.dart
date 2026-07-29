@@ -37,13 +37,11 @@ class TeachersRepository {
   Future<({List<Teacher> teachers, int total})> fetchTeachers({
     int limit = 20,
     int offset = 0,
-    String? status,
     String? query,
   }) async {
     final queryParams = {
       'limit': limit.toString(),
       'offset': offset.toString(),
-      if (status != null && status.isNotEmpty) 'status': status,
       if (query != null && query.isNotEmpty) 'q': query,
     };
 
@@ -63,13 +61,12 @@ final teachersRepositoryProvider = Provider<TeachersRepository>(
 );
 
 final teachersProvider = FutureProvider.autoDispose
-    .family<({List<Teacher> teachers, int total}), ({int limit, int offset, String? status, String? query})>(
+    .family<({List<Teacher> teachers, int total}), ({int limit, int offset, String? query})>(
   (ref, params) {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(teachersRepositoryProvider).fetchTeachers(
         limit: params.limit,
         offset: params.offset,
-        status: params.status,
         query: params.query,
       );
   },

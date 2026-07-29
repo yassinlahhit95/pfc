@@ -32,9 +32,11 @@ $where = [];
 $params = [];
 $types = '';
 
-// No soft-delete column for profesores
+// No soft-delete column for profesores — all listed are active by design
 $where[] = "1=1";
 
+// Status filter unused: profesores are always active (no eliminado column)
+// Keeping the parameter acceptance for API compatibility, but silently ignoring it
 if ($q) {
     $where[] = "p.nombreProfesor LIKE ?";
     $params[] = "%$q%";

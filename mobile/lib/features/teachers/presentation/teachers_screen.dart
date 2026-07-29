@@ -18,7 +18,7 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
   late ScrollController _scrollController;
   final Debounce _debounce = Debounce();
   String _searchQuery = '';
-  String? _selectedStatus;
+  // Removed: _selectedStatus — all teachers are active (no status filter exists in DB)
   int _currentOffset = 0;
   static const int _pageSize = 20;
 
@@ -48,22 +48,6 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
     super.dispose();
   }
 
-  void _showFiltersSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => _TeachersFiltersSheet(
-        initialStatus: _selectedStatus,
-        onApply: (status) {
-          setState(() {
-            _selectedStatus = status;
-            _currentOffset = 0;
-          });
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final teachersAsync = ref.watch(
@@ -71,7 +55,6 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
         (
           limit: _pageSize,
           offset: _currentOffset,
-          status: _selectedStatus,
           query: _searchQuery.isNotEmpty ? _searchQuery : null,
         ),
       ),
@@ -80,12 +63,7 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profesores'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _showFiltersSheet(context),
-          ),
-        ],
+        // Filter action removed — teachers have no status field; all are active
       ),
       body: AsyncView<({List<Teacher> teachers, int total})>(
         value: teachersAsync,
@@ -94,7 +72,6 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
             (
               limit: _pageSize,
               offset: _currentOffset,
-              status: _selectedStatus,
               query: _searchQuery.isNotEmpty ? _searchQuery : null,
             ),
           ),
@@ -146,80 +123,6 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class _TeachersFiltersSheet extends StatefulWidget {
-  const _TeachersFiltersSheet({this.initialStatus, required this.onApply});
-  final String? initialStatus;
-  final ValueChanged<String?> onApply;
-
-  @override
-  State<_TeachersFiltersSheet> createState() => _TeachersFiltersSheetState();
-}
-
-class _TeachersFiltersSheetState extends State<_TeachersFiltersSheet> {
-  String? _status;
-
-  @override
-  void initState() {
-    super.initState();
-    _status = widget.initialStatus;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text('Filtros', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String?>(
-            initialValue: _status,
-            decoration: const InputDecoration(labelText: 'Estado'),
-            items: const [
-              DropdownMenuItem(value: null, child: Text('Todos los estados')),
-              DropdownMenuItem(value: 'activo', child: Text('Activos')),
-              DropdownMenuItem(value: 'inactivo', child: Text('Inactivos')),
-            ],
-            onChanged: (val) => setState(() => _status = val),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    widget.onApply(null);
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Limpiar'),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: FilledButton(
-                  onPressed: () {
-                    widget.onApply(_status);
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Aplicar'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-        ],
       ),
     );
   }
