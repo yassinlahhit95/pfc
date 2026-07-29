@@ -4,13 +4,13 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: color-mix(in oklab, var(--ink, #0f172a) 55%, transparent);
+  background: color-mix(in oklab, var(--ink, var(--text)) 55%, transparent);
 }
 
 .ap-tour-spotlight {
   position: fixed;
   border-radius: 10px;
-  box-shadow: 0 0 0 9999px color-mix(in oklab, var(--ink, #0f172a) 55%, transparent);
+  box-shadow: 0 0 0 9999px color-mix(in oklab, var(--ink, var(--text)) 55%, transparent);
   border: 2px solid var(--accent, #4f46e5);
   transition: top .25s ease, left .25s ease, width .25s ease, height .25s ease;
   pointer-events: none;
@@ -19,8 +19,8 @@
 .ap-tour-card {
   position: fixed;
   width: min(320px, 90vw);
-  background: var(--surface, #fff);
-  color: var(--text, #0f172a);
+  background: var(--surface, var(--surface));
+  color: var(--text, var(--text));
   border-radius: 12px;
   box-shadow: var(--shadow-lg, 0 20px 40px rgba(0,0,0,.25));
   padding: 18px 18px 14px;
@@ -39,13 +39,13 @@
   font-size: 15px;
   font-weight: 700;
   margin: 0 0 6px;
-  color: var(--text, #0f172a);
+  color: var(--text, var(--text));
 }
 
 .ap-tour-text {
   font-size: 13.5px;
   line-height: 1.5;
-  color: var(--dim, #475569);
+  color: var(--dim, var(--dim));
   margin: 0 0 14px;
 }
 
@@ -59,12 +59,12 @@
 .ap-tour-skip {
   background: none;
   border: none;
-  color: var(--mut, #64748b);
+  color: var(--mut, var(--mut));
   font-size: 12.5px;
   cursor: pointer;
   padding: 6px 4px;
 }
-.ap-tour-skip:hover { color: var(--text, #0f172a); }
+.ap-tour-skip:hover { color: var(--text, var(--text)); }
 
 .ap-tour-nav { display: flex; gap: 8px; }
 
@@ -78,13 +78,13 @@
 }
 
 .ap-tour-prev {
-  background: var(--surface-2, #f1f5f9);
-  color: var(--dim, #475569);
+  background: var(--surface-2, var(--surface-3));
+  color: var(--dim, var(--dim));
 }
 
 .ap-tour-next {
   background: var(--accent, #4f46e5);
-  color: #fff;
+  color: var(--surface);
 }
 
 @media (max-width: 480px) {

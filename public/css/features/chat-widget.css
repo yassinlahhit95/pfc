@@ -18,7 +18,7 @@
   height: 56px;
   border-radius: 50%;
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
   border: none;
   cursor: pointer;
   display: flex;
@@ -43,7 +43,7 @@
   padding: 0 5px;
   border-radius: 999px;
   background: var(--rojo);
-  color: #fff;
+  color: var(--surface);
   font-size: 11px;
   font-weight: 800;
   display: flex;
@@ -156,14 +156,14 @@
   justify-content: center;
   font-size: .74rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--surface);
   flex-shrink: 0;
 }
-.cw-ava-admin      { background: #7C3AED; }
+.cw-ava-admin      { background: var(--violeta); }
 .cw-ava-profesor   { background: var(--accent); }
-.cw-ava-alumno     { background: #059669; }
-.cw-ava-secretaria { background: #d97706; }
-.cw-ava-tutor      { background: #0891b2; }
+.cw-ava-alumno     { background: var(--verde); }
+.cw-ava-secretaria { background: var(--naranja); }
+.cw-ava-tutor      { background: var(--azul); }
 
 .cw-conv-info { flex: 1; overflow: hidden; min-width: 0; }
 
@@ -192,7 +192,7 @@
   padding: 0 5px;
   border-radius: 999px;
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
   font-size: 10px;
   font-weight: 800;
   text-align: center;
@@ -279,7 +279,7 @@
 
 .cw-msg-wrap.out .cw-bubble {
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
   border-bottom-right-radius: 5px;
 }
 
@@ -334,7 +334,7 @@
   height: 36px;
   border-radius: 50%;
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
   border: none;
   cursor: pointer;
   display: flex;

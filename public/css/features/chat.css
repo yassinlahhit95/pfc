@@ -72,12 +72,12 @@
   width: 42px; height: 42px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: .78rem; font-weight: 700; color: #fff;
+  font-size: .78rem; font-weight: 700; color: var(--surface);
   flex-shrink: 0;
 }
-.ava-admin    { background: #7C3AED; }
+.ava-admin    { background: var(--violeta); }
 .ava-profesor { background: var(--accent); }
-.ava-alumno   { background: #059669; }
+.ava-alumno   { background: var(--verde); }
 
 .chat-conv-info { flex: 1; overflow: hidden; }
 
@@ -95,7 +95,7 @@
 .chat-conv-time { font-size: .72rem; color: var(--mut); }
 
 .chat-unread-badge {
-  background: var(--accent); color: #fff;
+  background: var(--accent); color: var(--surface);
   border-radius: 999px; font-size: .68rem; font-weight: 700;
   padding: 1px 6px; min-width: 18px; text-align: center;
 }
@@ -103,7 +103,7 @@
 /* New chat button */
 .chat-new-btn {
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--accent); color: #fff; border: none;
+  background: var(--accent); color: var(--surface); border: none;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; flex-shrink: 0; transition: opacity .15s;
 }
@@ -182,7 +182,7 @@
 
 .chat-msg-wrap.out .chat-bubble {
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
   border-bottom-right-radius: 5px;
 }
 
@@ -205,7 +205,7 @@
   user-select: none;
 }
 .chat-tick::after { content: '✓'; }
-.chat-tick.seen { color: #3b82f6; }
+.chat-tick.seen { color: var(--azul); }
 .chat-tick.seen::after { content: '✓✓'; }
 
 .chat-placeholder {
@@ -249,7 +249,7 @@
 
 .chat-send-btn {
   width: 40px; height: 40px; border-radius: 50%;
-  background: var(--accent); color: #fff;
+  background: var(--accent); color: var(--surface);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;

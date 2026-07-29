@@ -1,13 +1,13 @@
 /* ── Admisiones / Pre-matrícula stylesheet ─────────────────────────── */
 :root {
-    --adm-primary:   #4f46e5;
-    --adm-primary-d: #4338ca;
-    --adm-success:   #22c55e;
-    --adm-text:      #1e293b;
-    --adm-muted:     #64748b;
-    --adm-border:    #e2e8f0;
-    --adm-surface:   #fff;
-    --adm-bg:        #f8fafc;
+    --adm-primary:   var(--accent);
+    --adm-primary-d: var(--accent);
+    --adm-success:   var(--verde);
+    --adm-text:      var(--text);
+    --adm-muted:     var(--mut);
+    --adm-border:    var(--border-2);
+    --adm-surface:   var(--surface);
+    --adm-bg:        var(--surface-2);
     --adm-ring:      rgb(79 70 229 / 15%);
 }
 
@@ -74,14 +74,14 @@
 .step-item.active .step-number {
     border-color: var(--adm-primary);
     background: var(--adm-primary);
-    color: #fff;
+    color: var(--surface);
     box-shadow: 0 0 0 5px var(--adm-ring);
 }
 
 .step-item.completed .step-number {
     border-color: var(--adm-success);
     background: var(--adm-success);
-    color: #fff;
+    color: var(--surface);
 }
 
 .step-label {
@@ -147,7 +147,7 @@
 .form-select {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border);
     border-radius: 8px;
     font-size: .9rem;
     font-family: inherit;
@@ -202,7 +202,7 @@
 .politica-check label {
     font-size: .82rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--dim);
     cursor: pointer;
 }
 .politica-check label a { color: var(--adm-primary); }
@@ -258,26 +258,26 @@
 
 .upload-btn:hover {
     background: var(--adm-primary);
-    color: #fff;
+    color: var(--surface);
 }
 input[type="file"].file-input { display: none; }
 
 /* Bootstrap compat aliases (used in admisiones.js) */
-.text-info    { color: #0ea5e9; font-size: .82rem; }
-.text-success { color: #16a34a; font-size: .82rem; font-weight: 600; }
-.text-danger  { color: #dc2626; font-size: .82rem; font-weight: 600; }
+.text-info    { color: var(--azul); font-size: .82rem; }
+.text-success { color: var(--verde); font-size: .82rem; font-weight: 600; }
+.text-danger  { color: var(--rojo); font-size: .82rem; font-weight: 600; }
 
 /* ── Summary card (step 3) ── */
 .admisiones-info {
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
+    background: var(--azul-suave);
+    border: 1px solid var(--azul-suave);
     border-radius: 8px;
     padding: 12px 16px;
     font-size: .875rem;
-    color: #1e40af;
+    color: var(--azul-ink);
     margin-bottom: 16px;
 }
 .admisiones-info i { flex-shrink: 0; margin-top: 2px; }
@@ -293,13 +293,13 @@ input[type="file"].file-input { display: none; }
     display: flex;
     gap: 12px;
     padding: 11px 18px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--surface-3);
 }
 .resumen-row:last-child { border-bottom: none; }
 
 .resumen-label {
     font-weight: 600;
-    color: #475569;
+    color: var(--dim);
     font-size: .85rem;
     min-width: 180px;
     flex-shrink: 0;
@@ -332,7 +332,7 @@ input[type="file"].file-input { display: none; }
 
 .btn-primary-asistente {
     background: var(--adm-primary);
-    color: #fff;
+    color: var(--surface);
     margin-left: auto;
 }
 .btn-primary-asistente:hover { background: var(--adm-primary-d); transform: translateY(-1px); }
