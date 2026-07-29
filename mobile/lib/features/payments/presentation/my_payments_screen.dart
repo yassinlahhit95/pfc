@@ -6,6 +6,7 @@ import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/photo_picker_sheet.dart';
 import '../../../core/widgets/premium.dart';
@@ -200,12 +201,11 @@ class _PaymentTileState extends ConsumerState<_PaymentTile> {
       await ref.read(paymentsRepositoryProvider).uploadComprobante(idPago: widget.payment.id, archivo: archivo);
       widget.onUploaded?.call();
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Comprobante enviado. Pendiente de verificación.')));
+        await showErrorAlert(context, 'Comprobante enviado. Pendiente de verificación.', title: 'Éxito');
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo subir el comprobante.')));
+        await showErrorAlert(context, 'No se pudo subir el comprobante.');
       }
     } finally {
       if (mounted) setState(() => _uploading = false);

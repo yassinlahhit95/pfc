@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../data/messages_repository.dart';
@@ -67,9 +68,7 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
     final desc = _descController.text.trim();
 
     if (asunto.isEmpty || desc.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, completa el asunto y el mensaje.')),
-      );
+      await showErrorAlert(context, 'Por favor, completa el asunto y el mensaje.');
       return;
     }
 
@@ -87,9 +86,7 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
     } catch (_) {
       setState(() => _sending = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se pudo enviar el mensaje.')),
-        );
+        await showErrorAlert(context, 'No se pudo enviar el mensaje.');
       }
     }
   }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/chat_repository.dart';
 import 'chat_detail_screen.dart';
@@ -68,8 +69,7 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('No se pudo iniciar la conversación.')));
+        await showErrorAlert(context, 'No se pudo iniciar la conversación.');
       }
     }
   }

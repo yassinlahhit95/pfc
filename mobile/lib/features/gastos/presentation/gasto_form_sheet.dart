@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/photo_picker_sheet.dart';
 import '../data/gastos_repository.dart';
 
@@ -112,9 +113,7 @@ Future<bool> showGastoFormSheet(
                   final concepto = conceptoController.text.trim();
                   final importe = double.tryParse(importeController.text.trim()) ?? 0;
                   if (selectedCategoria == null || concepto.isEmpty || importe <= 0) {
-                    ScaffoldMessenger.of(ctx).showSnackBar(
-                      const SnackBar(content: Text('Concepto, importe y categoría son obligatorios.')),
-                    );
+                    await showErrorAlert(ctx, 'Concepto, importe y categoría son obligatorios.');
                     return;
                   }
                   try {
@@ -128,7 +127,7 @@ Future<bool> showGastoFormSheet(
                     if (ctx.mounted) Navigator.of(ctx).pop(true);
                   } catch (_) {
                     if (ctx.mounted) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Error al registrar el gasto')));
+                      await showErrorAlert(ctx, 'Error al registrar el gasto');
                     }
                   }
                 },

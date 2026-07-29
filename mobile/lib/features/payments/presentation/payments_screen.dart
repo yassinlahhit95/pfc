@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/payments_repository.dart';
@@ -13,7 +14,7 @@ import 'cobrar_pago_sheet.dart';
 Future<void> _openComprobante(BuildContext context, String url) async {
   final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!ok && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo abrir el comprobante.')));
+    await showErrorAlert(context, 'No se pudo abrir el comprobante.');
   }
 }
 
@@ -295,12 +296,11 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
           );
       widget.onResolved();
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(aprobar ? 'Comprobante aprobado.' : 'Comprobante rechazado.')));
+        await showErrorAlert(context, aprobar ? 'Comprobante aprobado.' : 'Comprobante rechazado.', title: 'Éxito');
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo resolver el comprobante.')));
+        await showErrorAlert(context, 'No se pudo resolver el comprobante.');
       }
     } finally {
       if (mounted) setState(() => _resolving = false);

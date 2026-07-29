@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../classroom/data/classroom_repository.dart';
 import '../data/attendance_repository.dart';
 
@@ -39,9 +40,7 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar el registro: $e')),
-        );
+        await showErrorAlert(context, 'Error al cargar el registro: $e');
         setState(() => _loading = false);
       }
     }
@@ -62,12 +61,12 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
             ],
           );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Asistencia guardada.')));
+        await showErrorAlert(context, 'Asistencia guardada.', title: 'Éxito');
         ref.invalidate(classroomModulesProvider);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No se pudo guardar: $e')));
+        await showErrorAlert(context, 'No se pudo guardar: $e');
       }
     } finally {
       if (mounted) setState(() => _saving = false);

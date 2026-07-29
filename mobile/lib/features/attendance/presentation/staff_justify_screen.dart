@@ -8,6 +8,7 @@ import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../../classroom/data/classroom_repository.dart';
@@ -105,8 +106,7 @@ class _ProfesorPickerState extends ConsumerState<_ProfesorPicker> {
     );
     if (sent && _selectedModule != null) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Justificación registrada y aprobada.')));
+        await showErrorAlert(context, 'Justificación registrada y aprobada.', title: 'Éxito');
       }
       _loadRecords(_selectedModule!);
     }
@@ -216,8 +216,7 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
     );
     if (sent && _selectedStudent != null) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Justificación registrada y aprobada.')));
+        await showErrorAlert(context, 'Justificación registrada y aprobada.', title: 'Éxito');
       }
       _selectStudent(_selectedStudent!);
     }

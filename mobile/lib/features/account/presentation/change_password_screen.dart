@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../data/account_repository.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
@@ -41,8 +42,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_newCtrl.text != _confirmCtrl.text) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Las contraseñas nuevas no coinciden.')));
+      await showErrorAlert(context, 'Las contraseñas nuevas no coinciden.');
       return;
     }
     setState(() => _saving = true);
@@ -52,13 +52,12 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             newPassword: _newCtrl.text,
           );
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Contraseña actualizada.')));
+        await showErrorAlert(context, 'Contraseña actualizada.', title: 'Éxito');
         Navigator.of(context).pop();
       }
     } catch (e) {
       final message = e is ApiException ? e.message : 'No se pudo actualizar la contraseña.';
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      if (mounted) await showErrorAlert(context, message);
     } finally {
       if (mounted) setState(() => _saving = false);
     }

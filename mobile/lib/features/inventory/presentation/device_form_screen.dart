@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../data/inventory_repository.dart';
 
 class DeviceFormScreen extends ConsumerStatefulWidget {
@@ -70,9 +71,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     final cantidad = int.tryParse(_cantidadController.text.trim()) ?? 1;
     
     if (nombre.isEmpty || serial.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El nombre y número de serie son obligatorios')),
-      );
+      await showErrorAlert(context, 'El nombre y número de serie son obligatorios');
       return;
     }
 
@@ -93,7 +92,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           fotoBase64: base64Image,
         );
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dispositivo añadido exitosamente')));
+          await showErrorAlert(context, 'Dispositivo añadido exitosamente', title: 'Éxito');
           ref.invalidate(devicesProvider);
           Navigator.of(context).pop(true);
         }
@@ -108,14 +107,14 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           fotoBase64: base64Image,
         );
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dispositivo actualizado exitosamente')));
+          await showErrorAlert(context, 'Dispositivo actualizado exitosamente', title: 'Éxito');
           ref.invalidate(devicesProvider);
           Navigator.of(context).pop(true);
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        await showErrorAlert(context, 'Error: $e');
         setState(() => _loading = false);
       }
     }

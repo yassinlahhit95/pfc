@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../data/retos_repository.dart';
@@ -63,14 +64,10 @@ class _RetoTile extends ConsumerWidget {
             final uri = Uri.parse(url);
             final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
             if (!ok && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No se pudo abrir el PDF del reto.')),
-              );
+              await showErrorAlert(context, 'No se pudo abrir el PDF del reto.');
             }
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Este reto no tiene un PDF adjunto.')),
-            );
+            await showErrorAlert(context, 'Este reto no tiene un PDF adjunto.');
           }
         },
         borderRadius: BorderRadius.circular(Radii.md),

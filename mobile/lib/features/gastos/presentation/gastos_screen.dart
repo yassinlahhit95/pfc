@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../data/gastos_repository.dart';
 import 'gasto_form_sheet.dart';
 
@@ -84,9 +85,7 @@ class GastosScreen extends ConsumerWidget {
                       final url = ref.read(gastosRepositoryProvider).downloadUrl(gasto.archivoJustificante!);
                       launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Este gasto no tiene ticket adjunto')),
-                      );
+                      await showErrorAlert(context, 'Este gasto no tiene ticket adjunto');
                     }
                   },
                 ),

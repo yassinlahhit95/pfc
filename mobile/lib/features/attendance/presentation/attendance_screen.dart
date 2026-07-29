@@ -7,6 +7,7 @@ import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/attendance_repository.dart';
@@ -48,7 +49,7 @@ class _AttendanceScreenContent extends ConsumerWidget {
 Future<void> _openJustificante(BuildContext context, String url) async {
   final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!ok && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo abrir el justificante.')));
+    await showErrorAlert(context, 'No se pudo abrir el justificante.');
   }
 }
 
@@ -370,12 +371,11 @@ class _PendingJustificationsTab extends ConsumerWidget {
           );
       ref.invalidate(pendingJustificationsProvider);
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(aprobar ? 'Aprobada.' : 'Rechazada.')));
+        await showErrorAlert(context, aprobar ? 'Aprobada.' : 'Rechazada.', title: 'Éxito');
       }
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo resolver.')));
+        await showErrorAlert(context, 'No se pudo resolver.');
       }
     }
   }

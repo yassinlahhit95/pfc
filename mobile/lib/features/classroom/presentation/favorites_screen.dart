@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../data/classroom_repository.dart';
 
 class FavoritesScreen extends ConsumerWidget {
@@ -66,9 +67,7 @@ class FavoritesScreen extends ConsumerWidget {
                             ref.invalidate(classroomModulesProvider);
                           } catch (_) {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('No se pudo quitar de favoritos.')),
-                              );
+                              await showErrorAlert(context, 'No se pudo quitar de favoritos.');
                             }
                           }
                         },
@@ -81,9 +80,7 @@ class FavoritesScreen extends ConsumerWidget {
                     final uri = Uri.parse(url);
                     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
                     if (!ok && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No se pudo abrir el archivo.')),
-                      );
+                      await showErrorAlert(context, 'No se pudo abrir el archivo.');
                     }
                   },
                 );

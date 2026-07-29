@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../data/chat_repository.dart';
 
 class ChatDetailScreen extends ConsumerStatefulWidget {
@@ -160,9 +161,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> with Widget
       await _poll();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se pudo enviar el mensaje.')),
-        );
+        await showErrorAlert(context, 'No se pudo enviar el mensaje.');
         // Remove optimistic message on error
         setState(() {
           _messages.removeWhere((m) => m.pending && m.contenido == text);

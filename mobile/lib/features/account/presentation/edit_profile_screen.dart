@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_exception.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../profile/data/profile_repository.dart';
 import '../data/account_repository.dart';
 
@@ -69,12 +70,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           );
       ref.invalidate(profileProvider);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Perfil actualizado.')));
+        await showErrorAlert(context, 'Perfil actualizado.', title: 'Éxito');
         Navigator.of(context).pop();
       }
     } catch (e) {
       final message = e is ApiException ? e.message : 'No se pudo actualizar el perfil.';
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      if (mounted) await showErrorAlert(context, message);
     } finally {
       if (mounted) setState(() => _saving = false);
     }

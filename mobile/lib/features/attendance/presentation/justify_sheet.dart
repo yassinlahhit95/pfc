@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/photo_picker_sheet.dart';
 import '../data/attendance_repository.dart';
 
@@ -95,8 +96,7 @@ Future<bool> showJustifySheet(
                     if (ctx.mounted) Navigator.of(ctx).pop(true);
                   } catch (_) {
                     if (ctx.mounted) {
-                      ScaffoldMessenger.of(ctx)
-                          .showSnackBar(const SnackBar(content: Text('No se pudo enviar la justificación.')));
+                      await showErrorAlert(ctx, 'No se pudo enviar la justificación.');
                     }
                   }
                 },

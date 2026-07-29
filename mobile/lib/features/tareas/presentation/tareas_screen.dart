@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../classroom/data/classroom_repository.dart';
@@ -51,9 +52,7 @@ class _TareasScreenState extends ConsumerState<TareasScreen> {
                           ref.invalidate(allTasksProvider);
                         } catch (e) {
                           if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error al cambiar el estado: $e')),
-                            );
+                            await showErrorAlert(context, 'Error al cambiar el estado: $e');
                           }
                         }
                       }

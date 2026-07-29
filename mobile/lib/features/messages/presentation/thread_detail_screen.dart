@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../data/messages_repository.dart';
 
 class ThreadDetailScreen extends ConsumerStatefulWidget {
@@ -62,7 +63,7 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
       ref.invalidate(messageThreadsProvider);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo enviar la respuesta.')));
+        await showErrorAlert(context, 'No se pudo enviar la respuesta.');
       }
     } finally {
       if (mounted) setState(() => _sending = false);

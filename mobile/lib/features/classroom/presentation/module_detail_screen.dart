@@ -8,6 +8,7 @@ import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/classroom_repository.dart';
 
@@ -206,8 +207,7 @@ class _FileTile extends ConsumerWidget {
                   ref.invalidate(_filesProvider(filesKey));
                 } catch (_) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text('No se pudo actualizar el favorito.')));
+                    await showErrorAlert(context, 'No se pudo actualizar el favorito.');
                   }
                 }
               },
@@ -220,8 +220,7 @@ class _FileTile extends ConsumerWidget {
         final uri = Uri.parse(url);
         final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
         if (!ok && context.mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('No se pudo abrir el archivo.')));
+          await showErrorAlert(context, 'No se pudo abrir el archivo.');
         }
       },
     );
@@ -238,9 +237,7 @@ Future<bool?> showTaskDetailSheet(
 }) async {
   if (isProfesor) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Las entregas y calificaciones se gestionan desde la versión web.')),
-      );
+      await showErrorAlert(context, 'Las entregas y calificaciones se gestionan desde la versión web.');
     }
     return null;
   } else {
@@ -345,8 +342,7 @@ class _TaskCard extends ConsumerWidget {
                 final url = ref.read(classroomRepositoryProvider).taskAttachmentUrl(task.id);
                 final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                 if (!ok && context.mounted) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(content: Text('No se pudo abrir el archivo.')));
+                  await showErrorAlert(context, 'No se pudo abrir el archivo.');
                 }
               },
               child: Container(
@@ -396,8 +392,7 @@ class _TaskCard extends ConsumerWidget {
                       onChanged();
                     } catch (_) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(content: Text('No se pudo cambiar el estado.')));
+                        await showErrorAlert(context, 'No se pudo cambiar el estado.');
                       }
                     }
                   },
@@ -514,7 +509,7 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
     } catch (_) {
       setState(() => _sending = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo enviar la entrega.')));
+        await showErrorAlert(context, 'No se pudo enviar la entrega.');
       }
     }
   }
@@ -860,8 +855,7 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
                   } catch (_) {
                     setState(() => _saving = false);
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(content: Text('No se pudo guardar la calificación.')));
+                      await showErrorAlert(context, 'No se pudo guardar la calificación.');
                     }
                   }
                 },
@@ -1001,7 +995,7 @@ class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
     } catch (e) {
       setState(() => _saving = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo crear la sesión.')));
+        await showErrorAlert(context, 'No se pudo crear la sesión.');
       }
     }
   }

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
@@ -104,7 +105,9 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
         await ref.read(inventoryRepositoryProvider).deleteDevice(device.id);
         ref.invalidate(devicesProvider);
       } catch (e) {
-        if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        if (context.mounted) {
+          await showErrorAlert(context, e.toString(), title: 'No se pudo eliminar');
+        }
       }
     }
   }
@@ -307,7 +310,7 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
         } else if (msg.contains('not available')) {
           errorMsg = 'El dispositivo no está disponible.';
         }
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMsg)));
+        await showErrorAlert(context, errorMsg, title: 'Error al prestar');
       }
     }
   }
@@ -399,9 +402,9 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
       await ref.read(inventoryRepositoryProvider).devolver(loan.id);
       ref.invalidate(loansProvider);
       ref.invalidate(devicesProvider);
-    } catch (_) {
+    } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo registrar la devolución.')));
+        await showErrorAlert(context, e.toString(), title: 'No se pudo registrar la devolución');
       }
     }
   }

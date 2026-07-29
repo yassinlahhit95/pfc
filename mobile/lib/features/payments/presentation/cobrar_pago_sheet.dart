@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/photo_picker_sheet.dart';
 import '../data/payments_repository.dart';
 
@@ -138,9 +139,7 @@ Future<bool> showCobrarPagoSheet(
                 onPressed: () async {
                   final montoVal = double.tryParse(montoController.text) ?? 0.0;
                   if (montoVal <= 0) {
-                    ScaffoldMessenger.of(ctx).showSnackBar(
-                      const SnackBar(content: Text('El monto debe ser un número válido mayor a 0.')),
-                    );
+                    await showErrorAlert(ctx, 'El monto debe ser un número válido mayor a 0.');
                     return;
                   }
                   try {
@@ -154,9 +153,7 @@ Future<bool> showCobrarPagoSheet(
                     if (ctx.mounted) Navigator.of(ctx).pop(true);
                   } catch (_) {
                     if (ctx.mounted) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('No se pudo registrar el pago.')),
-                      );
+                      await showErrorAlert(ctx, 'No se pudo registrar el pago.');
                     }
                   }
                 },

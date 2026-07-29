@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/api/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../application/login_controller.dart';
 
@@ -88,9 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         final message = error is ApiException
             ? error.message
             : 'No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.';
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(message)));
+        showErrorAlert(context, message, title: 'Error al conectar');
       }
     });
 
