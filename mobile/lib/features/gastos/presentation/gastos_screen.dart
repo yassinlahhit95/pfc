@@ -80,7 +80,7 @@ class GastosScreen extends ConsumerWidget {
                       fontSize: 16,
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async {
                     if (gasto.archivoJustificante != null && gasto.archivoJustificante != 'null') {
                       final url = ref.read(gastosRepositoryProvider).downloadUrl(gasto.archivoJustificante!);
                       launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);

@@ -77,20 +77,18 @@ class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderSta
 
     return AnimatedBuilder(
       animation: _animController,
-      builder: (context, child) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: Space.lg),
-          alignment: Alignment.center,
-          child: Opacity(
-            opacity: _opacityAnim.value,
-            child: Transform.scale(
-              scale: _scaleAnim.value,
-              child: child,
-            ),
+      builder: (context, child) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: Space.lg),
+        alignment: Alignment.center,
+        child: Opacity(
+          opacity: _opacityAnim.value,
+          child: Transform.scale(
+            scale: _scaleAnim.value,
+            child: child,
           ),
-        );
-      },
+        ),
+      ),
       child: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -186,7 +184,7 @@ class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderSta
               ),
             ],
           ),
-        );
+        ),
       ),
     );
   }
