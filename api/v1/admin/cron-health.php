@@ -5,7 +5,6 @@ declare(strict_types=1);
 // Returns status of scheduled cron jobs
 
 require_once __DIR__ . '/../_api.php';
-require_once __DIR__ . '/../../../include/AdminGuard.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     v1Error('Method not allowed.', 405, 'method_not_allowed');
