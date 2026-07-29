@@ -37,6 +37,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <div class="panel">
+    <!-- Alerta de préstamos activos -->
+    <div id="alerta-prestamos-activos" style="display: none;"></div>
+
     <form method="GET" action="agregarPrestamo.php" class="margen-abajo">
         <div class="form-fila">
             <div class="campo">
@@ -111,6 +114,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script src="../../../public/js/features/verificar-prestamos.js"></script>
 <script>
 function filtrarEstudiantesPrestamo() {
     var curso = document.getElementById('filtroCursoEstudiante').value;

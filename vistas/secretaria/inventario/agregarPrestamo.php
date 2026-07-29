@@ -37,6 +37,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <div class="panel">
+    <!-- Alerta de préstamos activos -->
+    <div id="alerta-prestamos-activos" style="display: none;"></div>
+
     <form method="GET" action="agregarPrestamo.php" class="margen-abajo">
         <div class="campo">
             <label>Filtrar Estudiantes por Ciclo:</label>
@@ -98,4 +101,5 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
+<script src="../../../public/js/features/verificar-prestamos.js"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
