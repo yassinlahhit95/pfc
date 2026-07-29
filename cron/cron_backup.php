@@ -6,12 +6,14 @@
  */
 
 require_once __DIR__ . '/../config/Config.php';
+require_once __DIR__ . '/../modelos/conectar.php';
 
 $config = Config::getInstance();
 $host = $config->get('DB_HOST', 'localhost');
 $user = $config->get('DB_USER');
 $pass = escapeshellarg($config->get('DB_PASS'));
 $db   = escapeshellarg($config->get('DB_NAME', 'aulapro'));
+$con = obtenerConexion();
 
 // Directorio de backups protegido
 $backupDir = __DIR__ . '/../noDeploy/backups/';
@@ -31,7 +33,7 @@ exec($command, $output, $returnVar);
 
 if ($returnVar === 0) {
     echo "Copia de seguridad completada con éxito: {$filename}\n";
-    
+
     // Opcional: Comprimir el archivo a ZIP para ahorrar espacio
     $zipFilename = $filename . '.zip';
     $zip = new ZipArchive();
@@ -53,6 +55,24 @@ if ($returnVar === 0) {
             }
         }
     }
+
+    $status = 'success';
+    $errorMsg = NULL;
 } else {
     echo "Error al realizar la copia de seguridad. Código de salida: {$returnVar}\n";
+    $status = 'failed';
+    $errorMsg = "Exit code: {$returnVar}";
+}
+
+// Log cron execution to database
+if ($con) {
+    $sql = "INSERT INTO cron_execution_log (job_name, last_run, last_run_status, error_message)
+            VALUES ('cron_backup.php', NOW(), ?, ?)
+            ON DUPLICATE KEY UPDATE last_run = NOW(), last_run_status = ?, error_message = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "ssss", $status, $errorMsg, $status, $errorMsg);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
 }

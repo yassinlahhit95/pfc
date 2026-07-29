@@ -60,7 +60,7 @@ if ($method === 'POST') {
             if (str_contains($msg, 'no hay stock')) {
                 v1Error('No available stock for this device.', 409, 'conflict');
             }
-            v1Error($msg ?: 'Could not register the loan.', 500, 'error');
+            v1Error('Could not register the loan.', 500, 'error');
         }
     }
 

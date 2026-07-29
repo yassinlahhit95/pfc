@@ -367,6 +367,43 @@ Inventario (solo director/secretaria):
 
 ---
 
+## Admin-only endpoints
+
+### `GET /api/v1/admin/cron-health.php` — Cron job status
+
+Verifica el estado de los trabajos cron programados. Requiere autenticación
+como administrador.
+
+**Respuesta 200:**
+```json
+{
+  "ok": true,
+  "jobs": [
+    {
+      "job": "cron_backup.php",
+      "status": "success",
+      "last_run": "2026-07-29 03:15:42",
+      "hours_ago": 2,
+      "ok": true,
+      "error_message": null
+    },
+    {
+      "job": "procesar_cola_emails.php",
+      "status": "success",
+      "last_run": "2026-07-29 15:48:57",
+      "hours_ago": 0,
+      "ok": true,
+      "error_message": "Procesados: 5 correos"
+    }
+  ]
+}
+```
+
+Los trabajos se consideran `ok` si: estado es `success` Y se ejecutaron
+hace menos de 25 horas.
+
+---
+
 ## Formato de error estándar
 
 Todos los endpoints que fallan devuelven:

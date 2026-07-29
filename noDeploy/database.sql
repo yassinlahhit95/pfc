@@ -2124,6 +2124,25 @@ CREATE TABLE `verificaciones_log` (
   KEY `idx_verif_ip_fecha` (`ip`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `cron_execution_log`
+--
+
+DROP TABLE IF EXISTS `cron_execution_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cron_execution_log` (
+  `job_name` varchar(100) NOT NULL,
+  `last_run` datetime DEFAULT NULL,
+  `last_run_status` enum('success','failed') NOT NULL DEFAULT 'success',
+  `error_message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`job_name`),
+  KEY `idx_cel_last_run` (`last_run`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
