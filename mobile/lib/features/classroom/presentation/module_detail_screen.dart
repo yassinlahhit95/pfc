@@ -491,7 +491,7 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
   bool _sending = false;
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker().pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'docx', 'txt'],
     );
@@ -794,7 +794,7 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
   bool _saving = false;
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker().pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'docx', 'txt'],
     );
