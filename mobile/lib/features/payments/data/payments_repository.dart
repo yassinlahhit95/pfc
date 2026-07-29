@@ -17,6 +17,9 @@ class Payment {
     required this.nombreEstudiante,
     required this.nombreCiclo,
     required this.nivel,
+    required this.idCiclo,
+    required this.idNivel,
+    required this.nombreNivel,
   });
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
@@ -33,6 +36,9 @@ class Payment {
         // Grado Superior), not an academic year — same field the web app
         // filters students by.
         nivel: json['curso'] as String? ?? '',
+        idCiclo: json['idCiclo'] as int? ?? 0,
+        idNivel: json['idNivel'] as int? ?? 0,
+        nombreNivel: json['nombreNivel'] as String? ?? '',
       );
 
   final int id;
@@ -45,6 +51,9 @@ class Payment {
   final String nombreEstudiante;
   final String nombreCiclo;
   final String nivel;
+  final int idCiclo;
+  final int idNivel;
+  final String nombreNivel;
 }
 
 class PendingPayment {

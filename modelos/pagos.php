@@ -7,9 +7,10 @@ require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosPagos() {
     $con = obtenerConexion();
-    $sql = "SELECT p.*, e.nombreEstudiante, e.curso, c.nombreCiclo
+    $sql = "SELECT p.*, e.nombreEstudiante, e.curso, e.idCiclo, c.nombreCiclo, c.idNivel, n.nombreNivel
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
+            JOIN niveles n ON c.idNivel = n.idNivel
             STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
             WHERE e.deleted_at IS NULL
             ORDER BY p.idPago DESC";
@@ -25,9 +26,10 @@ function listarTodosLosPagos() {
 
 function listarPagosFiltrados($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT p.*, e.nombreEstudiante, e.curso, c.nombreCiclo
+    $sql = "SELECT p.*, e.nombreEstudiante, e.curso, e.idCiclo, c.nombreCiclo, c.idNivel, n.nombreNivel
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
+            JOIN niveles n ON c.idNivel = n.idNivel
             STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
             WHERE e.idCiclo = ? AND e.deleted_at IS NULL
             ORDER BY p.idPago DESC";

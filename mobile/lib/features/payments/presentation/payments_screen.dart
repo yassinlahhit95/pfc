@@ -94,9 +94,28 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
           return const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin pagos registrados');
         }
 
-        final ciclos = allItems.map((p) => p.nombreCiclo).where((c) => c.isNotEmpty).toSet().toList()..sort();
-        final niveles = allItems.map((p) => p.nivel).where((n) => n.isNotEmpty).toSet().toList()..sort();
-        final estados = allItems.map((p) => p.estadoComprobante).where((e) => e.isNotEmpty).toSet().toList()..sort();
+        // ponytail: build lookup maps to filter dinamically by nivel
+        final ciclosByNivel = <String, Set<String>>{};
+        final niveles = <String>{};
+        final estados = <String>{};
+
+        for (final p in allItems) {
+          if (p.nivel.isNotEmpty) niveles.add(p.nivel);
+          if (p.estadoComprobante.isNotEmpty) estados.add(p.estadoComprobante);
+          if (p.nombreCiclo.isNotEmpty) {
+            ciclosByNivel.putIfAbsent(p.nivel, () => {}).add(p.nombreCiclo);
+          }
+        }
+
+        // if nivel is selected, show only ciclos for that nivel; else show all ciclos
+        final cicloOptions = _nivel != null
+            ? (ciclosByNivel[_nivel] ?? <String>{}).toList()..sort()
+            : ciclosByNivel.values.expand((c) => c).toSet().toList()..sort();
+
+        // reset ciclo if it's no longer valid for the selected nivel
+        if (_nivel != null && !cicloOptions.contains(_ciclo)) {
+          _ciclo = null;
+        }
 
         final items = allItems.where((p) {
           if (_ciclo != null && p.nombreCiclo != _ciclo) return false;
@@ -110,16 +129,19 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
             const SizedBox(height: Space.md),
             FilterBar(children: [
               FilterPill<String>(
-                label: 'Ciclo',
-                value: _ciclo,
-                options: [for (final c in ciclos) (c, c)],
-                onChanged: (v) => setState(() => _ciclo = v),
-              ),
-              FilterPill<String>(
                 label: 'Nivel',
                 value: _nivel,
                 options: [for (final n in niveles) (n, n)],
-                onChanged: (v) => setState(() => _nivel = v),
+                onChanged: (v) => setState(() {
+                  _nivel = v;
+                  _ciclo = null; // reset ciclo when nivel changes
+                }),
+              ),
+              FilterPill<String>(
+                label: 'Ciclo',
+                value: _ciclo,
+                options: [for (final c in cicloOptions) (c, c)],
+                onChanged: (v) => setState(() => _ciclo = v),
               ),
               FilterPill<String>(
                 label: 'Estado',

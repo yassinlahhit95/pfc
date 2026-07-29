@@ -211,6 +211,23 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
           final ciclos = lookups['ciclos'] as List? ?? [];
           final grupos = lookups['grupos'] as List? ?? [];
 
+          // ponytail: filter ciclos by selected nivel dynamically
+          final ciclosByNivel = <int, List<Map<String, dynamic>>>{};
+          for (final c in ciclos) {
+            final idNivel = c['idNivel'] as int;
+            ciclosByNivel.putIfAbsent(idNivel, () => []).add(c);
+          }
+
+          // if nivel is selected, show only ciclos for that nivel; else show all ciclos
+          final cicloOptions = _nivel != null
+              ? (ciclosByNivel[_nivel] ?? <Map<String, dynamic>>[])
+              : ciclos;
+
+          // reset ciclo if it's no longer valid for the selected nivel
+          if (_nivel != null && !cicloOptions.any((c) => c['idCiclo'] == _ciclo)) {
+            _ciclo = null;
+          }
+
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -224,7 +241,10 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                   const DropdownMenuItem(value: null, child: Text('Todos los niveles')),
                   ...niveles.map((n) => DropdownMenuItem(value: n['idNivel'] as int, child: Text(n['nombreNivel']))),
                 ],
-                onChanged: (val) => setState(() => _nivel = val),
+                onChanged: (val) => setState(() {
+                  _nivel = val;
+                  _ciclo = null; // reset ciclo when nivel changes
+                }),
               ),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<int?>(
@@ -232,7 +252,7 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                 decoration: const InputDecoration(labelText: 'Ciclo'),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Todos los ciclos')),
-                  ...ciclos.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo']))),
+                  ...cicloOptions.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo']))),
                 ],
                 onChanged: (val) => setState(() => _ciclo = val),
               ),
