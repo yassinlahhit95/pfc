@@ -148,7 +148,9 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
         <div class="campo relleno">
             <label>BUSCAR</label>
-            <input type="text" id="filtro-busqueda-gastos" placeholder="Concepto, referencia…" style="min-width:160px;" autocomplete="off">
+            <input type="search" id="filtro-busqueda-gastos" placeholder="Concepto, referencia…" style="min-width:160px;"
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other">
         </div>
         <div class="campo">
             <button type="submit" class="boton-primario"><i class="fas fa-filter"></i> Filtrar</button>
