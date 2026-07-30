@@ -1,41 +1,68 @@
 <?php
-require_once __DIR__ . "/../../../include/AdminGuard.php";
-require_once __DIR__ . "/../../../modelos/conectar.php";
-require_once __DIR__ . "/../../../modelos/landing.php";
-require_once __DIR__ . "/../../../include/I18n.php";
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-$exito   = $_SESSION['exito']   ?? '';
-$errores = $_SESSION['errores'] ?? null;
-unset($_SESSION['exito'], $_SESSION['errores']);
+try {
+    require_once __DIR__ . "/../../../include/AdminGuard.php";
+    require_once __DIR__ . "/../../../modelos/conectar.php";
+    require_once __DIR__ . "/../../../modelos/landing.php";
+    require_once __DIR__ . "/../../../include/I18n.php";
 
-$landingCfg = obtenerLandingConfig();
+    $exito   = $_SESSION['exito']   ?? '';
+    $errores = $_SESSION['errores'] ?? null;
+    unset($_SESSION['exito'], $_SESSION['errores']);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo "ERROR: " . $e->getMessage() . "\n";
+    echo "File: " . $e->getFile() . "\n";
+    echo "Line: " . $e->getLine() . "\n";
+    exit;
+}
 
-require_once __DIR__ . "/../../../modelos/panelDeControl.php";
-require_once __DIR__ . "/../../../modelos/anuncios.php";
-require_once __DIR__ . "/../../../modelos/eventos.php";
-require_once __DIR__ . "/../../../modelos/directores.php";
-require_once __DIR__ . "/../../../modelos/tutores.php";
-require_once __DIR__ . "/../../../modelos/pagos.php";
+try {
+    $landingCfg = obtenerLandingConfig();
 
-require_once __DIR__ . "/../../../include/Cache.php";
-require_once __DIR__ . "/../../../include/AssetMin.php";
-require_once __DIR__ . "/../../../modelos/notificacionesRecordatorios.php";
+    require_once __DIR__ . "/../../../modelos/panelDeControl.php";
+    require_once __DIR__ . "/../../../modelos/anuncios.php";
+    require_once __DIR__ . "/../../../modelos/eventos.php";
+    require_once __DIR__ . "/../../../modelos/directores.php";
+    require_once __DIR__ . "/../../../modelos/tutores.php";
+    require_once __DIR__ . "/../../../modelos/pagos.php";
 
-$stats = Cache::remember('admin_dashboard_stats_' . $_SESSION['idAdmin'], 60, function () {
-    return [
-        'totalEstudiantes'  => contarEstudiantes(),
-        'totalProfesores'   => contarProfesores(),
-        'totalTutores'      => contarTutores(),
-        'totalSecretarias'  => contarSecretarias(),
-        'totalRetos'        => contarRetos(),
-        'totalModulos'      => contarModulos(),
-        'totalCiclos'       => contarCiclos(),
-        'recaudado'         => obtenerTotalRecaudado(),
-        'totalTFGs'         => contarTFGsEntregados(),
-        'nuevosEstudiantes' => contarEstudiantesNuevos(7),
-        'nuevosProfesores'  => contarProfesoresNuevos(7),
-    ];
-});
+    require_once __DIR__ . "/../../../include/Cache.php";
+    require_once __DIR__ . "/../../../include/AssetMin.php";
+    require_once __DIR__ . "/../../../modelos/notificacionesRecordatorios.php";
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo "ERROR in models: " . $e->getMessage() . "\n";
+    echo "File: " . $e->getFile() . "\n";
+    echo "Line: " . $e->getLine() . "\n";
+    exit;
+}
+
+try {
+    $stats = Cache::remember('admin_dashboard_stats_' . $_SESSION['idAdmin'], 60, function () {
+        return [
+            'totalEstudiantes'  => contarEstudiantes(),
+            'totalProfesores'   => contarProfesores(),
+            'totalTutores'      => contarTutores(),
+            'totalSecretarias'  => contarSecretarias(),
+            'totalRetos'        => contarRetos(),
+            'totalModulos'      => contarModulos(),
+            'totalCiclos'       => contarCiclos(),
+            'recaudado'         => obtenerTotalRecaudado(),
+            'totalTFGs'         => contarTFGsEntregados(),
+            'nuevosEstudiantes' => contarEstudiantesNuevos(7),
+            'nuevosProfesores'  => contarProfesoresNuevos(7),
+        ];
+    });
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo "ERROR in stats: " . $e->getMessage() . "\n";
+    echo "File: " . $e->getFile() . "\n";
+    echo "Line: " . $e->getLine() . "\n";
+    exit;
+}
 $totalEstudiantes  = $stats['totalEstudiantes'];
 $totalProfesores   = $stats['totalProfesores'];
 $totalTutores      = $stats['totalTutores'];
