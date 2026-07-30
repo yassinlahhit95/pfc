@@ -17,19 +17,19 @@ function obtenerActualizacionesRecientes(int $limit = 5): array {
     $queries = [];
     // Directores
     $queries[] = "SELECT 'director' AS tipo, idDirector AS id, nombreDirector AS nombre,
-        COALESCE(updated_at, fechaAltaDirector) AS fecha,
+        fechaAltaDirector AS fecha,
         CONCAT('Nuevo director: ', nombreDirector) AS mensaje
-        FROM directores WHERE COALESCE(updated_at, fechaAltaDirector) >= CURDATE()";
+        FROM directores WHERE fechaAltaDirector >= CURDATE()";
     // Secretarias
     $queries[] = "SELECT 'secretaria' AS tipo, idSecretaria AS id, nombreSecretaria AS nombre,
-        COALESCE(updated_at, fechaAltaSecretaria) AS fecha,
+        fechaAltaSecretaria AS fecha,
         CONCAT('Nueva secretaria: ', nombreSecretaria) AS mensaje
-        FROM secretarias WHERE COALESCE(updated_at, fechaAltaSecretaria) >= CURDATE()";
+        FROM secretarias WHERE fechaAltaSecretaria >= CURDATE()";
     // Profesores
     $queries[] = "SELECT 'profesor' AS tipo, idProfesor AS id, nombreProfesor AS nombre,
-        COALESCE(updated_at, fechaAltaProfesor) AS fecha,
+        fechaAltaProfesor AS fecha,
         CONCAT('Nuevo profesor: ', nombreProfesor) AS mensaje
-        FROM profesores WHERE COALESCE(updated_at, fechaAltaProfesor) >= CURDATE()";
+        FROM profesores WHERE fechaAltaProfesor >= CURDATE()";
 
     $union = implode(' UNION ALL ', $queries);
     $sql = "SELECT * FROM ($union) AS u ORDER BY fecha DESC LIMIT ?";
