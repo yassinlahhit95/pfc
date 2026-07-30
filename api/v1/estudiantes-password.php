@@ -7,6 +7,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/_api.php';
 require_once __DIR__ . '/../../modelos/estudiantes.php';
 require_once __DIR__ . '/../../modelos/log.php';
+require_once __DIR__ . '/../../include/Security.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method !== 'PUT') {

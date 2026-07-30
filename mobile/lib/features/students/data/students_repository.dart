@@ -123,8 +123,8 @@ class StudentsRepository {
     await _client.put('/estudiantes.php', data: student.toJson());
   }
 
-  Future<void> deleteStudent(int idEstudiante) async {
-    await _client.delete('/estudiantes.php', query: {'id': idEstudiante});
+  Future<void> deleteStudent(int id, String password) async {
+    await _client.delete('/estudiantes.php', query: {'id': id.toString()}, data: {'password': password});
   }
 
   Future<void> changeStudentPassword(int idEstudiante, String nuevaPassword) async {
@@ -139,17 +139,50 @@ final studentsRepositoryProvider = Provider<StudentsRepository>(
   (ref) => StudentsRepository(ref.read(apiClientProvider)),
 );
 
-final studentsProvider = FutureProvider.autoDispose
-    .family<({List<Student> students, int total}), ({int limit, int offset, int? cicloId, int? nivelId, String? status, String? query})>(
-  (ref, params) {
+typedef StudentFiltersArgs = ({int? cicloId, int? nivelId, String? status, String? query});
+
+class StudentsNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Student> students, int total}), StudentFiltersArgs> {
+  bool _isLoadingMore = false;
+
+  @override
+  Future<({List<Student> students, int total})> build(StudentFiltersArgs arg) async {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(studentsRepositoryProvider).fetchStudents(
-        limit: params.limit,
-        offset: params.offset,
-        cicloId: params.cicloId,
-        nivelId: params.nivelId,
-        status: params.status,
-        query: params.query,
-      );
-  },
+          limit: 20,
+          offset: 0,
+          cicloId: arg.cicloId,
+          nivelId: arg.nivelId,
+          status: arg.status,
+          query: arg.query,
+        );
+  }
+
+  Future<void> loadMore() async {
+    if (_isLoadingMore) return;
+    final current = state.valueOrNull;
+    if (current == null) return;
+    if (current.students.length >= current.total) return;
+
+    _isLoadingMore = true;
+    try {
+      final nextData = await ref.read(studentsRepositoryProvider).fetchStudents(
+            limit: 20,
+            offset: current.students.length,
+            cicloId: arg.cicloId,
+            nivelId: arg.nivelId,
+            status: arg.status,
+            query: arg.query,
+          );
+      state = AsyncData((
+        students: [...current.students, ...nextData.students],
+        total: nextData.total,
+      ));
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
+}
+
+final studentsProvider = AsyncNotifierProvider.autoDispose.family<StudentsNotifier, ({List<Student> students, int total}), StudentFiltersArgs>(
+  () => StudentsNotifier(),
 );

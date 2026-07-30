@@ -61,6 +61,13 @@ class FamilyRepository {
       'idTutor': idTutor,
     });
   }
+
+  Future<void> changeFamilyPassword(int idTutor, String password) async {
+    await _client.post('/familia-password.php', data: {
+      'idFamiliar': idTutor,
+      'password': password,
+    });
+  }
 }
 
 final familyRepositoryProvider = Provider((ref) => FamilyRepository(ref.watch(apiClientProvider)));

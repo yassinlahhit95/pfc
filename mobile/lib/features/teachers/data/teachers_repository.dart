@@ -54,20 +54,67 @@ class TeachersRepository {
       total: data['total'] as int? ?? 0,
     );
   }
+
+  Future<void> createTeacher(Map<String, dynamic> data) async {
+    await _client.post('/profesores.php', data: data);
+  }
+
+  Future<void> updateTeacher(Map<String, dynamic> data) async {
+    await _client.put('/profesores.php', data: data);
+  }
+
+  Future<void> deleteTeacher(int id, String password) async {
+    await _client.delete('/profesores.php', query: {'id': id.toString()}, data: {'password': password});
+  }
+
+  Future<void> changeTeacherPassword(int idProfesor, String nuevaPassword) async {
+    await _client.put('/profesores-password.php', data: {
+      'idProfesor': idProfesor,
+      'nuevaPassword': nuevaPassword,
+    });
+  }
 }
 
 final teachersRepositoryProvider = Provider<TeachersRepository>(
   (ref) => TeachersRepository(ref.read(apiClientProvider)),
 );
 
-final teachersProvider = FutureProvider.autoDispose
-    .family<({List<Teacher> teachers, int total}), ({int limit, int offset, String? query})>(
-  (ref, params) {
+class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Teacher> teachers, int total}), String?> {
+  bool _isLoadingMore = false;
+
+  @override
+  Future<({List<Teacher> teachers, int total})> build(String? arg) async {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(teachersRepositoryProvider).fetchTeachers(
-        limit: params.limit,
-        offset: params.offset,
-        query: params.query,
-      );
-  },
+          limit: 20,
+          offset: 0,
+          query: arg,
+        );
+  }
+
+  Future<void> loadMore() async {
+    if (_isLoadingMore) return;
+    final current = state.valueOrNull;
+    if (current == null) return;
+    if (current.teachers.length >= current.total) return;
+
+    _isLoadingMore = true;
+    try {
+      final nextData = await ref.read(teachersRepositoryProvider).fetchTeachers(
+            limit: 20,
+            offset: current.teachers.length,
+            query: arg,
+          );
+      state = AsyncData((
+        teachers: [...current.teachers, ...nextData.teachers],
+        total: nextData.total,
+      ));
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
+}
+
+final teachersProvider = AsyncNotifierProvider.autoDispose.family<TeachersNotifier, ({List<Teacher> teachers, int total}), String?>(
+  () => TeachersNotifier(),
 );

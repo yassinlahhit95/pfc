@@ -69,6 +69,8 @@ function insertarSecretaria(string $nombre, string $email): int|false {
     return false;
 }
 
+
+
 function eliminarSecretaria(int $id): bool {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con, "DELETE FROM secretarias WHERE idSecretaria = ?");

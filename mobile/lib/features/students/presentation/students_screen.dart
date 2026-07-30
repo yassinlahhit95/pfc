@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/profile_detail_sheet.dart';
+import '../../../core/widgets/password_confirmation_dialog.dart';
 import '../../../core/utils/debounce.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
@@ -61,8 +62,7 @@ class StudentsScreen extends ConsumerStatefulWidget {
 class _StudentsScreenState extends ConsumerState<StudentsScreen> {
   late ScrollController _scrollController;
   final Debounce _debounce = Debounce();
-  int _currentOffset = 0;
-  static const int _pageSize = 20;
+
 
   @override
   void initState() {
@@ -74,26 +74,16 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
       final filters = ref.read(studentsFiltersProvider);
-      final asyncData = ref.read(studentsProvider(
-        (
-          limit: _pageSize,
-          offset: _currentOffset,
-          cicloId: filters.ciclo,
-          nivelId: filters.nivel,
-          status: filters.estado,
-          query: filters.q,
-        ),
-      ));
-      
-      if (asyncData.hasValue && asyncData.value != null) {
-        final total = asyncData.value!.total;
-        if (total > _currentOffset + _pageSize) {
-          // Debounce the load to prevent rapid multiple increments
-          _debounce(const Duration(milliseconds: 300), () {
-            setState(() => _currentOffset += _pageSize);
-          });
-        }
-      }
+      _debounce(const Duration(milliseconds: 300), () {
+        ref.read(studentsProvider(
+          (
+            cicloId: filters.ciclo,
+            nivelId: filters.nivel,
+            status: filters.estado,
+            query: filters.q,
+          ),
+        ).notifier).loadMore();
+      });
     }
   }
 
@@ -117,18 +107,14 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
     final session = ref.watch(sessionControllerProvider).valueOrNull;
     final canManage = session?.role == UserRole.director || session?.role == UserRole.secretaria;
     final filters = ref.watch(studentsFiltersProvider);
-    final studentsAsync = ref.watch(
-      studentsProvider(
-        (
-          limit: _pageSize,
-          offset: _currentOffset,
-          cicloId: filters.ciclo,
-          nivelId: filters.nivel,
-          status: filters.estado,
-          query: filters.q,
-        ),
+    final studentsAsync = ref.watch(studentsProvider(
+      (
+        cicloId: filters.ciclo,
+        nivelId: filters.nivel,
+        status: filters.estado,
+        query: filters.q,
       ),
-    );
+    ));
 
     return Scaffold(
       appBar: AppBar(
@@ -159,8 +145,7 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
             child: TextField(
               onChanged: (value) {
                 _debounce(const Duration(milliseconds: 500), () {
-                  ref.read(studentsFiltersProvider.notifier).state = filters.copyWith(q: value);
-                  setState(() => _currentOffset = 0);
+                  ref.read(studentsFiltersProvider.notifier).update((s) => s.copyWith(q: value));
                 });
               },
               decoration: InputDecoration(
@@ -344,81 +329,6 @@ class _StudentCard extends ConsumerWidget {
           email: student.email,
           telefono: student.telefono,
           subtitle: '${student.course} - ${student.year ?? ''} (${student.abreviaturaCiclo})',
-          extraActions: canManage
-              ? [
-                  IconButton(
-                    icon: const Icon(Icons.family_restroom),
-                    color: scheme.secondary,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => FamilyScreen(idEstudiante: student.id),
-                        ),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    color: scheme.primary,
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => AddStudentScreen(student: student),
-                        ),
-                      );
-                      if (result == true) {
-                        ref.invalidate(studentsProvider);
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.vpn_key),
-                    color: scheme.tertiary,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _showChangePasswordDialog(context, ref, student);
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    color: scheme.error,
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: const Text('Eliminar Estudiante'),
-                          content: Text('¿Está seguro de que desea eliminar a ${student.nombre}?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: const Text('Cancelar'),
-                            ),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: const Text('Eliminar'),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirm == true) {
-                        try {
-                          await ref.read(studentsRepositoryProvider).deleteStudent(student.id);
-                          ref.invalidate(studentsProvider);
-                        } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-                          }
-                        }
-                      }
-                    },
-                  ),
-                ]
-              : null,
         );
       },
       borderRadius: BorderRadius.circular(Radii.md),
@@ -460,6 +370,56 @@ class _StudentCard extends ConsumerWidget {
                   ],
                 ),
               ),
+              if (canManage)
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) async {
+                    if (value == 'family') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FamilyScreen(idEstudiante: student.id),
+                        ),
+                      );
+                    } else if (value == 'edit') {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddStudentScreen(student: student),
+                        ),
+                      );
+                      if (result == true) {
+                        ref.invalidate(studentsProvider);
+                      }
+                    } else if (value == 'password') {
+                      _showChangePasswordDialog(context, ref, student);
+                    } else if (value == 'delete') {
+                      final password = await PasswordConfirmationDialog.show(
+                        context,
+                        title: 'Eliminar Alumno',
+                        message: 'Introduce tu contraseña para confirmar la eliminación de ${student.nombre}.',
+                      );
+                      if (password != null) {
+                        try {
+                          await ref.read(studentsRepositoryProvider).deleteStudent(student.id, password);
+                          ref.invalidate(studentsProvider);
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e'), backgroundColor: Theme.of(context).colorScheme.error),
+                            );
+                          }
+                        }
+                      }
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(value: 'family', child: Text('Familiares (Tutores)')),
+                    const PopupMenuItem(value: 'edit', child: Text('Editar')),
+                    const PopupMenuItem(value: 'password', child: Text('Cambiar Contraseña')),
+                    const PopupMenuItem(value: 'delete', child: Text('Eliminar', style: TextStyle(color: Colors.red))),
+                  ],
+                ),
             ],
           ),
           if (student.course.isNotEmpty) ...[

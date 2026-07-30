@@ -105,8 +105,8 @@ class ApiClient {
   Future<Map<String, dynamic>> put(String path, {Object? data, Map<String, dynamic>? query}) =>
       call(() => dio.put(path, data: data, queryParameters: query));
 
-  Future<Map<String, dynamic>> delete(String path, {Map<String, dynamic>? query}) =>
-      call(() => dio.delete(path, queryParameters: query));
+  Future<Map<String, dynamic>> delete(String path, {Object? data, Map<String, dynamic>? query}) =>
+      call(() => dio.delete(path, data: data, queryParameters: query));
 }
 
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient(ref));

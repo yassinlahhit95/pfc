@@ -137,6 +137,19 @@ function restablecerPasswordTutor(int $idTutor): bool {
     return mysqli_stmt_execute($stmt);
 }
 
+function actualizarPasswordTutor($idTutor, $nuevaPassword) {
+    $con = obtenerConexion();
+    $hash = Security::hashPassword($nuevaPassword);
+    $sql = "UPDATE tutores SET password = ? WHERE idTutor = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $hash, $idTutor);
+    $ok = mysqli_stmt_execute($stmt);
+    if ($ok && class_exists('Security')) {
+        Security::touchPasswordChanged($con, 'tutores', 'idTutor', $idTutor);
+    }
+    return $ok;
+}
+
 function actualizarTutor(int $idTutor, string $nombre, string $email, string $dni, string $telefono): bool {
     $con = obtenerConexion();
     $stmt = mysqli_prepare($con,

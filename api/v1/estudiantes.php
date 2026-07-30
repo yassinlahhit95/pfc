@@ -256,6 +256,23 @@ if ($method === 'PUT') {
 if ($method === 'DELETE') {
     $idEstudiante = (int)($_GET['id'] ?? 0);
     if (!$idEstudiante) v1Error('id parameter is required.', 400, 'validation');
+    $body = v1Body();
+    $password = (string)($body['password'] ?? '');
+    if ($password === '') v1Error('Password is required to delete.', 400, 'validation');
+
+    $con = obtenerConexion();
+    if ($type === 'director') {
+        $stmt = mysqli_prepare($con, "SELECT password FROM directores WHERE idDirector = ?");
+    } else {
+        $stmt = mysqli_prepare($con, "SELECT password FROM secretarias WHERE idSecretaria = ?");
+    }
+    mysqli_stmt_bind_param($stmt, "i", $uid);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($res);
+    if (!$user || !password_verify($password, $user['password'])) {
+        v1Error('Invalid password.', 401, 'unauthorized');
+    }
 
     if (!eliminarEstudianteSuave($idEstudiante)) {
         v1Error('Could not delete student.', 500, 'error');

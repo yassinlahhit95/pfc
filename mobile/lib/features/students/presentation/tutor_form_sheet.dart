@@ -34,8 +34,10 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
   late TextEditingController _emailController;
   late TextEditingController _dniController;
   late TextEditingController _telefonoController;
-  late TextEditingController _parentescoController;
+  String _parentesco = 'Madre';
   bool _isLoading = false;
+  String? _errorMessage;
+  String? _successMessage;
 
   @override
   void initState() {
@@ -44,7 +46,10 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
     _emailController = TextEditingController(text: widget.tutor?.email);
     _dniController = TextEditingController(text: widget.tutor?.dni);
     _telefonoController = TextEditingController(text: widget.tutor?.telefono);
-    _parentescoController = TextEditingController(text: widget.tutor?.parentesco ?? 'Tutor');
+    _parentesco = widget.tutor?.parentesco ?? 'Madre';
+    if (!['Padre', 'Madre', 'Tutor Legal', 'Otro'].contains(_parentesco)) {
+      _parentesco = 'Otro';
+    }
   }
 
   @override
@@ -53,14 +58,17 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
     _emailController.dispose();
     _dniController.dispose();
     _telefonoController.dispose();
-    _parentescoController.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+      _successMessage = null;
+    });
 
     try {
       final repo = ref.read(familyRepositoryProvider);
@@ -69,7 +77,7 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
         'emailTutor': _emailController.text.trim(),
         'dniTutor': _dniController.text.trim(),
         'telefonoTutor': _telefonoController.text.trim(),
-        'parentesco': _parentescoController.text.trim(),
+        'parentesco': _parentesco,
       };
 
       if (widget.tutor == null) {
@@ -79,13 +87,13 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
       }
 
       if (mounted) {
-        Navigator.pop(context, true);
+        setState(() => _successMessage = widget.tutor == null ? 'Familiar añadido con éxito' : 'Familiar actualizado con éxito');
+        await Future.delayed(const Duration(seconds: 1));
+        if (mounted) Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        setState(() => _errorMessage = 'Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -109,6 +117,30 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
               style: textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
+            if (_errorMessage != null) ...[
+              const SizedBox(height: Space.md),
+              Container(
+                padding: const EdgeInsets.all(Space.sm),
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+            if (_successMessage != null) ...[
+              const SizedBox(height: Space.md),
+              Container(
+                padding: const EdgeInsets.all(Space.sm),
+                color: Colors.green.shade100,
+                child: Text(
+                  _successMessage!,
+                  style: TextStyle(color: Colors.green.shade900),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
             const SizedBox(height: Space.xl),
             TextFormField(
               controller: _nombreController,
@@ -135,9 +167,18 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: Space.md),
-            TextFormField(
-              controller: _parentescoController,
-              decoration: const InputDecoration(labelText: 'Parentesco (ej. Padre, Madre)', border: OutlineInputBorder()),
+            DropdownButtonFormField<String>(
+              value: _parentesco,
+              decoration: const InputDecoration(labelText: 'Parentesco', border: OutlineInputBorder()),
+              items: const [
+                DropdownMenuItem(value: 'Madre', child: Text('Madre')),
+                DropdownMenuItem(value: 'Padre', child: Text('Padre')),
+                DropdownMenuItem(value: 'Tutor Legal', child: Text('Tutor Legal')),
+                DropdownMenuItem(value: 'Otro', child: Text('Otro')),
+              ],
+              onChanged: (val) {
+                if (val != null) setState(() => _parentesco = val);
+              },
             ),
             const SizedBox(height: Space.xl),
             FilledButton(

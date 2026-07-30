@@ -125,7 +125,7 @@ function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstud
 
 function listarAsistenciasFiltradasV2(array $filtros, int $limit = 50, int $offset = 0): array {
     $con = obtenerConexion();
-    $where = ["1=1"];
+    $where = ["a.estado != 'presente'"];
     $params = [];
     $types  = "";
 

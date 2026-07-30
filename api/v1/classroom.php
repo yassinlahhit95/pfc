@@ -254,7 +254,7 @@ if ($action === 'modules') {
             mysqli_stmt_bind_param($st, 'i', $uid);
             mysqli_stmt_execute($st);
             $est = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-            return $est && $est['idCiclo'] ? listarModulosPorCiclo((int)$est['idCiclo']) : [];
+            return $est && $est['idCiclo'] ? listarModulosDeCicloConNombre((int)$est['idCiclo']) : [];
         })(),
         'profesor' => listarModulosDeProfesor($uid),
         // Dirección/secretaría pueden supervisar cualquier recurso del aula

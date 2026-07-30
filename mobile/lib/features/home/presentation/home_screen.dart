@@ -27,6 +27,7 @@ import '../../schedule/presentation/schedule_screen.dart';
 
 import '../../students/presentation/students_screen.dart';
 import '../../teachers/presentation/teachers_screen.dart';
+import '../../secretarias/presentation/secretarias_screen.dart';
 import '../data/dashboard_repository.dart';
 import '../../tareas/presentation/tareas_screen.dart';
 import '../../retos/presentation/retos_screen.dart';
@@ -40,11 +41,11 @@ class _NavItem {
   final Widget screen;
 }
 
-String _greeting() {
+String _greeting(Map<String, String> t) {
   final hour = DateTime.now().hour;
-  if (hour < 12) return 'Buenos días';
-  if (hour < 20) return 'Buenas tardes';
-  return 'Buenas noches';
+  if (hour < 12) return t['greeting_morning'] ?? 'Buenos días';
+  if (hour < 20) return t['greeting_afternoon'] ?? 'Buenas tardes';
+  return t['greeting_evening'] ?? 'Buenas noches';
 }
 
 class HomeScreen extends ConsumerWidget {
@@ -106,6 +107,7 @@ class HomeScreen extends ConsumerWidget {
       if (isBackOffice) _NavItem(Icons.people_outlined, t['nav_alumnos']!, t['nav_alumnos_sub']!, const StudentsScreen()),
       if (isBackOffice) _NavItem(Icons.fact_check_outlined, t['nav_asistencias_centro']!, t['nav_asistencias_centro_sub']!, const CenterAttendanceScreen()),
       if (isBackOffice) _NavItem(Icons.school_outlined, t['nav_profesores']!, t['nav_profesores_sub']!, const TeachersScreen()),
+      if (role == UserRole.director) _NavItem(Icons.admin_panel_settings_outlined, t['nav_secretarias'] ?? 'Secretarías', t['nav_secretarias_sub'] ?? 'Gestión de personal', const SecretariasScreen()),
       if (isBackOffice) _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!, t['nav_inventario_sub']!, const InventoryScreen()),
     ];
 
@@ -262,6 +264,7 @@ class HomeScreen extends ConsumerWidget {
               child: _WelcomeHeader(
                 displayName: displayName,
                 role: role,
+                t: t,
               ),
             ),
             const SizedBox(height: Space.xxl),
@@ -327,9 +330,10 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _WelcomeHeader extends StatelessWidget {
-  const _WelcomeHeader({required this.displayName, required this.role});
+  const _WelcomeHeader({required this.displayName, required this.role, required this.t});
   final String displayName;
   final UserRole? role;
+  final Map<String, String> t;
 
   String _roleName(UserRole? role) {
     switch (role) {
@@ -384,7 +388,7 @@ class _WelcomeHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _greeting(),
+                  _greeting(t),
                   style: textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
                 ),
                 const SizedBox(height: Space.xs),

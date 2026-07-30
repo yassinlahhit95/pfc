@@ -19,9 +19,9 @@ if ($type === 'estudiante') {
     $sql = "SELECT t.*, m.nombreModulo, p.nombreProfesor 
             FROM aula_tareas t
             JOIN modulos m ON t.idModulo = m.idModulo
-            JOIN modulos_estudiantes me ON m.idModulo = me.idModulo
+            JOIN estudiantes e ON m.idCiclo = e.idCiclo
             JOIN profesores p ON t.idProfesor = p.idProfesor
-            WHERE me.idEstudiante = ? AND t.publicado = 1
+            WHERE e.idEstudiante = ? AND t.publicado = 1
             ORDER BY t.fechaCreacion DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $uid);

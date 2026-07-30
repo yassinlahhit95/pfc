@@ -90,9 +90,9 @@ if ($method === 'GET') {
             $sql = "SELECT r.*, m.nombreModulo, p.nombreProfesor 
                     FROM aula_retos r
                     JOIN modulos m ON r.idModulo = m.idModulo
-                    JOIN modulos_estudiantes me ON m.idModulo = me.idModulo
+                    JOIN estudiantes e ON m.idCiclo = e.idCiclo
                     JOIN profesores p ON r.idProfesor = p.idProfesor
-                    WHERE me.idEstudiante = ? AND r.publicado = 1
+                    WHERE e.idEstudiante = ? AND r.publicado = 1
                     ORDER BY r.fechaCreacion DESC";
             $stmt = mysqli_prepare($con, $sql);
             mysqli_stmt_bind_param($stmt, "i", $uid);
