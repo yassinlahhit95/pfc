@@ -1,11 +1,4 @@
-﻿mysqldump : mysqldump: [Warning] Using a password on the command line interface can be insecure.
-En línea: 1 Carácter: 336
-+ ... \noDeploy"; mysqldump -h localhost -u yassjjzw_adminpfc -p"Yassin1995 ...
-+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (mysqldump: [War...an be insecure.:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
--- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
+﻿-- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
 --
 -- Host: localhost    Database: yassjjzw_pfc
 -- ------------------------------------------------------
@@ -21,7 +14,6 @@ En línea: 1 Carácter: 336
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-mysqldump: Error: 'Access denied; you need (at least one of) the PROCESS privilege(s) for this operation' when trying to dump tablespaces
 
 --
 -- Table structure for table `academic_config`
