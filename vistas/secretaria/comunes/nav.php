@@ -75,6 +75,7 @@ function _nav_active_sec($check) {
         }
       } catch (e) {}
     </script>
+    <?php $navBrandSubtitle = 'Portal de Gestión'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_sec('inicio') ?>">

@@ -15,6 +15,14 @@ class Student {
     required this.estado,
     required this.dateEnrolled,
     required this.telefono,
+    this.idCiclo,
+    this.idGrupo,
+    this.fechaNacimiento,
+    this.dni,
+    this.direccion,
+    this.ciudad,
+    this.codigoPostal,
+    this.observaciones,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) => Student(
@@ -28,7 +36,32 @@ class Student {
         estado: json['estado'] as String? ?? 'activo',
         dateEnrolled: json['fechaAlta'] as String?,
         telefono: json['telefonoEstudiante'] as String? ?? '',
+        idCiclo: json['idCiclo'] as int?,
+        idGrupo: json['idGrupo'] as int?,
+        fechaNacimiento: json['fechaNacimientoEstudiante'] as String? ?? '',
+        dni: json['dniEstudiante'] as String? ?? '',
+        direccion: json['direccionEstudiante'] as String? ?? '',
+        ciudad: json['ciudadEstudiante'] as String? ?? '',
+        codigoPostal: json['codigoPostalEstudiante'] as String? ?? '',
+        observaciones: json['observacionesEstudiante'] as String? ?? '',
       );
+
+  Map<String, dynamic> toJson() => {
+        'idEstudiante': id,
+        'nombreEstudiante': nombre,
+        'emailEstudiante': email,
+        'telefonoEstudiante': telefono,
+        'idCiclo': idCiclo,
+        'curso': course,
+        'anioEstudio': year,
+        'idGrupo': idGrupo,
+        'fechaNacimientoEstudiante': fechaNacimiento,
+        'dniEstudiante': dni,
+        'direccionEstudiante': direccion,
+        'ciudadEstudiante': ciudad,
+        'codigoPostalEstudiante': codigoPostal,
+        'observacionesEstudiante': observaciones,
+      };
 
   final int id;
   final String nombre;
@@ -40,6 +73,15 @@ class Student {
   final String estado; // activo | inactivo
   final String? dateEnrolled;
   final String telefono;
+  
+  final int? idCiclo;
+  final int? idGrupo;
+  final String? fechaNacimiento;
+  final String? dni;
+  final String? direccion;
+  final String? ciudad;
+  final String? codigoPostal;
+  final String? observaciones;
 }
 
 class StudentsRepository {
@@ -71,6 +113,25 @@ class StudentsRepository {
           .toList(),
       total: data['total'] as int? ?? 0,
     );
+  }
+
+  Future<void> createStudent(Student student) async {
+    await _client.post('/estudiantes.php', data: student.toJson());
+  }
+
+  Future<void> updateStudent(Student student) async {
+    await _client.put('/estudiantes.php', data: student.toJson());
+  }
+
+  Future<void> deleteStudent(int idEstudiante) async {
+    await _client.delete('/estudiantes.php', query: {'id': idEstudiante});
+  }
+
+  Future<void> changeStudentPassword(int idEstudiante, String nuevaPassword) async {
+    await _client.put('/estudiantes-password.php', data: {
+      'idEstudiante': idEstudiante,
+      'nuevaPassword': nuevaPassword,
+    });
   }
 }
 

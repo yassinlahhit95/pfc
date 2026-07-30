@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/auth/auth_state.dart';
+import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/events_repository.dart';
+import 'add_event_screen.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
@@ -25,12 +28,48 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     super.dispose();
   }
 
+  void _deleteEvent(SchoolEvent event) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Eliminar evento'),
+        content: const Text('¿Estás seguro de que quieres eliminar este evento?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar')),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+
+    try {
+      await ref.read(eventsRepositoryProvider).deleteEvent(event.id);
+      ref.invalidate(eventsProvider);
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
+    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final role = session?.role;
+    final isBackOffice = role == UserRole.director || role == UserRole.secretaria;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Eventos')),
+      floatingActionButton: isBackOffice
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddEventScreen()),
+                );
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: AsyncView<List<SchoolEvent>>(
         value: eventsAsync,
         onRetry: () => ref.invalidate(eventsProvider),
@@ -79,7 +118,19 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                           padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
                           itemCount: items.length,
                           separatorBuilder: (_, __) => const SizedBox(height: Space.md),
-                          itemBuilder: (context, i) => _EventCard(item: items[i]),
+                          itemBuilder: (context, i) => _EventCard(
+                            item: items[i],
+                            isEditable: isBackOffice,
+                            onEdit: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AddEventScreen(eventToEdit: items[i]),
+                                ),
+                              );
+                            },
+                            onDelete: () => _deleteEvent(items[i]),
+                          ),
                         ),
                       ),
               ),
@@ -92,8 +143,17 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
 }
 
 class _EventCard extends StatelessWidget {
-  const _EventCard({required this.item});
+  const _EventCard({
+    required this.item,
+    required this.isEditable,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
   final SchoolEvent item;
+  final bool isEditable;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +202,18 @@ class _EventCard extends StatelessWidget {
               ],
             ),
           ),
+          if (isEditable)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (val) {
+                if (val == 'edit') onEdit();
+                if (val == 'delete') onDelete();
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'edit', child: Text('Editar')),
+                PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+              ],
+            ),
         ],
       ),
     );

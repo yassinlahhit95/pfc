@@ -89,6 +89,7 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
         }
       } catch (e) {}
     </script>
+    <?php $navBrandSubtitle = 'Campus Suite'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <!-- Dashboard -->

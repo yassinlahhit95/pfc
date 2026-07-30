@@ -16,6 +16,7 @@ class ProfileDetailSheet extends ConsumerStatefulWidget {
     required this.telefono,
     this.subtitle,
     this.status,
+    this.extraActions,
   });
 
   final int uid;
@@ -25,6 +26,7 @@ class ProfileDetailSheet extends ConsumerStatefulWidget {
   final String? telefono;
   final String? subtitle;
   final String? status;
+  final List<Widget>? extraActions;
 
   static Future<void> show(
     BuildContext context, {
@@ -35,6 +37,7 @@ class ProfileDetailSheet extends ConsumerStatefulWidget {
     required String? telefono,
     String? subtitle,
     String? status,
+    List<Widget>? extraActions,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -48,6 +51,7 @@ class ProfileDetailSheet extends ConsumerStatefulWidget {
         telefono: telefono,
         subtitle: subtitle,
         status: status,
+        extraActions: extraActions,
       ),
     );
   }
@@ -158,27 +162,6 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
             Text(widget.subtitle!, style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
           ],
           
-          if (widget.status != null) ...[
-            const SizedBox(height: Space.sm),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: (widget.status == 'Activo' || widget.status == 'activo') 
-                    ? AppColors.verdeLight.withValues(alpha: 0.2)
-                    : AppColors.rojoLight.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(Radii.pill),
-              ),
-              child: Text(
-                widget.status!,
-                style: textTheme.labelSmall?.copyWith(
-                  color: (widget.status == 'Activo' || widget.status == 'activo') 
-                      ? AppColors.verdeDark
-                      : AppColors.rojoDark,
-                ),
-              ),
-            ),
-          ],
-          
           const SizedBox(height: Space.xl),
           
           // Data rows
@@ -212,6 +195,15 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
               ),
             ],
           ),
+          if (widget.extraActions != null && widget.extraActions!.isNotEmpty) ...[
+            const SizedBox(height: Space.xl),
+            const Divider(),
+            const SizedBox(height: Space.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: widget.extraActions!,
+            ),
+          ],
         ],
       ),
     );

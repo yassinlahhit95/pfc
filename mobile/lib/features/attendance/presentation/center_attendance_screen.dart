@@ -210,8 +210,10 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
           );
         },
         data: (lookups) {
-          final niveles = lookups['niveles'] as List? ?? [];
+          final nivelesData = lookups['niveles'] as List? ?? [];
           final ciclos = lookups['ciclos'] as List? ?? [];
+          final activeNivelIds = ciclos.map((c) => c['idNivel'] as int).toSet();
+          final niveles = nivelesData.where((n) => activeNivelIds.contains(n['idNivel'] as int)).toList();
           final grupos = lookups['grupos'] as List? ?? [];
           final textTheme = Theme.of(context).textTheme;
 
@@ -276,7 +278,6 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                 decoration: const InputDecoration(labelText: 'Estado'),
                 items: const [
                   DropdownMenuItem(value: null, child: Text('Todos los estados')),
-                  DropdownMenuItem(value: 'presente', child: Text('Presente')),
                   DropdownMenuItem(value: 'ausente', child: Text('Ausente')),
                   DropdownMenuItem(value: 'retraso', child: Text('Retraso')),
                   DropdownMenuItem(value: 'justificado', child: Text('Justificado')),

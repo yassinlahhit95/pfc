@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
-declare(strict_types=1);
 Security::initSession();
 
 $legal_titulo = 'Política de Privacidad';

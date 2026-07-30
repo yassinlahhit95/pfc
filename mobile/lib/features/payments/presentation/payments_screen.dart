@@ -8,6 +8,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
+import '../../attendance/presentation/center_attendance_screen.dart' show lookupsProvider;
 import '../data/payments_repository.dart';
 import 'cobrar_pago_sheet.dart';
 
@@ -86,32 +87,50 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
   @override
   Widget build(BuildContext context) {
     final paymentsAsync = ref.watch(paymentsProvider);
+    final lookupsAsync = ref.watch(lookupsProvider);
 
-    return AsyncView<List<Payment>>(
-      value: paymentsAsync,
-      onRetry: () => ref.invalidate(paymentsProvider),
-      data: (context, allItems) {
-        if (allItems.isEmpty) {
-          return const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin pagos registrados');
-        }
+    return lookupsAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, st) => const Center(child: Text('Error cargando filtros')),
+      data: (lookups) {
+        return AsyncView<List<Payment>>(
+          value: paymentsAsync,
+          onRetry: () => ref.invalidate(paymentsProvider),
+          data: (context, allItems) {
+            if (allItems.isEmpty) {
+              return const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin pagos registrados');
+            }
 
-        // ponytail: build lookup maps to filter dinamically by nivel
-        final ciclosByNivel = <String, Set<String>>{};
-        final niveles = <String>{};
-        final estados = <String>{};
+            final nivelesData = lookups['niveles'] as List? ?? [];
+            final ciclosData = lookups['ciclos'] as List? ?? [];
 
-        for (final p in allItems) {
-          if (p.nivel.isNotEmpty) niveles.add(p.nivel);
-          if (p.estadoComprobante.isNotEmpty) estados.add(p.estadoComprobante);
-          if (p.nombreCiclo.isNotEmpty) {
-            ciclosByNivel.putIfAbsent(p.nivel, () => {}).add(p.nombreCiclo);
-          }
-        }
+            final nivelNames = <int, String>{};
+            for (final n in nivelesData) {
+              final nombre = n['nombreNivel'] as String;
+              nivelNames[n['idNivel'] as int] = nombre;
+            }
 
-        // if nivel is selected, show only ciclos for that nivel; else show all ciclos
-        final cicloOptions = _nivel != null
-            ? ((ciclosByNivel[_nivel] ?? <String>{}).toList()..sort())
-            : (ciclosByNivel.values.expand((c) => c).toSet().toList()..sort());
+            final niveles = <String>{};
+            final ciclosByNivel = <String, Set<String>>{};
+            for (final c in ciclosData) {
+              final nombreCiclo = c['nombreCiclo'] as String;
+              final idNivel = c['idNivel'] as int;
+              final nombreNivel = nivelNames[idNivel] ?? '';
+              if (nombreNivel.isNotEmpty) {
+                niveles.add(nombreNivel);
+                ciclosByNivel.putIfAbsent(nombreNivel, () => {}).add(nombreCiclo);
+              }
+            }
+
+            final estados = <String>{};
+            for (final p in allItems) {
+              if (p.estadoComprobante.isNotEmpty) estados.add(p.estadoComprobante);
+            }
+
+            // if nivel is selected, show only ciclos for that nivel; else show all ciclos
+            final cicloOptions = _nivel != null
+                ? ((ciclosByNivel[_nivel] ?? <String>{}).toList()..sort())
+                : (ciclosByNivel.values.expand((c) => c).toSet().toList()..sort());
 
         // reset ciclo if it's no longer valid for the selected nivel
         if (_nivel != null && !cicloOptions.contains(_ciclo)) {
@@ -169,6 +188,8 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
                     ),
             ),
           ],
+        );
+      },
         );
       },
     );

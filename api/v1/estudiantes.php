@@ -16,11 +16,10 @@ if (!in_array($type, ['director', 'secretaria', 'admin', 'profesor'])) {
     v1Error('This endpoint is not available for this role.', 403, 'forbidden');
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    v1Error('Method not allowed.', 405, 'method_not_allowed');
-}
+$method = $_SERVER['REQUEST_METHOD'];
 
-$limit  = min(max((int)($_GET['limit']  ?? 20), 1), 100);
+if ($method === 'GET') {
+    $limit  = min(max((int)($_GET['limit']  ?? 20), 1), 100);
 $offset = max((int)($_GET['offset'] ?? 0), 0);
 $ciclo  = (int)($_GET['ciclo'] ?? 0);
 $nivel  = (int)($_GET['nivel'] ?? 0);
@@ -98,7 +97,9 @@ $whereClause = implode(' AND ', $where);
 
 $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.emailEstudiante, e.telefonoEstudiante,
                e.idCiclo, c.nombreCiclo, c.abreviaturaCiclo, c.idNivel,
-               e.curso, e.anioEstudio, e.eliminado, e.fechaAltaEstudiante, g.nombreGrupo
+               e.curso, e.anioEstudio, e.eliminado, e.fechaAltaEstudiante, g.nombreGrupo,
+               e.fechaNacimientoEstudiante, e.dniEstudiante, e.direccionEstudiante,
+               e.ciudadEstudiante, e.codigoPostalEstudiante, e.observacionesEstudiante, e.idGrupo
         FROM estudiantes e
         JOIN ciclos c ON e.idCiclo = c.idCiclo
         LEFT JOIN grupos g ON e.idGrupo = g.idGrupo
@@ -141,26 +142,131 @@ if ($countParams) {
 
 $students = [];
 foreach ($rows as $row) {
+    $r = _descifrarFilaEstudiante($row);
     $students[] = [
-        'idEstudiante' => (int)$row['idEstudiante'],
-        'nombreEstudiante' => $row['nombreEstudiante'],
-        'emailEstudiante'  => $row['emailEstudiante'],
-        'telefonoEstudiante' => $row['telefonoEstudiante'] ?? '',
-        'idCiclo'          => (int)$row['idCiclo'],
-        'nombreCiclo'      => $row['nombreCiclo'],
-        'abreviaturaCiclo' => $row['abreviaturaCiclo'],
-        'idNivel' => (int)$row['idNivel'],
-        'curso' => $row['curso'],
-        'anioEstudio' => $row['anioEstudio'],
-        'nombreGrupo' => $row['nombreGrupo'] ?? 'Sin grupo',
-        'estado' => $row['eliminado'] ? 'inactivo' : 'activo',
-        'fechaAlta' => $row['fechaAltaEstudiante'],
+        'idEstudiante' => (int)$r['idEstudiante'],
+        'nombreEstudiante' => $r['nombreEstudiante'],
+        'emailEstudiante'  => $r['emailEstudiante'],
+        'telefonoEstudiante' => $r['telefonoEstudiante'] ?? '',
+        'idCiclo'          => (int)$r['idCiclo'],
+        'nombreCiclo'      => $r['nombreCiclo'],
+        'abreviaturaCiclo' => $r['abreviaturaCiclo'],
+        'idNivel' => (int)$r['idNivel'],
+        'curso' => $r['curso'],
+        'anioEstudio' => $r['anioEstudio'],
+        'nombreGrupo' => $r['nombreGrupo'] ?? 'Sin grupo',
+        'idGrupo' => $r['idGrupo'] ? (int)$r['idGrupo'] : null,
+        'estado' => $r['eliminado'] ? 'inactivo' : 'activo',
+        'fechaAlta' => $r['fechaAltaEstudiante'],
+        'fechaNacimientoEstudiante' => $r['fechaNacimientoEstudiante'] ?? '',
+        'dniEstudiante' => $r['dniEstudiante'] ?? '',
+        'direccionEstudiante' => $r['direccionEstudiante'] ?? '',
+        'ciudadEstudiante' => $r['ciudadEstudiante'] ?? '',
+        'codigoPostalEstudiante' => $r['codigoPostalEstudiante'] ?? '',
+        'observacionesEstudiante' => $r['observacionesEstudiante'] ?? '',
     ];
 }
 
-v1Ok([
-    'students' => $students,
-    'total' => $total,
-    'limit' => $limit,
-    'offset' => $offset,
-], 200);
+    v1Ok([
+        'students' => $students,
+        'total' => $total,
+        'limit' => $limit,
+        'offset' => $offset,
+    ], 200);
+}
+
+// ---------------------------------------------------------
+// CRUD Operations (Only Director and Secretaria)
+// ---------------------------------------------------------
+if (!in_array($type, ['director', 'secretaria'])) {
+    v1Error('This endpoint is not available for this role.', 403, 'forbidden');
+}
+
+require_once __DIR__ . '/../../modelos/log.php';
+
+if ($method === 'POST') {
+    $body = v1Body();
+    $nombre = trim((string)($body['nombreEstudiante'] ?? ''));
+    $email = trim((string)($body['emailEstudiante'] ?? ''));
+    $telefono = trim((string)($body['telefonoEstudiante'] ?? ''));
+    $fechaNacimiento = trim((string)($body['fechaNacimientoEstudiante'] ?? ''));
+    $dni = trim((string)($body['dniEstudiante'] ?? ''));
+    $direccion = trim((string)($body['direccionEstudiante'] ?? ''));
+    $ciudad = trim((string)($body['ciudadEstudiante'] ?? ''));
+    $codigoPostal = trim((string)($body['codigoPostalEstudiante'] ?? ''));
+    $observaciones = trim((string)($body['observacionesEstudiante'] ?? ''));
+    $idCiclo = (int)($body['idCiclo'] ?? 0);
+    $curso = trim((string)($body['curso'] ?? 'Grado Medio'));
+    $anioEstudio = trim((string)($body['anioEstudio'] ?? ''));
+    $idGrupo = !empty($body['idGrupo']) ? (int)$body['idGrupo'] : null;
+    $fechaAlta = date('Y-m-d');
+
+    if ($nombre === '' || $email === '' || $idCiclo === 0) {
+        v1Error('Nombre, email and idCiclo are required.', 400, 'validation');
+    }
+
+    if (!insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio, $idGrupo)) {
+        v1Error('Could not create student.', 500, 'error');
+    }
+
+    if ($type === 'director') {
+        registrarAccion('insertar', 'estudiantes', null, $nombre);
+    } else {
+        registrarAccionSecretaria('insertar', 'estudiantes', null, $nombre);
+    }
+    v1Ok(['success' => true]);
+}
+
+if ($method === 'PUT') {
+    $body = v1Body();
+    $idEstudiante = (int)($body['idEstudiante'] ?? 0);
+    if (!$idEstudiante) v1Error('idEstudiante is required.', 400, 'validation');
+
+    // Obtain current data
+    $est = obtenerEstudiantePorId($idEstudiante);
+    if (!$est) v1Error('Student not found.', 404, 'not_found');
+
+    $nombre = trim((string)($body['nombreEstudiante'] ?? $est['nombreEstudiante']));
+    $email = trim((string)($body['emailEstudiante'] ?? $est['emailEstudiante']));
+    $telefono = trim((string)($body['telefonoEstudiante'] ?? $est['telefonoEstudiante']));
+    $fechaNacimiento = trim((string)($body['fechaNacimientoEstudiante'] ?? $est['fechaNacimientoEstudiante']));
+    $dni = trim((string)($body['dniEstudiante'] ?? $est['dniEstudiante']));
+    $direccion = trim((string)($body['direccionEstudiante'] ?? $est['direccionEstudiante']));
+    $ciudad = trim((string)($body['ciudadEstudiante'] ?? $est['ciudadEstudiante']));
+    $codigoPostal = trim((string)($body['codigoPostalEstudiante'] ?? $est['codigoPostalEstudiante']));
+    $observaciones = trim((string)($body['observacionesEstudiante'] ?? $est['observacionesEstudiante']));
+    $idCiclo = (int)($body['idCiclo'] ?? $est['idCiclo']);
+    $curso = trim((string)($body['curso'] ?? $est['curso']));
+    $anioEstudio = trim((string)($body['anioEstudio'] ?? $est['anioEstudio']));
+    $idGrupo = isset($body['idGrupo']) ? ((int)$body['idGrupo'] > 0 ? (int)$body['idGrupo'] : null) : $est['idGrupo'];
+    $fechaAlta = $est['fechaAltaEstudiante'];
+
+    if (!actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio, $idGrupo)) {
+        v1Error('Could not update student.', 500, 'error');
+    }
+
+    if ($type === 'director') {
+        registrarAccion('actualizar', 'estudiantes', $idEstudiante, $nombre);
+    } else {
+        registrarAccionSecretaria('actualizar', 'estudiantes', $idEstudiante, $nombre);
+    }
+    v1Ok(['success' => true]);
+}
+
+if ($method === 'DELETE') {
+    $idEstudiante = (int)($_GET['id'] ?? 0);
+    if (!$idEstudiante) v1Error('id parameter is required.', 400, 'validation');
+
+    if (!eliminarEstudianteSuave($idEstudiante)) {
+        v1Error('Could not delete student.', 500, 'error');
+    }
+
+    if ($type === 'director') {
+        registrarAccion('eliminar', 'estudiantes', $idEstudiante, 'Borrado desde app');
+    } else {
+        registrarAccionSecretaria('eliminar', 'estudiantes', $idEstudiante, 'Borrado desde app');
+    }
+    v1Ok(['success' => true]);
+}
+
+v1Error('Method not allowed.', 405, 'method_not_allowed');

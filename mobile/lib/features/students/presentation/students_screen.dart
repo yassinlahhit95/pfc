@@ -6,7 +6,11 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/profile_detail_sheet.dart';
 import '../../../core/utils/debounce.dart';
+import '../../../core/auth/auth_state.dart';
+import '../../../core/auth/session.dart';
 import '../data/students_repository.dart';
+import 'add_student_screen.dart';
+import 'family_screen.dart';
 import '../../attendance/presentation/center_attendance_screen.dart' show lookupsProvider;
 
 class StudentsFilters {
@@ -110,6 +114,8 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final canManage = session?.role == UserRole.director || session?.role == UserRole.secretaria;
     final filters = ref.watch(studentsFiltersProvider);
     final studentsAsync = ref.watch(
       studentsProvider(
@@ -134,6 +140,18 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
           ),
         ],
       ),
+      floatingActionButton: canManage ? FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddStudentScreen()),
+          );
+          if (result == true) {
+            ref.invalidate(studentsProvider);
+          }
+        },
+        child: const Icon(Icons.add),
+      ) : null,
       body: Column(
         children: [
           Padding(
@@ -230,8 +248,10 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
         loading: () => const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
         error: (e, st) => const SizedBox(height: 200, child: Center(child: Text('Error cargando filtros'))),
         data: (lookups) {
-          final niveles = lookups['niveles'] as List? ?? [];
+          final nivelesData = lookups['niveles'] as List? ?? [];
           final ciclos = lookups['ciclos'] as List? ?? [];
+          final activeNivelIds = ciclos.map((c) => c['idNivel'] as int).toSet();
+          final niveles = nivelesData.where((n) => activeNivelIds.contains(n['idNivel'] as int)).toList();
 
           final textTheme = Theme.of(context).textTheme;
           return Column(
@@ -261,17 +281,7 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
                 ],
                 onChanged: (val) => setState(() => _ciclo = val),
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String?>(
-                value: _estado,
-                decoration: const InputDecoration(labelText: 'Estado'),
-                items: const [
-                  DropdownMenuItem(value: null, child: Text('Todos los estados')),
-                  DropdownMenuItem(value: 'activo', child: Text('Activos')),
-                  DropdownMenuItem(value: 'inactivo', child: Text('Inactivos')),
-                ],
-                onChanged: (val) => setState(() => _estado = val),
-              ),
+
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -312,21 +322,17 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
   }
 }
 
-class _StudentCard extends StatelessWidget {
+class _StudentCard extends ConsumerWidget {
   const _StudentCard({required this.student});
   final Student student;
 
-  Color _getStatusColor(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    return student.estado == 'activo'
-        ? (dark ? AppColors.verdeDark : AppColors.verdeLight)
-        : (dark ? AppColors.rojoDark : AppColors.rojoLight);
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+
+    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final canManage = session?.role == UserRole.director || session?.role == UserRole.secretaria;
 
     return InkWell(
       onTap: () {
@@ -338,7 +344,81 @@ class _StudentCard extends StatelessWidget {
           email: student.email,
           telefono: student.telefono,
           subtitle: '${student.course} - ${student.year ?? ''} (${student.abreviaturaCiclo})',
-          status: student.estado == 'activo' ? 'Activo' : 'Inactivo',
+          extraActions: canManage
+              ? [
+                  IconButton(
+                    icon: const Icon(Icons.family_restroom),
+                    color: scheme.secondary,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FamilyScreen(idEstudiante: student.id),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    color: scheme.primary,
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddStudentScreen(student: student),
+                        ),
+                      );
+                      if (result == true) {
+                        ref.invalidate(studentsProvider);
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.vpn_key),
+                    color: scheme.tertiary,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showChangePasswordDialog(context, ref, student);
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    color: scheme.error,
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Eliminar Estudiante'),
+                          content: Text('¿Está seguro de que desea eliminar a ${student.nombre}?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: const Text('Eliminar'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        try {
+                          await ref.read(studentsRepositoryProvider).deleteStudent(student.id);
+                          ref.invalidate(studentsProvider);
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+                          }
+                        }
+                      }
+                    },
+                  ),
+                ]
+              : null,
         );
       },
       borderRadius: BorderRadius.circular(Radii.md),
@@ -380,25 +460,12 @@ class _StudentCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: _getStatusColor(context).withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(Radii.pill),
-                ),
-                child: Text(
-                  student.estado == 'activo' ? 'Activo' : 'Inactivo',
-                  style: textTheme.labelSmall?.copyWith(
-                    color: _getStatusColor(context),
-                  ),
-                ),
-              ),
             ],
           ),
-          if (student.year != null || student.course != null) ...[
+          if (student.course.isNotEmpty) ...[
             const SizedBox(height: Space.sm),
             Text(
-              '${student.course ?? 'N/A'} - ${student.year ?? ''}',
+              '${student.course} - ${student.year ?? ''}',
               style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
           ],
@@ -406,5 +473,60 @@ class _StudentCard extends StatelessWidget {
       ),
       ),
     );
+  }
+}
+
+Future<void> _showChangePasswordDialog(BuildContext context, WidgetRef ref, Student student) async {
+  final controller = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Cambiar Contraseña'),
+      content: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Nueva contraseña para ${student.nombre}:'),
+            const SizedBox(height: Space.md),
+            TextFormField(
+              controller: controller,
+              decoration: const InputDecoration(labelText: 'Nueva Contraseña', border: OutlineInputBorder()),
+              obscureText: true,
+              validator: (v) => v == null || v.length < 6 ? 'Mínimo 6 caracteres' : null,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (formKey.currentState!.validate()) {
+              Navigator.pop(ctx, true);
+            }
+          },
+          child: const Text('Guardar'),
+        ),
+      ],
+    ),
+  );
+
+  if (result == true && context.mounted) {
+    try {
+      await ref.read(studentsRepositoryProvider).changeStudentPassword(student.id, controller.text);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contraseña actualizada correctamente')));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
   }
 }

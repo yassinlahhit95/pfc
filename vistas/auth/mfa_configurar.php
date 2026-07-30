@@ -1,4 +1,4 @@
-    <?php endif; ?>
+<?php
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';

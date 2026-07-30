@@ -23,7 +23,7 @@
         <ul>
             <li><strong>Denominació:</strong> <?= htmlspecialchars($nombreCentro) ?></li>
             <li><strong>NIF/CIF:</strong> [Introdueix aquí el NIF o CIF del centre]</li>
-            <li><strong>Domicili:</strong> <?= htmlspecialchars(trim(($cfg['direccionCentro'] ?? '') . ' ' . ($cfg['ciudadCentro'] ?? '') . ' ' . ($cfg['cpCentro'] ?? ''))) ?: '[Introdueix aquí l'adreça del centre]' ?></li>
+            <li><strong>Domicili:</strong> <?= htmlspecialchars(trim(($cfg['direccionCentro'] ?? '') . ' ' . ($cfg['ciudadCentro'] ?? '') . ' ' . ($cfg['cpCentro'] ?? ''))) ?: "[Introdueix aquí l'adreça del centre]" ?></li>
             <li><strong>Telèfon:</strong> <?= !empty($cfg['telefonoCentro']) ? htmlspecialchars($cfg['telefonoCentro']) : '[Telèfon del centre]' ?></li>
             <li><strong>Correu electrònic:</strong> <?= !empty($emailCentro) ? '<a href="mailto:' . htmlspecialchars($emailCentro) . '">' . htmlspecialchars($emailCentro) . '</a>' : '[Email del centre]' ?></li>
             <li><strong>Activitat principal:</strong> Centre de formació professional i gestió educativa.</li>

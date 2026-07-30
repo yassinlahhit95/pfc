@@ -147,7 +147,6 @@ class _TeacherCard extends StatelessWidget {
           email: teacher.email,
           telefono: teacher.telefono,
           subtitle: teacher.isTutor ? 'Tutor de ${teacher.cicloTutoria ?? ''}' : 'Docente',
-          status: 'Activo', // Profesores are always active in this version
         );
       },
       borderRadius: BorderRadius.circular(Radii.md),

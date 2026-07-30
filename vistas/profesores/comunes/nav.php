@@ -125,6 +125,7 @@ function _nav_active_prof($check) {
         }
       } catch (e) {}
     </script>
+    <?php $navBrandSubtitle = 'Portal Docente'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <!-- Inicio -->

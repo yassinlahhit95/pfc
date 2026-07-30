@@ -57,9 +57,9 @@ function _nav_active_tutor($check) {
           s.classList.add("collapsed");
           s.style.setProperty("transition", "none", "important");
           setTimeout(function() { s.style.removeProperty("transition"); }, 150);
-        }
       } catch (e) {}
     </script>
+    <?php $navBrandSubtitle = 'Portal de Tutores'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
       <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_tutor('inicio') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>

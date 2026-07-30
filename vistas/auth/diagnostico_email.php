@@ -1,4 +1,4 @@
-            <?php } ?>
+<?php
 require_once __DIR__ . "/../../config/Config.php";
 require_once __DIR__ . "/../../include/Security.php";
 Security::initSession();

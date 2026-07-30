@@ -21,6 +21,16 @@ class SchoolEvent {
         ubicacion: json['ubicacionEvento'] as String?,
       );
 
+  Map<String, dynamic> toJson() => {
+        'idEvento': id,
+        'titulo': titulo,
+        'fecha': fecha,
+        'hora': hora,
+        'descripcion': descripcion,
+        'ubicacion': ubicacion,
+        'tipo_visibilidad': 'publica',
+      };
+
   final int id;
   final String titulo;
   final String fecha;
@@ -45,6 +55,19 @@ class EventsRepository {
     });
     final rows = (data['events'] as List).cast<Map<String, dynamic>>();
     return rows.map(SchoolEvent.fromJson).toList();
+  }
+
+  Future<int> createEvent(SchoolEvent event) async {
+    final data = await _client.post('/events.php', data: event.toJson());
+    return data['idEvento'] as int;
+  }
+
+  Future<void> updateEvent(SchoolEvent event) async {
+    await _client.put('/events.php', data: event.toJson());
+  }
+
+  Future<void> deleteEvent(int idEvento) async {
+    await _client.delete('/events.php', query: {'id': idEvento});
   }
 }
 

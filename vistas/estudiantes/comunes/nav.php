@@ -120,15 +120,13 @@ function _nav_active_est($check) {
           sidebarEl.classList.add("collapsed");
           sidebarEl.style.setProperty("transition", "none", "important");
           setTimeout(function() { sidebarEl.style.removeProperty("transition"); }, 150);
-        }
       } catch (e) {}
     </script>
+    <?php $navBrandSubtitle = 'Portal del Alumno'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
     <nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <!-- Inicio -->
       <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_est('inicio') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>
-        <span class="nav-label">Ini      <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_est('inicio') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
         <span class="nav-label"><?= __('home', 'Inicio') ?></span>
       </a>
