@@ -167,28 +167,31 @@ function _nav_active_tutor($check) {
           </button>
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
-            <a href="../mensajes/chat.php" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-comment-dots"></i></span>
-              <div class="notif-body">
-                <span class="notif-label">Tienes <?= $totalChatNoLeidos_menu ?> mensaje(s) sin leer</span>
-              </div>
-            </a>
-            <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php if ($totalChatNoLeidos_menu > 0): ?>
+              <a href="../mensajes/chat.php" class="notif-item">
+                <span class="notif-ico"><i class="fas fa-comment-dots"></i></span>
+                <div class="notif-body">
+                  <span class="notif-label">Tienes <?= $totalChatNoLeidos_menu ?> mensaje(s) sin leer</span>
+                </div>
+              </a>
+            <?php else: ?>
+              <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php endif; ?>
             <div class="notif-footer">
               <a href="../mensajes/chat.php">Ver mensajería</a>
             </div>
           </div>
         </div>
       </div>
-    </header>
-
-    if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
-        $cw_rol = 'tutor';
-        $cw_id = (int)$_SESSION['idTutor'];
-        $cw_unreadCount = $totalChatNoLeidos_menu;
-        $cw_basePath = '../../../';
-        include __DIR__ . '/../../comunes/chat_widget.php';
-    endif; ?>
+     </header>
+     <?php
+     if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
+         $cw_rol = 'tutor';
+         $cw_id = (int)$_SESSION['idTutor'];
+         $cw_unreadCount = $totalChatNoLeidos_menu;
+         $cw_basePath = '../../../';
+         include __DIR__ . '/../../comunes/chat_widget.php';
+     endif; ?>
 
     <div class="content" id="main-content" tabindex="-1">
       <script>
@@ -204,7 +207,8 @@ function _nav_active_tutor($check) {
         ]
       };
       </script>
-          $configFB = Config::getInstance();
+      <?php
+      $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data"
              data-user-id="<?= (int)$_SESSION['idTutor'] ?>"

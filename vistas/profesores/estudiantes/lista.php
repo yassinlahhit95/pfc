@@ -68,7 +68,7 @@ $listaNiveles = listarNiveles();
 $listaGruposFiltro = listarTodosLosGrupos();
 
 $con = obtenerConexion();
-$resCursosUnicos = mysqli_query($con, "SELECT DISTINCT nombre FROM cursos_academicos ORDER BY orden ASC, nombre ASC");
+$resCursosUnicos = mysqli_query($con, "SELECT nombre FROM cursos_academicos GROUP BY nombre ORDER BY MIN(orden) ASC, nombre ASC");
 $aniosDisponibles = [];
 if ($resCursosUnicos) {
     while ($fila = mysqli_fetch_assoc($resCursosUnicos)) {

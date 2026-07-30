@@ -42,6 +42,10 @@ function _nav_active_admin($check) {
     global $seccion;
     return ($seccion === $check) ? ' active' : '';
 }
+
+// Flyout states logic
+$notasFlyoutActivo = in_array($seccion, ['notas_modulos', 'notas_retos'], true);
+$configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rgpd', 'saas_estado', 'configuracion'], true);
 ?>
 <!DOCTYPE html>
 <html lang="es" data-theme="light" data-density="regular">
@@ -346,15 +350,20 @@ function _nav_active_admin($check) {
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
             <div class="notif-group-title">Mensajes sin leer</div>
-            <a href="../mensajes/lista.php" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-envelope"></i></span>
-              <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
-              </div>
-              <span class="notif-badge-new">Nuevo</span>
-            </a>
-            <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php if (!empty($mensajesNotifAdmin)): ?>
+              <?php foreach ($mensajesNotifAdmin as $msgNotif): ?>
+                <a href="../mensajes/lista.php" class="notif-item">
+                  <span class="notif-ico"><i class="fas fa-envelope"></i></span>
+                  <div class="notif-body">
+                    <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
+                    <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
+                  </div>
+                  <span class="notif-badge-new">Nuevo</span>
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php endif; ?>
             <div class="notif-footer">
               <a href="../mensajes/lista.php">Ver mensajería</a>
             </div>
@@ -362,7 +371,8 @@ function _nav_active_admin($check) {
         </div>
       </div>
     </header>
-
+    <?php
+    if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         $cw_rol = 'admin';
         $cw_id = (int)$_SESSION['idAdmin'];
         $cw_unreadCount = (int)$totalChatNoLeidos_menu;
@@ -383,6 +393,7 @@ function _nav_active_admin($check) {
         ]
       };
       </script>
+      <?php
       // SaaS platform message banner — shown on every admin page
       if (class_exists('FeatureGuard')) {
           if (FeatureGuard::isSuspended()) {
@@ -418,8 +429,7 @@ function _nav_active_admin($check) {
               echo '</div>';
           }
       }
-      ?>
-          $configFB = Config::getInstance();
+      $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data"
              data-user-id="<?= (int)$_SESSION['idAdmin'] ?>"

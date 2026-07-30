@@ -1,4 +1,4 @@
-      <?php endif; ?>
+<?php
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
@@ -244,22 +244,32 @@ function _nav_active_sec($check) {
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
             <div class="notif-group-title">Admisiones pendientes</div>
-            <a href="../admisiones/listado.php" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-user-plus"></i></span>
-              <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($admNotif['nombre'] . ' ' . $admNotif['apellidos']) ?> — <?= Security::escapeHtml($admNotif['nombreCiclo']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($admNotif['fechaSolicitud'])) ?></span>
-              </div>
-              <span class="notif-badge-new">Nuevo</span>
-            </a>
+            <?php if (!empty($admisionesNotif_menu)): ?>
+              <?php foreach ($admisionesNotif_menu as $admNotif): ?>
+                <a href="../admisiones/listado.php" class="notif-item">
+                  <span class="notif-ico"><i class="fas fa-user-plus"></i></span>
+                  <div class="notif-body">
+                    <span class="notif-label"><?= Security::escapeHtml($admNotif['nombre'] . ' ' . $admNotif['apellidos']) ?> — <?= Security::escapeHtml($admNotif['nombreCiclo']) ?></span>
+                    <span class="notif-time"><?= date('d/m H:i', strtotime($admNotif['fechaSolicitud'])) ?></span>
+                  </div>
+                  <span class="notif-badge-new">Nuevo</span>
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="notif-empty">Sin admisiones pendientes</div>
+            <?php endif; ?>
+
             <div class="notif-group-title">Mensajes sin leer</div>
-            <a href="../mensajes/lista.php" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-envelope"></i></span>
-              <div class="notif-body">
-                <span class="notif-label">Tienes <?= (int)$totalSinLeer_menu ?> mensaje(s) sin leer</span>
-              </div>
-            </a>
-            <div class="notif-empty">Sin novedades</div>
+            <?php if ($totalSinLeer_menu > 0): ?>
+              <a href="../mensajes/lista.php" class="notif-item">
+                <span class="notif-ico"><i class="fas fa-envelope"></i></span>
+                <div class="notif-body">
+                  <span class="notif-label">Tienes <?= (int)$totalSinLeer_menu ?> mensaje(s) sin leer</span>
+                </div>
+              </a>
+            <?php else: ?>
+              <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php endif; ?>
             <div class="notif-footer">
               <a href="../admisiones/listado.php">Ver admisiones</a>
             </div>
@@ -268,7 +278,8 @@ function _nav_active_sec($check) {
       </div>
     </header>
 
-        $configFB = Config::getInstance();
+    <?php
+    $configFB = Config::getInstance();
     ?>
       <div id="firebase-user-data"
            data-user-id="<?= (int)$_SESSION['idSecretaria'] ?>"
@@ -292,6 +303,7 @@ function _nav_active_sec($check) {
               }
           }
       </script>
+    <?php
     if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         require_once __DIR__ . "/../../../modelos/chat.php";
         $cw_rol = 'secretaria';

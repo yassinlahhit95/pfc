@@ -1,4 +1,4 @@
-      <?php } ?>
+<?php
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
@@ -305,33 +305,52 @@ function _nav_active_prof($check) {
                data-aula-notif-ids="<?= Security::escapeHtml(implode(',', array_column($notifAula_menu, 'idNotificacion'))) ?>">
             <div class="notif-panel-head">Notificaciones</div>
             <div class="notif-group-title">Novedades</div>
-            <a href="<?= Security::escapeHtml($genNotif['url'] ?: '#') ?>" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-bell"></i></span>
-              <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($genNotif['mensaje']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($genNotif['fechaCreacion'])) ?></span>
-              </div>
-              <span class="notif-badge-new">Nuevo</span>
-            </a>
+            <?php if (!empty($notifGenericas_menu)): ?>
+              <?php foreach ($notifGenericas_menu as $genNotif): ?>
+                <a href="<?= Security::escapeHtml($genNotif['url'] ?: '#') ?>" class="notif-item">
+                  <span class="notif-ico"><i class="fas fa-bell"></i></span>
+                  <div class="notif-body">
+                    <span class="notif-label"><?= Security::escapeHtml($genNotif['mensaje']) ?></span>
+                    <span class="notif-time"><?= date('d/m H:i', strtotime($genNotif['fechaCreacion'])) ?></span>
+                  </div>
+                  <span class="notif-badge-new">Nuevo</span>
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="notif-empty">Sin novedades</div>
+            <?php endif; ?>
+
             <div class="notif-group-title">Aula Digital</div>
-            <a href="<?= Security::escapeHtml($aulaNotif['url']) ?>" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-chalkboard"></i></span>
-              <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($aulaNotif['titulo']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($aulaNotif['fechaCreacion'])) ?></span>
-              </div>
-              <span class="notif-badge-new">Nuevo</span>
-            </a>
+            <?php if (!empty($notifAula_menu)): ?>
+              <?php foreach ($notifAula_menu as $aulaNotif): ?>
+                <a href="<?= Security::escapeHtml($aulaNotif['url']) ?>" class="notif-item">
+                  <span class="notif-ico"><i class="fas fa-chalkboard"></i></span>
+                  <div class="notif-body">
+                    <span class="notif-label"><?= Security::escapeHtml($aulaNotif['titulo']) ?></span>
+                    <span class="notif-time"><?= date('d/m H:i', strtotime($aulaNotif['fechaCreacion'])) ?></span>
+                  </div>
+                  <span class="notif-badge-new">Nuevo</span>
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="notif-empty">Sin notificaciones de aula</div>
+            <?php endif; ?>
+
             <div class="notif-group-title">Mensajes sin leer</div>
-            <a href="../mensajes/lista.php" class="notif-item">
-              <span class="notif-ico"><i class="fas fa-envelope"></i></span>
-              <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
-              </div>
-              <span class="notif-badge-new">Nuevo</span>
-            </a>
-            <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php if (!empty($mensajesNotifProf)): ?>
+              <?php foreach ($mensajesNotifProf as $msgNotif): ?>
+                <a href="../mensajes/lista.php" class="notif-item">
+                  <span class="notif-ico"><i class="fas fa-envelope"></i></span>
+                  <div class="notif-body">
+                    <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
+                    <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
+                  </div>
+                  <span class="notif-badge-new">Nuevo</span>
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php endif; ?>
             <div class="notif-footer">
               <a href="../mensajes/lista.php">Ver mensajería</a>
             </div>
@@ -339,7 +358,8 @@ function _nav_active_prof($check) {
         </div>
       </div>
     </header>
-
+    <?php
+    if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         $cw_rol = 'profesor';
         $cw_id = (int)$_SESSION['idProfesor'];
         $cw_unreadCount = (int)$totalChatNoLeidos_menu;
@@ -361,7 +381,8 @@ function _nav_active_prof($check) {
         ]
       };
       </script>
-          $configFB = Config::getInstance();
+      <?php
+      $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data" 
              data-user-id="<?= Security::escapeHtml($_SESSION['idProfesor']) ?>" 
