@@ -14,7 +14,34 @@ import '../data/attendance_repository.dart';
 import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
 
-// For Consumer in AttendanceScreen
+class AttendanceScreen extends ConsumerStatefulWidget {
+  const AttendanceScreen();
+
+  @override
+  ConsumerState<AttendanceScreen> createState() => _AttendanceScreenState();
+}
+
+class _AttendanceScreenState extends ConsumerState<AttendanceScreen> with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _AttendanceScreenContent(tabController: _tabController);
+  }
+}
+
 class _AttendanceScreenContent extends ConsumerWidget {
   const _AttendanceScreenContent({required this.tabController});
   final TabController tabController;
@@ -27,12 +54,22 @@ class _AttendanceScreenContent extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Asistencias'),
-          bottom: TabBar(
-            controller: tabController,
-            tabs: const [
-              Tab(text: 'Pasar lista'),
-              Tab(text: 'Justificaciones'),
-            ],
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48),
+            child: TabBar(
+              controller: tabController,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+              ),
+              tabs: const [
+                Tab(text: '📋 Pasar lista'),
+                Tab(text: '✓ Justificaciones'),
+              ],
+            ),
           ),
         ),
         body: TabBarView(
@@ -66,33 +103,11 @@ const _estadoLabels = {
   'justificado': 'Justificado',
 };
 
-class AttendanceScreen extends StatefulWidget {
-  const AttendanceScreen({super.key});
-
-  @override
-  State<AttendanceScreen> createState() => _AttendanceScreenState();
-}
-
-class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _AttendanceScreenContent(tabController: _tabController);
-  }
-}
+const _months = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const _weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
 class _MyAttendanceList extends ConsumerStatefulWidget {
   const _MyAttendanceList();
@@ -102,98 +117,464 @@ class _MyAttendanceList extends ConsumerStatefulWidget {
 }
 
 class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
-  String? _estado;
-  String? _modulo;
-  String? _estudiante;
-  final _scrollController = ScrollController();
+  late DateTime _focusedMonth;
+  late DateTime _selectedDay;
+  String? _selectedStudent;
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _focusedMonth = DateTime(now.year, now.month, 1);
+    _selectedDay = DateTime(now.year, now.month, now.day);
   }
 
-  void _resetScroll() {
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(0);
-    }
+  String _normalizeDate(DateTime dt) {
+    return "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
   }
+
+  bool _isWeekend(DateTime date) => date.weekday > 5;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final attendanceAsync = ref.watch(attendanceMineProvider);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Asistencias')),
+      appBar: AppBar(
+        title: const Text('Asistencias'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
       body: AsyncView<List<AttendanceRecord>>(
         value: attendanceAsync,
         onRetry: () => ref.invalidate(attendanceMineProvider),
         data: (context, allRecords) {
-          if (allRecords.isEmpty) {
-            return const EmptyState(icon: Icons.event_available_outlined, title: 'Sin registros de asistencia');
+          final estudiantes = allRecords.map((r) => r.nombreEstudiante).toSet().toList()..sort();
+
+          if (_selectedStudent == null && estudiantes.isNotEmpty) {
+            _selectedStudent = estudiantes.first;
           }
 
-          final modulos = allRecords.map((r) => r.nombreModulo).toSet().toList()..sort();
-          final estudiantes = allRecords.map((r) => r.nombreEstudiante).toSet().toList()..sort();
-          const estados = ['presente', 'ausente', 'retraso', 'justificado'];
+          final studentRecords = _selectedStudent != null
+              ? allRecords.where((r) => r.nombreEstudiante == _selectedStudent).toList()
+              : allRecords;
 
-          final records = allRecords.where((r) {
-            if (_estado != null && r.estado != _estado) return false;
-            if (_modulo != null && r.nombreModulo != _modulo) return false;
-            if (_estudiante != null && r.nombreEstudiante != _estudiante) return false;
-            return true;
-          }).toList();
+          final totalDays = DateTime(_focusedMonth.year, _focusedMonth.month + 1, 0).day;
+          final offset = DateTime(_focusedMonth.year, _focusedMonth.month, 1).weekday - 1;
+          final totalGridItems = offset + totalDays;
 
-          return Column(
+          final monthPrefix = "${_focusedMonth.year}-${_focusedMonth.month.toString().padLeft(2, '0')}";
+          final monthRecords = studentRecords.where((r) => r.fecha.startsWith(monthPrefix)).toList();
+          final totalAusencias = monthRecords.where((r) => r.estado == 'ausente').length;
+          final totalRetrasos = monthRecords.where((r) => r.estado == 'retraso').length;
+          final totalJustificados = monthRecords.where((r) => r.estado == 'justificado').length;
+
+          final dayStr = _normalizeDate(_selectedDay);
+          final dayRecords = studentRecords.where((r) => r.fecha == dayStr).toList();
+
+          return ListView(
             children: [
-              const SizedBox(height: Space.md),
-              FilterBar(children: [
-                FilterPill<String>(
-                  label: 'Estado',
-                  value: _estado,
-                  options: [for (final e in estados) (e, _estadoLabels[e] ?? e)],
-                  onChanged: (v) {
-                    setState(() => _estado = v);
-                    _resetScroll();
-                  },
-                ),
-                FilterPill<String>(
-                  label: 'Módulo',
-                  value: _modulo,
-                  options: [for (final m in modulos) (m, m)],
-                  onChanged: (v) {
-                    setState(() => _modulo = v);
-                    _resetScroll();
-                  },
-                ),
-                if (estudiantes.length > 1)
+              if (estudiantes.length > 1) ...[
+                const SizedBox(height: Space.md),
+                FilterBar(children: [
                   FilterPill<String>(
                     label: 'Estudiante',
-                    value: _estudiante,
+                    value: _selectedStudent,
                     options: [for (final s in estudiantes) (s, s)],
                     onChanged: (v) {
-                      setState(() => _estudiante = v);
-                      _resetScroll();
+                      setState(() => _selectedStudent = v);
                     },
                   ),
-              ]),
-              const SizedBox(height: Space.sm),
-              Expanded(
-                child: records.isEmpty
-                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
-                    : RefreshIndicator(
-                        onRefresh: () async => ref.invalidate(attendanceMineProvider),
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
-                          itemCount: records.length,
-                          itemExtent: 100, // ponytail: optimize list + scroll reset
-                          itemBuilder: (context, i) => _AttendanceCard(record: records[i]),
-                        ),
+                ]),
+              ],
+
+              const SizedBox(height: Space.lg),
+
+              // Luxury Calendar Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        scheme.surface,
+                        scheme.surfaceContainerLow,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(Radii.xl),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
                       ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(Space.lg),
+                  child: Column(
+                    children: [
+                      // Month Navigation
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Material(
+                              color: scheme.primaryContainer.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(Radii.lg),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(Radii.lg),
+                                onTap: () => setState(() {
+                                  _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1, 1);
+                                }),
+                                child: Icon(Icons.arrow_back_rounded, size: 20, color: scheme.primary),
+                              ),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                _months[_focusedMonth.month - 1],
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              Text(
+                                _focusedMonth.year.toString(),
+                                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  color: scheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Material(
+                              color: scheme.primaryContainer.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(Radii.lg),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(Radii.lg),
+                                onTap: () => setState(() {
+                                  _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1, 1);
+                                }),
+                                child: Icon(Icons.arrow_forward_rounded, size: 20, color: scheme.primary),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: Space.lg),
+
+                      // Weekday Headers
+                      Row(
+                        children: [
+                          for (int i = 0; i < 7; i++)
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  _weekdays[i],
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: i >= 5 ? scheme.error.withValues(alpha: 0.6) : scheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+
+                      const SizedBox(height: Space.lg),
+
+                      // Calendar Grid
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: totalGridItems,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 7,
+                          childAspectRatio: 1,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                        ),
+                        itemBuilder: (context, i) {
+                          if (i < offset) return const SizedBox.shrink();
+
+                          final dayNum = i - offset + 1;
+                          final dayDate = DateTime(_focusedMonth.year, _focusedMonth.month, dayNum);
+                          final active = DateTime(dayDate.year, dayDate.month, dayDate.day) ==
+                              DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
+                          final isWeekend = _isWeekend(dayDate);
+
+                          final itemDayStr = _normalizeDate(dayDate);
+                          final itemRecords = studentRecords.where((r) => r.fecha == itemDayStr).toList();
+
+                          final hasIssue = itemRecords.any((r) => r.estado != 'presente');
+
+                          return GestureDetector(
+                            onTap: isWeekend ? null : () => setState(() => _selectedDay = dayDate),
+                            child: Opacity(
+                              opacity: isWeekend ? 0.4 : 1,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: active
+                                      ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      scheme.primary.withValues(alpha: 0.85),
+                                      scheme.primary.withValues(alpha: 0.65),
+                                    ],
+                                  )
+                                      : hasIssue
+                                      ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      _estadoColors[itemRecords.first.estado]!.withValues(alpha: 0.12),
+                                      _estadoColors[itemRecords.first.estado]!.withValues(alpha: 0.06),
+                                    ],
+                                  )
+                                      : null,
+                                  color: active || hasIssue ? null : scheme.surfaceContainer,
+                                  borderRadius: BorderRadius.circular(Radii.lg),
+                                  border: Border.all(
+                                    color: active
+                                        ? scheme.onPrimary.withValues(alpha: 0.2)
+                                        : hasIssue
+                                        ? _estadoColors[itemRecords.first.estado]!.withValues(alpha: 0.3)
+                                        : scheme.outlineVariant.withValues(alpha: 0.2),
+                                    width: active ? 2 : 1,
+                                  ),
+                                  boxShadow: active
+                                      ? [
+                                    BoxShadow(
+                                      color: scheme.primary.withValues(alpha: 0.25),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ]
+                                      : null,
+                                ),
+                                child: Stack(
+                                  children: [
+                                    if (isWeekend)
+                                      Positioned.fill(
+                                        child: Center(
+                                          child: Text(
+                                            '—',
+                                            style: TextStyle(
+                                              color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    if (!isWeekend)
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            dayNum.toString(),
+                                            style: TextStyle(
+                                              fontWeight: active ? FontWeight.w800 : FontWeight.w700,
+                                              color: active ? scheme.onPrimary : scheme.onSurface,
+                                              fontSize: 16,
+                                              letterSpacing: 0.3,
+                                            ),
+                                          ),
+                                          if (itemRecords.isNotEmpty) ...[
+                                            const SizedBox(height: 3),
+                                            Container(
+                                              width: 6,
+                                              height: 6,
+                                              decoration: BoxDecoration(
+                                                color: active ? scheme.onPrimary : _estadoColors[itemRecords.first.estado],
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
+
+              const SizedBox(height: Space.lg),
+
+              // Stats Row - Luxury Style
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _LuxuryStat(
+                      count: totalAusencias,
+                      label: 'Ausencias',
+                      color: AppColors.rojoLight,
+                      icon: Icons.close_rounded,
+                    ),
+                    _LuxuryStat(
+                      count: totalRetrasos,
+                      label: 'Retrasos',
+                      color: AppColors.naranjaLight,
+                      icon: Icons.schedule_rounded,
+                    ),
+                    _LuxuryStat(
+                      count: totalJustificados,
+                      label: 'Justificados',
+                      color: AppColors.azulLight,
+                      icon: Icons.check_circle_rounded,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: Space.xl),
+
+              // Day Details Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: scheme.primary,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: Space.md),
+                    Text(
+                      DateFormat('EEEE, d MMMM yyyy', 'es').format(_selectedDay),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: Space.md),
+
+              // Daily Records
+              if (dayRecords.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                  child: const EmptyState(
+                    icon: Icons.check_circle_outline_rounded,
+                    title: 'Día sin incidencias',
+                    description: 'No hay registros de faltas o retrasos en esta fecha.',
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: dayRecords.length,
+                    itemBuilder: (context, i) => _AttendanceCard(record: dayRecords[i]),
+                  ),
+                ),
+
+              const SizedBox(height: Space.xxxl),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _LuxuryStat extends StatelessWidget {
+  const _LuxuryStat({
+    required this.count,
+    required this.label,
+    required this.color,
+    required this.icon,
+  });
+
+  final int count;
+  final String label;
+  final Color color;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(Space.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withValues(alpha: 0.15),
+            color.withValues(alpha: 0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(Radii.lg),
+        border: Border.all(
+          color: color.withValues(alpha: 0.25),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(Radii.lg),
+            ),
+            child: Icon(icon, size: 22, color: color),
+          ),
+          const SizedBox(height: Space.sm),
+          Text(
+            count.toString(),
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              color: color.withValues(alpha: 0.7),
+              fontWeight: FontWeight.w600,
+              fontSize: 11,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -203,66 +584,131 @@ class _AttendanceCard extends ConsumerWidget {
   const _AttendanceCard({required this.record});
   final AttendanceRecord record;
 
+  IconData _getStatusIcon(String estado) => switch (estado) {
+    'presente' => Icons.check_circle_rounded,
+    'ausente' => Icons.cancel_rounded,
+    'retraso' => Icons.schedule_rounded,
+    'justificado' => Icons.verified_rounded,
+    _ => Icons.help_rounded,
+  };
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
     final date = DateTime.tryParse(record.fecha);
     final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final scheme = Theme.of(context).colorScheme;
 
-    return AppCard(
+    return Container(
       margin: const EdgeInsets.only(bottom: Space.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(record.nombreModulo, style: const TextStyle(fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 2),
-                    Text(
-                      [
-                        if (date != null) DateFormat('d MMM yyyy').format(date) else record.fecha,
-                        if (record.nombreProfesor.isNotEmpty) record.nombreProfesor,
-                      ].join(' · '),
-                      style: Theme.of(context).textTheme.bodySmall,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            scheme.surface,
+            scheme.surfaceContainerLow,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(Radii.lg),
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.25),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Space.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(Space.sm),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(Radii.lg),
+                  ),
+                  child: Icon(_getStatusIcon(record.estado), color: color, size: 20),
+                ),
+                const SizedBox(width: Space.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        record.nombreModulo,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        [
+                          if (date != null) DateFormat('d MMM').format(date),
+                          if (record.nombreProfesor.isNotEmpty) '• ${record.nombreProfesor}',
+                        ].join(' '),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: Space.md),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(Radii.pill),
+                  ),
+                  child: Text(
+                    _estadoLabels[record.estado] ?? record.estado,
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
                     ),
-                  ],
+                  ),
+                ),
+              ],
+            ),
+            if (record.justificacion != null) ...[
+              const SizedBox(height: Space.md),
+              _JustificationBox(justificacion: record.justificacion!),
+            ],
+            if ((role == UserRole.tutor || role == UserRole.director || role == UserRole.secretaria) && record.canJustify) ...[
+              const SizedBox(height: Space.md),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () async {
+                    final sent = await showJustifySheet(
+                      context,
+                      ref,
+                      idAsistencia: record.id,
+                      subtitulo: '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
+                    );
+                    if (sent) {
+                      ref.invalidate(attendanceMineProvider);
+                    }
+                  },
+                  icon: const Icon(Icons.add_a_photo_outlined, size: 16),
+                  label: const Text('Justificar'),
                 ),
               ),
-              const SizedBox(width: Space.sm),
-              StatusPill(label: _estadoLabels[record.estado] ?? record.estado, color: color),
             ],
-          ),
-          if (record.justificacion != null) ...[
-            const SizedBox(height: Space.md),
-            _JustificationBox(justificacion: record.justificacion!),
           ],
-          if ((role == UserRole.tutor || role == UserRole.director || role == UserRole.secretaria) && record.canJustify) ...[
-            const SizedBox(height: Space.md),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () async {
-                  final sent = await showJustifySheet(
-                    context,
-                    ref,
-                    idAsistencia: record.id,
-                    subtitulo: '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
-                  );
-                  if (sent) {
-                    ref.invalidate(attendanceMineProvider);
-                  }
-                },
-                icon: const Icon(Icons.add_a_photo_outlined, size: 16),
-                label: const Text('Justificar falta'),
-              ),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
@@ -283,6 +729,12 @@ class _JustificationBox extends StatelessWidget {
   const _JustificationBox({required this.justificacion});
   final Justification justificacion;
 
+  IconData _getJustIcon(String estado) => switch (estado) {
+    'aprobada' => Icons.verified_rounded,
+    'rechazada' => Icons.cancel_rounded,
+    _ => Icons.pending_actions_rounded,
+  };
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -292,44 +744,75 @@ class _JustificationBox extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(Space.md),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(Radii.md),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withValues(alpha: 0.12),
+            color.withValues(alpha: 0.04),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(Radii.lg),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
+              Icon(_getJustIcon(justificacion.estado), size: 16, color: color),
+              const SizedBox(width: Space.sm),
               Expanded(
                 child: Text(
                   _justEstadoLabels[justificacion.estado] ?? justificacion.estado,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: color),
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: color),
                 ),
               ),
               if (justificacion.archivoUrl != null)
-                InkWell(
+                GestureDetector(
                   onTap: () => _openJustificante(context, justificacion.archivoUrl!),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.attach_file_rounded, size: 16, color: scheme.primary),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Ver justificante',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: scheme.primary),
-                      ),
-                    ],
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: Space.sm, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: scheme.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(Radii.sm),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.attach_file_rounded, size: 14, color: scheme.primary),
+                        const SizedBox(width: 3),
+                        Text(
+                          'Ver',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: scheme.primary),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(justificacion.motivo, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: Space.sm),
+          Text(justificacion.motivo,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: scheme.onSurface.withValues(alpha: 0.8),
+            ),
+          ),
           if (justificacion.estado == 'rechazada' && (justificacion.motivoRechazo?.isNotEmpty ?? false)) ...[
-            const SizedBox(height: 4),
-            Text(
-              'Motivo del rechazo: ${justificacion.motivoRechazo}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+            const SizedBox(height: Space.sm),
+            Container(
+              padding: const EdgeInsets.all(Space.sm),
+              decoration: BoxDecoration(
+                color: AppColors.rojoLight.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(Radii.md),
+              ),
+              child: Text(
+                'Rechazo: ${justificacion.motivoRechazo}',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.rojoLight.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ],
