@@ -357,7 +357,14 @@ if ($action === 'sessions') {
 
 if ($action === 'favorites') {
     if ($type !== 'estudiante') v1Error('Only estudiantes have favorites.', 403, 'forbidden');
-    v1Ok(['favorites' => listarFavoritosEstudianteAula($uid)]);
+    try {
+        $favorites = listarFavoritosEstudianteAula($uid);
+        error_log("[API] favorites endpoint called for idEstudiante=$uid, found " . count($favorites) . " favorites");
+        v1Ok(['favorites' => $favorites]);
+    } catch (Exception $e) {
+        error_log("[API] ERROR in listarFavoritosEstudianteAula: " . $e->getMessage());
+        v1Error('Error fetching favorites: ' . $e->getMessage(), 500, 'error');
+    }
 }
 
 // ── POST actions ────────────────────────────────────────────────────────

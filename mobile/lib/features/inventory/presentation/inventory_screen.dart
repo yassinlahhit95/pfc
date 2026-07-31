@@ -179,69 +179,135 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
                       child: ListView.builder(
                         padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
                         itemCount: items.length,
-                        itemExtent: 100, // ponytail: optimize long lists by giving known item height
                         itemBuilder: (context, i) {
                           final d = items[i];
                           final color = _deviceColor(context, d.estado);
                           final available = d.estado == 'disponible';
                           return AppCard(
                             margin: const EdgeInsets.only(bottom: Space.md),
-                            child: Row(
-                              children: [
-                                if (d.foto != null && d.foto!.isNotEmpty)
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(Radii.md),
-                                    child: CachedNetworkImage(
-                                      imageUrl: '$apiBaseUrl/public/uploads/equipos/${d.foto}',
-                                      width: 60,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => Container(
-                                        width: 60, height: 60, color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                        child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                            padding: const EdgeInsets.all(Space.md),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Left Image or Icon
+                                  if (d.foto != null && d.foto!.isNotEmpty)
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(Radii.md),
+                                      child: CachedNetworkImage(
+                                        imageUrl: '$apiBaseUrl/public/uploads/equipos/${d.foto}',
+                                        width: 64,
+                                        height: 64,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => Container(
+                                          width: 64,
+                                          height: 64,
+                                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                        ),
+                                        errorWidget: (context, url, error) => Container(
+                                          width: 64,
+                                          height: 64,
+                                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                          child: const Icon(Icons.broken_image_rounded),
+                                        ),
                                       ),
-                                      errorWidget: (context, url, error) => Container(
-                                        width: 60, height: 60, color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                        child: const Icon(Icons.broken_image),
+                                    )
+                                  else
+                                    Container(
+                                      width: 64,
+                                      height: 64,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                        borderRadius: BorderRadius.circular(Radii.md),
+                                      ),
+                                      child: Icon(
+                                        Icons.laptop_mac_rounded,
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        size: 28,
                                       ),
                                     ),
-                                  )
-                                else
-                                  Container(
-                                    width: 60, height: 60, decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceVariant, borderRadius: BorderRadius.circular(Radii.md)),
-                                    child: const Icon(Icons.devices_other),
+                                  const SizedBox(width: Space.md),
+                                  // Middle Info Column
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          d.nombre,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'S/N: ${d.numeroSerie}',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Cantidad: ${d.cantidad}',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                const SizedBox(width: Space.md),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  const SizedBox(width: Space.xs),
+                                  // Right Actions Column
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(d.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                      Text('${d.numeroSerie} • Cant: ${d.cantidad}', style: Theme.of(context).textTheme.bodySmall),
+                                      // Top Menu button
+                                      PopupMenuButton(
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(minWidth: 120),
+                                        icon: Icon(
+                                          Icons.more_vert_rounded,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        ),
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            child: const Row(children: [
+                                              Icon(Icons.edit_outlined, size: 18),
+                                              SizedBox(width: Space.sm),
+                                              Text('Editar', style: TextStyle(fontSize: 13)),
+                                            ]),
+                                            onTap: () => _openForm(d),
+                                          ),
+                                          PopupMenuItem(
+                                            child: const Row(children: [
+                                              Icon(Icons.delete_outlined, color: Colors.red, size: 18),
+                                              SizedBox(width: Space.sm),
+                                              Text('Eliminar', style: TextStyle(color: Colors.red, fontSize: 13)),
+                                            ]),
+                                            onTap: () => _deleteDevice(context, d),
+                                          ),
+                                        ],
+                                      ),
+                                      // Bottom Prestar Button or Status Pill
+                                      if (available)
+                                        OutlinedButton(
+                                          onPressed: () => _openPrestarDialog(context, d),
+                                          style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: 6),
+                                            minimumSize: Size.zero,
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                          child: const Text('Prestar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                        )
+                                      else
+                                        StatusPill(label: d.estado, color: color),
                                     ],
                                   ),
-                                ),
-                                if (available)
-                                  OutlinedButton(
-                                    onPressed: () => _openPrestarDialog(context, d),
-                                    child: const Text('Prestar'),
-                                  )
-                                else
-                                  StatusPill(label: d.estado, color: color),
-                                PopupMenuButton(
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                      child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: Space.md), Text('Editar')]),
-                                      onTap: () => _openForm(d),
-                                    ),
-                                    PopupMenuItem(
-                                      child: const Row(children: [Icon(Icons.delete_outlined, color: Colors.red), SizedBox(width: Space.md), Text('Eliminar', style: TextStyle(color: Colors.red))]),
-                                      onTap: () => _deleteDevice(context, d),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -473,26 +539,72 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
                           final date = DateTime.tryParse(l.fechaPrestamo);
                           return AppCard(
                             margin: const EdgeInsets.only(bottom: Space.md),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${l.nombreEstudiante} · ${l.nombreArticulo}',
-                                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                                      Text(
-                                        date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo,
-                                        style: Theme.of(context).textTheme.bodySmall,
-                                      ),
-                                    ],
+                            padding: const EdgeInsets.all(Space.md),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Left Avatar
+                                  InitialsAvatar(name: l.nombreEstudiante, radius: 20),
+                                  const SizedBox(width: Space.md),
+                                  // Middle Info Column
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          l.nombreEstudiante,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          l.nombreArticulo,
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.primary,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Prestado: ${date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo}',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                if (enCurso)
-                                  OutlinedButton(onPressed: () => _devolver(context, l), child: const Text('Devolver'))
-                                else
-                                  Text('Devuelto', style: Theme.of(context).textTheme.bodySmall),
-                              ],
+                                  const SizedBox(width: Space.xs),
+                                  // Right Action Button
+                                  if (enCurso)
+                                    OutlinedButton(
+                                      onPressed: () => _devolver(context, l),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: 6),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: const Text('Devolver', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                    )
+                                  else
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: Space.sm, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.verdeLight.withValues(alpha: 0.08),
+                                        borderRadius: BorderRadius.circular(Radii.sm),
+                                        border: Border.all(color: AppColors.verdeLight.withValues(alpha: 0.15)),
+                                      ),
+                                      child: const Text(
+                                        'Devuelto',
+                                        style: TextStyle(
+                                          color: AppColors.verdeLight,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                           );
                         },

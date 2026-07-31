@@ -24,6 +24,7 @@ import '../../messages/presentation/messages_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
 import '../../schedule/presentation/schedule_screen.dart';
+import '../../history/presentation/history_screen.dart';
 
 import '../../students/presentation/students_screen.dart';
 import '../../teachers/presentation/teachers_screen.dart';
@@ -93,12 +94,14 @@ class HomeScreen extends ConsumerWidget {
       if (hasClassroom) _NavItem(Icons.assignment_outlined, t['nav_tareas']!, t['nav_tareas_sub']!, const TareasScreen()),
       if (hasClassroom) _NavItem(Icons.emoji_events_outlined, t['nav_retos']!, t['nav_retos_sub']!, const RetosScreen()),
       if (role == UserRole.estudiante) _NavItem(Icons.star_rounded, t['nav_favoritos']!, t['nav_favoritos_sub']!, const FavoritesScreen()),
-      if (hasAttendance) _NavItem(Icons.fact_check_outlined, t['nav_asistencias']!, t['nav_asistencias_sub']!, const AttendanceScreen()),
+      if (hasAttendance) _NavItem(Icons.fact_check_outlined, t['nav_asistencias']!, t['nav_asistencias_sub']!, AttendanceScreen()),
     ];
+    final isEstudianteOrProfesor = role == UserRole.estudiante || role == UserRole.profesor;
     final centro = <_NavItem>[
-      _NavItem(Icons.campaign_outlined, t['nav_anuncios']!, t['nav_anuncios_sub']!, const AnnouncementsScreen()),
-      _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!, t['nav_mensajeria_sub']!, const MessagesScreen()),
-      _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!, const EventsScreen()),
+      _NavItem(Icons.campaign_outlined, t['nav_anuncios']!, t['nav_anuncios_sub']!, AnnouncementsScreen()),
+      // Mensajería solo para director/secretaría/tutor (NO para estudiante/profesor)
+      if (!isEstudianteOrProfesor) _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!, t['nav_mensajeria_sub']!, MessagesScreen()),
+      _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!, EventsScreen()),
     ];
     final gestion = <_NavItem>[
       if (isBackOffice) _NavItem(Icons.receipt_long_outlined, t['nav_pagos']!, t['nav_pagos_sub']!, const PaymentsScreen()),
@@ -108,6 +111,7 @@ class HomeScreen extends ConsumerWidget {
       if (isBackOffice) _NavItem(Icons.fact_check_outlined, t['nav_asistencias_centro']!, t['nav_asistencias_centro_sub']!, const CenterAttendanceScreen()),
       if (isBackOffice) _NavItem(Icons.school_outlined, t['nav_profesores']!, t['nav_profesores_sub']!, const TeachersScreen()),
       if (role == UserRole.director) _NavItem(Icons.admin_panel_settings_outlined, t['nav_secretarias'] ?? 'Secretarías', t['nav_secretarias_sub'] ?? 'Gestión de personal', const SecretariasScreen()),
+      if (role == UserRole.director) _NavItem(Icons.history_rounded, t['nav_historial'] ?? 'Historial', t['nav_historial_sub'] ?? 'Ver actividad del centro', const HistoryScreen()),
       if (isBackOffice) _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!, t['nav_inventario_sub']!, const InventoryScreen()),
     ];
 
@@ -152,7 +156,7 @@ class HomeScreen extends ConsumerWidget {
           label: t['metric_faltas']!,
           icon: Icons.warning_amber_rounded,
           color: const Color(0xFFE11D48),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AttendanceScreen())),
         ),
       ]);
     } else if (role == UserRole.profesor) {
@@ -239,14 +243,30 @@ class HomeScreen extends ConsumerWidget {
           label: t['metric_faltas']!,
           icon: Icons.notification_important_rounded,
           color: const Color(0xFFE11D48),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AttendanceScreen())),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AttendanceScreen())),
         ),
       ]);
     }
 
     return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
+      backgroundColor: const Color(0xFFFAFAFA),
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0, left: 0, right: 0,
+            height: 350,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFF3E8FF), Color(0xFFFAFAFA)],
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: RefreshIndicator(
           onRefresh: () async {
             ref.invalidate(profileProvider);
             ref.invalidate(attendanceMineProvider);
@@ -257,7 +277,7 @@ class HomeScreen extends ConsumerWidget {
             ref.invalidate(dashboardStatsProvider);
           },
           child: ListView(
-          padding: const EdgeInsets.fromLTRB(Space.xl, Space.xl, Space.xl, Space.xxxl),
+          padding: const EdgeInsets.fromLTRB(0, Space.xl, 0, Space.xxxl),
           children: [
             _AnimatedEntrance(
               delayIndex: 0,
@@ -267,63 +287,76 @@ class HomeScreen extends ConsumerWidget {
                 t: t,
               ),
             ),
-            const SizedBox(height: Space.xxl),
-            
-            // Render metrics row if not empty
-            if (metrics.isNotEmpty) ...[
-              _AnimatedEntrance(
+            const SizedBox(height: Space.xl),
+            const _AnimatedEntrance(delayIndex: 1, child: _HeroBanner()),
+            const SizedBox(height: Space.xl),
+            if (metrics.isNotEmpty) Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Space.md),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Acceso Rápido', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.black87)),
+                  Text('Ver todo', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54)),
+                ],
+              ),
+            ),
+            const SizedBox(height: Space.md),
+            if (metrics.isNotEmpty) Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Space.md),
+              child: _AnimatedEntrance(
                 delayIndex: 1,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final crossAxisCount = constraints.maxWidth > 600 ? metrics.length : 2;
                     return GridView.count(
-                      crossAxisCount: crossAxisCount,
+                      crossAxisCount: constraints.maxWidth > 600 ? metrics.length : 2,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       mainAxisSpacing: Space.md,
                       crossAxisSpacing: Space.md,
-                      childAspectRatio: constraints.maxWidth > 600 ? 1.5 : 1.25,
+                      childAspectRatio: 1.0,
                       children: metrics,
                     );
                   },
                 ),
               ),
-              const SizedBox(height: Space.xxl),
-            ],
+            ),
+            const SizedBox(height: Space.xxl),
 
             if (academico.isNotEmpty) ...[
               _AnimatedEntrance(
                 delayIndex: 2,
-                child: SectionLabel(t['section_academico']!),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: SectionLabel(t['section_academico']!)),
               ),
               _AnimatedEntrance(
                 delayIndex: 3,
-                child: _NavGroup(items: academico),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: _NavGroup(items: academico)),
               ),
               const SizedBox(height: Space.xxl),
             ],
             _AnimatedEntrance(
               delayIndex: 4,
-              child: SectionLabel(t['section_centro']!),
+              child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: SectionLabel(t['section_centro']!)),
             ),
             _AnimatedEntrance(
               delayIndex: 5,
-              child: _NavGroup(items: centro),
+              child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: _NavGroup(items: centro)),
             ),
             if (gestion.isNotEmpty) ...[
               const SizedBox(height: Space.xxl),
               _AnimatedEntrance(
                 delayIndex: 6,
-                child: SectionLabel(t['section_gestion']!),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: SectionLabel(t['section_gestion']!)),
               ),
               _AnimatedEntrance(
                 delayIndex: 7,
-                child: _NavGroup(items: gestion),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: _NavGroup(items: gestion)),
               ),
             ],
           ],
           ),
         ),
+      ),
+      ],
       ),
     );
   }
@@ -335,51 +368,77 @@ class _WelcomeHeader extends StatelessWidget {
   final UserRole? role;
   final Map<String, String> t;
 
-  String _roleName(UserRole? role) {
-    switch (role) {
-      case UserRole.director:
-        return 'Dirección';
-      case UserRole.profesor:
-        return 'Profesor';
-      case UserRole.secretaria:
-        return 'Secretaría';
-      case UserRole.estudiante:
-        return 'Estudiante';
-      case UserRole.tutor:
-        return 'Tutor Familiar';
-      default:
-        return 'Usuario';
-    }
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Space.md),
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              border: Border.all(color: Colors.white, width: 2),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+              style: textTheme.titleLarge?.copyWith(color: AppColors.accent, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _greeting(t),
+                  style: textTheme.bodyMedium?.copyWith(color: Colors.black54, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  displayName.trim().split(' ').take(2).join(' '),
+                  style: textTheme.titleLarge?.copyWith(color: Colors.black87, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+            ),
+            child: const Icon(Icons.notifications_none_rounded, color: Colors.black87),
+          ),
+        ],
+      ),
+    );
   }
+}
 
-  /// Full name, but broken after the 3rd word for long names — a plain
-  /// unbounded Text would either overflow the header's fixed row or, with
-  /// wrapping, break mid-word at an arbitrary width; this keeps it to a
-  /// predictable 2-line shape regardless of how long the name is.
-  String _wrappedName(String name) {
-    final words = name.trim().split(RegExp(r'\s+'));
-    if (words.length <= 3) return name;
-    return '${words.take(3).join(' ')}\n${words.skip(3).join(' ')}';
-  }
+class _HeroBanner extends StatelessWidget {
+  const _HeroBanner();
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textTheme = Theme.of(context).textTheme;
-
-    // Both gradient stops are derived from the single accent token instead of
-    // two separately-invented hex pairs, so this stays in sync if the app's
-    // accent color ever changes.
-    final gradientColors = isDark
-        ? [Color.lerp(AppColors.accent, AppColors.bgDark, 0.55)!, AppColors.bgDark]
-        : [AppColors.accent, Color.lerp(AppColors.accent, Colors.black, 0.35)!];
-
     return Container(
-      padding: const EdgeInsets.all(Space.xxl),
+      margin: const EdgeInsets.symmetric(horizontal: Space.md),
+      padding: const EdgeInsets.all(Space.xl),
       decoration: BoxDecoration(
-        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: gradientColors),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFE0E7FF), Color(0xFFC7D2FE)],
+        ),
         borderRadius: BorderRadius.circular(Radii.xl),
-        boxShadow: cardShadow(Theme.of(context).brightness),
+        boxShadow: [BoxShadow(color: const Color(0xFFC7D2FE).withOpacity(0.5), blurRadius: 20, offset: const Offset(0, 10))],
       ),
       child: Row(
         children: [
@@ -387,45 +446,25 @@ class _WelcomeHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _greeting(t),
-                  style: textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
-                ),
-                const SizedBox(height: Space.xs),
-                Text(
-                  _wrappedName(displayName),
-                  style: textTheme.headlineSmall?.copyWith(color: Colors.white),
-                ),
+                Text('Ready to Manage? 🌟', style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: const Color(0xFF3730A3))),
+                const SizedBox(height: Space.sm),
+                Text('Accede rápidamente a tus reportes y resumen académico.', style: textTheme.bodyMedium?.copyWith(color: const Color(0xFF4F46E5))),
                 const SizedBox(height: Space.md),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(Radii.pill),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6366F1),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.pill)),
+                    elevation: 0,
                   ),
-                  child: Text(
-                    _roleName(role).toUpperCase(),
-                    style: textTheme.labelSmall?.copyWith(color: Colors.white),
-                  ),
+                  child: const Text('Ver Horario', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
           ),
           const SizedBox(width: Space.md),
-          Container(
-            width: 54,
-            height: 54,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.18),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.25), width: 1.5),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-              style: textTheme.titleLarge?.copyWith(color: Colors.white),
-            ),
-          ),
+          const Icon(Icons.school_rounded, size: 80, color: Color(0xFF818CF8)),
         ],
       ),
     );
@@ -449,39 +488,46 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    Widget cardContent = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: isDark ? color.withValues(alpha: 0.15) : color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: Icon(icon, size: 16, color: color),
-        ),
-        const SizedBox(height: Space.md),
-        Text(value, style: textTheme.titleLarge),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant.withValues(alpha: 0.7)),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    );
-
-    return AppCard(
+    return GestureDetector(
       onTap: onTap,
-      padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.md + 2),
-      child: cardContent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(Radii.xl),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 15, offset: const Offset(0, 8))],
+        ),
+        padding: const EdgeInsets.all(Space.md),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              alignment: Alignment.center,
+              child: Icon(icon, size: 28, color: color),
+            ),
+            const Spacer(),
+            Text(
+              value,
+              style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.black87),
+              maxLines: 1,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: textTheme.bodySmall?.copyWith(color: Colors.black54, fontWeight: FontWeight.w500),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

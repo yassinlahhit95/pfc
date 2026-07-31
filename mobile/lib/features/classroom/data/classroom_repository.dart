@@ -310,11 +310,19 @@ class ClassroomRepository {
   }
 
   Future<List<ClassroomFile>> fetchFavorites() async {
-    final data = await _client.get('/classroom.php', query: {'action': 'favorites'});
-    return (data['favorites'] as List)
-        .cast<Map<String, dynamic>>()
-        .map((j) => ClassroomFile.fromJson({...j, 'esFavorito': true}))
-        .toList();
+    try {
+      final data = await _client.get('/classroom.php', query: {'action': 'favorites'});
+      final favoritesList = data['favorites'];
+      if (favoritesList is! List) {
+        return [];
+      }
+      return favoritesList
+          .cast<Map<String, dynamic>>()
+          .map((j) => ClassroomFile.fromJson({...j, 'esFavorito': true}))
+          .toList();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   /// Toggles favorite state server-side; returns the new value.

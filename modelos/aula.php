@@ -9,10 +9,10 @@ require_once __DIR__ . "/../include/Cache.php";
 function listarCarpetasPorModuloAula($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT c.*,
-                   (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta AND a.deleted_at IS NULL) AS totalArchivos,
-                   (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.deleted_at IS NULL) AS totalSubcarpetas
+                   (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta AND a.eliminado = 0) AS totalArchivos,
+                   (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.eliminado = 0) AS totalSubcarpetas
             FROM aula_carpetas c
-            WHERE c.idModulo = ? AND c.deleted_at IS NULL
+            WHERE c.idModulo = ? AND c.eliminado = 0
             ORDER BY c.fijado DESC, c.nombre ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -80,7 +80,7 @@ function obtenerArbolCarpetaAula($idCarpeta, $incluirEliminadas = false) {
 
     // Obtenemos todas las carpetas del módulo de una sola vez
     $sqlTodas = "SELECT idCarpeta, idPadre FROM aula_carpetas WHERE idModulo = ?"
-              . ($incluirEliminadas ? "" : " AND deleted_at IS NULL");
+              . ($incluirEliminadas ? "" : " AND eliminado = 0");
     $stmtT = mysqli_prepare($con, $sqlTodas);
     mysqli_stmt_bind_param($stmtT, "i", $idModulo);
     mysqli_stmt_execute($stmtT);
@@ -165,7 +165,7 @@ function listarArchivosPorModuloAula($idModulo) {
             FROM aula_archivos a
             JOIN profesores p ON a.idProfesor = p.idProfesor
             LEFT JOIN aula_carpetas c ON a.idCarpeta = c.idCarpeta
-            WHERE a.idModulo = ? AND a.deleted_at IS NULL
+            WHERE a.idModulo = ? AND a.eliminado = 0
             ORDER BY a.fijado DESC, a.fechaSubida DESC, a.nombreOriginal ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -182,7 +182,7 @@ function listarArchivosPorCarpetaAula($idCarpeta) {
     $sql = "SELECT a.*, p.nombreProfesor
             FROM aula_archivos a
             JOIN profesores p ON a.idProfesor = p.idProfesor
-            WHERE a.idCarpeta = ? AND a.deleted_at IS NULL
+            WHERE a.idCarpeta = ? AND a.eliminado = 0
             ORDER BY a.fijado DESC, a.fechaSubida DESC, a.nombreOriginal ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
@@ -215,11 +215,11 @@ function obtenerArchivoPorId($idArchivo) {
 function existeArchivoNombreAula($idModulo, $idCarpeta, $nombreOriginal) {
     $con = obtenerConexion();
     if ($idCarpeta) {
-        $sql  = "SELECT COUNT(*) AS c FROM aula_archivos WHERE idCarpeta=? AND deleted_at IS NULL AND nombreOriginal=?";
+        $sql  = "SELECT COUNT(*) AS c FROM aula_archivos WHERE idCarpeta=? AND eliminado = 0 AND nombreOriginal=?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "is", $idCarpeta, $nombreOriginal);
     } else {
-        $sql  = "SELECT COUNT(*) AS c FROM aula_archivos WHERE idModulo=? AND idCarpeta IS NULL AND deleted_at IS NULL AND nombreOriginal=?";
+        $sql  = "SELECT COUNT(*) AS c FROM aula_archivos WHERE idModulo=? AND idCarpeta IS NULL AND eliminado = 0 AND nombreOriginal=?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "is", $idModulo, $nombreOriginal);
     }
@@ -398,7 +398,7 @@ function listarEntregasPorTareaAula($idTarea) {
                    ent.fechaEntrega, ent.nota, ent.estado, ent.comentarioCalificacion
             FROM aula_tareas t
             JOIN modulos m ON t.idModulo = m.idModulo
-            JOIN estudiantes e ON e.idCiclo = m.idCiclo AND e.deleted_at IS NULL
+            JOIN estudiantes e ON e.idCiclo = m.idCiclo AND e.eliminado = 0
             LEFT JOIN aula_entregas ent ON ent.idTarea = t.idTarea AND ent.idEstudiante = e.idEstudiante
             WHERE t.idTarea = ?
             ORDER BY e.nombreEstudiante ASC";
@@ -625,7 +625,7 @@ function marcarNotificacionesAulaLeidas(int $idUsuario, string $tipoUsuario, arr
 function obtenerTokensFCMPorCicloAula($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM estudiantes
-            WHERE idCiclo = ? AND deleted_at IS NULL AND fcm_token IS NOT NULL AND fcm_token != ''";
+            WHERE idCiclo = ? AND eliminado = 0 AND fcm_token IS NOT NULL AND fcm_token != ''";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -638,7 +638,7 @@ function obtenerTokensFCMPorCicloAula($idCiclo) {
 
 function notificarEstudiantesCicloAula($idCiclo, $tipo, $titulo, $mensaje, $idRef = null, $tipoRef = null) {
     $con = obtenerConexion();
-    $sql = "SELECT idEstudiante FROM estudiantes WHERE idCiclo=? AND deleted_at IS NULL";
+    $sql = "SELECT idEstudiante FROM estudiantes WHERE idCiclo=? AND eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -893,7 +893,7 @@ function obtenerEstudiantesPorModulo($idModulo) {
             FROM estudiantes e
             JOIN ciclo_profesor cp ON e.idCiclo = cp.idCiclo
             WHERE cp.idCiclo = (SELECT idCiclo FROM modulos WHERE idModulo = ?)
-            AND e.idCiclo IS NOT NULL AND e.deleted_at IS NULL";
+            AND e.idCiclo IS NOT NULL AND e.eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
@@ -984,19 +984,19 @@ function listarCarpetasPorPadreAula($idModulo, $idPadre = null) {
     $con = obtenerConexion();
     if ($idPadre === null) {
         $sql = "SELECT c.*,
-                       (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta AND a.deleted_at IS NULL) AS totalArchivos,
-                       (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.deleted_at IS NULL) AS totalSubcarpetas
+                       (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta AND a.eliminado = 0) AS totalArchivos,
+                       (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.eliminado = 0) AS totalSubcarpetas
                 FROM aula_carpetas c
-                WHERE c.idModulo = ? AND c.idPadre IS NULL AND c.deleted_at IS NULL
+                WHERE c.idModulo = ? AND c.idPadre IS NULL AND c.eliminado = 0
                 ORDER BY c.fijado DESC, c.nombre ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idModulo);
     } else {
         $sql = "SELECT c.*,
-                       (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta AND a.deleted_at IS NULL) AS totalArchivos,
-                       (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.deleted_at IS NULL) AS totalSubcarpetas
+                       (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta AND a.eliminado = 0) AS totalArchivos,
+                       (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.eliminado = 0) AS totalSubcarpetas
                 FROM aula_carpetas c
-                WHERE c.idModulo = ? AND c.idPadre = ? AND c.deleted_at IS NULL
+                WHERE c.idModulo = ? AND c.idPadre = ? AND c.eliminado = 0
                 ORDER BY c.fijado DESC, c.nombre ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idModulo, $idPadre);
@@ -1129,15 +1129,27 @@ function listarFavoritosEstudianteAula($idEstudiante) {
             JOIN aula_archivos a ON f.idArchivo = a.idArchivo
             JOIN profesores p ON a.idProfesor = p.idProfesor
             JOIN modulos m ON a.idModulo = m.idModulo
-            WHERE f.idEstudiante = ? AND a.deleted_at IS NULL
+            WHERE f.idEstudiante = ? AND a.eliminado = 0
             ORDER BY f.fechaMarcado DESC";
     $stmt = mysqli_prepare($con, $sql);
+    if (!$stmt) {
+        error_log("[DB] ERROR preparing favorites query: " . mysqli_error($con));
+        return [];
+    }
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log("[DB] ERROR executing favorites query: " . mysqli_stmt_error($stmt));
+        return [];
+    }
     $res = mysqli_stmt_get_result($stmt);
+    if (!$res) {
+        error_log("[DB] ERROR getting result for favorites: " . mysqli_error($con));
+        return [];
+    }
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
-    
+    error_log("[DB] listarFavoritosEstudianteAula($idEstudiante) returned " . count($lista) . " rows");
+
     return $lista;
 }
 
@@ -1169,7 +1181,7 @@ function obtenerRecursosMasConsultadosAula($idModulo, $limite = 10) {
                    MAX(ac.fechaAcceso) AS ultimoAcceso
             FROM aula_archivos a
             LEFT JOIN aula_archivo_accesos ac ON ac.idArchivo = a.idArchivo
-            WHERE a.idModulo = ? AND a.deleted_at IS NULL
+            WHERE a.idModulo = ? AND a.eliminado = 0
             GROUP BY a.idArchivo
             ORDER BY vistas DESC, descargas DESC
             LIMIT ?";
@@ -1193,7 +1205,7 @@ function obtenerControlLecturaArchivoAula($idArchivo, $idCiclo) {
             FROM estudiantes e
             LEFT JOIN aula_archivo_accesos ac
                    ON ac.idEstudiante = e.idEstudiante AND ac.idArchivo = ?
-            WHERE e.idCiclo = ? AND e.deleted_at IS NULL
+            WHERE e.idCiclo = ? AND e.eliminado = 0
             GROUP BY e.idEstudiante
             ORDER BY (MAX(CASE WHEN ac.tipo='vista' THEN ac.fechaAcceso END) IS NOT NULL) DESC, e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
@@ -1217,7 +1229,7 @@ function listarPapeleraModuloAula($idModulo) {
              FROM aula_archivos a
              JOIN profesores p ON a.idProfesor = p.idProfesor
              LEFT JOIN aula_carpetas c ON a.idCarpeta = c.idCarpeta
-             WHERE a.idModulo = ? AND a.deleted_at IS NOT NULL
+             WHERE a.idModulo = ? AND a.eliminado = 1
              ORDER BY a.fechaEliminacion DESC";
     $sa = mysqli_prepare($con, $sqlA);
     mysqli_stmt_bind_param($sa, "i", $idModulo);
@@ -1226,7 +1238,7 @@ function listarPapeleraModuloAula($idModulo) {
     while ($fila = mysqli_fetch_assoc($ra)) $archivos[] = $fila;
 
     $carpetas = [];
-    $sqlC = "SELECT * FROM aula_carpetas WHERE idModulo = ? AND deleted_at IS NOT NULL ORDER BY fechaEliminacion DESC";
+    $sqlC = "SELECT * FROM aula_carpetas WHERE idModulo = ? AND eliminado = 1 ORDER BY fechaEliminacion DESC";
     $sc = mysqli_prepare($con, $sqlC);
     mysqli_stmt_bind_param($sc, "i", $idModulo);
     mysqli_stmt_execute($sc);
@@ -1240,7 +1252,7 @@ function listarPapeleraModuloAula($idModulo) {
 // Mueve un archivo a la papelera (soft-delete): no toca el fichero físico.
 function borrarArchivoAula($idArchivo) {
     $con = obtenerConexion();
-    $sql = "UPDATE aula_archivos SET deleted_at=NOW() WHERE idArchivo=?";
+    $sql = "UPDATE aula_archivos SET eliminado = 1, fechaEliminacion = NOW() WHERE idArchivo=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArchivo);
     $ok = mysqli_stmt_execute($stmt);
@@ -1254,15 +1266,15 @@ function borrarCarpetaRecursivoAula($idCarpeta) {
     if (empty($ids)) $ids = [intval($idCarpeta)];
     $con = obtenerConexion();
     $in  = implode(',', array_map('intval', $ids));
-    $ok  = mysqli_query($con, "UPDATE aula_carpetas SET deleted_at=NOW() WHERE idCarpeta IN ($in)");
-    mysqli_query($con, "UPDATE aula_archivos SET deleted_at=NOW() WHERE idCarpeta IN ($in)");
+    $ok  = mysqli_query($con, "UPDATE aula_carpetas SET eliminado = 1, fechaEliminacion = NOW() WHERE idCarpeta IN ($in)");
+    mysqli_query($con, "UPDATE aula_archivos SET eliminado = 1, fechaEliminacion = NOW() WHERE idCarpeta IN ($in)");
 
     return $ok;
 }
 
 function restaurarArchivoAula($idArchivo) {
     $con = obtenerConexion();
-    $sql = "UPDATE aula_archivos SET deleted_at=NULL WHERE idArchivo=?";
+    $sql = "UPDATE aula_archivos SET eliminado = 0, fechaEliminacion = NULL WHERE idArchivo=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArchivo);
     $ok = mysqli_stmt_execute($stmt);
@@ -1277,8 +1289,8 @@ function restaurarCarpetaAula($idCarpeta) {
     if (empty($ids)) return false;
     $con = obtenerConexion();
     $in = implode(',', array_map('intval', $ids));
-    $ok = mysqli_query($con, "UPDATE aula_carpetas SET deleted_at=NULL WHERE idCarpeta IN ($in)");
-    mysqli_query($con, "UPDATE aula_archivos SET deleted_at=NULL WHERE idCarpeta IN ($in)");
+    $ok = mysqli_query($con, "UPDATE aula_carpetas SET eliminado = 0, fechaEliminacion = NULL WHERE idCarpeta IN ($in)");
+    mysqli_query($con, "UPDATE aula_archivos SET eliminado = 0, fechaEliminacion = NULL WHERE idCarpeta IN ($in)");
     
     return $ok;
 }
@@ -1336,7 +1348,7 @@ function purgarPapeleraAntiguaAula($dias = 30) {
     $limite = date('Y-m-d H:i:s', strtotime("-$dias days"));
     $con = obtenerConexion();
 
-    $sqlArchivos = "SELECT idArchivo FROM aula_archivos WHERE deleted_at IS NOT NULL AND fechaEliminacion < ?";
+    $sqlArchivos = "SELECT idArchivo FROM aula_archivos WHERE eliminado = 1 AND fechaEliminacion < ?";
     $stmtArchivos = mysqli_prepare($con, $sqlArchivos);
     mysqli_stmt_bind_param($stmtArchivos, "s", $limite);
     mysqli_stmt_execute($stmtArchivos);
@@ -1345,7 +1357,7 @@ function purgarPapeleraAntiguaAula($dias = 30) {
     while ($fila = mysqli_fetch_assoc($resArchivos)) $idsArchivos[] = $fila['idArchivo'];
     foreach ($idsArchivos as $idArchivo) eliminarDefinitivoArchivoAula($idArchivo);
 
-    $sqlCarpetas = "SELECT idCarpeta FROM aula_carpetas WHERE deleted_at IS NOT NULL AND fechaEliminacion < ?";
+    $sqlCarpetas = "SELECT idCarpeta FROM aula_carpetas WHERE eliminado = 1 AND fechaEliminacion < ?";
     $stmtCarpetas = mysqli_prepare($con, $sqlCarpetas);
     mysqli_stmt_bind_param($stmtCarpetas, "s", $limite);
     mysqli_stmt_execute($stmtCarpetas);
@@ -1367,7 +1379,7 @@ function obtenerUsoAlmacenamientoCicloAula($idCiclo) {
     $sql = "SELECT COALESCE(SUM(a.tamanio),0) AS usado
             FROM aula_archivos a
             JOIN modulos m ON a.idModulo = m.idModulo
-            WHERE m.idCiclo = ? AND a.deleted_at IS NULL";
+            WHERE m.idCiclo = ? AND a.eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -1401,7 +1413,7 @@ function obtenerAlumnosEnRiesgoPorProfesorAula($idProfesor) {
             JOIN modulo_profesor mp ON m.idModulo = mp.idModulo
             JOIN aula_tareas t ON m.idModulo = t.idModulo
             LEFT JOIN aula_entregas ent ON t.idTarea = ent.idTarea AND e.idEstudiante = ent.idEstudiante
-            WHERE mp.idProfesor = ? AND e.deleted_at IS NULL
+            WHERE mp.idProfesor = ? AND e.eliminado = 0
             GROUP BY e.idEstudiante, m.idModulo";
     
     $stmt = mysqli_prepare($con, $sql);

@@ -136,6 +136,14 @@ if ($method === 'POST') {
     if ($idModulo <= 0 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha) || !is_array($registros)) {
         v1Error('idModulo, fecha (YYYY-MM-DD) and registros[] are required.', 400, 'validation');
     }
+
+    // Prevent marking attendance on weekends (Saturday=6, Sunday=7)
+    $dateTime = DateTime::createFromFormat('Y-m-d', $fecha);
+    if ($dateTime && $dateTime->format('N') > 5) {
+        error_log("[API] Attempt to mark attendance on weekend: fecha=$fecha, idProfesor=$uid");
+        v1Error('No se puede marcar asistencia los sábados y domingos.', 400, 'weekend_blocked');
+    }
+
     $misModulos = listarModulosDeProfesor($uid);
     if (!in_array($idModulo, array_column($misModulos, 'idModulo'), true)) {
         v1Error('You do not teach this module.', 403, 'forbidden');

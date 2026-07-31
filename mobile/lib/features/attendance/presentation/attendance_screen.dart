@@ -14,14 +14,23 @@ import '../data/attendance_repository.dart';
 import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
 
-class AttendanceScreen extends ConsumerStatefulWidget {
+class AttendanceScreen extends StatelessWidget {
   const AttendanceScreen();
 
   @override
-  ConsumerState<AttendanceScreen> createState() => _AttendanceScreenState();
+  Widget build(BuildContext context) {
+    return _AttendanceScreenWrapper();
+  }
 }
 
-class _AttendanceScreenState extends ConsumerState<AttendanceScreen> with TickerProviderStateMixin {
+class _AttendanceScreenWrapper extends ConsumerStatefulWidget {
+  const _AttendanceScreenWrapper();
+
+  @override
+  ConsumerState<_AttendanceScreenWrapper> createState() => _AttendanceScreenWrapperState();
+}
+
+class _AttendanceScreenWrapperState extends ConsumerState<_AttendanceScreenWrapper> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override

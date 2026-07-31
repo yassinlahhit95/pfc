@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/chat/data/chat_repository.dart';
 import '../../features/chat/presentation/conversations_screen.dart';
+import '../../features/classroom/presentation/modules_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/messages/data/messages_repository.dart';
 import '../../features/messages/presentation/messages_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/tareas/presentation/tareas_screen.dart';
 import '../auth/auth_state.dart';
 import '../auth/session.dart';
 import '../i18n/translations.dart';
@@ -28,11 +30,11 @@ class _Tab {
 /// children's data, not open-ended messaging).
 List<_Tab> _tabsFor(UserRole role, Map<String, String> t) {
   final hasMessages = role != UserRole.tutor;
-  final hasChat = role != UserRole.tutor;
   return [
     _Tab(t['nav_inicio'] ?? 'Inicio', Icons.home_rounded, const HomeScreen()),
-    if (hasChat) _Tab(t['nav_chat'] ?? 'Chat', Icons.forum_rounded, const ConversationsScreen()),
-    if (hasMessages) _Tab(t['nav_mensajeria'] ?? 'Mensajes', Icons.mail_rounded, const MessagesScreen()),
+    if (hasMessages) _Tab(t['nav_mensajeria'] ?? 'Mensajería', Icons.mail_rounded, const MessagesScreen()),
+    _Tab('Materiales', Icons.auto_stories_outlined, const ModulesScreen()),
+    _Tab('Tareas', Icons.assignment_outlined, const TareasScreen()),
     _Tab(t['nav_perfil'] ?? 'Perfil', Icons.person_rounded, const ProfileScreen()),
   ];
 }
@@ -54,12 +56,12 @@ final homeTabIndexProvider = StateProvider<int>((ref) => 0);
 int? homeTabIndexForType(String type, UserRole role) {
   final tabIds = <String>[];
   tabIds.add('inicio');
-  if (role != UserRole.tutor) tabIds.add('chat');
   if (role != UserRole.tutor) tabIds.add('messages');
+  tabIds.add('materiales');
+  tabIds.add('tareas');
   tabIds.add('perfil');
 
   final targetId = switch (type) {
-    'chat_message' => 'chat',
     'message' => 'messages',
     _ => null,
   };
@@ -89,13 +91,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final t = ref.watch(translationsProvider);
     final tabs = _tabsFor(role, t);
     final index = ref.watch(homeTabIndexProvider).clamp(0, tabs.length - 1);
-    final hasChat = tabs.any((tab) => tab.label == t['nav_chat'] || tab.label == 'Chat');
-    final hasMessages = tabs.any((tab) => tab.label == t['nav_mensajeria'] || tab.label == 'Mensajes');
+    final hasMessages = tabs.any((tab) => tab.label == t['nav_mensajeria'] || tab.label == 'Mensajería');
 
-    // Only watched (and therefore only polled — see chatUnreadCountProvider/
-    // messagesUnreadCountProvider) when this role actually has that tab, so a
-    // tutor session never fires either poll.
-    final chatUnread = hasChat ? ref.watch(chatUnreadCountProvider).valueOrNull ?? 0 : 0;
+    // Only watched (and therefore only polled — see messagesUnreadCountProvider)
+    // when this role actually has that tab, so a tutor session never fires the poll.
     final messagesUnread = hasMessages ? ref.watch(messagesUnreadCountProvider).valueOrNull ?? 0 : 0;
 
     return Scaffold(
@@ -110,8 +109,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           for (final tab in tabs)
             NavigationDestination(
               icon: _badgedIcon(tab.icon, switch (tab.label) {
-                _ when tab.label == t['nav_chat'] || tab.label == 'Chat' => chatUnread,
-                _ when tab.label == t['nav_mensajeria'] || tab.label == 'Mensajes' => messagesUnread,
+                _ when tab.label == t['nav_mensajeria'] || tab.label == 'Mensajería' => messagesUnread,
                 _ => 0,
               }),
               label: tab.label,

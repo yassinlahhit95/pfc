@@ -26,7 +26,11 @@ class FavoritesScreen extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Archivos favoritos')),
+      appBar: AppBar(
+        title: const Text('Archivos favoritos'),
+        elevation: 0,
+        backgroundColor: scheme.surface,
+      ),
       body: AsyncView<List<ClassroomFile>>(
         value: favoritesAsync,
         onRetry: () => ref.invalidate(classroomFavoritesProvider),
@@ -41,48 +45,61 @@ class FavoritesScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(classroomFavoritesProvider),
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: Space.sm),
+              padding: const EdgeInsets.symmetric(vertical: Space.md),
               itemCount: files.length,
               separatorBuilder: (_, __) => Divider(height: 1, indent: Space.xl, color: scheme.outlineVariant),
               itemBuilder: (context, i) {
                 final f = files[i];
-                return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.xs),
-                  leading: Icon(_fileIcon(f.extension), size: 22, color: scheme.onSurfaceVariant),
-                  title: Text(f.nombreOriginal, style: const TextStyle(fontWeight: FontWeight.w500)),
-                  subtitle: Text('${f.humanSize} · ${f.nombreProfesor}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.star_rounded,
-                          size: 20,
-                          color: Colors.amber,
-                        ),
-                        onPressed: () async {
-                          try {
-                            await ref.read(classroomRepositoryProvider).toggleFavorite(f.id);
-                            ref.invalidate(classroomFavoritesProvider);
-                            ref.invalidate(classroomModulesProvider);
-                          } catch (_) {
-                            if (context.mounted) {
-                              await showErrorAlert(context, 'No se pudo quitar de favoritos.');
-                            }
-                          }
-                        },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: Space.xs),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: Space.xl),
+                    leading: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(Radii.md),
                       ),
-                      Icon(Icons.file_download_outlined, size: 20, color: scheme.onSurfaceVariant),
-                    ],
+                      alignment: Alignment.center,
+                      child: Icon(_fileIcon(f.extension), size: 22, color: scheme.onPrimaryContainer),
+                    ),
+                    title: Text(f.nombreOriginal, style: const TextStyle(fontWeight: FontWeight.w500)),
+                    subtitle: Text('${f.humanSize} · ${f.nombreProfesor}',
+                      style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.star_rounded, size: 20, color: Colors.amber),
+                      onPressed: () async {
+                        try {
+                          await ref.read(classroomRepositoryProvider).toggleFavorite(f.id);
+                          ref.invalidate(classroomFavoritesProvider);
+                          ref.invalidate(classroomModulesProvider);
+                          if (context.mounted) {
+                            await showErrorAlert(context, 'Quitado de favoritos', title: 'Listo');
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            await showErrorAlert(context, 'No se pudo quitar de favoritos.');
+                          }
+                        }
+                      },
+                    ),
+                    onTap: () async {
+                      try {
+                        final url = ref.read(classroomRepositoryProvider).downloadUrl(f.id);
+                        final uri = Uri.parse(url);
+                        final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        if (!ok && context.mounted) {
+                          await showErrorAlert(context, 'No se pudo abrir el archivo.');
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          await showErrorAlert(context, 'Error: ${e.toString()}');
+                        }
+                      }
+                    },
                   ),
-                  onTap: () async {
-                    final url = ref.read(classroomRepositoryProvider).downloadUrl(f.id);
-                    final uri = Uri.parse(url);
-                    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-                    if (!ok && context.mounted) {
-                      await showErrorAlert(context, 'No se pudo abrir el archivo.');
-                    }
-                  },
                 );
               },
             ),

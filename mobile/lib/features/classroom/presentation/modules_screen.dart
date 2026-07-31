@@ -24,7 +24,7 @@ class _ModulesScreenState extends ConsumerState<ModulesScreen> {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Aula digital')),
+      appBar: AppBar(title: const Text('Materiales')),
       body: AsyncView<List<ClassroomModule>>(
         value: modulesAsync,
         onRetry: () => ref.invalidate(classroomModulesProvider),
