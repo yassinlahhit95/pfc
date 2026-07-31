@@ -22,7 +22,7 @@ $csrf = Security::generateCSRFToken();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Cambiar contraseña — AulaPro</title>
+<title>Cambiar contraseña — <?php require_once __DIR__ . '/../include/FeatureGuard.php'; echo Security::escapeHtml(FeatureGuard::getCenterName()); ?></title>
 <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <style>
   :root { --primary:#4f46e5; --primary-strong:#3730a3; --bg:#f3f4f6; --txt:#1f2937; }

@@ -172,7 +172,7 @@ switch ($action) {
     // GET /api/admin.php?action=config
     case 'config':
         $cfg = $pdo->query(
-            'SELECT nombreCentro, codigoCentro, cursoEscolar, emailCentro, telefonoCentro FROM configuracion_centro LIMIT 1'
+            'SELECT nombreCentro, codigoCentro, cursoEscolar, emailCentro, telefonoCentro, colorAcento, logoCentro FROM configuracion_centro LIMIT 1'
         )->fetch() ?: [];
         apiOk(['config' => $cfg]);
 

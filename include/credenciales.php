@@ -24,9 +24,11 @@ function generarCredencialesTemporales(string $email, string $nombre, string $ro
     if (is_file($helper)) {
         require_once $helper;
         if (function_exists('sendEmail') && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $asunto = 'Tus credenciales de acceso - AulaPro';
+            require_once __DIR__ . '/FeatureGuard.php';
+            $centerName = FeatureGuard::getCenterName();
+            $asunto = 'Tus credenciales de acceso - ' . $centerName;
             $html = "<h2>Hola " . htmlspecialchars($nombre) . ",</h2>
-                <p>Se ha creado tu cuenta de <strong>" . htmlspecialchars($rolLabel) . "</strong> en AulaPro.</p>
+                <p>Se ha creado tu cuenta de <strong>" . htmlspecialchars($rolLabel) . "</strong> en " . htmlspecialchars($centerName) . ".</p>
                 <div style='background:#f3f4f6;padding:16px;border-radius:8px;margin:16px 0'>
                     <p><strong>Usuario:</strong> " . htmlspecialchars($email) . "</p>
                     <p><strong>Contraseña temporal:</strong> " . htmlspecialchars($plain) . "</p>

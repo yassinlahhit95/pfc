@@ -1336,6 +1336,7 @@ CREATE TABLE `configuracion_centro` (
   `logoCentro` varchar(255) DEFAULT '',
   `logoGobierno1` varchar(255) DEFAULT '',
   `logoGobierno2` varchar(255) DEFAULT '',
+  `colorAcento` varchar(7) DEFAULT NULL,
   `textoLegal` text,
   `nombreDirectorFirmante` varchar(150) DEFAULT '',
   `feature_prematricula` tinyint(1) NOT NULL DEFAULT '1',

@@ -4,7 +4,11 @@ require_once __DIR__ . '/../../include/CircuitBreaker.php';
 // ══════════════════════════════════════════════════════════════════════
 // ENVÍO DE CORREO ELECTRÓNICO VÍA BREVO API
 // ══════════════════════════════════════════════════════════════════════
-function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | Sistema Académico') {
+function sendEmail($to, $subject, $htmlContent, $senderName = null) {
+    if ($senderName === null) {
+        require_once __DIR__ . '/../../include/FeatureGuard.php';
+        $senderName = 'CFP - ' . FeatureGuard::getCenterName() . ' | Sistema Académico';
+    }
     require_once __DIR__ . '/../../config/Config.php';
     require_once __DIR__ . '/../../include/Logger.php';
 

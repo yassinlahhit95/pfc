@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Acceso Suspendido — AulaPro</title>
+  <title>Acceso Suspendido — <?php require_once __DIR__ . '/../include/FeatureGuard.php'; echo Security::escapeHtml(FeatureGuard::getCenterName()); ?></title>
   <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
   <div class="icono"><i class="fas fa-lock"></i></div>
   <h1 class="titulo">Acceso Suspendido</h1>
   <p class="subtitulo">
-    Tu acceso a <strong>AulaPro</strong> ha sido suspendido temporalmente.<br>
+    Tu acceso a <strong><?php require_once __DIR__ . '/../include/FeatureGuard.php'; echo Security::escapeHtml(FeatureGuard::getCenterName()); ?></strong> ha sido suspendido temporalmente.<br>
     Esto ocurre cuando la suscripción está pendiente de pago o ha expirado.
   </p>
 

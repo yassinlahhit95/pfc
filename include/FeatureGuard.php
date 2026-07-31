@@ -89,6 +89,8 @@ class FeatureGuard
                     'instance_status'      => $payload['status']   ?? 'active',
                     'suspension_message'   => $payload['susp_msg'] ?? '',
                     'nombreCentro'         => $row['nombreCentro'] ?: 'AulaPro',
+                    'colorAcento'          => $row['colorAcento'] ?: '',
+                    'logoCentro'           => $row['logoCentro'] ?: '',
                     'feature_prematricula' => $feat('feature_prematricula', $payload, $row),
                     'feature_chat'         => $feat('feature_chat',         $payload, $row),
                     'feature_inventario'   => $feat('feature_inventario',   $payload, $row),
@@ -135,6 +137,8 @@ class FeatureGuard
             'instance_status'      => $row['instance_status']     ?? 'active',
             'suspension_message'   => $row['suspension_message']  ?? '',
             'nombreCentro'         => $row['nombreCentro'] ?: 'AulaPro',
+            'colorAcento'          => $row['colorAcento'] ?: '',
+            'logoCentro'           => $row['logoCentro'] ?: '',
             'feature_prematricula' => (int)($row['feature_prematricula'] ?? 0),
             'feature_chat'         => (int)($row['feature_chat']         ?? 1),
             'feature_inventario'   => (int)($row['feature_inventario']   ?? 1),
@@ -168,6 +172,8 @@ class FeatureGuard
             'instance_status'      => 'suspended',
             'suspension_message'   => $message,
             'nombreCentro'         => $row['nombreCentro'] ?: 'AulaPro',
+            'colorAcento'          => $row['colorAcento'] ?: '',
+            'logoCentro'           => $row['logoCentro'] ?: '',
             'feature_prematricula' => 0,
             'feature_chat'         => 0,
             'feature_inventario'   => 0,
@@ -271,6 +277,16 @@ class FeatureGuard
     public static function getCenterName(): string
     {
         return (string)(self::load()['nombreCentro'] ?? 'AulaPro');
+    }
+
+    public static function getCenterColor(): string
+    {
+        return (string)(self::load()['colorAcento'] ?? '');
+    }
+
+    public static function getCenterLogo(): string
+    {
+        return (string)(self::load()['logoCentro'] ?? '');
     }
 
     public static function isSuspended(): bool

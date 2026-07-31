@@ -210,11 +210,20 @@ include_once __DIR__ . '/../comunes/nav.php';
                     <?= fieldError($errores, 'emailCentro') ?>
                 </div>
             </div>
-            <div class="campo ancho-total">
-                <label for="nombreDirectorFirmante">Nombre del Director/a Firmante</label>
-                <input type="text" id="nombreDirectorFirmante" name="nombreDirectorFirmante"
-                       value="<?= Security::escapeHtml($datos['nombreDirectorFirmante'] ?? $cfg['nombreDirectorFirmante']) ?>"
-                       placeholder="Para boletines y documentos oficiales">
+            <div class="form-fila">
+                <div class="campo">
+                    <label for="colorAcento">Color de Acento</label>
+                    <input type="color" id="colorAcento" name="colorAcento"
+                           value="<?= Security::escapeHtml($datos['colorAcento'] ?? $cfg['colorAcento'] ?? '#4f46e5') ?>"
+                           title="Personaliza el color primario de la interfaz">
+                    <small class="texto-suave">Color principal del tema · afecta a botones, enlaces y acentos</small>
+                </div>
+                <div class="campo">
+                    <label for="nombreDirectorFirmante">Nombre del Director/a Firmante</label>
+                    <input type="text" id="nombreDirectorFirmante" name="nombreDirectorFirmante"
+                           value="<?= Security::escapeHtml($datos['nombreDirectorFirmante'] ?? $cfg['nombreDirectorFirmante']) ?>"
+                           placeholder="Para boletines y documentos oficiales">
+                </div>
             </div>
             <div class="campo ancho-total">
                 <label for="textoLegal">Texto Legal / Pie de Documento</label>
