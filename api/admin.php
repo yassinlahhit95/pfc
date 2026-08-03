@@ -88,8 +88,7 @@ try {
     apiError('Database connection failed.', 503);
 }
 
-require_once dirname(__DIR__) . '/config/Config.php';
-require_once dirname(__DIR__) . '/include/R2Client.php';
+require_once dirname(__DIR__) . '/include/R2Client.php'; // pulls in config/Config.php itself
 
 // ── Parse action ───────────────────────────────────────────────────────────────
 $payload = $rawBody ? (json_decode($rawBody, true) ?? []) : [];
@@ -307,10 +306,13 @@ switch ($action) {
             $checks['cron_jobs'] = ['ok' => null, 'note' => 'not tracked on this instance'];
         }
 
-        // R2 storage reachability + usage (tenant-scoped)
+        // R2 storage reachability + usage. totalUsage() already scopes to this
+        // tenant internally (listObjectsPage() runs every prefix through
+        // getTenantKey(), which prepends R2_TENANT_PREFIX) — passing the tenant
+        // prefix here too double-prefixes it (e.g. "schoolA/schoolA"), which
+        // matches nothing and silently reports 0 bytes for every tenant.
         try {
-            $prefix = Config::getInstance()->get('R2_TENANT_PREFIX', '');
-            $usage  = R2Client::totalUsage($prefix);
+            $usage = R2Client::totalUsage();
             $checks['storage_r2'] = ['ok' => true, 'used_bytes' => $usage['bytes']];
         } catch (\Throwable) {
             $checks['storage_r2'] = ['ok' => false, 'error' => 'R2 unreachable'];
