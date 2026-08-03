@@ -28,7 +28,9 @@ class StaffJustifyScreen extends ConsumerWidget {
     final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
     return Scaffold(
       appBar: AppBar(title: const Text('Justificar falta')),
-      body: role == UserRole.profesor ? const _ProfesorPicker() : const _StudentSearchPicker(),
+      body: role == UserRole.profesor
+          ? const _ProfesorPicker()
+          : const _StudentSearchPicker(),
     );
   }
 }
@@ -51,7 +53,8 @@ class _JustifiableCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(record.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(record.nombreEstudiante,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
                 Text(
                   '${record.nombreModulo} · ${date != null ? DateFormat('d MMM yyyy').format(date) : record.fecha}',
@@ -62,10 +65,13 @@ class _JustifiableCard extends StatelessWidget {
           ),
           StatusPill(
             label: record.estado == 'ausente' ? 'Ausente' : 'Retraso',
-            color: record.estado == 'ausente' ? AppColors.rojoLight : AppColors.naranjaLight,
+            color: record.estado == 'ausente'
+                ? AppColors.rojoLight
+                : AppColors.naranjaLight,
           ),
           const SizedBox(width: Space.sm),
-          Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant.withValues(alpha: 0.5)),
+          Icon(Icons.chevron_right_rounded,
+              color: scheme.onSurfaceVariant.withValues(alpha: 0.5)),
         ],
       ),
     );
@@ -90,8 +96,12 @@ class _ProfesorPickerState extends ConsumerState<_ProfesorPicker> {
       _loading = true;
     });
     try {
-      final result = await ref.read(attendanceRepositoryProvider).fetchForModule(modulo.id);
-      if (mounted) setState(() => _records = result.attendance.where((r) => r.canJustify).toList());
+      final result = await ref
+          .read(attendanceRepositoryProvider)
+          .fetchForModule(modulo.id);
+      if (mounted)
+        setState(() =>
+            _records = result.attendance.where((r) => r.canJustify).toList());
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -102,11 +112,13 @@ class _ProfesorPickerState extends ConsumerState<_ProfesorPicker> {
       context,
       ref,
       idAsistencia: record.id,
-      subtitulo: '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
+      subtitulo:
+          '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
     );
     if (sent && _selectedModule != null) {
       if (mounted) {
-        await showErrorAlert(context, 'Justificación registrada y aprobada.', title: 'Éxito');
+        await showErrorAlert(context, 'Justificación registrada y aprobada.',
+            title: 'Éxito');
       }
       _loadRecords(_selectedModule!);
     }
@@ -128,22 +140,31 @@ class _ProfesorPickerState extends ConsumerState<_ProfesorPicker> {
               initialValue: _selectedModule,
               decoration: const InputDecoration(labelText: 'Módulo'),
               items: [
-                for (final m in modules) DropdownMenuItem(value: m, child: Text(m.nombre, overflow: TextOverflow.ellipsis)),
+                for (final m in modules)
+                  DropdownMenuItem(
+                      value: m,
+                      child: Text(m.nombre, overflow: TextOverflow.ellipsis)),
               ],
               onChanged: (m) {
                 if (m != null) _loadRecords(m);
               },
             ),
             const SizedBox(height: Space.lg),
-            if (_loading) const Padding(padding: EdgeInsets.only(top: Space.xxl), child: CircularProgressIndicator()),
+            if (_loading)
+              const Padding(
+                  padding: EdgeInsets.only(top: Space.xxl),
+                  child: CircularProgressIndicator()),
             if (!_loading && _records != null)
               Expanded(
                 child: _records!.isEmpty
-                    ? const EmptyState(icon: Icons.check_circle_outline, title: 'Sin faltas por justificar en este módulo')
+                    ? const EmptyState(
+                        icon: Icons.check_circle_outline,
+                        title: 'Sin faltas por justificar en este módulo')
                     : ListView.builder(
                         itemCount: _records!.length,
-                        itemBuilder: (context, i) =>
-                            _JustifiableCard(record: _records![i], onTap: () => _justify(_records![i])),
+                        itemBuilder: (context, i) => _JustifiableCard(
+                            record: _records![i],
+                            onTap: () => _justify(_records![i])),
                       ),
               ),
           ],
@@ -157,7 +178,8 @@ class _StudentSearchPicker extends ConsumerStatefulWidget {
   const _StudentSearchPicker();
 
   @override
-  ConsumerState<_StudentSearchPicker> createState() => _StudentSearchPickerState();
+  ConsumerState<_StudentSearchPicker> createState() =>
+      _StudentSearchPickerState();
 }
 
 class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
@@ -185,8 +207,11 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
   Future<void> _search(String query) async {
     setState(() => _searching = true);
     try {
-      final contacts = await ref.read(chatRepositoryProvider).fetchContacts(query: query);
-      if (mounted) setState(() => _results = contacts.where((c) => c.rol == 'estudiante').toList());
+      final contacts =
+          await ref.read(chatRepositoryProvider).fetchContacts(query: query);
+      if (mounted)
+        setState(() =>
+            _results = contacts.where((c) => c.rol == 'estudiante').toList());
     } catch (_) {
       // keep previous results on error
     } finally {
@@ -200,8 +225,11 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
       _loadingRecords = true;
     });
     try {
-      final records = await ref.read(attendanceRepositoryProvider).fetchForStudent(student.uid);
-      if (mounted) setState(() => _records = records.where((r) => r.canJustify).toList());
+      final records = await ref
+          .read(attendanceRepositoryProvider)
+          .fetchForStudent(student.uid);
+      if (mounted)
+        setState(() => _records = records.where((r) => r.canJustify).toList());
     } finally {
       if (mounted) setState(() => _loadingRecords = false);
     }
@@ -216,7 +244,8 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
     );
     if (sent && _selectedStudent != null) {
       if (mounted) {
-        await showErrorAlert(context, 'Justificación registrada y aprobada.', title: 'Éxito');
+        await showErrorAlert(context, 'Justificación registrada y aprobada.',
+            title: 'Éxito');
       }
       _selectStudent(_selectedStudent!);
     }
@@ -240,20 +269,27 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
                   }),
                 ),
                 Expanded(
-                  child: Text(_selectedStudent!.nombre, style: Theme.of(context).textTheme.titleMedium),
+                  child: Text(_selectedStudent!.nombre,
+                      style: Theme.of(context).textTheme.titleMedium),
                 ),
               ],
             ),
             const SizedBox(height: Space.md),
-            if (_loadingRecords) const Padding(padding: EdgeInsets.only(top: Space.xxl), child: CircularProgressIndicator()),
+            if (_loadingRecords)
+              const Padding(
+                  padding: EdgeInsets.only(top: Space.xxl),
+                  child: CircularProgressIndicator()),
             if (!_loadingRecords && _records != null)
               Expanded(
                 child: _records!.isEmpty
-                    ? const EmptyState(icon: Icons.check_circle_outline, title: 'Sin faltas por justificar')
+                    ? const EmptyState(
+                        icon: Icons.check_circle_outline,
+                        title: 'Sin faltas por justificar')
                     : ListView.builder(
                         itemCount: _records!.length,
-                        itemBuilder: (context, i) =>
-                            _JustifiableCard(record: _records![i], onTap: () => _justify(_records![i])),
+                        itemBuilder: (context, i) => _JustifiableCard(
+                            record: _records![i],
+                            onTap: () => _justify(_records![i])),
                       ),
               ),
           ],
@@ -279,7 +315,9 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
           if (_searching) const LinearProgressIndicator(),
           Expanded(
             child: _results.isEmpty
-                ? const EmptyState(icon: Icons.person_search_outlined, title: 'Busca un estudiante por nombre')
+                ? const EmptyState(
+                    icon: Icons.person_search_outlined,
+                    title: 'Busca un estudiante por nombre')
                 : ListView.builder(
                     itemCount: _results.length,
                     itemBuilder: (context, i) {
@@ -289,7 +327,10 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
                         onTap: () => _selectStudent(student),
                         child: Row(
                           children: [
-                            Expanded(child: Text(student.nombre, style: const TextStyle(fontWeight: FontWeight.w600))),
+                            Expanded(
+                                child: Text(student.nombre,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600))),
                             const Icon(Icons.chevron_right_rounded),
                           ],
                         ),

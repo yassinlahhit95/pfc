@@ -15,7 +15,8 @@ class Secretaria {
         id: json['idSecretaria'] as int,
         nombre: json['nombreSecretaria'] as String? ?? '',
         email: json['emailSecretaria'] as String? ?? '',
-        activo: json['activoSecretaria'] == 1 || json['activoSecretaria'] == true,
+        activo:
+            json['activoSecretaria'] == 1 || json['activoSecretaria'] == true,
       );
 
   final int id;
@@ -58,7 +59,8 @@ class SecretariasRepository {
   }
 
   Future<void> deleteSecretaria(int id, String password) async {
-    await _client.delete('/secretarias.php', query: {'id': id.toString()}, data: {'password': password});
+    await _client.delete('/secretarias.php',
+        query: {'id': id.toString()}, data: {'password': password});
   }
 }
 
@@ -66,7 +68,8 @@ final secretariasRepositoryProvider = Provider<SecretariasRepository>(
   (ref) => SecretariasRepository(ref.read(apiClientProvider)),
 );
 
-class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Secretaria> secretarias, int total}), String?> {
+class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<
+    ({List<Secretaria> secretarias, int total}), String?> {
   bool _isLoadingMore = false;
 
   @override
@@ -87,11 +90,12 @@ class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Secretar
 
     _isLoadingMore = true;
     try {
-      final nextData = await ref.read(secretariasRepositoryProvider).fetchSecretarias(
-            limit: 20,
-            offset: current.secretarias.length,
-            query: arg,
-          );
+      final nextData =
+          await ref.read(secretariasRepositoryProvider).fetchSecretarias(
+                limit: 20,
+                offset: current.secretarias.length,
+                query: arg,
+              );
       state = AsyncData((
         secretarias: [...current.secretarias, ...nextData.secretarias],
         total: nextData.total,
@@ -102,6 +106,7 @@ class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Secretar
   }
 }
 
-final secretariasProvider = AsyncNotifierProvider.autoDispose.family<SecretariasNotifier, ({List<Secretaria> secretarias, int total}), String?>(
+final secretariasProvider = AsyncNotifierProvider.autoDispose.family<
+    SecretariasNotifier, ({List<Secretaria> secretarias, int total}), String?>(
   () => SecretariasNotifier(),
 );

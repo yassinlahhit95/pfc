@@ -45,6 +45,7 @@ final historyRepositoryProvider = Provider<HistoryRepository>(
   (ref) => HistoryRepository(ref.read(apiClientProvider)),
 );
 
-final historyProvider = FutureProvider.autoDispose.family<List<HistoryItem>, String>(
+final historyProvider =
+    FutureProvider.autoDispose.family<List<HistoryItem>, String>(
   (ref, dateStr) => ref.read(historyRepositoryProvider).fetchHistory(dateStr),
 );

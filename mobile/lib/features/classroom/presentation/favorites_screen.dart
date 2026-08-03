@@ -39,7 +39,8 @@ class FavoritesScreen extends ConsumerWidget {
             return const EmptyState(
               icon: Icons.star_outline_rounded,
               title: 'Aún no tienes favoritos',
-              description: 'Pulsa la estrella en los archivos del aula digital para guardarlos aquí.',
+              description:
+                  'Pulsa la estrella en los archivos del aula digital para guardarlos aquí.',
             );
           }
           return RefreshIndicator(
@@ -47,13 +48,15 @@ class FavoritesScreen extends ConsumerWidget {
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: Space.md),
               itemCount: files.length,
-              separatorBuilder: (_, __) => Divider(height: 1, indent: Space.xl, color: scheme.outlineVariant),
+              separatorBuilder: (_, __) => Divider(
+                  height: 1, indent: Space.xl, color: scheme.outlineVariant),
               itemBuilder: (context, i) {
                 final f = files[i];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: Space.xs),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: Space.xl),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: Space.xl),
                     leading: Container(
                       width: 44,
                       height: 44,
@@ -62,40 +65,55 @@ class FavoritesScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(Radii.md),
                       ),
                       alignment: Alignment.center,
-                      child: Icon(_fileIcon(f.extension), size: 22, color: scheme.onPrimaryContainer),
+                      child: Icon(_fileIcon(f.extension),
+                          size: 22, color: scheme.onPrimaryContainer),
                     ),
-                    title: Text(f.nombreOriginal, style: const TextStyle(fontWeight: FontWeight.w500)),
-                    subtitle: Text('${f.humanSize} · ${f.nombreProfesor}',
-                      style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                    title: Text(f.nombreOriginal,
+                        style: const TextStyle(fontWeight: FontWeight.w500)),
+                    subtitle: Text(
+                      '${f.humanSize} · ${f.nombreProfesor}',
+                      style: TextStyle(
+                          fontSize: 12, color: scheme.onSurfaceVariant),
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.star_rounded, size: 20, color: Colors.amber),
+                      icon: const Icon(Icons.star_rounded,
+                          size: 20, color: Colors.amber),
                       onPressed: () async {
                         try {
-                          await ref.read(classroomRepositoryProvider).toggleFavorite(f.id);
+                          await ref
+                              .read(classroomRepositoryProvider)
+                              .toggleFavorite(f.id);
                           ref.invalidate(classroomFavoritesProvider);
                           ref.invalidate(classroomModulesProvider);
                           if (context.mounted) {
-                            await showErrorAlert(context, 'Quitado de favoritos', title: 'Listo');
+                            await showErrorAlert(
+                                context, 'Quitado de favoritos',
+                                title: 'Listo');
                           }
                         } catch (e) {
                           if (context.mounted) {
-                            await showErrorAlert(context, 'No se pudo quitar de favoritos.');
+                            await showErrorAlert(
+                                context, 'No se pudo quitar de favoritos.');
                           }
                         }
                       },
                     ),
                     onTap: () async {
                       try {
-                        final url = ref.read(classroomRepositoryProvider).downloadUrl(f.id);
+                        final url = ref
+                            .read(classroomRepositoryProvider)
+                            .downloadUrl(f.id);
                         final uri = Uri.parse(url);
-                        final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        final ok = await launchUrl(uri,
+                            mode: LaunchMode.externalApplication);
                         if (!ok && context.mounted) {
-                          await showErrorAlert(context, 'No se pudo abrir el archivo.');
+                          await showErrorAlert(
+                              context, 'No se pudo abrir el archivo.');
                         }
                       } catch (e) {
                         if (context.mounted) {
-                          await showErrorAlert(context, 'Error: ${e.toString()}');
+                          await showErrorAlert(
+                              context, 'Error: ${e.toString()}');
                         }
                       }
                     },

@@ -64,13 +64,21 @@ class InventoryRepository {
 
   // Device loans (dispositivos)
   Future<List<Device>> fetchDevices() async {
-    final data = await _client.get('/inventory.php', query: {'action': 'devices'});
-    return (data['devices'] as List).cast<Map<String, dynamic>>().map(Device.fromJson).toList();
+    final data =
+        await _client.get('/inventory.php', query: {'action': 'devices'});
+    return (data['devices'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(Device.fromJson)
+        .toList();
   }
 
   Future<List<Loan>> fetchLoans() async {
-    final data = await _client.get('/inventory.php', query: {'action': 'loans'});
-    return (data['loans'] as List).cast<Map<String, dynamic>>().map(Loan.fromJson).toList();
+    final data =
+        await _client.get('/inventory.php', query: {'action': 'loans'});
+    return (data['loans'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(Loan.fromJson)
+        .toList();
   }
 
   Future<void> prestar({required int idArticulo, required int idEstudiante}) {
@@ -82,7 +90,8 @@ class InventoryRepository {
   }
 
   Future<void> devolver(int idPrestamo) {
-    return _client.post('/inventory.php', data: {'action': 'devolver', 'idPrestamo': idPrestamo});
+    return _client.post('/inventory.php',
+        data: {'action': 'devolver', 'idPrestamo': idPrestamo});
   }
 
   Future<void> addDevice({

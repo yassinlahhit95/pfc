@@ -27,7 +27,7 @@ function _subirVersionSalir(bool $ajax, string $destino): void {
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     _subirVersionSalir($ajax, "../../../vistas/profesores/aula/recursos.php");
 }

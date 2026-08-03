@@ -15,7 +15,8 @@ class SkeletonLoader extends StatefulWidget {
   State<SkeletonLoader> createState() => _SkeletonLoaderState();
 }
 
-class _SkeletonLoaderState extends State<SkeletonLoader> with SingleTickerProviderStateMixin {
+class _SkeletonLoaderState extends State<SkeletonLoader>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -39,7 +40,8 @@ class _SkeletonLoaderState extends State<SkeletonLoader> with SingleTickerProvid
 
     if (widget.itemBuilder != null) {
       return ListView.builder(
-        padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xxxl),
+        padding:
+            const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xxxl),
         itemCount: widget.itemCount,
         itemBuilder: (context, i) => widget.itemBuilder!(context, i),
       );
@@ -47,7 +49,8 @@ class _SkeletonLoaderState extends State<SkeletonLoader> with SingleTickerProvid
 
     // Default skeleton: list of card-like placeholders
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xxxl),
+      padding:
+          const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xxxl),
       itemCount: widget.itemCount,
       itemBuilder: (context, i) => AnimatedBuilder(
         animation: _controller,

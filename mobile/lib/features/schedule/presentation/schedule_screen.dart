@@ -8,7 +8,15 @@ import '../data/schedule_repository.dart';
 
 // Canonical order — the API returns whatever order the DB happens to give,
 // which isn't reliably Monday-first.
-const _dayOrder = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const _dayOrder = [
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+  'Sábado',
+  'Domingo'
+];
 const _dayShort = {
   'Lunes': 'Lun',
   'Martes': 'Mar',
@@ -73,7 +81,15 @@ class _DayScheduleState extends State<_DaySchedule> {
   late String _selected = _todayOrFirst();
 
   String _todayOrFirst() {
-    const weekdayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    const weekdayNames = [
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo'
+    ];
     final today = weekdayNames[DateTime.now().weekday - 1];
     return widget.days.contains(today) ? today : widget.days.first;
   }
@@ -110,7 +126,8 @@ class _DayScheduleState extends State<_DaySchedule> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
-                        color: active ? scheme.onPrimary : scheme.onSurfaceVariant,
+                        color:
+                            active ? scheme.onPrimary : scheme.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -122,9 +139,12 @@ class _DayScheduleState extends State<_DaySchedule> {
         const SizedBox(height: Space.lg),
         Expanded(
           child: slots.isEmpty
-              ? const EmptyState(icon: Icons.free_breakfast_outlined, title: 'Sin clases este día')
+              ? const EmptyState(
+                  icon: Icons.free_breakfast_outlined,
+                  title: 'Sin clases este día')
               : ListView(
-                  padding: const EdgeInsets.fromLTRB(Space.xl, 0, Space.xl, Space.xxxl),
+                  padding: const EdgeInsets.fromLTRB(
+                      Space.xl, 0, Space.xl, Space.xxxl),
                   children: [
                     AppCard(
                       padding: EdgeInsets.zero,
@@ -133,7 +153,10 @@ class _DayScheduleState extends State<_DaySchedule> {
                           for (var i = 0; i < slots.length; i++) ...[
                             _SlotRow(slot: slots[i]),
                             if (i != slots.length - 1)
-                              Divider(height: 1, indent: Space.lg, color: scheme.outlineVariant),
+                              Divider(
+                                  height: 1,
+                                  indent: Space.lg,
+                                  color: scheme.outlineVariant),
                           ],
                         ],
                       ),
@@ -154,7 +177,8 @@ class _SlotRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
+      padding:
+          const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -162,14 +186,18 @@ class _SlotRow extends StatelessWidget {
             width: 52,
             child: Text(
               slot.horaInicio.substring(0, 5),
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: scheme.onSurfaceVariant, fontSize: 13),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: scheme.onSurfaceVariant, fontSize: 13),
             ),
           ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(slot.nombreModulo, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(slot.nombreModulo,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
                 Text(
                   slot.nombreProfesor,
@@ -181,7 +209,10 @@ class _SlotRow extends StatelessWidget {
           if (slot.codigoAula.isNotEmpty || slot.nombreAula.isNotEmpty)
             Text(
               slot.codigoAula.isNotEmpty ? slot.codigoAula : slot.nombreAula,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
         ],
       ),

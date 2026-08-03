@@ -1,0 +1,29 @@
+# ── controladores/.htaccess ──────────────────────────────────────────────────
+# Blocks direct web access to shared implementation/helper files that are only
+# ever meant to be `require`'d by a role-specific wrapper controller, never
+# requested directly:
+#   *_impl.php     — controladores/comunes/<feature>/<accion>_impl.php expects
+#                    a $rolBase-style variable already set by the wrapper that
+#                    required it (see admin/blog/actualizar.php →
+#                    comunes/blog/actualizar_impl.php). The wrapper is what runs
+#                    AdminGuard/SecretariaGuard/etc. — the impl file itself has
+#                    no guard of its own by design. Requested directly, that
+#                    variable is never set and the Guard never runs at all,
+#                    which would let the impl file's DB-mutating logic execute
+#                    with no authentication whatsoever.
+#   *_helper.php / *_helpers.php — shared function libraries (email_helper.php,
+#                    firebase_helper.php, pdf_helper.php, insertar_helpers.php)
+#                    meant to be included, never executed as a request target.
+# Apache access control only affects HTTP requests — internal PHP require/
+# require_once calls between these files are completely unaffected.
+<FilesMatch "(_impl|_helpers?)\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+Options -Indexes

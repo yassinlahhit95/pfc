@@ -24,12 +24,14 @@ class FilterPill<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final active = value != null;
-    final currentLabel = active ? options.firstWhere((o) => o.$1 == value).$2 : label;
+    final currentLabel =
+        active ? options.firstWhere((o) => o.$1 == value).$2 : label;
 
     return PopupMenuButton<T?>(
       onSelected: onChanged,
       offset: const Offset(0, 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
       itemBuilder: (context) => [
         CheckedPopupMenuItem<T?>(
           value: null,
@@ -44,11 +46,16 @@ class FilterPill<T> extends StatelessWidget {
           ),
       ],
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+        padding: const EdgeInsets.symmetric(
+            horizontal: Space.md, vertical: Space.sm),
         decoration: BoxDecoration(
-          color: active ? scheme.primary.withValues(alpha: 0.1) : scheme.surfaceContainerHighest,
+          color: active
+              ? scheme.primary.withValues(alpha: 0.1)
+              : scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(Radii.pill),
-          border: active ? Border.all(color: scheme.primary.withValues(alpha: 0.3)) : null,
+          border: active
+              ? Border.all(color: scheme.primary.withValues(alpha: 0.3))
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -62,7 +69,9 @@ class FilterPill<T> extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 4),
-            Icon(Icons.expand_more_rounded, size: 16, color: active ? scheme.primary : scheme.onSurfaceVariant),
+            Icon(Icons.expand_more_rounded,
+                size: 16,
+                color: active ? scheme.primary : scheme.onSurfaceVariant),
           ],
         ),
       ),

@@ -66,11 +66,18 @@ class GastosRepository {
   final ApiClient _client;
   final String? _token;
 
-  Future<({List<Gasto> gastos, List<CategoriaGasto> categorias})> fetchGastos() async {
+  Future<({List<Gasto> gastos, List<CategoriaGasto> categorias})>
+      fetchGastos() async {
     final data = await _client.get('/gastos.php', query: {'action': 'list'});
     return (
-      gastos: (data['gastos'] as List).cast<Map<String, dynamic>>().map(Gasto.fromJson).toList(),
-      categorias: (data['categorias'] as List).cast<Map<String, dynamic>>().map(CategoriaGasto.fromJson).toList(),
+      gastos: (data['gastos'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(Gasto.fromJson)
+          .toList(),
+      categorias: (data['categorias'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(CategoriaGasto.fromJson)
+          .toList(),
     );
   }
 
@@ -91,14 +98,16 @@ class GastosRepository {
     if (archivo != null) {
       body['archivo'] = await MultipartFile.fromFile(archivo.path);
     }
-    await _client.post('/gastos.php', query: {'action': 'create'}, data: FormData.fromMap(body));
+    await _client.post('/gastos.php',
+        query: {'action': 'create'}, data: FormData.fromMap(body));
   }
 
   String downloadUrl(String filename) {
     // Some filenames might be JSON array stringified
     String realFilename = filename;
     if (filename.startsWith('[')) {
-      realFilename = filename.replaceAll('"', '').replaceAll('[', '').replaceAll(']', '');
+      realFilename =
+          filename.replaceAll('"', '').replaceAll('[', '').replaceAll(']', '');
     }
     return '$apiBaseUrl/public/uploads/justificantes/$realFilename';
   }
@@ -109,6 +118,7 @@ final gastosRepositoryProvider = Provider<GastosRepository>((ref) {
   return GastosRepository(ref.read(apiClientProvider), token);
 });
 
-final gastosListProvider = FutureProvider.autoDispose<({List<Gasto> gastos, List<CategoriaGasto> categorias})>(
+final gastosListProvider = FutureProvider.autoDispose<
+    ({List<Gasto> gastos, List<CategoriaGasto> categorias})>(
   (ref) => ref.read(gastosRepositoryProvider).fetchGastos(),
 );

@@ -73,7 +73,7 @@ class Student {
   final String estado; // activo | inactivo
   final String? dateEnrolled;
   final String telefono;
-  
+
   final int? idCiclo;
   final int? idGrupo;
   final String? fechaNacimiento;
@@ -124,11 +124,14 @@ class StudentsRepository {
   }
 
   Future<void> deleteStudent(int id, String password) async {
-    await _client.delete('/estudiantes.php', query: {'id': id.toString()}, data: {'password': password});
+    await _client.delete('/estudiantes.php',
+        query: {'id': id.toString()}, data: {'password': password});
   }
 
-  Future<void> changeStudentPassword(int idEstudiante, String nuevaPassword) async {
-    await _client.put('/estudiantes-password.php', data: {
+  Future<void> changeStudentPassword(
+      int idEstudiante, String nuevaPassword) async {
+    await _client.put('/estudiantes.php', data: {
+      'action': 'password',
       'idEstudiante': idEstudiante,
       'nuevaPassword': nuevaPassword,
     });
@@ -139,13 +142,20 @@ final studentsRepositoryProvider = Provider<StudentsRepository>(
   (ref) => StudentsRepository(ref.read(apiClientProvider)),
 );
 
-typedef StudentFiltersArgs = ({int? cicloId, int? nivelId, String? status, String? query});
+typedef StudentFiltersArgs = ({
+  int? cicloId,
+  int? nivelId,
+  String? status,
+  String? query
+});
 
-class StudentsNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Student> students, int total}), StudentFiltersArgs> {
+class StudentsNotifier extends AutoDisposeFamilyAsyncNotifier<
+    ({List<Student> students, int total}), StudentFiltersArgs> {
   bool _isLoadingMore = false;
 
   @override
-  Future<({List<Student> students, int total})> build(StudentFiltersArgs arg) async {
+  Future<({List<Student> students, int total})> build(
+      StudentFiltersArgs arg) async {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(studentsRepositoryProvider).fetchStudents(
           limit: 20,
@@ -183,6 +193,9 @@ class StudentsNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Student> st
   }
 }
 
-final studentsProvider = AsyncNotifierProvider.autoDispose.family<StudentsNotifier, ({List<Student> students, int total}), StudentFiltersArgs>(
+final studentsProvider = AsyncNotifierProvider.autoDispose.family<
+    StudentsNotifier,
+    ({List<Student> students, int total}),
+    StudentFiltersArgs>(
   () => StudentsNotifier(),
 );

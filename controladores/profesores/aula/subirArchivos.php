@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && (int)($_SERVER['CO
 }
 
 if (!isset($_POST['subirArchivos'])) { header("Location: ../../../vistas/profesores/aula/index.php"); exit; }
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '', false)) {
     if (ob_get_level() > 0) ob_end_clean();
     $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
     header("Location: ../../../vistas/profesores/aula/recursos.php?id=" . intval($_POST['idModulo'] ?? 0));
@@ -115,23 +115,58 @@ try {
                 }
             }
 
-            $mimesValidos = [
-                'pdf' => 'application/pdf',
-                'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
-                'png' => 'image/png', 'gif' => 'image/gif',
-                'zip' => 'application/zip', 'rar' => 'application/x-rar',
+            // Canonical Content-Type to STORE per extension — always this, never the
+            // sniffed value, so a crafted file can't get stored/served with an
+            // attacker-influenced Content-Type (content-type confusion / inline XSS risk).
+            $mimesCanonicos = [
+                'pdf'  => 'application/pdf',
+                'doc'  => 'application/msword',
                 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'txt'  => 'text/plain',
+                'rtf'  => 'application/rtf',
+                'odt'  => 'application/vnd.oasis.opendocument.text',
+                'xls'  => 'application/vnd.ms-excel',
                 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+                'csv'  => 'text/csv',
+                'ppt'  => 'application/vnd.ms-powerpoint',
                 'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                'txt' => 'text/plain'
+                'odp'  => 'application/vnd.oasis.opendocument.presentation',
+                'jpg'  => 'image/jpeg', 'jpeg' => 'image/jpeg',
+                'png'  => 'image/png', 'gif' => 'image/gif', 'webp' => 'image/webp',
+                'zip'  => 'application/zip',
+                'rar'  => 'application/x-rar-compressed',
             ];
 
-            // Algunos servidores devuelven tipos MIME distintos para Office/ZIP; solo bloqueamos discrepancias críticas.
-            if ($mimeReal !== '' && isset($mimesValidos[$ext]) && $mimesValidos[$ext] !== $mimeReal) {
-                 if (strpos($mimeReal, 'executable') !== false || strpos($mimeReal, 'php') !== false) {
-                     $errores[] = "$nombreOrig: contenido malicioso detectado.";
-                     continue;
-                 }
+            // Acceptable *sniffed* MIME variants per extension — several libmagic
+            // versions report Office/zip/rar formats differently, so validation needs
+            // a real allow-list per extension, not a single expected value.
+            $mimesAceptados = [
+                'pdf'  => ['application/pdf'],
+                'doc'  => ['application/msword', 'application/x-ole-storage', 'application/vnd.ms-office'],
+                'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
+                'txt'  => ['text/plain'],
+                'rtf'  => ['text/rtf', 'application/rtf'],
+                'odt'  => ['application/vnd.oasis.opendocument.text', 'application/zip'],
+                'xls'  => ['application/vnd.ms-excel', 'application/x-ole-storage', 'application/vnd.ms-office'],
+                'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'],
+                'ods'  => ['application/vnd.oasis.opendocument.spreadsheet', 'application/zip'],
+                'csv'  => ['text/csv', 'text/plain'],
+                'ppt'  => ['application/vnd.ms-powerpoint', 'application/x-ole-storage', 'application/vnd.ms-office'],
+                'pptx' => ['application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip'],
+                'odp'  => ['application/vnd.oasis.opendocument.presentation', 'application/zip'],
+                'jpg'  => ['image/jpeg'], 'jpeg' => ['image/jpeg'],
+                'png'  => ['image/png'], 'gif' => ['image/gif'], 'webp' => ['image/webp'],
+                'zip'  => ['application/zip'],
+                'rar'  => ['application/x-rar', 'application/x-rar-compressed', 'application/vnd.rar'],
+            ];
+
+            // Reject on ANY mismatch (not just a keyword blocklist) — if we can sniff a
+            // MIME and it's not one of the extension's known-good variants, the upload
+            // is rejected outright.
+            if ($mimeReal !== '' && isset($mimesAceptados[$ext]) && !in_array($mimeReal, $mimesAceptados[$ext], true)) {
+                $errores[] = "$nombreOrig: el contenido no coincide con la extensión ($ext).";
+                continue;
             }
 
             if (($usadoCiclo + $tamanio) > $limiteCiclo) {
@@ -147,7 +182,7 @@ try {
             $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
             if (isset($imgMimes[$ext])) ImageOptimizer::optimize($tmpName, $imgMimes[$ext]); // optimizar el temporal ANTES de subir a R2
 
-            $contentType = $mimeReal !== '' ? $mimeReal : ($mimesValidos[$ext] ?? 'application/octet-stream');
+            $contentType = $mimesCanonicos[$ext] ?? 'application/octet-stream';
             $bytes       = file_get_contents($tmpName);
             $subioOk     = $bytes !== false && R2Client::putObject('aula/archivos/' . $nombreArchivo, $bytes, $contentType);
             @unlink($tmpName);

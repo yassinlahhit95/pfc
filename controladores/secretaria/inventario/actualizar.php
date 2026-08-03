@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarArticulo'])) {
-    if (!Security::validateCSRFToken()) {
+    if (!Security::validateCSRFToken(null, false)) {
         $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
         header("Location: ../../../vistas/secretaria/inventario/verInventario.php");
         exit;

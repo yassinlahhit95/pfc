@@ -18,7 +18,9 @@ class Teacher {
         nombre: json['nombreProfesor'] as String? ?? '',
         email: json['emailProfesor'] as String? ?? '',
         telefono: json['telefonoProfesor'] as String?,
-        isTutor: json['esTutor'] == 1 || json['esTutor'] == true || json['esTutor'] == 'true',
+        isTutor: json['esTutor'] == 1 ||
+            json['esTutor'] == true ||
+            json['esTutor'] == 'true',
         cicloTutoria: json['cicloTutoria'] as String?,
       );
 
@@ -64,11 +66,14 @@ class TeachersRepository {
   }
 
   Future<void> deleteTeacher(int id, String password) async {
-    await _client.delete('/profesores.php', query: {'id': id.toString()}, data: {'password': password});
+    await _client.delete('/profesores.php',
+        query: {'id': id.toString()}, data: {'password': password});
   }
 
-  Future<void> changeTeacherPassword(int idProfesor, String nuevaPassword) async {
-    await _client.put('/profesores-password.php', data: {
+  Future<void> changeTeacherPassword(
+      int idProfesor, String nuevaPassword) async {
+    await _client.put('/profesores.php', data: {
+      'action': 'password',
       'idProfesor': idProfesor,
       'nuevaPassword': nuevaPassword,
     });
@@ -79,7 +84,8 @@ final teachersRepositoryProvider = Provider<TeachersRepository>(
   (ref) => TeachersRepository(ref.read(apiClientProvider)),
 );
 
-class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Teacher> teachers, int total}), String?> {
+class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<
+    ({List<Teacher> teachers, int total}), String?> {
   bool _isLoadingMore = false;
 
   @override
@@ -115,6 +121,7 @@ class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<({List<Teacher> te
   }
 }
 
-final teachersProvider = AsyncNotifierProvider.autoDispose.family<TeachersNotifier, ({List<Teacher> teachers, int total}), String?>(
+final teachersProvider = AsyncNotifierProvider.autoDispose
+    .family<TeachersNotifier, ({List<Teacher> teachers, int total}), String?>(
   () => TeachersNotifier(),
 );

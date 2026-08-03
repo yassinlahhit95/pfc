@@ -33,8 +33,12 @@ class ModuleDetailScreen extends ConsumerWidget {
         ),
         body: TabBarView(
           children: [
-            _FilesTab(idModulo: module.id, canFavorite: role == UserRole.estudiante),
-            _SessionsTab(idModulo: module.id, moduleName: module.nombre, isProfesor: isProfesor),
+            _FilesTab(
+                idModulo: module.id, canFavorite: role == UserRole.estudiante),
+            _SessionsTab(
+                idModulo: module.id,
+                moduleName: module.nombre,
+                isProfesor: isProfesor),
           ],
         ),
       ),
@@ -95,28 +99,43 @@ class _FilesTabState extends ConsumerState<_FilesTab> {
                         _openFolderName = f.nombre;
                       }),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Space.xl, vertical: Space.md),
                         child: Row(
                           children: [
-                            Icon(Icons.folder_outlined, size: 21, color: scheme.onSurfaceVariant),
+                            Icon(Icons.folder_outlined,
+                                size: 21, color: scheme.onSurfaceVariant),
                             const SizedBox(width: Space.md),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(f.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                  Text('${f.totalArchivos} archivo(s)', style: Theme.of(context).textTheme.bodySmall),
+                                  Text(f.nombre,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                                  Text('${f.totalArchivos} archivo(s)',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
                                 ],
                               ),
                             ),
-                            Icon(Icons.chevron_right_rounded, size: 20, color: scheme.onSurfaceVariant.withValues(alpha: 0.6)),
+                            Icon(Icons.chevron_right_rounded,
+                                size: 20,
+                                color: scheme.onSurfaceVariant
+                                    .withValues(alpha: 0.6)),
                           ],
                         ),
                       ),
                     ),
                   )),
-            if (folders.isNotEmpty) Divider(height: 1, indent: Space.xl, color: scheme.outlineVariant),
-            Expanded(child: _FileList(idModulo: widget.idModulo, canFavorite: widget.canFavorite)),
+            if (folders.isNotEmpty)
+              Divider(
+                  height: 1, indent: Space.xl, color: scheme.outlineVariant),
+            Expanded(
+                child: _FileList(
+                    idModulo: widget.idModulo,
+                    canFavorite: widget.canFavorite)),
           ],
         );
       },
@@ -124,16 +143,25 @@ class _FilesTabState extends ConsumerState<_FilesTab> {
   }
 }
 
-final _foldersProvider = FutureProvider.autoDispose.family<List<ClassroomFolder>, int>(
-  (ref, idModulo) => ref.read(classroomRepositoryProvider).fetchFolders(idModulo),
+final _foldersProvider =
+    FutureProvider.autoDispose.family<List<ClassroomFolder>, int>(
+  (ref, idModulo) =>
+      ref.read(classroomRepositoryProvider).fetchFolders(idModulo),
 );
 
-final _filesProvider = FutureProvider.autoDispose.family<List<ClassroomFile>, (int, int?)>(
-  (ref, key) => ref.read(classroomRepositoryProvider).fetchFiles(key.$1, idCarpeta: key.$2),
+final _filesProvider =
+    FutureProvider.autoDispose.family<List<ClassroomFile>, (int, int?)>(
+  (ref, key) => ref
+      .read(classroomRepositoryProvider)
+      .fetchFiles(key.$1, idCarpeta: key.$2),
 );
 
 class _FileList extends ConsumerWidget {
-  const _FileList({required this.idModulo, this.idCarpeta, this.header, required this.canFavorite});
+  const _FileList(
+      {required this.idModulo,
+      this.idCarpeta,
+      this.header,
+      required this.canFavorite});
   final int idModulo;
   final int? idCarpeta;
   final Widget? header;
@@ -148,7 +176,8 @@ class _FileList extends ConsumerWidget {
       onRetry: () => ref.invalidate(_filesProvider(key)),
       data: (context, files) {
         if (files.isEmpty && header == null) {
-          return const EmptyState(icon: Icons.insert_drive_file_outlined, title: 'Sin archivos');
+          return const EmptyState(
+              icon: Icons.insert_drive_file_outlined, title: 'Sin archivos');
         }
         return ListView(
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -159,7 +188,8 @@ class _FileList extends ConsumerWidget {
                 padding: EdgeInsets.all(24),
                 child: Center(child: Text('Sin archivos en esta carpeta')),
               ),
-            for (final f in files) _FileTile(file: f, filesKey: key, canFavorite: canFavorite),
+            for (final f in files)
+              _FileTile(file: f, filesKey: key, canFavorite: canFavorite),
           ],
         );
       },
@@ -168,7 +198,8 @@ class _FileList extends ConsumerWidget {
 }
 
 class _FileTile extends ConsumerWidget {
-  const _FileTile({required this.file, required this.filesKey, required this.canFavorite});
+  const _FileTile(
+      {required this.file, required this.filesKey, required this.canFavorite});
   final ClassroomFile file;
   final (int, int?) filesKey;
   final bool canFavorite;
@@ -187,9 +218,11 @@ class _FileTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: 2),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: Space.xl, vertical: 2),
       leading: Icon(_icon, size: 21, color: scheme.onSurfaceVariant),
-      title: Text(file.nombreOriginal, style: const TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(file.nombreOriginal,
+          style: const TextStyle(fontWeight: FontWeight.w500)),
       subtitle: Text('${file.humanSize} · ${file.nombreProfesor}'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -197,22 +230,30 @@ class _FileTile extends ConsumerWidget {
           if (canFavorite)
             IconButton(
               icon: Icon(
-                file.esFavorito ? Icons.star_rounded : Icons.star_outline_rounded,
+                file.esFavorito
+                    ? Icons.star_rounded
+                    : Icons.star_outline_rounded,
                 size: 20,
-                color: file.esFavorito ? Colors.amber.shade700 : scheme.onSurfaceVariant,
+                color: file.esFavorito
+                    ? Colors.amber.shade700
+                    : scheme.onSurfaceVariant,
               ),
               onPressed: () async {
                 try {
-                  await ref.read(classroomRepositoryProvider).toggleFavorite(file.id);
+                  await ref
+                      .read(classroomRepositoryProvider)
+                      .toggleFavorite(file.id);
                   ref.invalidate(_filesProvider(filesKey));
                 } catch (_) {
                   if (context.mounted) {
-                    await showErrorAlert(context, 'No se pudo actualizar el favorito.');
+                    await showErrorAlert(
+                        context, 'No se pudo actualizar el favorito.');
                   }
                 }
               },
             ),
-          Icon(Icons.file_download_outlined, size: 20, color: scheme.onSurfaceVariant),
+          Icon(Icons.file_download_outlined,
+              size: 20, color: scheme.onSurfaceVariant),
         ],
       ),
       onTap: () async {
@@ -237,7 +278,8 @@ Future<bool?> showTaskDetailSheet(
 }) async {
   if (isProfesor) {
     if (context.mounted) {
-      await showErrorAlert(context, 'Las entregas y calificaciones se gestionan desde la versión web.');
+      await showErrorAlert(context,
+          'Las entregas y calificaciones se gestionan desde la versión web.');
     }
     return null;
   } else {
@@ -261,7 +303,8 @@ Future<bool?> showTaskDetailSheet(
 
 // ── Tareas ──────────────────────────────────────────────────────────────
 
-final _tasksProvider = FutureProvider.autoDispose.family<List<ClassroomTask>, int>(
+final _tasksProvider =
+    FutureProvider.autoDispose.family<List<ClassroomTask>, int>(
   (ref, idModulo) => ref.read(classroomRepositoryProvider).fetchTasks(idModulo),
 );
 
@@ -286,7 +329,8 @@ class _TasksTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(_tasksProvider(idModulo)),
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+            padding: const EdgeInsets.fromLTRB(
+                Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: tasks.length,
             itemBuilder: (context, i) => _TaskCard(
               task: tasks[i],
@@ -301,7 +345,8 @@ class _TasksTab extends ConsumerWidget {
 }
 
 class _TaskCard extends ConsumerWidget {
-  const _TaskCard({required this.task, required this.isProfesor, required this.onChanged});
+  const _TaskCard(
+      {required this.task, required this.isProfesor, required this.onChanged});
   final ClassroomTask task;
   final bool isProfesor;
   final VoidCallback onChanged;
@@ -310,7 +355,9 @@ class _TaskCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final graded = task.estado == 'corregida';
-    final gradeColor = scheme.brightness == Brightness.dark ? AppColors.verdeDark : AppColors.verdeLight;
+    final gradeColor = scheme.brightness == Brightness.dark
+        ? AppColors.verdeDark
+        : AppColors.verdeLight;
     final date = DateTime.tryParse(task.fechaCreacion.replaceFirst(' ', 'T'));
 
     return AppCard(
@@ -321,10 +368,15 @@ class _TaskCard extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: Text(task.titulo, style: Theme.of(context).textTheme.titleSmall),
+                child: Text(task.titulo,
+                    style: Theme.of(context).textTheme.titleSmall),
               ),
-              if (!isProfesor && task.nota != null) StatusPill(label: task.nota!, color: graded ? gradeColor : scheme.onSurfaceVariant),
-              if (isProfesor && !task.publicado) StatusPill(label: 'Borrador', color: scheme.onSurfaceVariant),
+              if (!isProfesor && task.nota != null)
+                StatusPill(
+                    label: task.nota!,
+                    color: graded ? gradeColor : scheme.onSurfaceVariant),
+              if (isProfesor && !task.publicado)
+                StatusPill(label: 'Borrador', color: scheme.onSurfaceVariant),
             ],
           ),
           const SizedBox(height: Space.sm),
@@ -339,14 +391,18 @@ class _TaskCard extends ConsumerWidget {
             InkWell(
               borderRadius: BorderRadius.circular(Radii.sm),
               onTap: () async {
-                final url = ref.read(classroomRepositoryProvider).taskAttachmentUrl(task.id);
-                final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                final url = ref
+                    .read(classroomRepositoryProvider)
+                    .taskAttachmentUrl(task.id);
+                final ok = await launchUrl(Uri.parse(url),
+                    mode: LaunchMode.externalApplication);
                 if (!ok && context.mounted) {
                   await showErrorAlert(context, 'No se pudo abrir el archivo.');
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: Space.md, vertical: Space.sm),
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(Radii.sm),
@@ -354,15 +410,60 @@ class _TaskCard extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.attach_file_rounded, size: 16, color: scheme.onSurfaceVariant),
+                    Icon(Icons.attach_file_rounded,
+                        size: 16, color: scheme.onSurfaceVariant),
                     const SizedBox(width: Space.xs),
-                    Text('Ver archivo adjunto', style: Theme.of(context).textTheme.bodySmall),
+                    Text('Ver archivo adjunto',
+                        style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
             ),
           ],
-          if (!isProfesor && task.comentario != null && task.comentario!.isNotEmpty) ...[
+          if (!isProfesor && task.archivoEntrega != null) ...[
+            const SizedBox(height: Space.sm),
+            InkWell(
+              borderRadius: BorderRadius.circular(Radii.sm),
+              onTap: () async {
+                final url = ref
+                    .read(classroomRepositoryProvider)
+                    .submissionFileUrl(task.id, kind: 'entrega');
+                final ok = await launchUrl(Uri.parse(url),
+                    mode: LaunchMode.externalApplication);
+                if (!ok && context.mounted) {
+                  await showErrorAlert(context, 'No se pudo abrir el archivo.');
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: Space.md, vertical: Space.sm),
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(Radii.sm),
+                  border: Border.all(
+                    color: scheme.primary.withValues(alpha: 0.25),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.download_rounded,
+                        size: 16, color: scheme.primary),
+                    const SizedBox(width: Space.xs),
+                    Text('Descargar mi tarea entregada',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.primary,
+                              fontWeight: FontWeight.w700,
+                            )),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          if (!isProfesor &&
+              task.comentario != null &&
+              task.comentario!.isNotEmpty) ...[
             const SizedBox(height: Space.sm),
             Container(
               width: double.infinity,
@@ -371,7 +472,8 @@ class _TaskCard extends ConsumerWidget {
                 color: scheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(Radii.sm),
               ),
-              child: Text(task.comentario!, style: Theme.of(context).textTheme.bodySmall),
+              child: Text(task.comentario!,
+                  style: Theme.of(context).textTheme.bodySmall),
             ),
           ],
           const SizedBox(height: Space.md),
@@ -388,11 +490,14 @@ class _TaskCard extends ConsumerWidget {
                   value: task.publicado,
                   onChanged: (_) async {
                     try {
-                      await ref.read(classroomRepositoryProvider).togglePublish(task.id);
+                      await ref
+                          .read(classroomRepositoryProvider)
+                          .togglePublish(task.id);
                       onChanged();
                     } catch (_) {
                       if (context.mounted) {
-                        await showErrorAlert(context, 'No se pudo cambiar el estado.');
+                        await showErrorAlert(
+                            context, 'No se pudo cambiar el estado.');
                       }
                     }
                   },
@@ -401,7 +506,8 @@ class _TaskCard extends ConsumerWidget {
             ),
             OutlinedButton(
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => _SubmissionsScreen(task: task)),
+                MaterialPageRoute(
+                    builder: (_) => _SubmissionsScreen(task: task)),
               ),
               child: const Text('Ver entregas'),
             ),
@@ -433,7 +539,9 @@ class _TaskCard extends ConsumerWidget {
                       if (sent == true) onChanged();
                     }
                   : null,
-              child: Text(task.estado != null ? 'Ver / actualizar entrega' : 'Enviar entrega'),
+              child: Text(task.estado != null
+                  ? 'Ver / actualizar entrega'
+                  : 'Enviar entrega'),
             ),
         ],
       ),
@@ -450,10 +558,12 @@ class _Sheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
+      padding:
+          const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
       decoration: BoxDecoration(
         color: scheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -462,7 +572,9 @@ class _Sheet extends StatelessWidget {
             width: 36,
             height: 4,
             margin: const EdgeInsets.only(bottom: Space.lg),
-            decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+            decoration: BoxDecoration(
+                color: scheme.outlineVariant,
+                borderRadius: BorderRadius.circular(Radii.pill)),
           ),
           child,
         ],
@@ -481,7 +593,8 @@ class _SubmitSheet extends ConsumerStatefulWidget {
 }
 
 class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
-  late final _controller = TextEditingController(text: widget.initialRespuesta ?? '');
+  late final _controller =
+      TextEditingController(text: widget.initialRespuesta ?? '');
   PlatformFile? _picked;
   bool _sending = false;
 
@@ -518,15 +631,40 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
   Widget build(BuildContext context) {
     return _Sheet(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(widget.initialRespuesta != null ? 'Actualizar entrega' : 'Enviar entrega',
+            Text(
+                widget.initialRespuesta != null
+                    ? 'Actualizar entrega'
+                    : 'Enviar entrega',
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
-            Text(widget.task.titulo, style: Theme.of(context).textTheme.bodySmall),
+            Text(widget.task.titulo,
+                style: Theme.of(context).textTheme.bodySmall),
+            if (widget.task.archivoAdjunto != null) ...[
+              const SizedBox(height: Space.sm),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final url = ref
+                        .read(classroomRepositoryProvider)
+                        .taskAttachmentUrl(widget.task.id);
+                    await launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                  },
+                  icon: const Icon(Icons.download_rounded, size: 18),
+                  label: const Text('Descargar adjunto del profesor'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                ),
+              ),
+            ],
             if (widget.initialRespuesta != null) ...[
               const SizedBox(height: Space.sm),
               Text(
@@ -539,7 +677,8 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
               controller: _controller,
               minLines: 3,
               maxLines: 6,
-              decoration: const InputDecoration(labelText: 'Respuesta (opcional si adjuntas un archivo)'),
+              decoration: const InputDecoration(
+                  labelText: 'Respuesta (opcional si adjuntas un archivo)'),
             ),
             const SizedBox(height: Space.md),
             OutlinedButton.icon(
@@ -551,8 +690,13 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
             FilledButton(
               onPressed: _sending ? null : _submit,
               child: _sending
-                  ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text(widget.initialRespuesta != null ? 'Actualizar' : 'Enviar'),
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : Text(widget.initialRespuesta != null
+                      ? 'Actualizar'
+                      : 'Enviar'),
             ),
           ],
         ),
@@ -561,8 +705,10 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
   }
 }
 
-final _submissionProvider = FutureProvider.autoDispose.family<ClassroomSubmission?, int>(
-  (ref, idTarea) => ref.read(classroomRepositoryProvider).fetchSubmission(idTarea),
+final _submissionProvider =
+    FutureProvider.autoDispose.family<ClassroomSubmission?, int>(
+  (ref, idTarea) =>
+      ref.read(classroomRepositoryProvider).fetchSubmission(idTarea),
 );
 
 /// Shows the estudiante's own already-sent entrega — response text, attached
@@ -608,23 +754,49 @@ class _ViewSubmissionSheet extends ConsumerWidget {
           }
           final graded = submission.estado == 'corregida';
           final date = submission.fechaEntrega != null
-              ? DateTime.tryParse(submission.fechaEntrega!.replaceFirst(' ', 'T'))
+              ? DateTime.tryParse(
+                  submission.fechaEntrega!.replaceFirst(' ', 'T'))
               : null;
 
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Tu entrega', style: Theme.of(context).textTheme.titleMedium),
+                Text('Tu entrega',
+                    style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 4),
                 Text(
-                  date != null ? 'Enviada el ${DateFormat('d MMM yyyy, HH:mm').format(date)}' : task.titulo,
+                  date != null
+                      ? 'Enviada el ${DateFormat('d MMM yyyy, HH:mm').format(date)}'
+                      : task.titulo,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: Space.xl),
-                if (submission.respuesta != null && submission.respuesta!.isNotEmpty) ...[
+                if (task.archivoAdjunto != null) ...[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        final url = ref
+                            .read(classroomRepositoryProvider)
+                            .taskAttachmentUrl(task.id);
+                        await launchUrl(Uri.parse(url),
+                            mode: LaunchMode.externalApplication);
+                      },
+                      icon: const Icon(Icons.download_rounded, size: 18),
+                      label: const Text('Descargar adjunto del profesor'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: Space.md),
+                ],
+                if (submission.respuesta != null &&
+                    submission.respuesta!.isNotEmpty) ...[
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(Space.md),
@@ -639,8 +811,11 @@ class _ViewSubmissionSheet extends ConsumerWidget {
                 if (submission.archivoEntrega != null)
                   OutlinedButton.icon(
                     onPressed: () async {
-                      final url = ref.read(classroomRepositoryProvider).submissionFileUrl(task.id, kind: 'entrega');
-                      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                      final url = ref
+                          .read(classroomRepositoryProvider)
+                          .submissionFileUrl(task.id, kind: 'entrega');
+                      await launchUrl(Uri.parse(url),
+                          mode: LaunchMode.externalApplication);
                     },
                     icon: const Icon(Icons.attach_file_rounded),
                     label: const Text('Abrir mi archivo adjunto'),
@@ -649,12 +824,15 @@ class _ViewSubmissionSheet extends ConsumerWidget {
                   const SizedBox(height: Space.lg),
                   Row(
                     children: [
-                      Icon(Icons.grade_rounded, size: 20, color: scheme.onSurfaceVariant),
+                      Icon(Icons.grade_rounded,
+                          size: 20, color: scheme.onSurfaceVariant),
                       const SizedBox(width: Space.sm),
-                      Text('Calificación: ${submission.nota ?? '—'}/10', style: Theme.of(context).textTheme.titleSmall),
+                      Text('Calificación: ${submission.nota ?? '—'}/10',
+                          style: Theme.of(context).textTheme.titleSmall),
                     ],
                   ),
-                  if (submission.comentarioCalificacion != null && submission.comentarioCalificacion!.isNotEmpty) ...[
+                  if (submission.comentarioCalificacion != null &&
+                      submission.comentarioCalificacion!.isNotEmpty) ...[
                     const SizedBox(height: Space.sm),
                     Container(
                       width: double.infinity,
@@ -670,8 +848,11 @@ class _ViewSubmissionSheet extends ConsumerWidget {
                     const SizedBox(height: Space.sm),
                     OutlinedButton.icon(
                       onPressed: () async {
-                        final url = ref.read(classroomRepositoryProvider).submissionFileUrl(task.id, kind: 'correccion');
-                        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                        final url = ref
+                            .read(classroomRepositoryProvider)
+                            .submissionFileUrl(task.id, kind: 'correccion');
+                        await launchUrl(Uri.parse(url),
+                            mode: LaunchMode.externalApplication);
                       },
                       icon: const Icon(Icons.file_present_rounded),
                       label: const Text('Ver corrección del profesor'),
@@ -685,9 +866,12 @@ class _ViewSubmissionSheet extends ConsumerWidget {
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (_) => _SubmitSheet(task: task, initialRespuesta: submission.respuesta ?? ''),
+                      builder: (_) => _SubmitSheet(
+                          task: task,
+                          initialRespuesta: submission.respuesta ?? ''),
                     );
-                    if (sent == true && context.mounted) Navigator.of(context).pop(true);
+                    if (sent == true && context.mounted)
+                      Navigator.of(context).pop(true);
                   },
                   child: const Text('Actualizar entrega'),
                 ),
@@ -702,8 +886,10 @@ class _ViewSubmissionSheet extends ConsumerWidget {
 
 // ── Entregas (profesor) ────────────────────────────────────────────────
 
-final _submissionsProvider = FutureProvider.autoDispose.family<List<ClassroomSubmission>, int>(
-  (ref, idTarea) => ref.read(classroomRepositoryProvider).fetchSubmissions(idTarea),
+final _submissionsProvider =
+    FutureProvider.autoDispose.family<List<ClassroomSubmission>, int>(
+  (ref, idTarea) =>
+      ref.read(classroomRepositoryProvider).fetchSubmissions(idTarea),
 );
 
 class _SubmissionsScreen extends ConsumerWidget {
@@ -720,17 +906,23 @@ class _SubmissionsScreen extends ConsumerWidget {
         onRetry: () => ref.invalidate(_submissionsProvider(task.id)),
         data: (context, submissions) {
           if (submissions.isEmpty) {
-            return const EmptyState(icon: Icons.people_outline_rounded, title: 'Sin estudiantes en este ciclo');
+            return const EmptyState(
+                icon: Icons.people_outline_rounded,
+                title: 'Sin estudiantes en este ciclo');
           }
           return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(_submissionsProvider(task.id)),
+            onRefresh: () async =>
+                ref.invalidate(_submissionsProvider(task.id)),
             child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+              padding: const EdgeInsets.fromLTRB(
+                  Space.xl, Space.lg, Space.xl, Space.xxxl),
               itemCount: submissions.length,
               itemBuilder: (context, i) {
                 final s = submissions[i];
                 final scheme = Theme.of(context).colorScheme;
-                final gradeColor = scheme.brightness == Brightness.dark ? AppColors.verdeDark : AppColors.verdeLight;
+                final gradeColor = scheme.brightness == Brightness.dark
+                    ? AppColors.verdeDark
+                    : AppColors.verdeLight;
                 return AppCard(
                   margin: const EdgeInsets.only(bottom: Space.md),
                   child: Row(
@@ -739,16 +931,21 @@ class _SubmissionsScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(s.nombreEstudiante ?? '', style: const TextStyle(fontWeight: FontWeight.w600)),
+                            Text(s.nombreEstudiante ?? '',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600)),
                             const SizedBox(height: 2),
                             Text(
-                              s.hasSubmitted ? 'Entregado${s.fechaEntrega != null ? ' · ${s.fechaEntrega}' : ''}' : 'Sin entregar',
+                              s.hasSubmitted
+                                  ? 'Entregado${s.fechaEntrega != null ? ' · ${s.fechaEntrega}' : ''}'
+                                  : 'Sin entregar',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
                       ),
-                      if (s.nota != null) StatusPill(label: s.nota!, color: gradeColor),
+                      if (s.nota != null)
+                        StatusPill(label: s.nota!, color: gradeColor),
                       if (s.hasSubmitted) ...[
                         const SizedBox(width: Space.sm),
                         IconButton(
@@ -758,7 +955,8 @@ class _SubmissionsScreen extends ConsumerWidget {
                               context: context,
                               builder: (_) => _GradeDialog(submission: s),
                             );
-                            if (graded == true) ref.invalidate(_submissionsProvider(task.id));
+                            if (graded == true)
+                              ref.invalidate(_submissionsProvider(task.id));
                           },
                         ),
                       ],
@@ -783,8 +981,10 @@ class _GradeDialog extends ConsumerStatefulWidget {
 }
 
 class _GradeDialogState extends ConsumerState<_GradeDialog> {
-  late final _notaController = TextEditingController(text: widget.submission.nota ?? '');
-  late final _comentarioController = TextEditingController(text: widget.submission.comentarioCalificacion ?? '');
+  late final _notaController =
+      TextEditingController(text: widget.submission.nota ?? '');
+  late final _comentarioController = TextEditingController(
+      text: widget.submission.comentarioCalificacion ?? '');
   PlatformFile? _picked;
   bool _saving = false;
 
@@ -816,7 +1016,8 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
             controller: _comentarioController,
             minLines: 2,
             maxLines: 4,
-            decoration: const InputDecoration(labelText: 'Comentario (opcional)'),
+            decoration:
+                const InputDecoration(labelText: 'Comentario (opcional)'),
           ),
           const SizedBox(height: Space.md),
           Align(
@@ -835,13 +1036,19 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
         ],
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
+        TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar')),
         FilledButton(
           onPressed: _saving
               ? null
               : () async {
-                  final nota = double.tryParse(_notaController.text.replaceAll(',', '.'));
-                  if (nota == null || nota < 0 || nota > 10 || widget.submission.idEntrega == null) return;
+                  final nota = double.tryParse(
+                      _notaController.text.replaceAll(',', '.'));
+                  if (nota == null ||
+                      nota < 0 ||
+                      nota > 10 ||
+                      widget.submission.idEntrega == null) return;
                   setState(() => _saving = true);
                   try {
                     await ref.read(classroomRepositoryProvider).grade(
@@ -855,12 +1062,16 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
                   } catch (_) {
                     setState(() => _saving = false);
                     if (context.mounted) {
-                      await showErrorAlert(context, 'No se pudo guardar la calificación.');
+                      await showErrorAlert(
+                          context, 'No se pudo guardar la calificación.');
                     }
                   }
                 },
           child: _saving
-              ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2))
               : const Text('Guardar'),
         ),
       ],
@@ -870,12 +1081,17 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
 
 // ── Sesiones vivas ─────────────────────────────────────────────────────
 
-final _sessionsProvider = FutureProvider.autoDispose.family<List<ClassroomSession>, int>(
-  (ref, idModulo) => ref.read(classroomRepositoryProvider).fetchSessions(idModulo),
+final _sessionsProvider =
+    FutureProvider.autoDispose.family<List<ClassroomSession>, int>(
+  (ref, idModulo) =>
+      ref.read(classroomRepositoryProvider).fetchSessions(idModulo),
 );
 
 class _SessionsTab extends ConsumerWidget {
-  const _SessionsTab({required this.idModulo, required this.moduleName, required this.isProfesor});
+  const _SessionsTab(
+      {required this.idModulo,
+      required this.moduleName,
+      required this.isProfesor});
   final int idModulo;
   final String moduleName;
   final bool isProfesor;
@@ -889,12 +1105,15 @@ class _SessionsTab extends ConsumerWidget {
         onRetry: () => ref.invalidate(_sessionsProvider(idModulo)),
         data: (context, sessions) {
           if (sessions.isEmpty) {
-            return const EmptyState(icon: Icons.video_camera_front_outlined, title: 'Sin sesiones vivas');
+            return const EmptyState(
+                icon: Icons.video_camera_front_outlined,
+                title: 'Sin sesiones vivas');
           }
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(_sessionsProvider(idModulo)),
             child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+              padding: const EdgeInsets.fromLTRB(
+                  Space.xl, Space.lg, Space.xl, Space.xxxl),
               itemCount: sessions.length,
               itemBuilder: (context, i) => _SessionCard(session: sessions[i]),
             ),
@@ -908,9 +1127,11 @@ class _SessionsTab extends ConsumerWidget {
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (_) => _CreateSessionSheet(idModulo: idModulo, moduleName: moduleName),
+                  builder: (_) => _CreateSessionSheet(
+                      idModulo: idModulo, moduleName: moduleName),
                 );
-                if (created == true) ref.invalidate(_sessionsProvider(idModulo));
+                if (created == true)
+                  ref.invalidate(_sessionsProvider(idModulo));
               },
               child: const Icon(Icons.add_rounded),
             )
@@ -934,20 +1155,23 @@ class _SessionCard extends StatelessWidget {
           Text(session.titulo, style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: Space.sm),
           if (session.descripcion != null && session.descripcion!.isNotEmpty)
-            Text(session.descripcion!, style: Theme.of(context).textTheme.bodyMedium),
+            Text(session.descripcion!,
+                style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: Space.sm),
           Text(
             '${date != null ? DateFormat('d MMM yyyy').format(date) : session.fechaSesion} · ${session.horaSesion.substring(0, 5)}'
             '${session.plataforma != null && session.plataforma!.isNotEmpty ? ' · ${session.plataforma}' : ''}',
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          if (session.enlaceReunion != null && session.enlaceReunion!.isNotEmpty) ...[
+          if (session.enlaceReunion != null &&
+              session.enlaceReunion!.isNotEmpty) ...[
             const SizedBox(height: Space.md),
             OutlinedButton.icon(
               icon: const Icon(Icons.videocam_outlined),
               label: const Text('Unirse'),
               onPressed: () async {
-                await launchUrl(Uri.parse(session.enlaceReunion!), mode: LaunchMode.externalApplication);
+                await launchUrl(Uri.parse(session.enlaceReunion!),
+                    mode: LaunchMode.externalApplication);
               },
             ),
           ],
@@ -963,7 +1187,8 @@ class _CreateSessionSheet extends ConsumerStatefulWidget {
   final String moduleName;
 
   @override
-  ConsumerState<_CreateSessionSheet> createState() => _CreateSessionSheetState();
+  ConsumerState<_CreateSessionSheet> createState() =>
+      _CreateSessionSheetState();
 }
 
 class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
@@ -976,7 +1201,9 @@ class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
   bool _saving = false;
 
   Future<void> _create() async {
-    if (_tituloController.text.trim().isEmpty || _fecha == null || _hora == null) return;
+    if (_tituloController.text.trim().isEmpty ||
+        _fecha == null ||
+        _hora == null) return;
     setState(() => _saving = true);
     final fechaStr = DateFormat('yyyy-MM-dd').format(_fecha!);
     final horaStr =
@@ -1004,22 +1231,28 @@ class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
   Widget build(BuildContext context) {
     return _Sheet(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Nueva sesión viva', style: Theme.of(context).textTheme.titleMedium),
+            Text('Nueva sesión viva',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
-            Text(widget.moduleName, style: Theme.of(context).textTheme.bodySmall),
+            Text(widget.moduleName,
+                style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: Space.xl),
-            TextField(controller: _tituloController, decoration: const InputDecoration(labelText: 'Título')),
+            TextField(
+                controller: _tituloController,
+                decoration: const InputDecoration(labelText: 'Título')),
             const SizedBox(height: Space.md),
             TextField(
               controller: _descripcionController,
               minLines: 2,
               maxLines: 4,
-              decoration: const InputDecoration(labelText: 'Descripción (opcional)'),
+              decoration:
+                  const InputDecoration(labelText: 'Descripción (opcional)'),
             ),
             const SizedBox(height: Space.md),
             Row(
@@ -1035,17 +1268,21 @@ class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
                       );
                       if (picked != null) setState(() => _fecha = picked);
                     },
-                    child: Text(_fecha != null ? DateFormat('d MMM yyyy').format(_fecha!) : 'Fecha'),
+                    child: Text(_fecha != null
+                        ? DateFormat('d MMM yyyy').format(_fecha!)
+                        : 'Fecha'),
                   ),
                 ),
                 const SizedBox(width: Space.md),
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () async {
-                      final picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                      final picked = await showTimePicker(
+                          context: context, initialTime: TimeOfDay.now());
                       if (picked != null) setState(() => _hora = picked);
                     },
-                    child: Text(_hora != null ? _hora!.format(context) : 'Hora'),
+                    child:
+                        Text(_hora != null ? _hora!.format(context) : 'Hora'),
                   ),
                 ),
               ],
@@ -1053,18 +1290,23 @@ class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
             const SizedBox(height: Space.md),
             TextField(
               controller: _enlaceController,
-              decoration: const InputDecoration(labelText: 'Enlace de la reunión (opcional)'),
+              decoration: const InputDecoration(
+                  labelText: 'Enlace de la reunión (opcional)'),
             ),
             const SizedBox(height: Space.md),
             TextField(
               controller: _plataformaController,
-              decoration: const InputDecoration(labelText: 'Plataforma (opcional)'),
+              decoration:
+                  const InputDecoration(labelText: 'Plataforma (opcional)'),
             ),
             const SizedBox(height: Space.xl),
             FilledButton(
               onPressed: _saving ? null : _create,
               child: _saving
-                  ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
                   : const Text('Crear sesión'),
             ),
           ],

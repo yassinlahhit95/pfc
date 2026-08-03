@@ -33,10 +33,15 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
       context: context,
       builder: (c) => AlertDialog(
         title: const Text('Eliminar evento'),
-        content: const Text('¿Estás seguro de que quieres eliminar este evento?'),
+        content:
+            const Text('¿Estás seguro de que quieres eliminar este evento?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
-          TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar')),
+          TextButton(
+              onPressed: () => Navigator.pop(c, false),
+              child: const Text('Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.pop(c, true),
+              child: const Text('Eliminar')),
         ],
       ),
     );
@@ -46,7 +51,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
       await ref.read(eventsRepositoryProvider).deleteEvent(event.id);
       ref.invalidate(eventsProvider);
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -55,7 +62,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     final eventsAsync = ref.watch(eventsProvider);
     final session = ref.watch(sessionControllerProvider).valueOrNull;
     final role = session?.role;
-    final isBackOffice = role == UserRole.director || role == UserRole.secretaria;
+    final isBackOffice =
+        role == UserRole.director || role == UserRole.secretaria;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Eventos')),
@@ -84,20 +92,24 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
           final items = allItems.where((e) {
             final matchesSearch = _searchQuery.isEmpty ||
                 e.titulo.toLowerCase().contains(_searchQuery) ||
-                (e.descripcion != null && e.descripcion!.toLowerCase().contains(_searchQuery)) ||
-                (e.ubicacion != null && e.ubicacion!.toLowerCase().contains(_searchQuery));
+                (e.descripcion != null &&
+                    e.descripcion!.toLowerCase().contains(_searchQuery)) ||
+                (e.ubicacion != null &&
+                    e.ubicacion!.toLowerCase().contains(_searchQuery));
             return matchesSearch;
           }).toList();
 
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+                padding:
+                    const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
                 child: TextField(
                   decoration: const InputDecoration(
                     labelText: 'Buscar eventos...',
                     prefixIcon: Icon(Icons.search_rounded),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   onChanged: (val) {
                     _debounce(const Duration(milliseconds: 300), () {
@@ -111,13 +123,17 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
               const SizedBox(height: Space.sm),
               Expanded(
                 child: items.isEmpty
-                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                    ? const EmptyState(
+                        icon: Icons.filter_alt_off_outlined,
+                        title: 'Sin resultados para estos filtros')
                     : RefreshIndicator(
                         onRefresh: () async => ref.invalidate(eventsProvider),
                         child: ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                          padding: const EdgeInsets.fromLTRB(
+                              Space.xl, Space.sm, Space.xl, Space.xxxl),
                           itemCount: items.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: Space.md),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: Space.md),
                           itemBuilder: (context, i) => _EventCard(
                             item: items[i],
                             isEditable: isBackOffice,
@@ -125,7 +141,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => AddEventScreen(eventToEdit: items[i]),
+                                  builder: (_) =>
+                                      AddEventScreen(eventToEdit: items[i]),
                                 ),
                               );
                             },
@@ -168,11 +185,17 @@ class _EventCard extends StatelessWidget {
             children: [
               Text(
                 date != null ? DateFormat('d').format(date) : '–',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(height: 1),
+                style:
+                    Theme.of(context).textTheme.titleLarge?.copyWith(height: 1),
               ),
               Text(
-                date != null ? DateFormat('MMM').format(date).toUpperCase() : '',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                date != null
+                    ? DateFormat('MMM').format(date).toUpperCase()
+                    : '',
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: scheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -183,19 +206,24 @@ class _EventCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.titulo, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(item.titulo,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 if (item.descripcion?.isNotEmpty == true) ...[
                   const SizedBox(height: 4),
-                  Text(item.descripcion!, maxLines: 2, overflow: TextOverflow.ellipsis,
+                  Text(item.descripcion!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall),
                 ],
                 if (item.ubicacion?.isNotEmpty == true) ...[
                   const SizedBox(height: Space.sm),
                   Row(
                     children: [
-                      Icon(Icons.place_outlined, size: 14, color: scheme.onSurfaceVariant),
+                      Icon(Icons.place_outlined,
+                          size: 14, color: scheme.onSurfaceVariant),
                       const SizedBox(width: 4),
-                      Text(item.ubicacion!, style: Theme.of(context).textTheme.bodySmall),
+                      Text(item.ubicacion!,
+                          style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),
                 ],

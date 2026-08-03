@@ -9,7 +9,8 @@ import '../../../core/widgets/error_modal.dart';
 import '../data/messages_repository.dart';
 
 class ThreadDetailScreen extends ConsumerStatefulWidget {
-  const ThreadDetailScreen({super.key, required this.threadId, required this.asunto});
+  const ThreadDetailScreen(
+      {super.key, required this.threadId, required this.asunto});
 
   final int threadId;
   final String asunto;
@@ -57,7 +58,9 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
     if (text.isEmpty || _sending) return;
     setState(() => _sending = true);
     try {
-      await ref.read(messagesRepositoryProvider).reply(idParent: widget.threadId, contenido: text);
+      await ref
+          .read(messagesRepositoryProvider)
+          .reply(idParent: widget.threadId, contenido: text);
       _replyController.clear();
       await _load();
       ref.invalidate(messageThreadsProvider);
@@ -74,9 +77,10 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
-    final myEmisorRol = (role == UserRole.director || role == UserRole.secretaria)
-        ? 'admin'
-        : role?.name;
+    final myEmisorRol =
+        (role == UserRole.director || role == UserRole.secretaria)
+            ? 'admin'
+            : role?.name;
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.asunto)),
@@ -84,7 +88,8 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
         children: [
           Expanded(
             child: _loading
-                ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
+                ? const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2.4))
                 : (_messages == null || _messages!.isEmpty)
                     ? const Center(child: Text('No se pudo cargar el hilo.'))
                     : ListView.builder(
@@ -92,7 +97,8 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                         itemCount: _messages!.length,
                         itemBuilder: (context, i) {
                           final m = _messages![i];
-                          return _MessageCard(message: m, isMine: m.emisorRol == myEmisorRol);
+                          return _MessageCard(
+                              message: m, isMine: m.emisorRol == myEmisorRol);
                         },
                       ),
           ),
@@ -102,7 +108,8 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                 color: scheme.surface,
                 border: Border(top: BorderSide(color: scheme.outlineVariant)),
               ),
-              padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.md, Space.sm),
+              padding: const EdgeInsets.fromLTRB(
+                  Space.md, Space.sm, Space.md, Space.sm),
               child: Row(
                 children: [
                   Expanded(
@@ -112,7 +119,8 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                       maxLines: 4,
                       decoration: InputDecoration(
                         hintText: 'Responder',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: Space.lg, vertical: Space.md),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(Radii.pill),
                           borderSide: BorderSide.none,
@@ -129,7 +137,8 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
                             height: 18,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.onPrimary),
                             ),
                           )
                         : const Icon(Icons.arrow_upward_rounded),
@@ -166,9 +175,12 @@ class _MessageCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: Space.xs),
         padding: const EdgeInsets.all(Space.md),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
         decoration: BoxDecoration(
-          color: isMine ? scheme.primary.withValues(alpha: 0.1) : scheme.surfaceContainerHighest,
+          color: isMine
+              ? scheme.primary.withValues(alpha: 0.1)
+              : scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(Radii.md),
         ),
         child: Column(
@@ -176,7 +188,10 @@ class _MessageCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(_roleLabel(message.emisorRol),
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.primary)),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: scheme.primary)),
             const SizedBox(height: 4),
             Text(message.descripcion),
             const SizedBox(height: 4),

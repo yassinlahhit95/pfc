@@ -137,6 +137,23 @@ if ($method === 'POST') {
 
 if ($method === 'PUT') {
     $body = v1Body();
+    $action = $body['action'] ?? ($_GET['action'] ?? '');
+
+    if ($action === 'password') {
+        $idProfesor = (int)($body['idProfesor'] ?? 0);
+        $nuevaPassword = trim((string)($body['nuevaPassword'] ?? ''));
+        if (!$idProfesor || empty($nuevaPassword)) v1Error('idProfesor and nuevaPassword required.', 400, 'validation');
+        if (strlen($nuevaPassword) < 6) v1Error('Password must be at least 6 chars.', 400, 'validation');
+        
+        $prof = obtenerProfesorPorId($idProfesor);
+        if (!$prof) v1Error('Professor not found.', 404, 'not_found');
+        if (!actualizarPasswordProfesor($idProfesor, $nuevaPassword)) v1Error('Could not update password.', 500, 'error');
+        
+        if ($type === 'director') registrarAccion('cambiar_password', 'profesor', $idProfesor, 'Por director');
+        else registrarAccionSecretaria('cambiar_password', 'profesor', $idProfesor, 'Por secretaria');
+        v1Ok(['success' => true]);
+    }
+
     $idProfesor = (int)($body['idProfesor'] ?? 0);
     if (!$idProfesor) v1Error('idProfesor is required.', 400, 'validation');
 

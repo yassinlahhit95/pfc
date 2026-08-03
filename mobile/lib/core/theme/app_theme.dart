@@ -122,7 +122,9 @@ class AppTheme {
     final isDark = scheme.brightness == Brightness.dark;
 
     final base = GoogleFonts.interTextTheme(
-      isDark ? Typography.material2021().white : Typography.material2021().black,
+      isDark
+          ? Typography.material2021().white
+          : Typography.material2021().black,
     );
 
     // A tighter, more considered scale than Material's defaults — smaller
@@ -152,10 +154,14 @@ class AppTheme {
         letterSpacing: -0.1,
         color: scheme.onSurface,
       ),
-      bodyLarge: base.bodyLarge?.copyWith(height: 1.45, color: scheme.onSurface),
-      bodyMedium: base.bodyMedium?.copyWith(height: 1.4, color: scheme.onSurface),
-      bodySmall: base.bodySmall?.copyWith(height: 1.35, color: scheme.onSurfaceVariant),
-      labelLarge: base.labelLarge?.copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.1),
+      bodyLarge:
+          base.bodyLarge?.copyWith(height: 1.45, color: scheme.onSurface),
+      bodyMedium:
+          base.bodyMedium?.copyWith(height: 1.4, color: scheme.onSurface),
+      bodySmall: base.bodySmall
+          ?.copyWith(height: 1.35, color: scheme.onSurfaceVariant),
+      labelLarge: base.labelLarge
+          ?.copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.1),
       labelSmall: base.labelSmall?.copyWith(
         fontWeight: FontWeight.w600,
         letterSpacing: 0.4,
@@ -211,18 +217,22 @@ class AppTheme {
           );
         }),
       ),
-      dividerTheme: DividerThemeData(color: scheme.outlineVariant, thickness: 1, space: 1),
+      dividerTheme: DividerThemeData(
+          color: scheme.outlineVariant, thickness: 1, space: 1),
       chipTheme: ChipThemeData(
         backgroundColor: scheme.surfaceContainerHighest,
         side: BorderSide.none,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.pill)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Radii.pill)),
         labelStyle: textTheme.labelLarge?.copyWith(color: scheme.onSurface),
         padding: const EdgeInsets.symmetric(horizontal: 4),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? scheme.surfaceContainerHighest : AppColors.surface2Light,
-        contentPadding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.lg),
+        fillColor:
+            isDark ? scheme.surfaceContainerHighest : AppColors.surface2Light,
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: Space.lg, vertical: Space.lg),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Radii.md),
           borderSide: BorderSide(color: scheme.outlineVariant),
@@ -248,7 +258,8 @@ class AppTheme {
           foregroundColor: scheme.onPrimary,
           textStyle: textTheme.labelLarge?.copyWith(fontSize: 15),
           padding: const EdgeInsets.symmetric(vertical: Space.lg),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Radii.md)),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -257,7 +268,8 @@ class AppTheme {
           side: BorderSide(color: scheme.outlineVariant),
           textStyle: textTheme.labelLarge?.copyWith(fontSize: 15),
           padding: const EdgeInsets.symmetric(vertical: Space.lg),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Radii.md)),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -281,13 +293,16 @@ class AppTheme {
       listTileTheme: ListTileThemeData(
         iconColor: scheme.onSurfaceVariant,
         textColor: scheme.onSurface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Radii.md)),
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: isDark ? AppColors.surface3Dark : AppColors.textLight,
-        contentTextStyle: TextStyle(color: isDark ? scheme.onSurface : Colors.white),
+        contentTextStyle:
+            TextStyle(color: isDark ? scheme.onSurface : Colors.white),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Radii.md)),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(color: scheme.primary),
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
@@ -312,11 +327,13 @@ class _FadeThroughTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+    final curved =
+        CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
     return FadeTransition(
       opacity: curved,
       child: SlideTransition(
-        position: Tween<Offset>(begin: const Offset(0, 0.02), end: Offset.zero).animate(curved),
+        position: Tween<Offset>(begin: const Offset(0, 0.02), end: Offset.zero)
+            .animate(curved),
         child: child,
       ),
     );

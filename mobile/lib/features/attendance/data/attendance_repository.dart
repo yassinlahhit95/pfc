@@ -5,6 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_client.dart';
 
+int _parseInt(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  if (value is String) return int.tryParse(value) ?? 0;
+  return 0;
+}
+
 class Justification {
   const Justification({
     required this.id,
@@ -15,7 +22,7 @@ class Justification {
   });
 
   factory Justification.fromJson(Map<String, dynamic> json) => Justification(
-        id: json['idJustificacion'] as int,
+        id: _parseInt(json['idJustificacion']),
         motivo: json['motivo'] as String? ?? '',
         estado: json['estado'] as String? ?? 'pendiente',
         motivoRechazo: json['motivoRechazo'] as String?,
@@ -44,19 +51,21 @@ class AttendanceRecord {
     required this.justificacion,
   });
 
-  factory AttendanceRecord.fromJson(Map<String, dynamic> json) => AttendanceRecord(
-        id: json['idAsistencia'] as int,
+  factory AttendanceRecord.fromJson(Map<String, dynamic> json) =>
+      AttendanceRecord(
+        id: _parseInt(json['idAsistencia']),
         fecha: json['fecha'] as String? ?? '',
         hora: json['hora'] as String?,
         estado: json['estado'] as String? ?? '',
         observacion: json['observacion'] as String?,
-        idEstudiante: json['idEstudiante'] as int? ?? 0,
+        idEstudiante: _parseInt(json['idEstudiante']),
         nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
-        idModulo: json['idModulo'] as int? ?? 0,
+        idModulo: _parseInt(json['idModulo']),
         nombreModulo: json['nombreModulo'] as String? ?? '',
         nombreProfesor: json['nombreProfesor'] as String? ?? '',
         justificacion: json['justificacion'] != null
-            ? Justification.fromJson((json['justificacion'] as Map).cast<String, dynamic>())
+            ? Justification.fromJson(
+                (json['justificacion'] as Map).cast<String, dynamic>())
             : null,
       );
 
@@ -79,8 +88,9 @@ class AttendanceRecord {
 
 class RosterStudent {
   const RosterStudent({required this.id, required this.nombre});
-  factory RosterStudent.fromJson(Map<String, dynamic> json) =>
-      RosterStudent(id: json['idEstudiante'] as int, nombre: json['nombreEstudiante'] as String? ?? '');
+  factory RosterStudent.fromJson(Map<String, dynamic> json) => RosterStudent(
+      id: _parseInt(json['idEstudiante']),
+      nombre: json['nombreEstudiante'] as String? ?? '');
   final int id;
   final String nombre;
 }
@@ -96,9 +106,10 @@ class PendingJustification {
     required this.archivoUrl,
   });
 
-  factory PendingJustification.fromJson(Map<String, dynamic> json) => PendingJustification(
-        idJustificacion: json['idJustificacion'] as int,
-        idAsistencia: json['idAsistencia'] as int,
+  factory PendingJustification.fromJson(Map<String, dynamic> json) =>
+      PendingJustification(
+        idJustificacion: _parseInt(json['idJustificacion']),
+        idAsistencia: _parseInt(json['idAsistencia']),
         motivo: json['motivo'] as String? ?? '',
         fecha: json['fecha'] as String? ?? '',
         nombreModulo: json['nombreModulo'] as String? ?? '',
@@ -121,10 +132,14 @@ class AttendanceRepository {
 
   Future<List<AttendanceRecord>> fetchMine() async {
     final data = await _client.get('/attendance.php');
-    return (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList();
+    return (data['attendance'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(AttendanceRecord.fromJson)
+        .toList();
   }
 
-  Future<({List<AttendanceRecord> attendance, List<RosterStudent> roster})> fetchForModule(
+  Future<({List<AttendanceRecord> attendance, List<RosterStudent> roster})>
+      fetchForModule(
     int idModulo, {
     String? fecha,
   }) async {
@@ -133,19 +148,30 @@ class AttendanceRepository {
       if (fecha != null) 'fecha': fecha,
     });
     return (
-      attendance: (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList(),
-      roster: (data['roster'] as List).cast<Map<String, dynamic>>().map(RosterStudent.fromJson).toList(),
+      attendance: (data['attendance'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(AttendanceRecord.fromJson)
+          .toList(),
+      roster: (data['roster'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(RosterStudent.fromJson)
+          .toList(),
     );
   }
 
   /// secretaria/director: a specific student's attendance (center-wide, no
   /// scope restriction) — backs StaffJustifyScreen's student-search flow.
   Future<List<AttendanceRecord>> fetchForStudent(int idEstudiante) async {
-    final data = await _client.get('/attendance.php', query: {'idEstudiante': idEstudiante});
-    return (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList();
+    final data = await _client
+        .get('/attendance.php', query: {'idEstudiante': idEstudiante});
+    return (data['attendance'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(AttendanceRecord.fromJson)
+        .toList();
   }
 
-  Future<({List<AttendanceRecord> attendance, int total})> fetchCenterAttendance({
+  Future<({List<AttendanceRecord> attendance, int total})>
+      fetchCenterAttendance({
     int? limit,
     int? offset,
     int? nivel,
@@ -167,7 +193,10 @@ class AttendanceRepository {
     };
     final data = await _client.get('/attendance.php', query: query);
     return (
-      attendance: (data['attendance'] as List).cast<Map<String, dynamic>>().map(AttendanceRecord.fromJson).toList(),
+      attendance: (data['attendance'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(AttendanceRecord.fromJson)
+          .toList(),
       total: data['total'] as int? ?? 0,
     );
   }
@@ -188,21 +217,33 @@ class AttendanceRepository {
     });
   }
 
-  Future<void> justify({required int idAsistencia, required String motivo, File? archivo}) {
-    return _client.post('/attendance-justify.php', data: FormData.fromMap({
-      'idAsistencia': idAsistencia,
-      'motivo': motivo,
-      if (archivo != null) 'archivo': MultipartFile.fromFileSync(archivo.path),
-    }));
+  Future<void> justify(
+      {required int idAsistencia, required String motivo, File? archivo}) {
+    return _client.post('/attendance.php',
+        data: FormData.fromMap({
+          'action': 'justify',
+          'idAsistencia': idAsistencia,
+          'motivo': motivo,
+          if (archivo != null)
+            'archivo': MultipartFile.fromFileSync(archivo.path),
+        }));
   }
 
   Future<List<PendingJustification>> fetchPending() async {
-    final data = await _client.get('/attendance-resolve.php');
-    return (data['pending'] as List).cast<Map<String, dynamic>>().map(PendingJustification.fromJson).toList();
+    final data =
+        await _client.get('/attendance.php', query: {'action': 'resolve'});
+    return (data['pending'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(PendingJustification.fromJson)
+        .toList();
   }
 
-  Future<void> resolve({required int idJustificacion, required bool aprobar, String? motivoRechazo}) {
-    return _client.post('/attendance-resolve.php', data: {
+  Future<void> resolve(
+      {required int idJustificacion,
+      required bool aprobar,
+      String? motivoRechazo}) {
+    return _client.post('/attendance.php', data: {
+      'action': 'resolve',
       'idJustificacion': idJustificacion,
       'aprobar': aprobar,
       if (motivoRechazo != null) 'motivoRechazo': motivoRechazo,
@@ -214,10 +255,12 @@ final attendanceRepositoryProvider = Provider<AttendanceRepository>(
   (ref) => AttendanceRepository(ref.read(apiClientProvider)),
 );
 
-final attendanceMineProvider = FutureProvider.autoDispose<List<AttendanceRecord>>(
+final attendanceMineProvider =
+    FutureProvider.autoDispose<List<AttendanceRecord>>(
   (ref) => ref.read(attendanceRepositoryProvider).fetchMine(),
 );
 
-final pendingJustificationsProvider = FutureProvider.autoDispose<List<PendingJustification>>(
+final pendingJustificationsProvider =
+    FutureProvider.autoDispose<List<PendingJustification>>(
   (ref) => ref.read(attendanceRepositoryProvider).fetchPending(),
 );

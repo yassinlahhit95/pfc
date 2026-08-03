@@ -26,7 +26,7 @@ function entrega_salir($ok, $msg, $volver, $isAjax) {
 // ══════════════════════════════════════════════════════════════════════
 if (!isset($_POST['enviarEntrega'])) { header("Location: ../../../vistas/estudiantes/aula/recursos.php"); exit; }
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     entrega_salir(false, "Solicitud inválida. Por favor, inténtalo de nuevo.", "../../../vistas/estudiantes/aula/recursos.php", $isAjax);
 }
 

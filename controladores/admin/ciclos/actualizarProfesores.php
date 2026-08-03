@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/log.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: ../../../vistas/admin/ciclos/verCiclos.php"); exit;

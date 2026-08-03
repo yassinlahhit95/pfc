@@ -9,7 +9,10 @@ class TareasRepository {
 
   Future<List<ClassroomTask>> fetchAllTasks() async {
     final data = await _client.get('/tareas.php', query: {'action': 'list'});
-    return (data['tasks'] as List).cast<Map<String, dynamic>>().map(ClassroomTask.fromJson).toList();
+    return (data['tasks'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomTask.fromJson)
+        .toList();
   }
 }
 

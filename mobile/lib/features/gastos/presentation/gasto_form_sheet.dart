@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/error_modal.dart';
-import '../../../core/widgets/photo_picker_sheet.dart';
 import '../data/gastos_repository.dart';
 
 Future<bool> showGastoFormSheet(
@@ -17,7 +16,8 @@ Future<bool> showGastoFormSheet(
 }) async {
   final conceptoController = TextEditingController();
   final importeController = TextEditingController();
-  final fechaController = TextEditingController(text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+  final fechaController = TextEditingController(
+      text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
   int? selectedCategoria;
   File? archivo;
 
@@ -27,13 +27,16 @@ Future<bool> showGastoFormSheet(
     backgroundColor: Colors.transparent,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setSheetState) => Container(
-        padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
+        padding:
+            const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
         decoration: BoxDecoration(
           color: Theme.of(ctx).colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
         ),
         child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,12 +46,14 @@ Future<bool> showGastoFormSheet(
                 height: 4,
                 margin: const EdgeInsets.only(bottom: Space.lg),
                 decoration: BoxDecoration(
-                    color: Theme.of(ctx).colorScheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+                    color: Theme.of(ctx).colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(Radii.pill)),
               ),
-              Text('Registrar Gasto', style: Theme.of(ctx).textTheme.titleMedium),
+              Text('Registrar Gasto',
+                  style: Theme.of(ctx).textTheme.titleMedium),
               const SizedBox(height: Space.xl),
               DropdownButtonFormField<int>(
-                value: selectedCategoria,
+                initialValue: selectedCategoria,
                 decoration: const InputDecoration(labelText: 'Categoría'),
                 items: categorias.map((cat) {
                   return DropdownMenuItem(
@@ -56,24 +61,32 @@ Future<bool> showGastoFormSheet(
                     child: Text(cat.nombre),
                   );
                 }).toList(),
-                onChanged: (val) => setSheetState(() => selectedCategoria = val),
+                onChanged: (val) =>
+                    setSheetState(() => selectedCategoria = val),
               ),
               const SizedBox(height: Space.md),
               TextField(
                 controller: conceptoController,
-                decoration: const InputDecoration(labelText: 'Concepto', prefixIcon: Icon(Icons.description_outlined)),
+                decoration: const InputDecoration(
+                    labelText: 'Concepto',
+                    prefixIcon: Icon(Icons.description_outlined)),
               ),
               const SizedBox(height: Space.md),
               TextField(
                 controller: importeController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Importe (€)', prefixIcon: Icon(Icons.euro_rounded)),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                    labelText: 'Importe (€)',
+                    prefixIcon: Icon(Icons.euro_rounded)),
               ),
               const SizedBox(height: Space.md),
               TextField(
                 controller: fechaController,
                 readOnly: true,
-                decoration: const InputDecoration(labelText: 'Fecha', prefixIcon: Icon(Icons.calendar_today_outlined)),
+                decoration: const InputDecoration(
+                    labelText: 'Fecha',
+                    prefixIcon: Icon(Icons.calendar_today_outlined)),
                 onTap: () async {
                   final date = await showDatePicker(
                     context: ctx,
@@ -82,7 +95,8 @@ Future<bool> showGastoFormSheet(
                     lastDate: DateTime(2100),
                   );
                   if (date != null) {
-                    setSheetState(() => fechaController.text = DateFormat('yyyy-MM-dd').format(date));
+                    setSheetState(() => fechaController.text =
+                        DateFormat('yyyy-MM-dd').format(date));
                   }
                 },
               ),
@@ -103,17 +117,25 @@ Future<bool> showGastoFormSheet(
                   label: const Text('Adjuntar foto del ticket'),
                   onPressed: () async {
                     final picker = ImagePicker();
-                    final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70, maxWidth: 800);
-                    if (picked != null) setSheetState(() => archivo = File(picked.path));
+                    final picked = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        imageQuality: 70,
+                        maxWidth: 800);
+                    if (picked != null)
+                      setSheetState(() => archivo = File(picked.path));
                   },
                 ),
               const SizedBox(height: Space.xl),
               FilledButton(
                 onPressed: () async {
                   final concepto = conceptoController.text.trim();
-                  final importe = double.tryParse(importeController.text.trim()) ?? 0;
-                  if (selectedCategoria == null || concepto.isEmpty || importe <= 0) {
-                    await showErrorAlert(ctx, 'Concepto, importe y categoría son obligatorios.');
+                  final importe =
+                      double.tryParse(importeController.text.trim()) ?? 0;
+                  if (selectedCategoria == null ||
+                      concepto.isEmpty ||
+                      importe <= 0) {
+                    await showErrorAlert(
+                        ctx, 'Concepto, importe y categoría son obligatorios.');
                     return;
                   }
                   try {

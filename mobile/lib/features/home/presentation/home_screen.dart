@@ -54,11 +54,17 @@ class HomeScreen extends ConsumerWidget {
 
   double _calculateAverageGrade(Map<String, dynamic>? data) {
     if (data == null) return 0.0;
-    final modulos = (data['modulos'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final modulos =
+        (data['modulos'] as List?)?.cast<Map<String, dynamic>>() ?? [];
     double sum = 0.0;
     int count = 0;
     for (final m in modulos) {
-      for (final key in ['nota_1final', 'nota_2final', 'nota_1ev', 'nota_2ev']) {
+      for (final key in [
+        'nota_1final',
+        'nota_2final',
+        'nota_1ev',
+        'nota_2ev'
+      ]) {
         final val = double.tryParse(m[key]?.toString() ?? '');
         if (val != null) {
           sum += val;
@@ -73,62 +79,126 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // ponytail: watch role once, derive everything else from it to reduce rebuild surface
-    final role = ref.watch(sessionControllerProvider.select((s) => s.valueOrNull?.role));
+    final role =
+        ref.watch(sessionControllerProvider.select((s) => s.valueOrNull?.role));
     final profileAsync = ref.watch(profileProvider);
 
     final t = ref.watch(translationsProvider);
 
-    final personal = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
-    final hasClassroom = role != UserRole.tutor && role != UserRole.director && role != UserRole.secretaria;
-    final hasAttendance = role == UserRole.estudiante || role == UserRole.profesor || role == UserRole.tutor;
+    final personal = role == UserRole.estudiante ||
+        role == UserRole.profesor ||
+        role == UserRole.tutor;
+    final hasClassroom = role != UserRole.tutor &&
+        role != UserRole.director &&
+        role != UserRole.secretaria;
+    final hasAttendance = role == UserRole.estudiante ||
+        role == UserRole.profesor ||
+        role == UserRole.tutor;
     final isTutorTeacher = role == UserRole.profesor &&
         (profileAsync.valueOrNull?.data['esTutor'] == 1 ||
-         profileAsync.valueOrNull?.data['esTutor'] == '1' ||
-         profileAsync.valueOrNull?.data['esTutor'] == true);
-    final hasStaffJustify = isTutorTeacher || role == UserRole.director || role == UserRole.secretaria;
-    final isBackOffice = role == UserRole.director || role == UserRole.secretaria;
+            profileAsync.valueOrNull?.data['esTutor'] == '1' ||
+            profileAsync.valueOrNull?.data['esTutor'] == true);
+    final hasStaffJustify = isTutorTeacher ||
+        role == UserRole.director ||
+        role == UserRole.secretaria;
+    final isBackOffice =
+        role == UserRole.director || role == UserRole.secretaria;
     final academico = <_NavItem>[
-      if (personal) _NavItem(Icons.calendar_today_rounded, t['nav_horario']!, t['nav_horario_sub']!, const ScheduleScreen()),
-      if (personal) _NavItem(Icons.school_outlined, t['nav_notas']!, t['nav_notas_sub']!, const GradesScreen()),
-      if (hasClassroom) _NavItem(Icons.auto_stories_outlined, t['nav_aula']!, t['nav_aula_sub']!, const ModulesScreen()),
-      if (hasClassroom) _NavItem(Icons.assignment_outlined, t['nav_tareas']!, t['nav_tareas_sub']!, const TareasScreen()),
-      if (hasClassroom) _NavItem(Icons.emoji_events_outlined, t['nav_retos']!, t['nav_retos_sub']!, const RetosScreen()),
-      if (role == UserRole.estudiante) _NavItem(Icons.star_rounded, t['nav_favoritos']!, t['nav_favoritos_sub']!, const FavoritesScreen()),
-      if (hasAttendance) _NavItem(Icons.fact_check_outlined, t['nav_asistencias']!, t['nav_asistencias_sub']!, AttendanceScreen()),
+      if (personal)
+        _NavItem(Icons.calendar_today_rounded, t['nav_horario']!,
+            t['nav_horario_sub']!, const ScheduleScreen()),
+      if (personal)
+        _NavItem(Icons.school_outlined, t['nav_notas']!, t['nav_notas_sub']!,
+            const GradesScreen()),
+      if (hasClassroom)
+        _NavItem(Icons.auto_stories_outlined, t['nav_aula']!,
+            t['nav_aula_sub']!, const ModulesScreen()),
+      if (hasClassroom)
+        _NavItem(Icons.assignment_outlined, t['nav_tareas']!,
+            t['nav_tareas_sub']!, const TareasScreen()),
+      if (hasClassroom)
+        _NavItem(Icons.emoji_events_outlined, t['nav_retos']!,
+            t['nav_retos_sub']!, const RetosScreen()),
+      if (role == UserRole.estudiante)
+        _NavItem(Icons.star_rounded, t['nav_favoritos']!,
+            t['nav_favoritos_sub']!, const FavoritesScreen()),
+      if (hasAttendance)
+        _NavItem(Icons.fact_check_outlined, t['nav_asistencias']!,
+            t['nav_asistencias_sub']!, AttendanceScreen()),
     ];
-    final isEstudianteOrProfesor = role == UserRole.estudiante || role == UserRole.profesor;
+    final isEstudianteOrProfesor =
+        role == UserRole.estudiante || role == UserRole.profesor;
     final centro = <_NavItem>[
-      _NavItem(Icons.campaign_outlined, t['nav_anuncios']!, t['nav_anuncios_sub']!, AnnouncementsScreen()),
+      _NavItem(Icons.campaign_outlined, t['nav_anuncios']!,
+          t['nav_anuncios_sub']!, AnnouncementsScreen()),
       // Mensajería solo para director/secretaría/tutor (NO para estudiante/profesor)
-      if (!isEstudianteOrProfesor) _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!, t['nav_mensajeria_sub']!, MessagesScreen()),
-      _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!, EventsScreen()),
+      if (!isEstudianteOrProfesor)
+        _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!,
+            t['nav_mensajeria_sub']!, MessagesScreen()),
+      _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!,
+          EventsScreen()),
     ];
     final gestion = <_NavItem>[
-      if (isBackOffice) _NavItem(Icons.receipt_long_outlined, t['nav_pagos']!, t['nav_pagos_sub']!, const PaymentsScreen()),
-      if (isBackOffice) _NavItem(Icons.shopping_bag_outlined, t['nav_gastos']!, t['nav_gastos_sub']!, const GastosScreen()),
-
-      if (isBackOffice) _NavItem(Icons.people_outlined, t['nav_alumnos']!, t['nav_alumnos_sub']!, const StudentsScreen()),
-      if (isBackOffice) _NavItem(Icons.fact_check_outlined, t['nav_asistencias_centro']!, t['nav_asistencias_centro_sub']!, const CenterAttendanceScreen()),
-      if (isBackOffice) _NavItem(Icons.school_outlined, t['nav_profesores']!, t['nav_profesores_sub']!, const TeachersScreen()),
-      if (role == UserRole.director) _NavItem(Icons.admin_panel_settings_outlined, t['nav_secretarias'] ?? 'Secretarías', t['nav_secretarias_sub'] ?? 'Gestión de personal', const SecretariasScreen()),
-      if (role == UserRole.director) _NavItem(Icons.history_rounded, t['nav_historial'] ?? 'Historial', t['nav_historial_sub'] ?? 'Ver actividad del centro', const HistoryScreen()),
-      if (isBackOffice) _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!, t['nav_inventario_sub']!, const InventoryScreen()),
+      if (isBackOffice)
+        _NavItem(Icons.receipt_long_outlined, t['nav_pagos']!,
+            t['nav_pagos_sub']!, const PaymentsScreen()),
+      if (isBackOffice)
+        _NavItem(Icons.shopping_bag_outlined, t['nav_gastos']!,
+            t['nav_gastos_sub']!, const GastosScreen()),
+      if (isBackOffice)
+        _NavItem(Icons.people_outlined, t['nav_alumnos']!,
+            t['nav_alumnos_sub']!, const StudentsScreen()),
+      if (isBackOffice)
+        _NavItem(Icons.fact_check_outlined, t['nav_asistencias_centro']!,
+            t['nav_asistencias_centro_sub']!, const CenterAttendanceScreen()),
+      if (isBackOffice)
+        _NavItem(Icons.school_outlined, t['nav_profesores']!,
+            t['nav_profesores_sub']!, const TeachersScreen()),
+      if (role == UserRole.director)
+        _NavItem(
+            Icons.admin_panel_settings_outlined,
+            t['nav_secretarias'] ?? 'Secretarías',
+            t['nav_secretarias_sub'] ?? 'Gestión de personal',
+            const SecretariasScreen()),
+      if (role == UserRole.director)
+        _NavItem(
+            Icons.history_rounded,
+            t['nav_historial'] ?? 'Historial',
+            t['nav_historial_sub'] ?? 'Ver actividad del centro',
+            const HistoryScreen()),
+      if (isBackOffice)
+        _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!,
+            t['nav_inventario_sub']!, const InventoryScreen()),
     ];
 
     final displayName = profileAsync.valueOrNull?.displayName ?? 'AulaPro';
     // Watch metrics only when needed per role, using .select() to avoid cascading rebuilds
-    final attendanceMine = role == UserRole.estudiante ? ref.watch(attendanceMineProvider.select((a) => a.valueOrNull ?? [])) : [];
-    final studentPendingTasks = role == UserRole.estudiante ? ref.watch(studentPendingTasksCountProvider.select((t) => t.valueOrNull ?? 0)) : 0;
-    final studentGrades = role == UserRole.estudiante ? ref.watch(gradesProvider.select((g) => g.valueOrNull)) : null;
+    final attendanceMine = role == UserRole.estudiante
+        ? ref.watch(attendanceMineProvider.select((a) => a.valueOrNull ?? []))
+        : [];
+    final studentPendingTasks = role == UserRole.estudiante
+        ? ref.watch(
+            studentPendingTasksCountProvider.select((t) => t.valueOrNull ?? 0))
+        : 0;
+    final studentGrades = role == UserRole.estudiante
+        ? ref.watch(gradesProvider.select((g) => g.valueOrNull))
+        : null;
 
     // Watch professor metrics
-    final scheduleSlots = (role == UserRole.profesor || role == UserRole.estudiante) ? ref.watch(scheduleProvider.select((s) => s.valueOrNull ?? [])) : [];
-    final pendingGradesCount = role == UserRole.profesor ? ref.watch(pendingGradesCountProvider.select((p) => p.valueOrNull ?? 0)) : 0;
-    
+    final scheduleSlots =
+        (role == UserRole.profesor || role == UserRole.estudiante)
+            ? ref.watch(scheduleProvider.select((s) => s.valueOrNull ?? []))
+            : [];
+    final pendingGradesCount = role == UserRole.profesor
+        ? ref
+            .watch(pendingGradesCountProvider.select((p) => p.valueOrNull ?? 0))
+        : 0;
+
     // Watch admin metrics
-    final dashboardStats = (role == UserRole.director || role == UserRole.secretaria) 
-        ? ref.watch(dashboardStatsProvider).valueOrNull 
-        : null;
+    final dashboardStats =
+        (role == UserRole.director || role == UserRole.secretaria)
+            ? ref.watch(dashboardStatsProvider).valueOrNull
+            : null;
 
     // Build role-specific metric cards
     final metrics = <Widget>[];
@@ -142,27 +212,41 @@ class HomeScreen extends ConsumerWidget {
           label: t['metric_media']!,
           icon: Icons.insights_rounded,
           color: const Color(0xFF2563EB),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const GradesScreen())),
         ),
         _MetricCard(
           value: studentPendingTasks.toString(),
           label: t['metric_tareas']!,
           icon: Icons.assignment_turned_in_rounded,
           color: const Color(0xFFD97706),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TareasScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const TareasScreen())),
         ),
         _MetricCard(
           value: faltas.toString(),
           label: t['metric_faltas']!,
           icon: Icons.warning_amber_rounded,
           color: const Color(0xFFE11D48),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AttendanceScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AttendanceScreen())),
         ),
       ]);
     } else if (role == UserRole.profesor) {
-      final todayName = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][DateTime.now().weekday - 1];
-      final clasesHoyCount = scheduleSlots.where((s) => s.diaSemana == todayName).length;
-      final tutorCicloAbreviatura = profileAsync.valueOrNull?.ciclo?['abreviaturaCiclo'] as String? ?? 'Ninguna';
+      final todayName = [
+        'Lunes',
+        'Martes',
+        'Miércoles',
+        'Jueves',
+        'Viernes',
+        'Sábado',
+        'Domingo'
+      ][DateTime.now().weekday - 1];
+      final clasesHoyCount =
+          scheduleSlots.where((s) => s.diaSemana == todayName).length;
+      final tutorCicloAbreviatura =
+          profileAsync.valueOrNull?.ciclo?['abreviaturaCiclo'] as String? ??
+              'Ninguna';
 
       metrics.addAll([
         _MetricCard(
@@ -170,14 +254,16 @@ class HomeScreen extends ConsumerWidget {
           label: 'Clases Hoy',
           icon: Icons.schedule_rounded,
           color: const Color(0xFF2563EB),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ScheduleScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const ScheduleScreen())),
         ),
         _MetricCard(
           value: pendingGradesCount.toString(),
           label: 'Por Corregir',
           icon: Icons.rate_review_rounded,
           color: const Color(0xFFE11D48),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ModulesScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const ModulesScreen())),
         ),
         _MetricCard(
           value: tutorCicloAbreviatura,
@@ -185,65 +271,82 @@ class HomeScreen extends ConsumerWidget {
           icon: Icons.room_rounded,
           color: const Color(0xFF0D9488),
           onTap: isTutorTeacher
-              ? () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StaffJustifyScreen()))
+              ? () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const StaffJustifyScreen()))
               : null,
         ),
       ]);
     } else if (role == UserRole.director || role == UserRole.secretaria) {
       metrics.addAll([
         _MetricCard(
-          value: dashboardStats != null ? dashboardStats.totalEstudiantes.toString() : '...',
+          value: dashboardStats != null
+              ? dashboardStats.totalEstudiantes.toString()
+              : '...',
           label: t['metric_estudiantes']!,
           icon: Icons.people_rounded,
           color: const Color(0xFF2563EB),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentsScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const StudentsScreen())),
         ),
         _MetricCard(
-          value: dashboardStats != null ? dashboardStats.totalProfesores.toString() : '...',
+          value: dashboardStats != null
+              ? dashboardStats.totalProfesores.toString()
+              : '...',
           label: t['metric_profesores']!,
           icon: Icons.school_rounded,
           color: const Color(0xFFD97706),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TeachersScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const TeachersScreen())),
         ),
         _MetricCard(
-          value: dashboardStats != null ? '${dashboardStats.gastosMes.toStringAsFixed(0)} €' : '...',
+          value: dashboardStats != null
+              ? '${dashboardStats.gastosMes.toStringAsFixed(0)} €'
+              : '...',
           label: t['metric_gastos']!,
           icon: Icons.receipt_long_rounded,
           color: const Color(0xFFE11D48),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GastosScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const GastosScreen())),
         ),
         _MetricCard(
-          value: dashboardStats != null ? '${dashboardStats.pagosMes.toStringAsFixed(0)} €' : '...',
+          value: dashboardStats != null
+              ? '${dashboardStats.pagosMes.toStringAsFixed(0)} €'
+              : '...',
           label: t['metric_pagos']!,
           icon: Icons.account_balance_wallet_rounded,
           color: const Color(0xFF0D9488),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const PaymentsScreen())),
         ),
       ]);
     } else if (role == UserRole.tutor) {
       final hijosCount = profileAsync.valueOrNull?.data['hijos_count'] ?? 0;
-      
+
       metrics.addAll([
         _MetricCard(
           value: hijosCount.toString(),
           label: t['metric_hijo']!,
           icon: Icons.family_restroom_rounded,
           color: const Color(0xFF4F46E5),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GradesScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const GradesScreen())),
         ),
         _MetricCard(
           value: t['metric_al_dia']!,
           label: t['metric_recibos']!,
           icon: Icons.receipt_rounded,
           color: const Color(0xFF059669),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyPaymentsScreen())),
+          onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const MyPaymentsScreen())),
         ),
         _MetricCard(
-          value: '0', // Faltas pending implementation of a combined tutor attendance metric
+          value:
+              '0', // Faltas pending implementation of a combined tutor attendance metric
           label: t['metric_faltas']!,
           icon: Icons.notification_important_rounded,
           color: const Color(0xFFE11D48),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AttendanceScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AttendanceScreen())),
         ),
       ]);
     }
@@ -253,7 +356,9 @@ class HomeScreen extends ConsumerWidget {
       body: Stack(
         children: [
           Positioned(
-            top: 0, left: 0, right: 0,
+            top: 0,
+            left: 0,
+            right: 0,
             height: 350,
             child: Container(
               decoration: const BoxDecoration(
@@ -267,103 +372,135 @@ class HomeScreen extends ConsumerWidget {
           ),
           SafeArea(
             child: RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(profileProvider);
-            ref.invalidate(attendanceMineProvider);
-            ref.invalidate(studentPendingTasksCountProvider);
-            ref.invalidate(gradesProvider);
-            ref.invalidate(scheduleProvider);
-            ref.invalidate(pendingGradesCountProvider);
-            ref.invalidate(dashboardStatsProvider);
-          },
-          child: ListView(
-          padding: const EdgeInsets.fromLTRB(0, Space.xl, 0, Space.xxxl),
-          children: [
-            _AnimatedEntrance(
-              delayIndex: 0,
-              child: _WelcomeHeader(
-                displayName: displayName,
-                role: role,
-                t: t,
-              ),
-            ),
-            const SizedBox(height: Space.xl),
-            const _AnimatedEntrance(delayIndex: 1, child: _HeroBanner()),
-            const SizedBox(height: Space.xl),
-            if (metrics.isNotEmpty) Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Space.md),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              onRefresh: () async {
+                ref.invalidate(profileProvider);
+                ref.invalidate(attendanceMineProvider);
+                ref.invalidate(studentPendingTasksCountProvider);
+                ref.invalidate(gradesProvider);
+                ref.invalidate(scheduleProvider);
+                ref.invalidate(pendingGradesCountProvider);
+                ref.invalidate(dashboardStatsProvider);
+              },
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(0, Space.xl, 0, Space.xxxl),
                 children: [
-                  Text('Acceso Rápido', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.black87)),
-                  Text('Ver todo', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54)),
+                  _AnimatedEntrance(
+                    delayIndex: 0,
+                    child: _WelcomeHeader(
+                      displayName: displayName,
+                      role: role,
+                      t: t,
+                    ),
+                  ),
+                  const SizedBox(height: Space.xl),
+                  const _AnimatedEntrance(delayIndex: 1, child: _HeroBanner()),
+                  const SizedBox(height: Space.xl),
+                  if (metrics.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Acceso Rápido',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87)),
+                          Text('Ver todo',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.black54)),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: Space.md),
+                  if (metrics.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                      child: _AnimatedEntrance(
+                        delayIndex: 1,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return GridView.count(
+                              crossAxisCount: constraints.maxWidth > 600
+                                  ? metrics.length
+                                  : 2,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              mainAxisSpacing: Space.md,
+                              crossAxisSpacing: Space.md,
+                              childAspectRatio: 1.0,
+                              children: metrics,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: Space.xxl),
+                  if (academico.isNotEmpty) ...[
+                    _AnimatedEntrance(
+                      delayIndex: 2,
+                      child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: Space.md),
+                          child: SectionLabel(t['section_academico']!)),
+                    ),
+                    _AnimatedEntrance(
+                      delayIndex: 3,
+                      child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: Space.md),
+                          child: _NavGroup(items: academico)),
+                    ),
+                    const SizedBox(height: Space.xxl),
+                  ],
+                  _AnimatedEntrance(
+                    delayIndex: 4,
+                    child: Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: Space.md),
+                        child: SectionLabel(t['section_centro']!)),
+                  ),
+                  _AnimatedEntrance(
+                    delayIndex: 5,
+                    child: Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: Space.md),
+                        child: _NavGroup(items: centro)),
+                  ),
+                  if (gestion.isNotEmpty) ...[
+                    const SizedBox(height: Space.xxl),
+                    _AnimatedEntrance(
+                      delayIndex: 6,
+                      child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: Space.md),
+                          child: SectionLabel(t['section_gestion']!)),
+                    ),
+                    _AnimatedEntrance(
+                      delayIndex: 7,
+                      child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: Space.md),
+                          child: _NavGroup(items: gestion)),
+                    ),
+                  ],
                 ],
               ),
             ),
-            const SizedBox(height: Space.md),
-            if (metrics.isNotEmpty) Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Space.md),
-              child: _AnimatedEntrance(
-                delayIndex: 1,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return GridView.count(
-                      crossAxisCount: constraints.maxWidth > 600 ? metrics.length : 2,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      mainAxisSpacing: Space.md,
-                      crossAxisSpacing: Space.md,
-                      childAspectRatio: 1.0,
-                      children: metrics,
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: Space.xxl),
-
-            if (academico.isNotEmpty) ...[
-              _AnimatedEntrance(
-                delayIndex: 2,
-                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: SectionLabel(t['section_academico']!)),
-              ),
-              _AnimatedEntrance(
-                delayIndex: 3,
-                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: _NavGroup(items: academico)),
-              ),
-              const SizedBox(height: Space.xxl),
-            ],
-            _AnimatedEntrance(
-              delayIndex: 4,
-              child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: SectionLabel(t['section_centro']!)),
-            ),
-            _AnimatedEntrance(
-              delayIndex: 5,
-              child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: _NavGroup(items: centro)),
-            ),
-            if (gestion.isNotEmpty) ...[
-              const SizedBox(height: Space.xxl),
-              _AnimatedEntrance(
-                delayIndex: 6,
-                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: SectionLabel(t['section_gestion']!)),
-              ),
-              _AnimatedEntrance(
-                delayIndex: 7,
-                child: Padding(padding: const EdgeInsets.symmetric(horizontal: Space.md), child: _NavGroup(items: gestion)),
-              ),
-            ],
-          ],
           ),
-        ),
-      ),
-      ],
+        ],
       ),
     );
   }
 }
 
 class _WelcomeHeader extends StatelessWidget {
-  const _WelcomeHeader({required this.displayName, required this.role, required this.t});
+  const _WelcomeHeader(
+      {required this.displayName, required this.role, required this.t});
   final String displayName;
   final UserRole? role;
   final Map<String, String> t;
@@ -382,12 +519,18 @@ class _WelcomeHeader extends StatelessWidget {
               shape: BoxShape.circle,
               color: Colors.white,
               border: Border.all(color: Colors.white, width: 2),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4))
+              ],
             ),
             alignment: Alignment.center,
             child: Text(
               displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-              style: textTheme.titleLarge?.copyWith(color: AppColors.accent, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(
+                  color: AppColors.accent, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: Space.md),
@@ -397,11 +540,13 @@ class _WelcomeHeader extends StatelessWidget {
               children: [
                 Text(
                   _greeting(t),
-                  style: textTheme.bodyMedium?.copyWith(color: Colors.black54, fontWeight: FontWeight.w500),
+                  style: textTheme.bodyMedium?.copyWith(
+                      color: Colors.black54, fontWeight: FontWeight.w500),
                 ),
                 Text(
                   displayName.trim().split(' ').take(2).join(' '),
-                  style: textTheme.titleLarge?.copyWith(color: Colors.black87, fontWeight: FontWeight.bold),
+                  style: textTheme.titleLarge?.copyWith(
+                      color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -412,9 +557,15 @@ class _WelcomeHeader extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4))
+              ],
             ),
-            child: const Icon(Icons.notifications_none_rounded, color: Colors.black87),
+            child: const Icon(Icons.notifications_none_rounded,
+                color: Colors.black87),
           ),
         ],
       ),
@@ -438,7 +589,12 @@ class _HeroBanner extends StatelessWidget {
           colors: [Color(0xFFE0E7FF), Color(0xFFC7D2FE)],
         ),
         borderRadius: BorderRadius.circular(Radii.xl),
-        boxShadow: [BoxShadow(color: const Color(0xFFC7D2FE).withOpacity(0.5), blurRadius: 20, offset: const Offset(0, 10))],
+        boxShadow: [
+          BoxShadow(
+              color: const Color(0xFFC7D2FE).withValues(alpha: 0.5),
+              blurRadius: 20,
+              offset: const Offset(0, 10))
+        ],
       ),
       child: Row(
         children: [
@@ -446,19 +602,26 @@ class _HeroBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Ready to Manage? 🌟', style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: const Color(0xFF3730A3))),
+                Text('Ready to Manage? 🌟',
+                    style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF3730A3))),
                 const SizedBox(height: Space.sm),
-                Text('Accede rápidamente a tus reportes y resumen académico.', style: textTheme.bodyMedium?.copyWith(color: const Color(0xFF4F46E5))),
+                Text('Accede rápidamente a tus reportes y resumen académico.',
+                    style: textTheme.bodyMedium
+                        ?.copyWith(color: const Color(0xFF4F46E5))),
                 const SizedBox(height: Space.md),
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6366F1),
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.pill)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Radii.pill)),
                     elevation: 0,
                   ),
-                  child: const Text('Ver Horario', style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: const Text('Ver Horario',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -475,55 +638,85 @@ class _MetricCard extends StatelessWidget {
   const _MetricCard({
     required this.value,
     required this.label,
-    required this.icon,
     required this.color,
+    required this.icon,
     this.onTap,
   });
 
   final String value;
   final String label;
-  final IconData icon;
   final Color color;
+  final IconData icon;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final darkColor = Color.lerp(color, Colors.black, 0.15) ?? color;
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Radii.xl),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 15, offset: const Offset(0, 8))],
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [color, darkColor],
+          ),
+          borderRadius: BorderRadius.circular(Radii.lg),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            )
+          ],
         ),
-        padding: const EdgeInsets.all(Space.md),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(16),
+            // Large rotated icon spilling off the bottom right
+            Positioned(
+              right: -16,
+              bottom: -16,
+              child: Transform.rotate(
+                angle: 0.35, // ~20 degrees
+                child: Icon(
+                  icon,
+                  size: 80,
+                  color: Colors.white.withValues(alpha: 0.2),
+                ),
               ),
-              alignment: Alignment.center,
-              child: Icon(icon, size: 28, color: color),
             ),
-            const Spacer(),
-            Text(
-              value,
-              style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.black87),
-              maxLines: 1,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: textTheme.bodySmall?.copyWith(color: Colors.black54, fontWeight: FontWeight.w500),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
+            // Text content
+            Padding(
+              padding: const EdgeInsets.all(Space.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      fontSize: 17,
+                      height: 1.1,
+                      letterSpacing: -0.5,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const Spacer(),
+                  Text(
+                    value,
+                    style: textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -545,7 +738,8 @@ class _NavGroup extends StatelessWidget {
         children: [
           for (var i = 0; i < items.length; i++) ...[
             _NavRow(item: items[i]),
-            if (i != items.length - 1) Divider(height: 1, indent: 68, color: scheme.outlineVariant),
+            if (i != items.length - 1)
+              Divider(height: 1, indent: 68, color: scheme.outlineVariant),
           ],
         ],
       ),
@@ -565,9 +759,11 @@ class _NavRow extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => item.screen)),
+        onTap: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => item.screen)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md + 2),
+          padding: const EdgeInsets.symmetric(
+              horizontal: Space.lg, vertical: Space.md + 2),
           child: Row(
             children: [
               // One restrained neutral treatment for every row — accent stays
@@ -582,7 +778,8 @@ class _NavRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 alignment: Alignment.center,
-                child: Icon(item.icon, size: 20, color: scheme.onSurfaceVariant),
+                child:
+                    Icon(item.icon, size: 20, color: scheme.onSurfaceVariant),
               ),
               const SizedBox(width: Space.md + 4),
               Expanded(
@@ -593,12 +790,16 @@ class _NavRow extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       item.subtitle,
-                      style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                      style: textTheme.bodySmall?.copyWith(
+                          color:
+                              scheme.onSurfaceVariant.withValues(alpha: 0.7)),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right_rounded, size: 20, color: scheme.onSurfaceVariant.withValues(alpha: 0.5)),
+              Icon(Icons.chevron_right_rounded,
+                  size: 20,
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.5)),
             ],
           ),
         ),
@@ -622,14 +823,16 @@ class _AnimatedEntrance extends StatefulWidget {
   State<_AnimatedEntrance> createState() => _AnimatedEntranceState();
 }
 
-class _AnimatedEntranceState extends State<_AnimatedEntrance> with SingleTickerProviderStateMixin {
+class _AnimatedEntranceState extends State<_AnimatedEntrance>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _curved;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 320));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 320));
     _curved = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
     Future.delayed(Duration(milliseconds: widget.delayIndex * 60), () {
       if (mounted) _controller.forward();

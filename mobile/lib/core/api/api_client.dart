@@ -99,13 +99,16 @@ class ApiClient {
           {Map<String, dynamic>? query}) =>
       call(() => dio.get(path, queryParameters: query));
 
-  Future<Map<String, dynamic>> post(String path, {Object? data, Map<String, dynamic>? query}) =>
+  Future<Map<String, dynamic>> post(String path,
+          {Object? data, Map<String, dynamic>? query}) =>
       call(() => dio.post(path, data: data, queryParameters: query));
 
-  Future<Map<String, dynamic>> put(String path, {Object? data, Map<String, dynamic>? query}) =>
+  Future<Map<String, dynamic>> put(String path,
+          {Object? data, Map<String, dynamic>? query}) =>
       call(() => dio.put(path, data: data, queryParameters: query));
 
-  Future<Map<String, dynamic>> delete(String path, {Object? data, Map<String, dynamic>? query}) =>
+  Future<Map<String, dynamic>> delete(String path,
+          {Object? data, Map<String, dynamic>? query}) =>
       call(() => dio.delete(path, data: data, queryParameters: query));
 }
 

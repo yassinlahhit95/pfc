@@ -59,7 +59,10 @@ class RetosRepository {
     final data = await _client.get('/retos.php', query: {
       'action': 'list',
     });
-    return (data['retos'] as List).cast<Map<String, dynamic>>().map(Reto.fromJson).toList();
+    return (data['retos'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(Reto.fromJson)
+        .toList();
   }
 
   String downloadUrl(int idReto) {

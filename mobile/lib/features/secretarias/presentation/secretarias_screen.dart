@@ -17,7 +17,7 @@ class SecretariasScreen extends ConsumerStatefulWidget {
 }
 
 class _SecretariasScreenState extends ConsumerState<SecretariasScreen> {
-  String _searchQuery = '';
+  final String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,8 @@ class _SecretariasScreenState extends ConsumerState<SecretariasScreen> {
               separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
               itemBuilder: (context, index) {
                 final secretaria = data.secretarias[index];
-                return _SecretariaCard(secretaria: secretaria, canManage: canManage);
+                return _SecretariaCard(
+                    secretaria: secretaria, canManage: canManage);
               },
             ),
           );
@@ -84,7 +85,8 @@ class _SecretariaCard extends ConsumerWidget {
     return Card(
       elevation: 0,
       color: scheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
       child: Padding(
         padding: const EdgeInsets.all(Space.md),
         child: Column(
@@ -95,8 +97,11 @@ class _SecretariaCard extends ConsumerWidget {
                 CircleAvatar(
                   backgroundColor: scheme.primary.withValues(alpha: 0.15),
                   child: Text(
-                    secretaria.nombre.isNotEmpty ? secretaria.nombre[0].toUpperCase() : '?',
-                    style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600),
+                    secretaria.nombre.isNotEmpty
+                        ? secretaria.nombre[0].toUpperCase()
+                        : '?',
+                    style: TextStyle(
+                        color: scheme.primary, fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(width: Space.md),
@@ -106,7 +111,9 @@ class _SecretariaCard extends ConsumerWidget {
                     children: [
                       Text(secretaria.nombre, style: textTheme.titleMedium),
                       const SizedBox(height: 2),
-                      Text(secretaria.email, style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                      Text(secretaria.email,
+                          style: textTheme.bodyMedium
+                              ?.copyWith(color: scheme.onSurfaceVariant)),
                     ],
                   ),
                 ),
@@ -115,7 +122,8 @@ class _SecretariaCard extends ConsumerWidget {
                     icon: const Icon(Icons.more_vert),
                     onSelected: (value) async {
                       if (value == 'edit') {
-                        final result = await SecretariaFormSheet.show(context, secretaria: secretaria);
+                        final result = await SecretariaFormSheet.show(context,
+                            secretaria: secretaria);
                         if (result == true) {
                           ref.invalidate(secretariasProvider);
                         }
@@ -123,16 +131,21 @@ class _SecretariaCard extends ConsumerWidget {
                         final password = await PasswordConfirmationDialog.show(
                           context,
                           title: 'Eliminar Secretaria',
-                          message: 'Introduce tu contraseña para confirmar la eliminación de ${secretaria.nombre}.',
+                          message:
+                              'Introduce tu contraseña para confirmar la eliminación de ${secretaria.nombre}.',
                         );
                         if (password != null) {
                           try {
-                            await ref.read(secretariasRepositoryProvider).deleteSecretaria(secretaria.id, password);
+                            await ref
+                                .read(secretariasRepositoryProvider)
+                                .deleteSecretaria(secretaria.id, password);
                             ref.invalidate(secretariasProvider);
                           } catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error: $e'), backgroundColor: scheme.error),
+                                SnackBar(
+                                    content: Text('Error: $e'),
+                                    backgroundColor: scheme.error),
                               );
                             }
                           }
@@ -141,7 +154,10 @@ class _SecretariaCard extends ConsumerWidget {
                     },
                     itemBuilder: (context) => [
                       const PopupMenuItem(value: 'edit', child: Text('Editar')),
-                      const PopupMenuItem(value: 'delete', child: Text('Eliminar', style: TextStyle(color: Colors.red))),
+                      const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Eliminar',
+                              style: TextStyle(color: Colors.red))),
                     ],
                   ),
               ],

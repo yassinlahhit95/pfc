@@ -7,8 +7,20 @@
 // persist between HTTP requests.
 class Cache
 {
+    // APCu is one shared memory space per PHP-FPM pool. Row IDs (idEstudiante,
+    // idProfesor, ...) are only unique *within* one tenant's database, so if two
+    // tenants ever share a pool, an unprefixed key like "unread_5" would collide
+    // between tenant A's user #5 and tenant B's user #5. Prefixing transparently
+    // here means every caller gets isolation for free, without having to remember it.
+    private static function tenantKey(string $key): string
+    {
+        require_once __DIR__ . '/../config/Config.php';
+        return Config::getInstance()->get('R2_TENANT_PREFIX', 'default') . ':' . $key;
+    }
+
     public static function remember(string $key, int $ttlSeconds, callable $compute)
     {
+        $key = self::tenantKey($key);
         if (function_exists('apcu_fetch')) {
             $val = apcu_fetch($key, $found);
             if ($found) return $val;
@@ -29,7 +41,7 @@ class Cache
     public static function forget(string $key): void
     {
         if (function_exists('apcu_delete')) {
-            apcu_delete($key);
+            apcu_delete(self::tenantKey($key));
         }
     }
 }

@@ -81,7 +81,8 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
   }
 
   Future<void> _openForm([Device? device]) async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => DeviceFormScreen(device: device)));
+    await Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => DeviceFormScreen(device: device)));
   }
 
   Future<void> _deleteDevice(BuildContext context, Device device) async {
@@ -91,9 +92,12 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
         title: const Text('Eliminar Dispositivo'),
         content: Text('¿Seguro que deseas eliminar "${device.nombre}"?'),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancelar')),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+            style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('Eliminar'),
           ),
@@ -106,7 +110,8 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
         ref.invalidate(devicesProvider);
       } catch (e) {
         if (context.mounted) {
-          await showErrorAlert(context, e.toString(), title: 'No se pudo eliminar');
+          await showErrorAlert(context, e.toString(),
+              title: 'No se pudo eliminar');
         }
       }
     }
@@ -121,7 +126,8 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
       onRetry: () => ref.invalidate(devicesProvider),
       data: (context, allItems) {
         if (allItems.isEmpty) {
-          return const EmptyState(icon: Icons.devices_other_outlined, title: 'Sin dispositivos');
+          return const EmptyState(
+              icon: Icons.devices_other_outlined, title: 'Sin dispositivos');
         }
 
         final items = allItems.where((d) {
@@ -140,182 +146,239 @@ class _DevicesTabState extends ConsumerState<_DevicesTab> {
           ),
           body: Column(
             children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Buscar dispositivo...',
-                  prefixIcon: Icon(Icons.search_rounded),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                onChanged: (val) {
-                  _debounce(const Duration(milliseconds: 300), () {
-                    setState(() {
-                      _searchQuery = val.trim().toLowerCase();
+              Padding(
+                padding:
+                    const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Buscar dispositivo...',
+                    prefixIcon: Icon(Icons.search_rounded),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onChanged: (val) {
+                    _debounce(const Duration(milliseconds: 300), () {
+                      setState(() {
+                        _searchQuery = val.trim().toLowerCase();
+                      });
                     });
-                  });
-                },
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: Space.md),
-            FilterBar(children: [
-              FilterPill<String>(
-                label: 'Estado',
-                value: _status,
-                options: const [
-                  ('disponible', 'Disponible'),
-                  ('prestado', 'Prestado'),
-                  ('baja', 'De baja'),
-                ],
-                onChanged: (v) => setState(() => _status = v),
-              ),
-            ]),
-            const SizedBox(height: Space.sm),
-            Expanded(
-              child: items.isEmpty
-                  ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
-                  : RefreshIndicator(
-                      onRefresh: () async => ref.invalidate(devicesProvider),
-                      child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
-                        itemCount: items.length,
-                        itemBuilder: (context, i) {
-                          final d = items[i];
-                          final color = _deviceColor(context, d.estado);
-                          final available = d.estado == 'disponible';
-                          return AppCard(
-                            margin: const EdgeInsets.only(bottom: Space.md),
-                            padding: const EdgeInsets.all(Space.md),
-                            child: IntrinsicHeight(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Left Image or Icon
-                                  if (d.foto != null && d.foto!.isNotEmpty)
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(Radii.md),
-                                      child: CachedNetworkImage(
-                                        imageUrl: '$apiBaseUrl/public/uploads/equipos/${d.foto}',
+              const SizedBox(height: Space.md),
+              FilterBar(children: [
+                FilterPill<String>(
+                  label: 'Estado',
+                  value: _status,
+                  options: const [
+                    ('disponible', 'Disponible'),
+                    ('prestado', 'Prestado'),
+                    ('baja', 'De baja'),
+                  ],
+                  onChanged: (v) => setState(() => _status = v),
+                ),
+              ]),
+              const SizedBox(height: Space.sm),
+              Expanded(
+                child: items.isEmpty
+                    ? const EmptyState(
+                        icon: Icons.filter_alt_off_outlined,
+                        title: 'Sin resultados para estos filtros')
+                    : RefreshIndicator(
+                        onRefresh: () async => ref.invalidate(devicesProvider),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(
+                              Space.xl, Space.sm, Space.xl, Space.xxxl),
+                          itemCount: items.length,
+                          itemBuilder: (context, i) {
+                            final d = items[i];
+                            final color = _deviceColor(context, d.estado);
+                            final available = d.estado == 'disponible';
+                            return AppCard(
+                              margin: const EdgeInsets.only(bottom: Space.md),
+                              padding: const EdgeInsets.all(Space.md),
+                              child: IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Left Image or Icon
+                                    if (d.foto != null && d.foto!.isNotEmpty)
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(Radii.md),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              '$apiBaseUrl/public/uploads/equipos/${d.foto}',
+                                          width: 64,
+                                          height: 64,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            width: 64,
+                                            height: 64,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surfaceContainerHighest,
+                                            child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2)),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                            width: 64,
+                                            height: 64,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surfaceContainerHighest,
+                                            child: const Icon(
+                                                Icons.broken_image_rounded),
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      Container(
                                         width: 64,
                                         height: 64,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Container(
-                                          width: 64,
-                                          height: 64,
-                                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                          borderRadius:
+                                              BorderRadius.circular(Radii.md),
                                         ),
-                                        errorWidget: (context, url, error) => Container(
-                                          width: 64,
-                                          height: 64,
-                                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                          child: const Icon(Icons.broken_image_rounded),
+                                        child: Icon(
+                                          Icons.laptop_mac_rounded,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                          size: 28,
                                         ),
                                       ),
-                                    )
-                                  else
-                                    Container(
-                                      width: 64,
-                                      height: 64,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                        borderRadius: BorderRadius.circular(Radii.md),
-                                      ),
-                                      child: Icon(
-                                        Icons.laptop_mac_rounded,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                        size: 28,
-                                      ),
-                                    ),
-                                  const SizedBox(width: Space.md),
-                                  // Middle Info Column
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          d.nombre,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'S/N: ${d.numeroSerie}',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          'Cantidad: ${d.cantidad}',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: Space.xs),
-                                  // Right Actions Column
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Top Menu button
-                                      PopupMenuButton(
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(minWidth: 120),
-                                        icon: Icon(
-                                          Icons.more_vert_rounded,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                        ),
-                                        itemBuilder: (context) => [
-                                          PopupMenuItem(
-                                            child: const Row(children: [
-                                              Icon(Icons.edit_outlined, size: 18),
-                                              SizedBox(width: Space.sm),
-                                              Text('Editar', style: TextStyle(fontSize: 13)),
-                                            ]),
-                                            onTap: () => _openForm(d),
+                                    const SizedBox(width: Space.md),
+                                    // Middle Info Column
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            d.nombre,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          PopupMenuItem(
-                                            child: const Row(children: [
-                                              Icon(Icons.delete_outlined, color: Colors.red, size: 18),
-                                              SizedBox(width: Space.sm),
-                                              Text('Eliminar', style: TextStyle(color: Colors.red, fontSize: 13)),
-                                            ]),
-                                            onTap: () => _deleteDevice(context, d),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'S/N: ${d.numeroSerie}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(fontSize: 12),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            'Cantidad: ${d.cantidad}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                           ),
                                         ],
                                       ),
-                                      // Bottom Prestar Button or Status Pill
-                                      if (available)
-                                        OutlinedButton(
-                                          onPressed: () => _openPrestarDialog(context, d),
-                                          style: OutlinedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: 6),
-                                            minimumSize: Size.zero,
-                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    const SizedBox(width: Space.xs),
+                                    // Right Actions Column
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Top Menu button
+                                        PopupMenuButton(
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(
+                                              minWidth: 120),
+                                          icon: Icon(
+                                            Icons.more_vert_rounded,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
-                                          child: const Text('Prestar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                                        )
-                                      else
-                                        StatusPill(label: d.estado, color: color),
-                                    ],
-                                  ),
-                                ],
+                                          itemBuilder: (context) => [
+                                            PopupMenuItem(
+                                              child: const Row(children: [
+                                                Icon(Icons.edit_outlined,
+                                                    size: 18),
+                                                SizedBox(width: Space.sm),
+                                                Text('Editar',
+                                                    style: TextStyle(
+                                                        fontSize: 13)),
+                                              ]),
+                                              onTap: () => _openForm(d),
+                                            ),
+                                            PopupMenuItem(
+                                              child: const Row(children: [
+                                                Icon(Icons.delete_outlined,
+                                                    color: Colors.red,
+                                                    size: 18),
+                                                SizedBox(width: Space.sm),
+                                                Text('Eliminar',
+                                                    style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 13)),
+                                              ]),
+                                              onTap: () =>
+                                                  _deleteDevice(context, d),
+                                            ),
+                                          ],
+                                        ),
+                                        // Bottom Prestar Button or Status Pill
+                                        if (available)
+                                          OutlinedButton(
+                                            onPressed: () =>
+                                                _openPrestarDialog(context, d),
+                                            style: OutlinedButton.styleFrom(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: Space.md,
+                                                      vertical: 6),
+                                              minimumSize: Size.zero,
+                                              tapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                            ),
+                                            child: const Text('Prestar',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          )
+                                        else
+                                          StatusPill(
+                                              label: d.estado, color: color),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -327,7 +390,8 @@ class _StudentPickerSheet extends ConsumerStatefulWidget {
   final Device device;
 
   @override
-  ConsumerState<_StudentPickerSheet> createState() => _StudentPickerSheetState();
+  ConsumerState<_StudentPickerSheet> createState() =>
+      _StudentPickerSheetState();
 }
 
 class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
@@ -350,7 +414,8 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
   Future<void> _search(String q) async {
     setState(() => _loading = true);
     try {
-      final all = await ref.read(chatRepositoryProvider).fetchContacts(query: q);
+      final all =
+          await ref.read(chatRepositoryProvider).fetchContacts(query: q);
       if (!mounted) return;
       setState(() {
         _results = all.where((c) => c.rol == 'estudiante').toList();
@@ -363,14 +428,17 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
 
   Future<void> _prestar(ChatContact student) async {
     try {
-      await ref.read(inventoryRepositoryProvider).prestar(idArticulo: widget.device.id, idEstudiante: student.uid);
+      await ref
+          .read(inventoryRepositoryProvider)
+          .prestar(idArticulo: widget.device.id, idEstudiante: student.uid);
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) {
         final msg = e.toString();
         String errorMsg = 'No se pudo registrar el préstamo.';
         if (msg.contains('already has an active loan')) {
-          errorMsg = 'Este alumno ya tiene un préstamo activo de este dispositivo.';
+          errorMsg =
+              'Este alumno ya tiene un préstamo activo de este dispositivo.';
         } else if (msg.contains('No available stock')) {
           errorMsg = 'No hay stock disponible del dispositivo.';
         } else if (msg.contains('not available')) {
@@ -390,9 +458,11 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
       builder: (context, scrollController) => Container(
         decoration: BoxDecoration(
           color: scheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
         ),
-        padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
+        padding:
+            const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -401,41 +471,52 @@ class _StudentPickerSheetState extends ConsumerState<_StudentPickerSheet> {
               height: 4,
               margin: const EdgeInsets.only(bottom: Space.lg),
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+              decoration: BoxDecoration(
+                  color: scheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(Radii.pill)),
             ),
-            Text('Prestar ${widget.device.nombre}', style: Theme.of(context).textTheme.titleMedium),
+            Text('Prestar ${widget.device.nombre}',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: Space.md),
             TextField(
               autofocus: true,
               onChanged: (v) {
                 _debounce?.cancel();
-                _debounce = Timer(const Duration(milliseconds: 300), () => _search(v));
+                _debounce =
+                    Timer(const Duration(milliseconds: 300), () => _search(v));
               },
-              decoration: const InputDecoration(hintText: 'Buscar estudiante', prefixIcon: Icon(Icons.search_rounded)),
+              decoration: const InputDecoration(
+                  hintText: 'Buscar estudiante',
+                  prefixIcon: Icon(Icons.search_rounded)),
             ),
             const SizedBox(height: Space.sm),
             Expanded(
               child: _loading
-                  ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
+                  ? const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2.4))
                   : ListView.builder(
                       controller: scrollController,
                       itemCount: _results.length,
                       itemBuilder: (context, i) {
                         final s = _results[i];
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: Space.xs),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: Space.xs),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(Radii.md),
                               onTap: () => _prestar(s),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: Space.sm),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: Space.sm),
                                 child: Row(
                                   children: [
                                     InitialsAvatar(name: s.nombre, radius: 18),
                                     const SizedBox(width: Space.md),
-                                    Text(s.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                    Text(s.nombre,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500)),
                                   ],
                                 ),
                               ),
@@ -470,7 +551,8 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
       ref.invalidate(devicesProvider);
     } catch (e) {
       if (context.mounted) {
-        await showErrorAlert(context, e.toString(), title: 'No se pudo registrar la devolución');
+        await showErrorAlert(context, e.toString(),
+            title: 'No se pudo registrar la devolución');
       }
     }
   }
@@ -484,7 +566,8 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
       onRetry: () => ref.invalidate(loansProvider),
       data: (context, allItems) {
         if (allItems.isEmpty) {
-          return const EmptyState(icon: Icons.assignment_return_outlined, title: 'Sin préstamos');
+          return const EmptyState(
+              icon: Icons.assignment_return_outlined, title: 'Sin préstamos');
         }
 
         final items = allItems.where((l) {
@@ -498,12 +581,14 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+              padding:
+                  const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
               child: TextField(
                 decoration: const InputDecoration(
                   labelText: 'Buscar préstamo...',
                   prefixIcon: Icon(Icons.search_rounded),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
                 onChanged: (val) {
                   setState(() {
@@ -527,11 +612,14 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
             const SizedBox(height: Space.sm),
             Expanded(
               child: items.isEmpty
-                  ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                  ? const EmptyState(
+                      icon: Icons.filter_alt_off_outlined,
+                      title: 'Sin resultados para estos filtros')
                   : RefreshIndicator(
                       onRefresh: () async => ref.invalidate(loansProvider),
                       child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                        padding: const EdgeInsets.fromLTRB(
+                            Space.xl, Space.sm, Space.xl, Space.xxxl),
                         itemCount: items.length,
                         itemBuilder: (context, i) {
                           final l = items[i];
@@ -545,23 +633,30 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   // Left Avatar
-                                  InitialsAvatar(name: l.nombreEstudiante, radius: 20),
+                                  InitialsAvatar(
+                                      name: l.nombreEstudiante, radius: 20),
                                   const SizedBox(width: Space.md),
                                   // Middle Info Column
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           l.nombreEstudiante,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
                                           l.nombreArticulo,
                                           style: TextStyle(
-                                            color: Theme.of(context).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                             fontSize: 13,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -569,7 +664,10 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
                                         const SizedBox(height: 2),
                                         Text(
                                           'Prestado: ${date != null ? DateFormat('d MMM yyyy').format(date) : l.fechaPrestamo}',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(fontSize: 12),
                                         ),
                                       ],
                                     ),
@@ -580,19 +678,29 @@ class _LoansTabState extends ConsumerState<_LoansTab> {
                                     OutlinedButton(
                                       onPressed: () => _devolver(context, l),
                                       style: OutlinedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: Space.md, vertical: 6),
                                         minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
                                       ),
-                                      child: const Text('Devolver', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                      child: const Text('Devolver',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold)),
                                     )
                                   else
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: Space.sm, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Space.sm, vertical: 4),
                                       decoration: BoxDecoration(
-                                        color: AppColors.verdeLight.withValues(alpha: 0.08),
-                                        borderRadius: BorderRadius.circular(Radii.sm),
-                                        border: Border.all(color: AppColors.verdeLight.withValues(alpha: 0.15)),
+                                        color: AppColors.verdeLight
+                                            .withValues(alpha: 0.08),
+                                        borderRadius:
+                                            BorderRadius.circular(Radii.sm),
+                                        border: Border.all(
+                                            color: AppColors.verdeLight
+                                                .withValues(alpha: 0.15)),
                                       ),
                                       child: const Text(
                                         'Devuelto',

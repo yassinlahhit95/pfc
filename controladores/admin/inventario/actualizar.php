@@ -14,7 +14,7 @@ require_once __DIR__ . "/../../../modelos/log.php";
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
 if (isset($_POST['actualizarArticulo'])) {
-    if (!Security::validateCSRFToken()) {
+    if (!Security::validateCSRFToken(null, false)) {
         if ($isAjax) {
             header('Content-Type: application/json');
             echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida. Inténtelo de nuevo.']);

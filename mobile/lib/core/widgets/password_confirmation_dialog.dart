@@ -3,22 +3,27 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 class PasswordConfirmationDialog extends StatefulWidget {
-  const PasswordConfirmationDialog({super.key, required this.title, required this.message});
+  const PasswordConfirmationDialog(
+      {super.key, required this.title, required this.message});
   final String title;
   final String message;
 
-  static Future<String?> show(BuildContext context, {required String title, required String message}) {
+  static Future<String?> show(BuildContext context,
+      {required String title, required String message}) {
     return showDialog<String>(
       context: context,
-      builder: (context) => PasswordConfirmationDialog(title: title, message: message),
+      builder: (context) =>
+          PasswordConfirmationDialog(title: title, message: message),
     );
   }
 
   @override
-  State<PasswordConfirmationDialog> createState() => _PasswordConfirmationDialogState();
+  State<PasswordConfirmationDialog> createState() =>
+      _PasswordConfirmationDialogState();
 }
 
-class _PasswordConfirmationDialogState extends State<PasswordConfirmationDialog> {
+class _PasswordConfirmationDialogState
+    extends State<PasswordConfirmationDialog> {
   final _formKey = GlobalKey<FormState>();
   final _passwordCtrl = TextEditingController();
   bool _obscureText = true;
@@ -52,7 +57,8 @@ class _PasswordConfirmationDialogState extends State<PasswordConfirmationDialog>
               decoration: InputDecoration(
                 labelText: 'Tu Contraseña',
                 suffixIcon: IconButton(
-                  icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(
+                      _obscureText ? Icons.visibility : Icons.visibility_off),
                   onPressed: () => setState(() => _obscureText = !_obscureText),
                 ),
               ),
@@ -68,7 +74,8 @@ class _PasswordConfirmationDialogState extends State<PasswordConfirmationDialog>
         ),
         FilledButton(
           onPressed: _submit,
-          style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+          style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error),
           child: const Text('Confirmar'),
         ),
       ],

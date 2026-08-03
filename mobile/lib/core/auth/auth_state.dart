@@ -1,9 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../storage/secure_storage.dart';
 import 'session.dart';
 
 final secureStorageProvider = Provider<SecureStorage>((ref) => SecureStorage());
+
+final onboardingCompletedProvider =
+    AsyncNotifierProvider<OnboardingCompletedController, bool>(
+        OnboardingCompletedController.new);
+
+class OnboardingCompletedController extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('onboarding_completed') ?? false;
+  }
+
+  Future<void> complete() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_completed', true);
+    state = const AsyncData(true);
+  }
+}
 
 /// Holds the current session (or null when logged out). Hydrated from
 /// [SecureStorage] on first read; every write is mirrored to storage so a

@@ -15,10 +15,12 @@ class ConversationsScreen extends ConsumerStatefulWidget {
   const ConversationsScreen({super.key});
 
   @override
-  ConsumerState<ConversationsScreen> createState() => _ConversationsScreenState();
+  ConsumerState<ConversationsScreen> createState() =>
+      _ConversationsScreenState();
 }
 
-class _ConversationsScreenState extends ConsumerState<ConversationsScreen> with WidgetsBindingObserver {
+class _ConversationsScreenState extends ConsumerState<ConversationsScreen>
+    with WidgetsBindingObserver {
   Timer? _pollTimer;
   AppLifecycleState? _lastLifecycleState;
   // ponytail: adaptive backoff: starts at 30s when backgrounded, 8s when foregrounded
@@ -41,7 +43,8 @@ class _ConversationsScreenState extends ConsumerState<ConversationsScreen> with 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _lastLifecycleState = state;
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
       // App backgrounded — stop polling to save battery
       _pollTimer?.cancel();
       _pollTimer = null;
@@ -132,11 +135,13 @@ class _ConversationTile extends StatelessWidget {
       child: InkWell(
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => ChatDetailScreen(convId: conv.id, otherNombre: conv.otherNombre),
+            builder: (_) => ChatDetailScreen(
+                convId: conv.id, otherNombre: conv.otherNombre),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+          padding: const EdgeInsets.symmetric(
+              horizontal: Space.xl, vertical: Space.md),
           child: Row(
             children: [
               InitialsAvatar(name: conv.otherNombre, radius: 22),
@@ -147,7 +152,9 @@ class _ConversationTile extends StatelessWidget {
                   children: [
                     Text(
                       conv.otherNombre,
-                      style: TextStyle(fontWeight: hasUnread ? FontWeight.w700 : FontWeight.w500),
+                      style: TextStyle(
+                          fontWeight:
+                              hasUnread ? FontWeight.w700 : FontWeight.w500),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -155,8 +162,11 @@ class _ConversationTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: hasUnread ? scheme.onSurface : scheme.onSurfaceVariant,
-                            fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                            color: hasUnread
+                                ? scheme.onSurface
+                                : scheme.onSurfaceVariant,
+                            fontWeight:
+                                hasUnread ? FontWeight.w600 : FontWeight.normal,
                           ),
                     ),
                   ],
@@ -170,8 +180,11 @@ class _ConversationTile extends StatelessWidget {
                   Text(
                     _formatTime(conv.lastMessageAt),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: hasUnread ? scheme.primary : scheme.onSurfaceVariant,
-                          fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                          color: hasUnread
+                              ? scheme.primary
+                              : scheme.onSurfaceVariant,
+                          fontWeight:
+                              hasUnread ? FontWeight.w600 : FontWeight.normal,
                         ),
                   ),
                   const SizedBox(height: 6),
@@ -180,10 +193,14 @@ class _ConversationTile extends StatelessWidget {
                       width: 18,
                       height: 18,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                          color: scheme.primary, shape: BoxShape.circle),
                       child: Text(
                         '${conv.unreadCount}',
-                        style: TextStyle(color: scheme.onPrimary, fontSize: 10, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                            color: scheme.onPrimary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700),
                       ),
                     )
                   else

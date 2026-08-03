@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     calificar_salir(false, 'Método no permitido.', '../../../vistas/profesores/aula/tareas.php', $isAjax);
 }
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     calificar_salir(false, 'Solicitud inválida. Inténtelo de nuevo.', '../../../vistas/profesores/aula/tareas.php', $isAjax);
 }
 

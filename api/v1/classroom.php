@@ -310,7 +310,7 @@ if ($action === 'tasks') {
         $ph  = implode(',', array_fill(0, count($ids), '?'));
         $types = str_repeat('i', count($ids));
         $st = mysqli_prepare($con,
-            "SELECT idTarea, nota, estado, comentarioCalificacion, fechaEntrega
+            "SELECT idTarea, nota, estado, comentarioCalificacion, fechaEntrega, archivoEntrega
              FROM aula_entregas WHERE idTarea IN ($ph) AND idEstudiante = ?");
         mysqli_stmt_bind_param($st, $types . 'i', ...[...$ids, $uid]);
         mysqli_stmt_execute($st);

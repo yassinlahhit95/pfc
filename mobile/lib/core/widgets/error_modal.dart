@@ -40,7 +40,8 @@ class _ErrorDialog extends StatefulWidget {
   State<_ErrorDialog> createState() => _ErrorDialogState();
 }
 
-class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderStateMixin {
+class _ErrorDialogState extends State<_ErrorDialog>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _scaleAnim;
   late Animation<double> _opacityAnim;
@@ -96,7 +97,7 @@ class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderSta
             borderRadius: BorderRadius.circular(Radii.xl),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -118,7 +119,7 @@ class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderSta
                     Container(
                       padding: const EdgeInsets.all(Space.lg),
                       decoration: BoxDecoration(
-                        color: scheme.error.withOpacity(0.1),
+                        color: scheme.error.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -157,7 +158,8 @@ class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderSta
 
               // Actions
               Padding(
-                padding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.lg),
+                padding:
+                    const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.lg),
                 child: Row(
                   children: [
                     if (widget.onAction != null) ...[
@@ -191,7 +193,8 @@ class _ErrorDialogState extends State<_ErrorDialog> with SingleTickerProviderSta
 }
 
 /// Convenience wrapper for common error scenarios (no action button needed)
-Future<void> showErrorAlert(BuildContext context, String message, {String title = 'Error'}) {
+Future<void> showErrorAlert(BuildContext context, String message,
+    {String title = 'Error'}) {
   return showErrorModal(
     context: context,
     title: title,

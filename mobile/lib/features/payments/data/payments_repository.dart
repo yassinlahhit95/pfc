@@ -78,9 +78,13 @@ class PendingPayment {
 }
 
 class FinancialStatus {
-  const FinancialStatus({required this.totalPagado, required this.precioCiclo, required this.restante});
+  const FinancialStatus(
+      {required this.totalPagado,
+      required this.precioCiclo,
+      required this.restante});
 
-  factory FinancialStatus.fromJson(Map<String, dynamic> json) => FinancialStatus(
+  factory FinancialStatus.fromJson(Map<String, dynamic> json) =>
+      FinancialStatus(
         totalPagado: (json['totalPagado'] as num?)?.toDouble() ?? 0,
         precioCiclo: (json['precioCiclo'] as num?)?.toDouble() ?? 0,
         restante: (json['restante'] as num?)?.toDouble() ?? 0,
@@ -99,11 +103,16 @@ class StudentPaymentsGroup {
     required this.estado,
   });
 
-  factory StudentPaymentsGroup.fromJson(Map<String, dynamic> json) => StudentPaymentsGroup(
+  factory StudentPaymentsGroup.fromJson(Map<String, dynamic> json) =>
+      StudentPaymentsGroup(
         idEstudiante: json['idEstudiante'] as int,
         nombreEstudiante: json['nombreEstudiante'] as String? ?? '',
-        payments: (json['payments'] as List).cast<Map<String, dynamic>>().map(Payment.fromJson).toList(),
-        estado: FinancialStatus.fromJson((json['estado'] as Map).cast<String, dynamic>()),
+        payments: (json['payments'] as List)
+            .cast<Map<String, dynamic>>()
+            .map(Payment.fromJson)
+            .toList(),
+        estado: FinancialStatus.fromJson(
+            (json['estado'] as Map).cast<String, dynamic>()),
       );
 
   final int idEstudiante;
@@ -154,40 +163,57 @@ class PaymentsRepository {
 
   Future<List<Payment>> fetchAll() async {
     final data = await _client.get('/payments.php');
-    return (data['payments'] as List).cast<Map<String, dynamic>>().map(Payment.fromJson).toList();
+    return (data['payments'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(Payment.fromJson)
+        .toList();
   }
 
   Future<List<PendingPayment>> fetchPending() async {
     final data = await _client.get('/payments.php', query: {'pending': 1});
-    return (data['pending'] as List).cast<Map<String, dynamic>>().map(PendingPayment.fromJson).toList();
+    return (data['pending'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(PendingPayment.fromJson)
+        .toList();
   }
 
   /// estudiante: own payment history + running balance.
   Future<({List<Payment> payments, FinancialStatus estado})> fetchMine() async {
     final data = await _client.get('/payments.php');
     return (
-      payments: (data['payments'] as List).cast<Map<String, dynamic>>().map(Payment.fromJson).toList(),
-      estado: FinancialStatus.fromJson((data['estado'] as Map).cast<String, dynamic>()),
+      payments: (data['payments'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(Payment.fromJson)
+          .toList(),
+      estado: FinancialStatus.fromJson(
+          (data['estado'] as Map).cast<String, dynamic>()),
     );
   }
 
   /// tutor: payment history + balance per linked child.
   Future<List<StudentPaymentsGroup>> fetchForTutor() async {
     final data = await _client.get('/payments.php');
-    return (data['students'] as List).cast<Map<String, dynamic>>().map(StudentPaymentsGroup.fromJson).toList();
+    return (data['students'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(StudentPaymentsGroup.fromJson)
+        .toList();
   }
 
   /// estudiante/tutor: upload a proof-of-payment photo/PDF for an overdue pago.
   Future<void> uploadComprobante({required int idPago, required File archivo}) {
-    return _client.post('/payments-comprobante.php', data: FormData.fromMap({
-      'idPago': idPago,
-      'archivo': MultipartFile.fromFileSync(archivo.path),
-    }));
+    return _client.post('/payments.php',
+        data: FormData.fromMap({
+          'action': 'uploadComprobante',
+          'idPago': idPago,
+          'archivo': MultipartFile.fromFileSync(archivo.path),
+        }));
   }
 
   /// director/secretaria: approve/reject a comprobante that's 'verificando'.
-  Future<void> resolveComprobante({required int idPago, required bool aprobar, String? motivoRechazo}) {
-    return _client.post('/payments-resolve.php', data: {
+  Future<void> resolveComprobante(
+      {required int idPago, required bool aprobar, String? motivoRechazo}) {
+    return _client.post('/payments.php', data: {
+      'action': 'resolveComprobante',
       'idPago': idPago,
       'aprobar': aprobar,
       if (motivoRechazo != null) 'motivoRechazo': motivoRechazo,
@@ -202,13 +228,16 @@ class PaymentsRepository {
     String? fechaProximoPago,
     File? archivo,
   }) {
-    return _client.post('/payments-cobrar.php', data: FormData.fromMap({
-      'idEstudiante': idEstudiante,
-      'monto': monto,
-      'tipoPago': tipoPago,
-      if (fechaProximoPago != null) 'fechaProximoPago': fechaProximoPago,
-      if (archivo != null) 'archivo': MultipartFile.fromFileSync(archivo.path),
-    }));
+    return _client.post('/payments.php',
+        data: FormData.fromMap({
+          'action': 'cobrar',
+          'idEstudiante': idEstudiante,
+          'monto': monto,
+          'tipoPago': tipoPago,
+          if (fechaProximoPago != null) 'fechaProximoPago': fechaProximoPago,
+          if (archivo != null)
+            'archivo': MultipartFile.fromFileSync(archivo.path),
+        }));
   }
 
   /// director/secretaria: fetch upcoming payments due with auto-calculated status
@@ -223,9 +252,10 @@ class PaymentsRepository {
       'offset': offset.toString(),
       if (status != null && status.isNotEmpty) 'status': status,
       if (cicloId != null) 'ciclo': cicloId.toString(),
+      'action': 'paginated',
     };
 
-    final data = await _client.get('/pagos.php', query: queryParams);
+    final data = await _client.get('/payments.php', query: queryParams);
     return (
       pagos: (data['payments'] as List)
           .cast<Map<String, dynamic>>()
@@ -244,21 +274,24 @@ final paymentsProvider = FutureProvider.autoDispose<List<Payment>>(
   (ref) => ref.read(paymentsRepositoryProvider).fetchAll(),
 );
 
-final pendingPaymentsProvider = FutureProvider.autoDispose<List<PendingPayment>>(
+final pendingPaymentsProvider =
+    FutureProvider.autoDispose<List<PendingPayment>>(
   (ref) => ref.read(paymentsRepositoryProvider).fetchPending(),
 );
 
-final myPaymentsProvider =
-    FutureProvider.autoDispose<({List<Payment> payments, FinancialStatus estado})>(
+final myPaymentsProvider = FutureProvider.autoDispose<
+    ({List<Payment> payments, FinancialStatus estado})>(
   (ref) => ref.read(paymentsRepositoryProvider).fetchMine(),
 );
 
-final tutorPaymentsProvider = FutureProvider.autoDispose<List<StudentPaymentsGroup>>(
+final tutorPaymentsProvider =
+    FutureProvider.autoDispose<List<StudentPaymentsGroup>>(
   (ref) => ref.read(paymentsRepositoryProvider).fetchForTutor(),
 );
 
-final pagosProximosProvider = FutureProvider.autoDispose
-    .family<({List<PagoProximo> pagos, int total}), ({int limit, int offset, String? status, int? cicloId})>(
+final pagosProximosProvider = FutureProvider.autoDispose.family<
+    ({List<PagoProximo> pagos, int total}),
+    ({int limit, int offset, String? status, int? cicloId})>(
   (ref, params) => ref.read(paymentsRepositoryProvider).fetchPagosProximos(
         limit: params.limit,
         offset: params.offset,

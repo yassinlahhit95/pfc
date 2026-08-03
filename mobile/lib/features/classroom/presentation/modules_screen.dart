@@ -36,8 +36,20 @@ class _ModulesScreenState extends ConsumerState<ModulesScreen> {
             );
           }
 
-          final ciclos = allModules.map((m) => m.nombreCiclo).whereType<String>().where((c) => c.isNotEmpty).toSet().toList()..sort();
-          final niveles = allModules.map((m) => m.nombreNivel).whereType<String>().where((n) => n.isNotEmpty).toSet().toList()..sort();
+          final ciclos = allModules
+              .map((m) => m.nombreCiclo)
+              .whereType<String>()
+              .where((c) => c.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
+          final niveles = allModules
+              .map((m) => m.nombreNivel)
+              .whereType<String>()
+              .where((n) => n.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
 
           var modules = allModules;
           if (_ciclo != null) {
@@ -70,42 +82,64 @@ class _ModulesScreenState extends ConsumerState<ModulesScreen> {
               ],
               Expanded(
                 child: modules.isEmpty
-                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para este filtro')
+                    ? const EmptyState(
+                        icon: Icons.filter_alt_off_outlined,
+                        title: 'Sin resultados para este filtro')
                     : RefreshIndicator(
-                        onRefresh: () async => ref.invalidate(classroomModulesProvider),
+                        onRefresh: () async =>
+                            ref.invalidate(classroomModulesProvider),
                         child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(vertical: Space.sm),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: Space.sm),
                           itemCount: modules.length,
-                          separatorBuilder: (_, __) => Divider(height: 1, indent: Space.xl, color: scheme.outlineVariant),
+                          separatorBuilder: (_, __) => Divider(
+                              height: 1,
+                              indent: Space.xl,
+                              color: scheme.outlineVariant),
                           itemBuilder: (context, i) {
                             final m = modules[i];
                             return Material(
                               color: Colors.transparent,
                               child: InkWell(
                                 onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => ModuleDetailScreen(module: m)),
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          ModuleDetailScreen(module: m)),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.lg),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Space.xl, vertical: Space.lg),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.auto_stories_outlined, size: 21, color: scheme.onSurfaceVariant),
+                                      Icon(Icons.auto_stories_outlined,
+                                          size: 21,
+                                          color: scheme.onSurfaceVariant),
                                       const SizedBox(width: Space.md),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text(m.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                            Text(m.nombre,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w500)),
                                             Text(
-                                              m.nombreCiclo != null && m.nombreCiclo!.isNotEmpty
+                                              m.nombreCiclo != null &&
+                                                      m.nombreCiclo!.isNotEmpty
                                                   ? '${m.codigo} · ${m.nombreCiclo}'
                                                   : m.codigo,
-                                              style: Theme.of(context).textTheme.bodySmall,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
                                             ),
                                           ],
                                         ),
                                       ),
-                                      Icon(Icons.chevron_right_rounded, size: 20, color: scheme.onSurfaceVariant.withValues(alpha: 0.6)),
+                                      Icon(Icons.chevron_right_rounded,
+                                          size: 20,
+                                          color: scheme.onSurfaceVariant
+                                              .withValues(alpha: 0.6)),
                                     ],
                                   ),
                                 ),

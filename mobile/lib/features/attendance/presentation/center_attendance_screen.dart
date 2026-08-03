@@ -48,10 +48,12 @@ class AttendanceFilters {
   }
 }
 
-final attendanceFiltersProvider = StateProvider<AttendanceFilters>((ref) => const AttendanceFilters());
+final attendanceFiltersProvider =
+    StateProvider<AttendanceFilters>((ref) => const AttendanceFilters());
 
 // Provider for fetching list
-final centerAttendanceProvider = FutureProvider.autoDispose<({List<AttendanceRecord> attendance, int total})>((ref) {
+final centerAttendanceProvider = FutureProvider.autoDispose<
+    ({List<AttendanceRecord> attendance, int total})>((ref) {
   final filters = ref.watch(attendanceFiltersProvider);
   return ref.read(attendanceRepositoryProvider).fetchCenterAttendance(
         nivel: filters.nivel,
@@ -100,7 +102,8 @@ class CenterAttendanceScreen extends ConsumerWidget {
                 fillColor: scheme.surfaceContainerHighest,
               ),
               onChanged: (val) {
-                ref.read(attendanceFiltersProvider.notifier).state = filters.copyWith(q: val);
+                ref.read(attendanceFiltersProvider.notifier).state =
+                    filters.copyWith(q: val);
               },
             ),
           ),
@@ -109,7 +112,8 @@ class CenterAttendanceScreen extends ConsumerWidget {
                 ? EmptyState(
                     icon: Icons.filter_alt_outlined,
                     title: 'Selecciona filtros',
-                    description: 'Debes seleccionar un Nivel o Ciclo para ver las asistencias.',
+                    description:
+                        'Debes seleccionar un Nivel o Ciclo para ver las asistencias.',
                     actionText: 'Abrir filtros',
                     onAction: () => _showFiltersSheet(context, ref),
                   )
@@ -121,13 +125,15 @@ class CenterAttendanceScreen extends ConsumerWidget {
                         return const EmptyState(
                           icon: Icons.fact_check_outlined,
                           title: 'Sin registros',
-                          description: 'No hay asistencias que coincidan con los filtros.',
+                          description:
+                              'No hay asistencias que coincidan con los filtros.',
                         );
                       }
                       return ListView.separated(
                         padding: const EdgeInsets.all(Space.md),
                         itemCount: data.attendance.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: Space.sm),
                         itemBuilder: (context, index) {
                           final record = data.attendance[index];
                           return _CenterAttendanceCard(record: record);
@@ -189,7 +195,8 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
         top: Space.md,
       ),
       child: lookupsAsync.when(
-        loading: () => const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
+        loading: () => const SizedBox(
+            height: 200, child: Center(child: CircularProgressIndicator())),
         error: (e, st) {
           final textTheme = Theme.of(context).textTheme;
           return SizedBox(
@@ -200,9 +207,12 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Error cargando filtros:', style: textTheme.titleSmall),
+                    Text('Error cargando filtros:',
+                        style: textTheme.titleSmall),
                     const SizedBox(height: 8),
-                    Text(e.toString(), textAlign: TextAlign.center, style: textTheme.bodySmall),
+                    Text(e.toString(),
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodySmall),
                   ],
                 ),
               ),
@@ -213,7 +223,9 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
           final nivelesData = lookups['niveles'] as List? ?? [];
           final ciclos = lookups['ciclos'] as List? ?? [];
           final activeNivelIds = ciclos.map((c) => c['idNivel'] as int).toSet();
-          final niveles = nivelesData.where((n) => activeNivelIds.contains(n['idNivel'] as int)).toList();
+          final niveles = nivelesData
+              .where((n) => activeNivelIds.contains(n['idNivel'] as int))
+              .toList();
           final grupos = lookups['grupos'] as List? ?? [];
           final textTheme = Theme.of(context).textTheme;
 
@@ -230,7 +242,8 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
               : ciclos;
 
           // reset ciclo if it's no longer valid for the selected nivel
-          if (_nivel != null && !cicloOptions.any((c) => c['idCiclo'] == _ciclo)) {
+          if (_nivel != null &&
+              !cicloOptions.any((c) => c['idCiclo'] == _ciclo)) {
             _ciclo = null;
           }
 
@@ -241,11 +254,14 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
               Text('Filtros', style: textTheme.titleLarge),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<int?>(
-                value: _nivel,
+                initialValue: _nivel,
                 decoration: const InputDecoration(labelText: 'Nivel'),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Todos los niveles')),
-                  ...niveles.map((n) => DropdownMenuItem(value: n['idNivel'] as int, child: Text(n['nombreNivel']))),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Todos los niveles')),
+                  ...niveles.map((n) => DropdownMenuItem(
+                      value: n['idNivel'] as int,
+                      child: Text(n['nombreNivel']))),
                 ],
                 onChanged: (val) => setState(() {
                   _nivel = val;
@@ -254,33 +270,41 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
               ),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<int?>(
-                value: _ciclo,
+                initialValue: _ciclo,
                 decoration: const InputDecoration(labelText: 'Ciclo'),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Todos los ciclos')),
-                  ...cicloOptions.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo']))),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Todos los ciclos')),
+                  ...cicloOptions.map((c) => DropdownMenuItem(
+                      value: c['idCiclo'] as int,
+                      child: Text(c['nombreCiclo']))),
                 ],
                 onChanged: (val) => setState(() => _ciclo = val),
               ),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<int?>(
-                value: _grupo,
+                initialValue: _grupo,
                 decoration: const InputDecoration(labelText: 'Grupo'),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Todos los grupos')),
-                  ...grupos.map((g) => DropdownMenuItem(value: g['idGrupo'] as int, child: Text(g['nombreGrupo']))),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Todos los grupos')),
+                  ...grupos.map((g) => DropdownMenuItem(
+                      value: g['idGrupo'] as int,
+                      child: Text(g['nombreGrupo']))),
                 ],
                 onChanged: (val) => setState(() => _grupo = val),
               ),
               const SizedBox(height: Space.md),
               DropdownButtonFormField<String?>(
-                value: _estado,
+                initialValue: _estado,
                 decoration: const InputDecoration(labelText: 'Estado'),
                 items: const [
-                  DropdownMenuItem(value: null, child: Text('Todos los estados')),
+                  DropdownMenuItem(
+                      value: null, child: Text('Todos los estados')),
                   DropdownMenuItem(value: 'ausente', child: Text('Ausente')),
                   DropdownMenuItem(value: 'retraso', child: Text('Retraso')),
-                  DropdownMenuItem(value: 'justificado', child: Text('Justificado')),
+                  DropdownMenuItem(
+                      value: 'justificado', child: Text('Justificado')),
                 ],
                 onChanged: (val) => setState(() => _estado = val),
               ),
@@ -290,7 +314,8 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        ref.read(attendanceFiltersProvider.notifier).state = const AttendanceFilters();
+                        ref.read(attendanceFiltersProvider.notifier).state =
+                            const AttendanceFilters();
                         Navigator.pop(context);
                       },
                       child: const Text('Limpiar'),
@@ -300,8 +325,10 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                   Expanded(
                     child: FilledButton(
                       onPressed: () {
-                        final currentFilters = ref.read(attendanceFiltersProvider);
-                        ref.read(attendanceFiltersProvider.notifier).state = currentFilters.copyWith(
+                        final currentFilters =
+                            ref.read(attendanceFiltersProvider);
+                        ref.read(attendanceFiltersProvider.notifier).state =
+                            currentFilters.copyWith(
                           nivel: _nivel,
                           ciclo: _ciclo,
                           anio: _anio,
@@ -332,19 +359,25 @@ class _CenterAttendanceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    
-    // We can reuse the UI of AttendanceCard, but maybe we want to wrap it or copy parts 
+
+    // We can reuse the UI of AttendanceCard, but maybe we want to wrap it or copy parts
     // to include the student name, since the student name is very important for the center view.
-    
+
     Color getStatusColor() {
       switch (record.estado) {
-        case 'presente': return scheme.primary;
-        case 'ausente': return scheme.error;
-        case 'retraso': return AppColors.naranjaLight;
-        case 'justificado': return AppColors.azulLight;
-        default: return scheme.outline;
+        case 'presente':
+          return scheme.primary;
+        case 'ausente':
+          return scheme.error;
+        case 'retraso':
+          return AppColors.naranjaLight;
+        case 'justificado':
+          return AppColors.azulLight;
+        default:
+          return scheme.outline;
       }
     }
+
     final color = getStatusColor();
 
     return Card(
@@ -355,17 +388,19 @@ class _CenterAttendanceCard extends ConsumerWidget {
         side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
       ),
       child: InkWell(
-        onTap: record.canJustify ? () async {
-          final res = await showJustifySheet(
-            context,
-            ref,
-            idAsistencia: record.id,
-            subtitulo: '${record.nombreModulo} · ${record.fecha}',
-          );
-          if (res == true) {
-            ref.invalidate(centerAttendanceProvider);
-          }
-        } : null,
+        onTap: record.canJustify
+            ? () async {
+                final res = await showJustifySheet(
+                  context,
+                  ref,
+                  idAsistencia: record.id,
+                  subtitulo: '${record.nombreModulo} · ${record.fecha}',
+                );
+                if (res == true) {
+                  ref.invalidate(centerAttendanceProvider);
+                }
+              }
+            : null,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -374,7 +409,8 @@ class _CenterAttendanceCard extends ConsumerWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
@@ -382,20 +418,27 @@ class _CenterAttendanceCard extends ConsumerWidget {
                     ),
                     child: Text(
                       record.estado.toUpperCase(),
-                      style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12),
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12),
                     ),
                   ),
                   const Spacer(),
                   Text(
-                    record.hora != null ? '${record.fecha} ${record.hora!.substring(0, 5)}' : record.fecha,
-                    style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
+                    record.hora != null
+                        ? '${record.fecha} ${record.hora!.substring(0, 5)}'
+                        : record.fecha,
+                    style:
+                        TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               Text(
                 record.nombreEstudiante,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 4),
               Text(
@@ -406,11 +449,15 @@ class _CenterAttendanceCard extends ConsumerWidget {
                 'Profesor: ${record.nombreProfesor}',
                 style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14),
               ),
-              if (record.observacion != null && record.observacion!.isNotEmpty) ...[
+              if (record.observacion != null &&
+                  record.observacion!.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
                   'Obs: ${record.observacion}',
-                  style: TextStyle(fontStyle: FontStyle.italic, color: scheme.onSurfaceVariant, fontSize: 13),
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 13),
                 ),
               ],
               if (record.justificacion != null) ...[
@@ -426,14 +473,20 @@ class _CenterAttendanceCard extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.info_outline, size: 14, color: scheme.primary),
+                          Icon(Icons.info_outline,
+                              size: 14, color: scheme.primary),
                           const SizedBox(width: 4),
-                          Text('Justificación (${record.justificacion!.estado})',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: scheme.primary)),
+                          Text(
+                              'Justificación (${record.justificacion!.estado})',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: scheme.primary)),
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(record.justificacion!.motivo, style: const TextStyle(fontSize: 13)),
+                      Text(record.justificacion!.motivo,
+                          style: const TextStyle(fontSize: 13)),
                     ],
                   ),
                 ),

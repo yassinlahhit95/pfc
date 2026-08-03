@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/RateLimiter.php';
 require_once __DIR__ . '/../../include/AccountLockout.php';
 require_once __DIR__ . '/../../include/FeatureGuard.php';
+require_once __DIR__ . '/../../include/Security.php';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -103,26 +104,32 @@ function v1Auth(): array {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        if (isset($_SESSION['rol'])) {
-            $rol = strtolower($_SESSION['rol']);
-            $user_type = match($rol) {
-                'administrador' => 'admin',
-                'secretaria' => 'secretaria',
-                'director' => 'director',
-                'profesor' => 'profesor',
-                default => 'estudiante'
-            };
-            $user_id = 0;
-            if ($user_type === 'profesor') $user_id = (int)($_SESSION['idProfesor'] ?? 0);
-            elseif ($user_type === 'director') $user_id = (int)($_SESSION['idDirector'] ?? 0);
-            elseif ($user_type === 'secretaria') $user_id = (int)($_SESSION['idSecretaria'] ?? 0);
-            elseif ($user_type === 'estudiante') $user_id = (int)($_SESSION['idEstudiante'] ?? 0);
-            elseif ($user_type === 'admin') $user_id = (int)($_SESSION['idAdmin'] ?? 0);
-            elseif ($user_type === 'tutor') $user_id = (int)($_SESSION['idTutor'] ?? 0);
 
-            error_log("[API AUTH] Session fallback: user_type=$user_type, user_id=$user_id");
+        $user_type = null;
+        $user_id = 0;
+
+        if (!empty($_SESSION['idProfesor'])) {
+            $user_type = 'profesor';
+            $user_id = (int)$_SESSION['idProfesor'];
+        } elseif (!empty($_SESSION['idAdmin'])) {
+            // Internally 'admin' maps to 'director' in v1 API
+            $user_type = 'director';
+            $user_id = (int)$_SESSION['idAdmin'];
+        } elseif (!empty($_SESSION['idSecretaria'])) {
+            $user_type = 'secretaria';
+            $user_id = (int)$_SESSION['idSecretaria'];
+        } elseif (!empty($_SESSION['idEstudiante'])) {
+            $user_type = 'estudiante';
+            $user_id = (int)$_SESSION['idEstudiante'];
+        } elseif (!empty($_SESSION['idTutor'])) {
+            $user_type = 'tutor';
+            $user_id = (int)$_SESSION['idTutor'];
+        }
+
+        if ($user_type && $user_id) {
             return ['user_type' => $user_type, 'user_id' => $user_id];
         }
+
         v1Error('Missing or malformed Authorization header.', 401, 'unauthenticated');
     }
     $token = trim(substr($header, 7));

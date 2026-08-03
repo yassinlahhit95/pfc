@@ -23,7 +23,8 @@ class GastosScreen extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () async {
                 final categorias = gastosAsync.valueOrNull!.categorias;
-                final bool created = await showGastoFormSheet(context, ref, categorias: categorias);
+                final bool created = await showGastoFormSheet(context, ref,
+                    categorias: categorias);
                 if (created) ref.invalidate(gastosListProvider);
               },
               icon: const Icon(Icons.add),
@@ -54,10 +55,13 @@ class GastosScreen extends ConsumerWidget {
                 color: scheme.surfaceContainerHighest,
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: _hexToColor(gasto.colorCategoria).withValues(alpha: 0.2),
-                    child: Icon(Icons.shopping_bag_outlined, color: _hexToColor(gasto.colorCategoria)),
+                    backgroundColor: _hexToColor(gasto.colorCategoria)
+                        .withValues(alpha: 0.2),
+                    child: Icon(Icons.shopping_bag_outlined,
+                        color: _hexToColor(gasto.colorCategoria)),
                   ),
-                  title: Text(gasto.concepto, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  title: Text(gasto.concepto,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -67,7 +71,8 @@ class GastosScreen extends ConsumerWidget {
                           'Registrado por: ${gasto.nombreCreador}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: scheme.onSurfaceVariant.withValues(alpha: 0.8),
+                            color:
+                                scheme.onSurfaceVariant.withValues(alpha: 0.8),
                           ),
                         ),
                     ],
@@ -81,11 +86,16 @@ class GastosScreen extends ConsumerWidget {
                     ),
                   ),
                   onTap: () async {
-                    if (gasto.archivoJustificante != null && gasto.archivoJustificante != 'null') {
-                      final url = ref.read(gastosRepositoryProvider).downloadUrl(gasto.archivoJustificante!);
-                      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                    if (gasto.archivoJustificante != null &&
+                        gasto.archivoJustificante != 'null') {
+                      final url = ref
+                          .read(gastosRepositoryProvider)
+                          .downloadUrl(gasto.archivoJustificante!);
+                      launchUrl(Uri.parse(url),
+                          mode: LaunchMode.externalApplication);
                     } else {
-                      await showErrorAlert(context, 'Este gasto no tiene ticket adjunto');
+                      await showErrorAlert(
+                          context, 'Este gasto no tiene ticket adjunto');
                     }
                   },
                 ),

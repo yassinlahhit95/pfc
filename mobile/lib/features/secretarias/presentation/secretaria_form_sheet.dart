@@ -19,7 +19,8 @@ class SecretariaFormSheet extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<SecretariaFormSheet> createState() => _SecretariaFormSheetState();
+  ConsumerState<SecretariaFormSheet> createState() =>
+      _SecretariaFormSheetState();
 }
 
 class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
@@ -68,7 +69,9 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
         });
       }
       if (mounted) {
-        setState(() => _successMessage = widget.secretaria == null ? 'Secretaría creada con éxito' : 'Secretaría actualizada con éxito');
+        setState(() => _successMessage = widget.secretaria == null
+            ? 'Secretaría creada con éxito'
+            : 'Secretaría actualizada con éxito');
         await Future.delayed(const Duration(seconds: 1));
         if (mounted) Navigator.pop(context, true);
       }
@@ -92,7 +95,9 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              widget.secretaria == null ? 'Nueva Secretaría' : 'Editar Secretaría',
+              widget.secretaria == null
+                  ? 'Nueva Secretaría'
+                  : 'Editar Secretaría',
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
@@ -103,7 +108,8 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
                 color: Theme.of(context).colorScheme.errorContainer,
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onErrorContainer),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -136,7 +142,9 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
             const SizedBox(height: Space.xl),
             FilledButton(
               onPressed: _isLoading ? null : _submit,
-              child: _isLoading ? const CircularProgressIndicator() : const Text('Guardar'),
+              child: _isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Guardar'),
             ),
           ],
         ),

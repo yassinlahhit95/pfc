@@ -6,6 +6,6 @@
     "build:assets": "node noDeploy/build-assets.js"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.28.1"
   }
 }

@@ -73,10 +73,10 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
 
   Future<void> _whatsapp() async {
     if (widget.telefono == null || widget.telefono!.isEmpty) return;
-    
+
     // Clean non-digit characters
     String phone = widget.telefono!.replaceAll(RegExp(r'\D'), '');
-    
+
     // Default to Spain (+34) if it's a 9-digit local number
     if (phone.length == 9 && !phone.startsWith('34')) {
       phone = '34$phone';
@@ -94,9 +94,9 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
     setState(() => _startingChat = true);
     try {
       final convId = await ref.read(chatRepositoryProvider).startConversation(
-        targetRol: widget.rol,
-        targetId: widget.uid,
-      );
+            targetRol: widget.rol,
+            targetId: widget.uid,
+          );
       if (mounted) {
         Navigator.of(context).pop(); // Close sheet
         Navigator.of(context).push(
@@ -110,7 +110,8 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al iniciar chat: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error al iniciar chat: $e')));
         setState(() => _startingChat = false);
       }
     }
@@ -120,14 +121,17 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final hasPhone = widget.telefono != null && widget.telefono!.trim().isNotEmpty;
+    final hasPhone =
+        widget.telefono != null && widget.telefono!.trim().isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
         color: scheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
       ),
-      padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xxxl),
+      padding:
+          const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xxxl),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -140,7 +144,7 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           Container(
             width: 80,
             height: 80,
@@ -155,21 +159,25 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
             ),
           ),
           const SizedBox(height: Space.md),
-          Text(widget.nombre, style: textTheme.titleLarge, textAlign: TextAlign.center),
-          
+          Text(widget.nombre,
+              style: textTheme.titleLarge, textAlign: TextAlign.center),
+
           if (widget.subtitle != null) ...[
             const SizedBox(height: Space.xs),
-            Text(widget.subtitle!, style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+            Text(widget.subtitle!,
+                style: textTheme.bodyMedium
+                    ?.copyWith(color: scheme.onSurfaceVariant)),
           ],
-          
+
           const SizedBox(height: Space.xl),
-          
+
           // Data rows
           _DataRow(icon: Icons.email_outlined, text: widget.email),
-          if (hasPhone) _DataRow(icon: Icons.phone_outlined, text: widget.telefono!),
-          
+          if (hasPhone)
+            _DataRow(icon: Icons.phone_outlined, text: widget.telefono!),
+
           const SizedBox(height: Space.xxl),
-          
+
           // Action Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -195,7 +203,8 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet> {
               ),
             ],
           ),
-          if (widget.extraActions != null && widget.extraActions!.isNotEmpty) ...[
+          if (widget.extraActions != null &&
+              widget.extraActions!.isNotEmpty) ...[
             const SizedBox(height: Space.xl),
             const Divider(),
             const SizedBox(height: Space.md),
@@ -221,9 +230,11 @@ class _DataRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Space.xs),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          Icon(icon,
+              size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(width: Space.md),
-          Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyMedium)),
+          Expanded(
+              child: Text(text, style: Theme.of(context).textTheme.bodyMedium)),
         ],
       ),
     );
@@ -249,7 +260,7 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final disabled = onTap == null || isLoading;
     final effectiveColor = disabled ? Colors.grey : color;
-    
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(Radii.md),
@@ -263,16 +274,22 @@ class _ActionButton extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: effectiveColor.withValues(alpha: 0.15),
               ),
-              child: isLoading 
-                  ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: effectiveColor))
+              child: isLoading
+                  ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: effectiveColor))
                   : Icon(icon, color: effectiveColor),
             ),
             const SizedBox(height: Space.xs),
             Text(
               label,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: disabled ? Colors.grey : Theme.of(context).colorScheme.onSurface,
-              ),
+                    color: disabled
+                        ? Colors.grey
+                        : Theme.of(context).colorScheme.onSurface,
+                  ),
             ),
           ],
         ),

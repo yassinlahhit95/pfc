@@ -9,6 +9,15 @@ class ImageOptimizer
     {
         if (!function_exists('gd_info')) return;
 
+        // ponytail: GIF deliberately excluded — GD's imagegif() only ever writes a
+        // single frame, so routing animated GIFs through this optimizer would
+        // silently destroy their animation. Uploaded GIFs are therefore stored
+        // as-is (not re-encoded), which means any trailing polyglot payload past
+        // valid GIF data isn't stripped for that one format. Low risk in practice
+        // (no known GIF-polyglot-to-script-execution vector under a correct
+        // image/gif Content-Type in modern browsers) — upgrade path if this ever
+        // needs closing: re-encode only static (single-frame) GIFs and leave
+        // multi-frame ones untouched.
         $creators = [
             'image/jpeg' => 'imagecreatefromjpeg',
             'image/png'  => 'imagecreatefrompng',
@@ -38,11 +47,15 @@ class ImageOptimizer
             $src = $resized;
         }
 
-        // Se escribe a un fichero temporal y solo se sustituye el original si
-        // el resultado es realmente más pequeño (o si hubo redimensionado,
-        // que siempre conviene aunque el ahorro en bytes sea pequeño). PNG es
-        // sin pérdida: el nivel de compresión (0-9) solo cambia el esfuerzo de
-        // compresión, nunca la calidad visual, así que se usa siempre el máximo.
+        // Se escribe a un fichero temporal y SIEMPRE se sustituye el original por
+        // el resultado re-codificado (nunca se compara tamaño): el propósito de este
+        // paso es normalizar el fichero — decodificar y re-encodear con GD descarta
+        // cualquier byte que no forme parte de los datos de imagen válidos (la
+        // técnica clásica de "polyglot": payload arbitrario anexado tras el final
+        // de una imagen válida). Comparar tamaños y quedarse con el original cuando
+        // "no compensaba" dejaba ese payload intacto. PNG es sin pérdida: el nivel
+        // de compresión (0-9) solo cambia el esfuerzo de compresión, nunca la
+        // calidad visual, así que se usa siempre el máximo.
         $tmpPath = $path . '.opt_tmp';
         switch ($mime) {
             case 'image/jpeg':
@@ -58,10 +71,8 @@ class ImageOptimizer
         }
         imagedestroy($src);
 
-        if (is_file($tmpPath) && ($wasResized || filesize($tmpPath) < filesize($path))) {
+        if (is_file($tmpPath)) {
             rename($tmpPath, $path);
-        } elseif (is_file($tmpPath)) {
-            unlink($tmpPath);
         }
     }
 }

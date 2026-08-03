@@ -14,7 +14,8 @@ Future<File?> pickPhoto(BuildContext context) async {
     showDragHandle: true,
     builder: (context) => SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.sm),
+        padding: const EdgeInsets.symmetric(
+            horizontal: Space.lg, vertical: Space.sm),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -35,7 +36,8 @@ Future<File?> pickPhoto(BuildContext context) async {
   );
   if (source == null || !context.mounted) return null;
 
-  final picked = await ImagePicker().pickImage(source: source, imageQuality: 85);
+  final picked =
+      await ImagePicker().pickImage(source: source, imageQuality: 85);
   if (picked == null) return null;
   return File(picked.path);
 }

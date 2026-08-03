@@ -15,7 +15,8 @@ class AnnouncementsScreen extends ConsumerStatefulWidget {
   const AnnouncementsScreen({super.key});
 
   @override
-  ConsumerState<AnnouncementsScreen> createState() => _AnnouncementsScreenState();
+  ConsumerState<AnnouncementsScreen> createState() =>
+      _AnnouncementsScreenState();
 }
 
 class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
@@ -67,19 +68,22 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
             final matchesSearch = _searchQuery.isEmpty ||
                 item.titulo.toLowerCase().contains(_searchQuery) ||
                 item.mensaje.toLowerCase().contains(_searchQuery);
-            final matchesDest = _selectedDestinatario == null || item.dirigidoA == _selectedDestinatario;
+            final matchesDest = _selectedDestinatario == null ||
+                item.dirigidoA == _selectedDestinatario;
             return matchesSearch && matchesDest;
           }).toList();
 
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
+                padding:
+                    const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, 0),
                 child: TextField(
                   decoration: const InputDecoration(
                     labelText: 'Buscar anuncios...',
                     prefixIcon: Icon(Icons.search_rounded),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   onChanged: (val) {
                     _debounce(const Duration(milliseconds: 300), () {
@@ -107,14 +111,20 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
               const SizedBox(height: Space.sm),
               Expanded(
                 child: filteredItems.isEmpty
-                    ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
+                    ? const EmptyState(
+                        icon: Icons.filter_alt_off_outlined,
+                        title: 'Sin resultados para estos filtros')
                     : RefreshIndicator(
-                        onRefresh: () async => ref.invalidate(announcementsProvider),
+                        onRefresh: () async =>
+                            ref.invalidate(announcementsProvider),
                         child: ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                          padding: const EdgeInsets.fromLTRB(
+                              Space.xl, Space.sm, Space.xl, Space.xxxl),
                           itemCount: filteredItems.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: Space.md),
-                          itemBuilder: (context, i) => _AnnouncementCard(item: filteredItems[i]),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: Space.md),
+                          itemBuilder: (context, i) =>
+                              _AnnouncementCard(item: filteredItems[i]),
                         ),
                       ),
               ),
@@ -142,12 +152,16 @@ class _AnnouncementCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(item.titulo, style: const TextStyle(fontWeight: FontWeight.w600)),
+                child: Text(item.titulo,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
               if (date != null)
                 Text(
                   DateFormat('d MMM').format(date),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: scheme.onSurfaceVariant),
                 ),
             ],
           ),
@@ -170,10 +184,12 @@ class _CreateAnnouncementSheet extends ConsumerStatefulWidget {
   const _CreateAnnouncementSheet();
 
   @override
-  ConsumerState<_CreateAnnouncementSheet> createState() => _CreateAnnouncementSheetState();
+  ConsumerState<_CreateAnnouncementSheet> createState() =>
+      _CreateAnnouncementSheetState();
 }
 
-class _CreateAnnouncementSheetState extends ConsumerState<_CreateAnnouncementSheet> {
+class _CreateAnnouncementSheetState
+    extends ConsumerState<_CreateAnnouncementSheet> {
   final _tituloController = TextEditingController();
   final _mensajeController = TextEditingController();
   String _dirigidoA = 'todos';
@@ -217,10 +233,12 @@ class _CreateAnnouncementSheetState extends ConsumerState<_CreateAnnouncementShe
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl + MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl,
+          Space.xl + MediaQuery.of(context).viewInsets.bottom),
       decoration: BoxDecoration(
         color: scheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -232,9 +250,12 @@ class _CreateAnnouncementSheetState extends ConsumerState<_CreateAnnouncementShe
               height: 4,
               margin: const EdgeInsets.only(bottom: Space.lg),
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+              decoration: BoxDecoration(
+                  color: scheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(Radii.pill)),
             ),
-            Text('Nuevo anuncio', style: Theme.of(context).textTheme.titleMedium),
+            Text('Nuevo anuncio',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: Space.xl),
             TextField(
               controller: _tituloController,
@@ -269,7 +290,10 @@ class _CreateAnnouncementSheetState extends ConsumerState<_CreateAnnouncementShe
             FilledButton(
               onPressed: _sending ? null : _submit,
               child: _sending
-                  ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
                   : const Text('Publicar'),
             ),
           ],

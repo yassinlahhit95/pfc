@@ -25,7 +25,7 @@ if (empty($redirect) || preg_match('#^(https?:)?//#i', $redirect)) {
 }
 $isAjax = (isset($_POST['ajax']) || isset($_GET['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     if ($isAjax) {
         echo json_encode(['status' => 'error', 'message' => 'Solicitud inválida. Inténtelo de nuevo.']);
         exit;

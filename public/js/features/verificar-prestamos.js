@@ -16,7 +16,7 @@
         }
 
         try {
-            const response = await fetch(`/api/v1/estudiante-prestamos.php?idEstudiante=${idEstudiante}`);
+            const response = await fetch(`/api/v1/estudiantes.php?action=prestamos&idEstudiante=${idEstudiante}`);
             const data = await response.json();
 
             if (!data.ok) {

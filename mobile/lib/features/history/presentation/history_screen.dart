@@ -49,7 +49,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       list.add(today.subtract(Duration(days: i)));
     }
 
-    final selNormalized = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+    final selNormalized =
+        DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
     bool found = false;
     for (final d in list) {
       if (DateTime(d.year, d.month, d.day) == selNormalized) {
@@ -223,26 +224,33 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                     reverse: true,
                     padding: const EdgeInsets.only(left: Space.xl),
                     itemCount: daysList.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: Space.sm),
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(width: Space.sm),
                     itemBuilder: (context, i) {
                       final day = daysList[i];
                       final active = DateTime(day.year, day.month, day.day) ==
-                          DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+                          DateTime(_selectedDate.year, _selectedDate.month,
+                              _selectedDate.day);
                       return Material(
-                        color: active ? scheme.primary : scheme.surfaceContainerHighest,
+                        color: active
+                            ? scheme.primary
+                            : scheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(Radii.pill),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(Radii.pill),
                           onTap: () => setState(() => _selectedDate = day),
                           child: Container(
                             alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(horizontal: Space.lg),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Space.lg),
                             child: Text(
                               _dateLabel(day),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
-                                color: active ? scheme.onPrimary : scheme.onSurfaceVariant,
+                                color: active
+                                    ? scheme.onPrimary
+                                    : scheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -254,7 +262,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 const SizedBox(width: Space.xs),
                 // Calendar date picker button
                 IconButton(
-                  icon: Icon(Icons.calendar_month_outlined, color: scheme.primary),
+                  icon: Icon(Icons.calendar_month_outlined,
+                      color: scheme.primary),
                   onPressed: () async {
                     final picked = await showDatePicker(
                       context: context,
@@ -286,14 +295,17 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                     return const EmptyState(
                       icon: Icons.history_rounded,
                       title: 'Sin actividad este día',
-                      description: 'No se encontraron registros de auditoría para la fecha seleccionada.',
+                      description:
+                          'No se encontraron registros de auditoría para la fecha seleccionada.',
                     );
                   }
 
                   return ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(Space.xl, 0, Space.xl, Space.xxxl),
+                    padding: const EdgeInsets.fromLTRB(
+                        Space.xl, 0, Space.xl, Space.xxxl),
                     itemCount: items.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: Space.md),
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: Space.md),
                     itemBuilder: (context, i) {
                       final item = items[i];
                       final color = _getColor(item.tabla);
@@ -315,7 +327,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                   Container(
                                     width: 1.5,
                                     height: 12,
-                                    color: i == 0 ? Colors.transparent : scheme.outlineVariant.withValues(alpha: 0.8),
+                                    color: i == 0
+                                        ? Colors.transparent
+                                        : scheme.outlineVariant
+                                            .withValues(alpha: 0.8),
                                   ),
                                   Container(
                                     width: 32,
@@ -323,7 +338,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                     decoration: BoxDecoration(
                                       color: color.withValues(alpha: 0.12),
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+                                      border: Border.all(
+                                          color: color.withValues(alpha: 0.3),
+                                          width: 1.5),
                                     ),
                                     child: Icon(icon, color: color, size: 16),
                                   ),
@@ -332,7 +349,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                       width: 1.5,
                                       color: i == items.length - 1
                                           ? Colors.transparent
-                                          : scheme.outlineVariant.withValues(alpha: 0.8),
+                                          : scheme.outlineVariant
+                                              .withValues(alpha: 0.8),
                                     ),
                                   ),
                                 ],
@@ -348,7 +366,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                   children: [
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             title,
@@ -373,7 +392,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                     Text(
                                       timeStr,
                                       style: TextStyle(
-                                        color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                                        color: scheme.onSurfaceVariant
+                                            .withValues(alpha: 0.7),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                       ),

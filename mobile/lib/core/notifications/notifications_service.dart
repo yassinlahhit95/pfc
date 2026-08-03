@@ -65,7 +65,8 @@ class NotificationsService {
       // actively using it) nothing appears unless shown ourselves here.
       FirebaseMessaging.onMessage.listen(_showForegroundNotification);
 
-      FirebaseMessaging.onMessageOpenedApp.listen((m) => _handleTapData(m.data));
+      FirebaseMessaging.onMessageOpenedApp
+          .listen((m) => _handleTapData(m.data));
       final initial = await messaging.getInitialMessage();
       if (initial != null) _handleTapData(initial.data);
     } catch (_) {
@@ -74,10 +75,12 @@ class NotificationsService {
   }
 
   Future<void> _initLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings();
     await _localNotifs.initialize(
-      settings: const InitializationSettings(android: androidSettings, iOS: iosSettings),
+      settings: const InitializationSettings(
+          android: androidSettings, iOS: iosSettings),
       onDidReceiveNotificationResponse: (response) {
         final payload = response.payload;
         if (payload == null) return;
@@ -93,7 +96,8 @@ class NotificationsService {
     // Android 8+ requires the channel to exist before a notification can be
     // posted into it; iOS has no channel concept and ignores this call.
     await _localNotifs
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(const AndroidNotificationChannel(
           _kAndroidChannelId,
           _kAndroidChannelName,
@@ -107,7 +111,8 @@ class NotificationsService {
     // should refresh immediately either way, not just when a popup fires.
     if (message.data['type'] == 'chat_message') {
       final convId = int.tryParse(message.data['conv_id']?.toString() ?? '');
-      if (convId != null) _ref.read(chatMessagePushProvider.notifier).state = convId;
+      if (convId != null)
+        _ref.read(chatMessagePushProvider.notifier).state = convId;
     }
 
     final notif = message.notification;
@@ -137,7 +142,9 @@ class NotificationsService {
     final session = _ref.read(sessionControllerProvider).valueOrNull;
     if (session == null) return;
     try {
-      await _ref.read(apiClientProvider).post('/fcm-token.php', data: {'token': token});
+      await _ref
+          .read(apiClientProvider)
+          .post('/fcm-token.php', data: {'token': token});
     } catch (_) {
       // registration failing shouldn't block anything else — will retry
       // next app start or next onTokenRefresh
@@ -165,4 +172,5 @@ class NotificationsService {
   }
 }
 
-final notificationsServiceProvider = Provider<NotificationsService>((ref) => NotificationsService(ref));
+final notificationsServiceProvider =
+    Provider<NotificationsService>((ref) => NotificationsService(ref));

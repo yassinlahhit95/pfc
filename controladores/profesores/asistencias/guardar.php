@@ -17,7 +17,7 @@ function asistencias_salir($ok, $msg, $idModulo, $fecha, $isAjax) {
     exit;
 }
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     asistencias_salir(false, 'Solicitud inválida. Inténtelo de nuevo.', (int)($_POST['idModulo'] ?? 0), $_POST['fecha'] ?? '', $isAjax);
 }
 

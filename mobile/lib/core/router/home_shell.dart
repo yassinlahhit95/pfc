@@ -1,8 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../features/chat/data/chat_repository.dart';
-import '../../features/chat/presentation/conversations_screen.dart';
 import '../../features/classroom/presentation/modules_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/messages/data/messages_repository.dart';
@@ -32,10 +32,13 @@ List<_Tab> _tabsFor(UserRole role, Map<String, String> t) {
   final hasMessages = role != UserRole.tutor;
   return [
     _Tab(t['nav_inicio'] ?? 'Inicio', Icons.home_rounded, const HomeScreen()),
-    if (hasMessages) _Tab(t['nav_mensajeria'] ?? 'Mensajería', Icons.mail_rounded, const MessagesScreen()),
+    if (hasMessages)
+      _Tab(t['nav_mensajeria'] ?? 'Mensajería', Icons.mail_rounded,
+          const MessagesScreen()),
     _Tab('Materiales', Icons.auto_stories_outlined, const ModulesScreen()),
     _Tab('Tareas', Icons.assignment_outlined, const TareasScreen()),
-    _Tab(t['nav_perfil'] ?? 'Perfil', Icons.person_rounded, const ProfileScreen()),
+    _Tab(t['nav_perfil'] ?? 'Perfil', Icons.person_rounded,
+        const ProfileScreen()),
   ];
 }
 
@@ -91,11 +94,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final t = ref.watch(translationsProvider);
     final tabs = _tabsFor(role, t);
     final index = ref.watch(homeTabIndexProvider).clamp(0, tabs.length - 1);
-    final hasMessages = tabs.any((tab) => tab.label == t['nav_mensajeria'] || tab.label == 'Mensajería');
+    final hasMessages = tabs.any(
+        (tab) => tab.label == t['nav_mensajeria'] || tab.label == 'Mensajería');
 
     // Only watched (and therefore only polled — see messagesUnreadCountProvider)
     // when this role actually has that tab, so a tutor session never fires the poll.
-    final messagesUnread = hasMessages ? ref.watch(messagesUnreadCountProvider).valueOrNull ?? 0 : 0;
+    final messagesUnread = hasMessages
+        ? ref.watch(messagesUnreadCountProvider).valueOrNull ?? 0
+        : 0;
 
     return Scaffold(
       body: IndexedStack(
@@ -104,25 +110,25 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
-        onDestinationSelected: (i) => ref.read(homeTabIndexProvider.notifier).state = i,
-        destinations: [
-          for (final tab in tabs)
-            NavigationDestination(
-              icon: _badgedIcon(tab.icon, switch (tab.label) {
-                _ when tab.label == t['nav_mensajeria'] || tab.label == 'Mensajería' => messagesUnread,
-                _ => 0,
-              }),
-              label: tab.label,
-            ),
-        ],
+        onDestinationSelected: (i) =>
+            ref.read(homeTabIndexProvider.notifier).state = i,
+        destinations: tabs.map((tab) {
+          final count = (tab.label == t['nav_mensajeria'] || tab.label == 'Mensajería') 
+              ? messagesUnread 
+              : 0;
+          return NavigationDestination(
+            icon: _badgedIcon(tab.icon, count, false),
+            selectedIcon: _badgedIcon(tab.icon, count, true),
+            label: tab.label,
+          );
+        }).toList(),
       ),
     );
   }
 }
 
-/// Wraps a nav icon with an unread-count badge — mirrors the web app's
-/// nav-badge (estilo.css) / notif-dot pattern: only shown when count > 0.
-Widget _badgedIcon(IconData icon, int count) {
+/// Wraps a nav icon with an unread-count badge.
+Widget _badgedIcon(IconData icon, int count, bool isSelected) {
   final base = Icon(icon);
   if (count <= 0) return base;
   return Badge(

@@ -44,7 +44,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
   Future<void> _search(String query) async {
     setState(() => _loading = true);
     try {
-      final contacts = await ref.read(chatRepositoryProvider).fetchContacts(query: query);
+      final contacts =
+          await ref.read(chatRepositoryProvider).fetchContacts(query: query);
       if (!mounted) return;
       setState(() {
         _contacts = contacts;
@@ -64,7 +65,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => ChatDetailScreen(convId: convId, otherNombre: contact.nombre),
+          builder: (_) =>
+              ChatDetailScreen(convId: convId, otherNombre: contact.nombre),
         ),
       );
     } catch (_) {
@@ -97,7 +99,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
             hintText: 'Buscar contacto',
             filled: false,
             border: InputBorder.none,
-            hintStyle: TextStyle(color: scheme.onSurfaceVariant, fontWeight: FontWeight.normal),
+            hintStyle: TextStyle(
+                color: scheme.onSurfaceVariant, fontWeight: FontWeight.normal),
             contentPadding: EdgeInsets.zero,
           ),
         ),
@@ -105,7 +108,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
           : _contacts.isEmpty
-              ? const EmptyState(icon: Icons.person_search_outlined, title: 'Sin resultados')
+              ? const EmptyState(
+                  icon: Icons.person_search_outlined, title: 'Sin resultados')
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: Space.sm),
                   itemCount: _contacts.length,
@@ -116,7 +120,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                       child: InkWell(
                         onTap: () => _startChat(c),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Space.xl, vertical: Space.md),
                           child: Row(
                             children: [
                               InitialsAvatar(name: c.nombre, radius: 20),
@@ -125,8 +130,13 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(c.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                    Text(_roleLabel(c.rol), style: Theme.of(context).textTheme.bodySmall),
+                                    Text(c.nombre,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text(_roleLabel(c.rol),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall),
                                   ],
                                 ),
                               ),

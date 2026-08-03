@@ -2,7 +2,7 @@
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuardSec) {
         header('Content-Type: application/json');
         echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);

@@ -13,7 +13,8 @@ class ClassroomModule {
     this.nombreNivel,
   });
 
-  factory ClassroomModule.fromJson(Map<String, dynamic> json) => ClassroomModule(
+  factory ClassroomModule.fromJson(Map<String, dynamic> json) =>
+      ClassroomModule(
         id: json['idModulo'] as int,
         nombre: json['nombreModulo'] as String? ?? '',
         codigo: json['codigoModulo'] as String? ?? '',
@@ -29,9 +30,11 @@ class ClassroomModule {
 }
 
 class ClassroomFolder {
-  const ClassroomFolder({required this.id, required this.nombre, required this.totalArchivos});
+  const ClassroomFolder(
+      {required this.id, required this.nombre, required this.totalArchivos});
 
-  factory ClassroomFolder.fromJson(Map<String, dynamic> json) => ClassroomFolder(
+  factory ClassroomFolder.fromJson(Map<String, dynamic> json) =>
+      ClassroomFolder(
         id: json['idCarpeta'] as int,
         nombre: json['nombre'] as String? ?? '',
         totalArchivos: json['totalArchivos'] as int? ?? 0,
@@ -76,7 +79,8 @@ class ClassroomFile {
 
   String get humanSize {
     if (tamanio < 1024) return '$tamanio B';
-    if (tamanio < 1024 * 1024) return '${(tamanio / 1024).toStringAsFixed(1)} KB';
+    if (tamanio < 1024 * 1024)
+      return '${(tamanio / 1024).toStringAsFixed(1)} KB';
     return '${(tamanio / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 }
@@ -97,6 +101,7 @@ class ClassroomTask {
     required this.totalEntregas,
     required this.totalCorregidas,
     required this.nombreModulo,
+    required this.archivoEntrega,
   });
 
   factory ClassroomTask.fromJson(Map<String, dynamic> json) {
@@ -110,12 +115,15 @@ class ClassroomTask {
       fechaCreacion: json['fechaCreacion'] as String? ?? '',
       archivoAdjunto: json['archivoAdjunto'] as String?,
       nota: json['nota']?.toString() ?? entrega?['nota']?.toString(),
-      estado: json['entregado'] == true ? 'entregado' : entrega?['estado']?.toString(),
+      estado: json['entregado'] == true
+          ? 'entregado'
+          : entrega?['estado']?.toString(),
       comentario: entrega?['comentarioCalificacion']?.toString(),
       publicado: (json['publicado'] as int? ?? 1) == 1,
       totalEntregas: json['totalEntregas'] as int? ?? 0,
       totalCorregidas: json['totalCorregidas'] as int? ?? 0,
       nombreModulo: json['nombreModulo'] as String? ?? '',
+      archivoEntrega: json['archivoEntrega']?.toString() ?? entrega?['archivoEntrega']?.toString(),
     );
   }
 
@@ -133,6 +141,7 @@ class ClassroomTask {
   final int totalEntregas;
   final int totalCorregidas;
   final String nombreModulo;
+  final String? archivoEntrega;
 }
 
 class ClassroomSubmission {
@@ -150,7 +159,8 @@ class ClassroomSubmission {
     required this.comentarioCalificacion,
   });
 
-  factory ClassroomSubmission.fromJson(Map<String, dynamic> json) => ClassroomSubmission(
+  factory ClassroomSubmission.fromJson(Map<String, dynamic> json) =>
+      ClassroomSubmission(
         idEntrega: json['idEntrega'] as int?,
         idEstudiante: json['idEstudiante'] as int? ?? 0,
         nombreEstudiante: json['nombreEstudiante'] as String?,
@@ -191,7 +201,8 @@ class ClassroomSession {
     required this.nombreProfesor,
   });
 
-  factory ClassroomSession.fromJson(Map<String, dynamic> json) => ClassroomSession(
+  factory ClassroomSession.fromJson(Map<String, dynamic> json) =>
+      ClassroomSession(
         id: json['idSesion'] as int,
         titulo: json['titulo'] as String? ?? '',
         descripcion: json['descripcion'] as String?,
@@ -218,13 +229,21 @@ class ClassroomRepository {
   final Ref _ref;
 
   Future<List<ClassroomModule>> fetchModules() async {
-    final data = await _client.get('/classroom.php', query: {'action': 'modules'});
-    return (data['modules'] as List).cast<Map<String, dynamic>>().map(ClassroomModule.fromJson).toList();
+    final data =
+        await _client.get('/classroom.php', query: {'action': 'modules'});
+    return (data['modules'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomModule.fromJson)
+        .toList();
   }
 
   Future<List<ClassroomFolder>> fetchFolders(int idModulo) async {
-    final data = await _client.get('/classroom.php', query: {'action': 'folders', 'idModulo': idModulo});
-    return (data['folders'] as List).cast<Map<String, dynamic>>().map(ClassroomFolder.fromJson).toList();
+    final data = await _client.get('/classroom.php',
+        query: {'action': 'folders', 'idModulo': idModulo});
+    return (data['folders'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomFolder.fromJson)
+        .toList();
   }
 
   Future<List<ClassroomFile>> fetchFiles(int idModulo, {int? idCarpeta}) async {
@@ -233,33 +252,53 @@ class ClassroomRepository {
       'idModulo': idModulo,
       if (idCarpeta != null) 'idCarpeta': idCarpeta,
     });
-    return (data['files'] as List).cast<Map<String, dynamic>>().map(ClassroomFile.fromJson).toList();
+    return (data['files'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomFile.fromJson)
+        .toList();
   }
 
   Future<List<ClassroomTask>> fetchTasks(int idModulo) async {
-    final data = await _client.get('/classroom.php', query: {'action': 'tasks', 'idModulo': idModulo});
-    return (data['tasks'] as List).cast<Map<String, dynamic>>().map(ClassroomTask.fromJson).toList();
+    final data = await _client.get('/classroom.php',
+        query: {'action': 'tasks', 'idModulo': idModulo});
+    return (data['tasks'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomTask.fromJson)
+        .toList();
   }
 
   /// Estudiante's own entrega for a task, or null if not submitted yet.
   Future<ClassroomSubmission?> fetchSubmission(int idTarea) async {
-    final data = await _client.get('/classroom.php', query: {'action': 'submission', 'idTarea': idTarea});
+    final data = await _client.get('/classroom.php',
+        query: {'action': 'submission', 'idTarea': idTarea});
     final raw = data['submission'] as Map<String, dynamic>?;
     return raw == null ? null : ClassroomSubmission.fromJson(raw);
   }
 
   /// Profesor's full roster (every student in the ciclo, with or without an entrega).
   Future<List<ClassroomSubmission>> fetchSubmissions(int idTarea) async {
-    final data = await _client.get('/classroom.php', query: {'action': 'submissions', 'idTarea': idTarea});
-    return (data['submissions'] as List).cast<Map<String, dynamic>>().map(ClassroomSubmission.fromJson).toList();
+    final data = await _client.get('/classroom.php',
+        query: {'action': 'submissions', 'idTarea': idTarea});
+    return (data['submissions'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomSubmission.fromJson)
+        .toList();
   }
 
-  Future<void> submit({required int idTarea, String respuesta = '', String? filePath, String? fileName}) {
-    return _client.post('/classroom.php', data: FormData.fromMap({
-      'idTarea': idTarea,
-      'respuesta': respuesta,
-      if (filePath != null) 'archivoEntrega': MultipartFile.fromFileSync(filePath, filename: fileName),
-    }), query: {'action': 'submit'});
+  Future<void> submit(
+      {required int idTarea,
+      String respuesta = '',
+      String? filePath,
+      String? fileName}) {
+    return _client.post('/classroom.php',
+        data: FormData.fromMap({
+          'idTarea': idTarea,
+          'respuesta': respuesta,
+          if (filePath != null)
+            'archivoEntrega':
+                MultipartFile.fromFileSync(filePath, filename: fileName),
+        }),
+        query: {'action': 'submit'});
   }
 
   Future<void> grade({
@@ -269,24 +308,32 @@ class ClassroomRepository {
     String? correctionFilePath,
     String? correctionFileName,
   }) {
-    return _client.post('/classroom.php', data: FormData.fromMap({
-      'idEntrega': idEntrega,
-      'nota': nota,
-      'comentario': comentario,
-      if (correctionFilePath != null)
-        'archivoCorreccion': MultipartFile.fromFileSync(correctionFilePath, filename: correctionFileName),
-    }), query: {'action': 'grade'});
+    return _client.post('/classroom.php',
+        data: FormData.fromMap({
+          'idEntrega': idEntrega,
+          'nota': nota,
+          'comentario': comentario,
+          if (correctionFilePath != null)
+            'archivoCorreccion': MultipartFile.fromFileSync(correctionFilePath,
+                filename: correctionFileName),
+        }),
+        query: {'action': 'grade'});
   }
 
   /// Toggles the task's published state server-side; returns the new value.
   Future<bool> togglePublish(int idTarea) async {
-    final data = await _client.post('/classroom.php', data: {'idTarea': idTarea}, query: {'action': 'publish'});
+    final data = await _client.post('/classroom.php',
+        data: {'idTarea': idTarea}, query: {'action': 'publish'});
     return data['publicado'] == 1;
   }
 
   Future<List<ClassroomSession>> fetchSessions(int idModulo) async {
-    final data = await _client.get('/classroom.php', query: {'action': 'sessions', 'idModulo': idModulo});
-    return (data['sessions'] as List).cast<Map<String, dynamic>>().map(ClassroomSession.fromJson).toList();
+    final data = await _client.get('/classroom.php',
+        query: {'action': 'sessions', 'idModulo': idModulo});
+    return (data['sessions'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClassroomSession.fromJson)
+        .toList();
   }
 
   Future<void> createSession({
@@ -306,12 +353,15 @@ class ClassroomRepository {
       'horaSesion': horaSesion,
       'enlaceReunion': enlaceReunion,
       'plataforma': plataforma,
-    }, query: {'action': 'create-session'});
+    }, query: {
+      'action': 'create-session'
+    });
   }
 
   Future<List<ClassroomFile>> fetchFavorites() async {
     try {
-      final data = await _client.get('/classroom.php', query: {'action': 'favorites'});
+      final data =
+          await _client.get('/classroom.php', query: {'action': 'favorites'});
       final favoritesList = data['favorites'];
       if (favoritesList is! List) {
         return [];
@@ -327,7 +377,8 @@ class ClassroomRepository {
 
   /// Toggles favorite state server-side; returns the new value.
   Future<bool> toggleFavorite(int idArchivo) async {
-    final data = await _client.post('/classroom.php', data: {'idArchivo': idArchivo}, query: {'action': 'favorite'});
+    final data = await _client.post('/classroom.php',
+        data: {'idArchivo': idArchivo}, query: {'action': 'favorite'});
     return data['favorito'] == 1;
   }
 
@@ -359,11 +410,13 @@ final classroomRepositoryProvider = Provider<ClassroomRepository>(
   (ref) => ClassroomRepository(ref.read(apiClientProvider), ref),
 );
 
-final classroomModulesProvider = FutureProvider.autoDispose<List<ClassroomModule>>(
+final classroomModulesProvider =
+    FutureProvider.autoDispose<List<ClassroomModule>>(
   (ref) => ref.read(classroomRepositoryProvider).fetchModules(),
 );
 
-final classroomFavoritesProvider = FutureProvider.autoDispose<List<ClassroomFile>>(
+final classroomFavoritesProvider =
+    FutureProvider.autoDispose<List<ClassroomFile>>(
   (ref) => ref.read(classroomRepositoryProvider).fetchFavorites(),
 );
 
@@ -384,7 +437,8 @@ final pendingGradesCountProvider = FutureProvider.autoDispose<int>((ref) async {
   }
 });
 
-final studentPendingTasksCountProvider = FutureProvider.autoDispose<int>((ref) async {
+final studentPendingTasksCountProvider =
+    FutureProvider.autoDispose<int>((ref) async {
   final repo = ref.read(classroomRepositoryProvider);
   try {
     final modules = await repo.fetchModules();

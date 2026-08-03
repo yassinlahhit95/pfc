@@ -32,7 +32,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   @override
   void initState() {
     super.initState();
-    _entrance = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _entrance = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     _checkOnboarding();
   }
 
@@ -105,9 +106,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             Positioned(
               left: -160,
               top: -160,
-              child: _AccentGlow(color: AppColors.accent, opacity: isDark ? 0.16 : 0.10),
+              child: _AccentGlow(
+                  color: AppColors.accent, opacity: isDark ? 0.16 : 0.10),
             ),
-            if (_showOnboarding) _buildOnboardingView(scheme) else _buildLoginView(isLoading, scheme),
+            if (_showOnboarding)
+              _buildOnboardingView(scheme)
+            else
+              _buildLoginView(isLoading, scheme),
           ],
         ),
       ),
@@ -131,28 +136,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           Expanded(
             child: PageView(
               controller: _pageController,
-              onPageChanged: (idx) => setState(() => _onboardingPageIndex = idx),
+              onPageChanged: (idx) =>
+                  setState(() => _onboardingPageIndex = idx),
               children: const [
                 _OnboardingSlide(
                   icon: Icons.auto_stories_rounded,
                   title: 'Aula Digital Interactiva',
-                  description: 'Accede a tus temas, descarga apuntes y sube tus tareas de forma rápida y sencilla.',
+                  description:
+                      'Accede a tus temas, descarga apuntes y sube tus tareas de forma rápida y sencilla.',
                 ),
                 _OnboardingSlide(
                   icon: Icons.forum_rounded,
                   title: 'Comunicación Directa',
-                  description: 'Chatea con tus profesores y compañeros, y recibe avisos en tiempo real.',
+                  description:
+                      'Chatea con tus profesores y compañeros, y recibe avisos en tiempo real.',
                 ),
                 _OnboardingSlide(
                   icon: Icons.insights_rounded,
                   title: 'Seguimiento al Día',
-                  description: 'Consulta tu horario de clases, asistencia y notas desde un único portal personalizado.',
+                  description:
+                      'Consulta tu horario de clases, asistencia y notas desde un único portal personalizado.',
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Space.xxl, vertical: Space.xxxl),
+            padding: const EdgeInsets.symmetric(
+                horizontal: Space.xxl, vertical: Space.xxxl),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -171,7 +181,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         _completeOnboarding();
                       }
                     },
-                    child: Text(_onboardingPageIndex == 2 ? 'Comenzar' : 'Siguiente'),
+                    child: Text(
+                        _onboardingPageIndex == 2 ? 'Comenzar' : 'Siguiente'),
                   ),
                 ),
               ],
@@ -188,16 +199,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: Space.xxl, vertical: Space.xxxl),
+            padding: const EdgeInsets.symmetric(
+                horizontal: Space.xxl, vertical: Space.xxxl),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight - 64),
+              constraints:
+                  BoxConstraints(minHeight: constraints.maxHeight - 64),
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 380),
                   child: AnimatedBuilder(
                     animation: _entrance,
                     builder: (context, child) {
-                      final val = CurvedAnimation(parent: _entrance, curve: Curves.easeOutCubic).value;
+                      final val = CurvedAnimation(
+                              parent: _entrance, curve: Curves.easeOutCubic)
+                          .value;
                       return Opacity(
                         opacity: val,
                         child: Transform.translate(
@@ -218,11 +233,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Text('Bienvenido de nuevo', style: textTheme.headlineSmall),
+                                Text('Bienvenido de nuevo',
+                                    style: textTheme.headlineSmall),
                                 const SizedBox(height: Space.xs),
                                 Text(
                                   'Inicia sesión para continuar',
-                                  style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                                  style: textTheme.bodyMedium?.copyWith(
+                                      color: scheme.onSurfaceVariant),
                                 ),
                                 const SizedBox(height: Space.xxl),
                                 TextFormField(
@@ -234,7 +251,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     labelText: 'Correo electrónico',
                                     prefixIcon: Icon(Icons.email_outlined),
                                   ),
-                                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                                  validator: (v) =>
+                                      (v == null || v.trim().isEmpty)
+                                          ? 'Requerido'
+                                          : null,
                                 ),
                                 const SizedBox(height: Space.lg),
                                 TextFormField(
@@ -246,11 +266,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     labelText: 'Contraseña',
                                     prefixIcon: const Icon(Icons.lock_outline),
                                     suffixIcon: IconButton(
-                                      icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                                      onPressed: () => setState(() => _obscure = !_obscure),
+                                      icon: Icon(_obscure
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined),
+                                      onPressed: () =>
+                                          setState(() => _obscure = !_obscure),
                                     ),
                                   ),
-                                  validator: (v) => (v == null || v.isEmpty) ? 'Requerido' : null,
+                                  validator: (v) => (v == null || v.isEmpty)
+                                      ? 'Requerido'
+                                      : null,
                                 ),
                                 const SizedBox(height: Space.xl),
                                 SizedBox(
@@ -264,7 +289,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                             width: 20,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2.4,
-                                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimary),
                                             ),
                                           )
                                         : const Text('Entrar'),
@@ -273,15 +302,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 const SizedBox(height: Space.lg),
                                 Row(
                                   children: [
-                                    Expanded(child: Divider(color: scheme.outlineVariant)),
+                                    Expanded(
+                                        child: Divider(
+                                            color: scheme.outlineVariant)),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Space.md),
                                       child: Text(
                                         'o continuar con',
-                                        style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                                        style: textTheme.bodySmall?.copyWith(
+                                            color: scheme.onSurfaceVariant),
                                       ),
                                     ),
-                                    Expanded(child: Divider(color: scheme.outlineVariant)),
+                                    Expanded(
+                                        child: Divider(
+                                            color: scheme.outlineVariant)),
                                   ],
                                 ),
                                 const SizedBox(height: Space.lg),
@@ -291,10 +326,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                   child: OutlinedButton.icon(
                                     onPressed: isLoading ? null : _submitGoogle,
                                     icon: const GoogleLogo(size: 20),
-                                    label: const Text('Iniciar sesión con Google'),
+                                    label:
+                                        const Text('Iniciar sesión con Google'),
                                     style: OutlinedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(Radii.lg),
+                                        borderRadius:
+                                            BorderRadius.circular(Radii.lg),
                                       ),
                                     ),
                                   ),
@@ -306,7 +343,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         const SizedBox(height: Space.xxl),
                         Text(
                           'AulaPro · Gestión académica',
-                          style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                          style: textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -336,14 +374,16 @@ class _AccentGlow extends StatelessWidget {
       height: 480,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(colors: [color.withValues(alpha: opacity), Colors.transparent]),
+        gradient: RadialGradient(
+            colors: [color.withValues(alpha: opacity), Colors.transparent]),
       ),
     );
   }
 }
 
 class _OnboardingSlide extends StatelessWidget {
-  const _OnboardingSlide({required this.icon, required this.title, required this.description});
+  const _OnboardingSlide(
+      {required this.icon, required this.title, required this.description});
 
   final IconData icon;
   final String title;
@@ -363,18 +403,21 @@ class _OnboardingSlide extends StatelessWidget {
             height: 132,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: scheme.brightness == Brightness.dark ? 0.16 : 0.1),
+              color: AppColors.accent.withValues(
+                  alpha: scheme.brightness == Brightness.dark ? 0.16 : 0.1),
             ),
             alignment: Alignment.center,
             child: Icon(icon, color: AppColors.accent, size: 56),
           ),
           const SizedBox(height: Space.xxxl + Space.lg),
-          Text(title, textAlign: TextAlign.center, style: textTheme.headlineSmall),
+          Text(title,
+              textAlign: TextAlign.center, style: textTheme.headlineSmall),
           const SizedBox(height: Space.md),
           Text(
             description,
             textAlign: TextAlign.center,
-            style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+            style:
+                textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -428,7 +471,8 @@ class _AppMark extends StatelessWidget {
             boxShadow: cardShadow(scheme.brightness),
           ),
           alignment: Alignment.center,
-          child: Icon(Icons.auto_stories_rounded, color: Theme.of(context).colorScheme.onPrimary, size: 30),
+          child: Icon(Icons.auto_stories_rounded,
+              color: Theme.of(context).colorScheme.onPrimary, size: 30),
         ),
         const SizedBox(height: Space.lg),
         Text('AulaPro', style: textTheme.headlineSmall),
@@ -467,7 +511,8 @@ class _GoogleLogoPainter extends CustomPainter {
       ..strokeCap = StrokeCap.square;
 
     final double radius = (w - paint.strokeWidth) / 2;
-    final Rect rect = Rect.fromCircle(center: Offset(w / 2, h / 2), radius: radius);
+    final Rect rect =
+        Rect.fromCircle(center: Offset(w / 2, h / 2), radius: radius);
 
     // Red Arc (Top Left-ish)
     paint.color = const Color(0xFFEA4335);
@@ -493,7 +538,8 @@ class _GoogleLogoPainter extends CustomPainter {
     final double barStartX = w / 2;
     final double barStartY = h / 2 - paint.strokeWidth / 2;
     canvas.drawRect(
-      Rect.fromLTRB(barStartX, barStartY, w - paint.strokeWidth / 2, barStartY + paint.strokeWidth),
+      Rect.fromLTRB(barStartX, barStartY, w - paint.strokeWidth / 2,
+          barStartY + paint.strokeWidth),
       barPaint,
     );
   }

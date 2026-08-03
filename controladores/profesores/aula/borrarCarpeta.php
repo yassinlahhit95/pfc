@@ -21,7 +21,7 @@ if (!function_exists('responderAccionAula')) {
     }
 }
 
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '', false)) {
     responderAccionAula($esAjax, false, "../../../vistas/profesores/aula/index.php", ['error' => 'csrf']);
 }
 

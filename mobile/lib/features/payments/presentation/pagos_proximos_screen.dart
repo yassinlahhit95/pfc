@@ -62,7 +62,8 @@ class _PagosProximosScreenState extends State<PagosProximosScreen> {
             ),
             data: (context, data) {
               if (data.pagos.isEmpty) {
-                return const EmptyState(icon: Icons.receipt_outlined, title: 'Sin pagos próximos');
+                return const EmptyState(
+                    icon: Icons.receipt_outlined, title: 'Sin pagos próximos');
               }
 
               return Column(
@@ -117,7 +118,8 @@ class _PagosProximosScreenState extends State<PagosProximosScreen> {
                     child: ListView.separated(
                       controller: _scrollController,
                       itemCount: data.pagos.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: Space.sm),
                       itemBuilder: (context, index) {
                         final pago = data.pagos[index];
                         return _PagoCard(pago: pago);
@@ -128,7 +130,8 @@ class _PagosProximosScreenState extends State<PagosProximosScreen> {
                     Padding(
                       padding: const EdgeInsets.all(Space.md),
                       child: ElevatedButton.icon(
-                        onPressed: () => setState(() => _currentOffset += _pageSize),
+                        onPressed: () =>
+                            setState(() => _currentOffset += _pageSize),
                         icon: const Icon(Icons.arrow_downward),
                         label: const Text('Cargar más'),
                       ),
@@ -144,7 +147,8 @@ class _PagosProximosScreenState extends State<PagosProximosScreen> {
 }
 
 class _FilterChip extends StatelessWidget {
-  const _FilterChip({required this.label, required this.isSelected, required this.onPressed});
+  const _FilterChip(
+      {required this.label, required this.isSelected, required this.onPressed});
   final String label;
   final bool isSelected;
   final VoidCallback onPressed;
@@ -189,8 +193,9 @@ class _PagoCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final fecha = DateTime.tryParse(pago.fechaProximoPago);
-    final formattedDate =
-        fecha != null ? DateFormat('d MMM yyyy', 'es_ES').format(fecha) : pago.fechaProximoPago;
+    final formattedDate = fecha != null
+        ? DateFormat('d MMM yyyy', 'es_ES').format(fecha)
+        : pago.fechaProximoPago;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: Space.md),
@@ -211,7 +216,8 @@ class _PagoCard extends StatelessWidget {
                     Text(pago.nombreEstudiante, style: textTheme.titleSmall),
                     Text(
                       pago.abreviaturaCiclo,
-                      style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                      style: textTheme.bodySmall
+                          ?.copyWith(color: scheme.onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -224,7 +230,8 @@ class _PagoCard extends StatelessWidget {
                 ),
                 child: Text(
                   _getStatusLabel(),
-                  style: textTheme.labelSmall?.copyWith(color: _getStatusColor(context)),
+                  style: textTheme.labelSmall
+                      ?.copyWith(color: _getStatusColor(context)),
                 ),
               ),
             ],
@@ -238,11 +245,13 @@ class _PagoCard extends StatelessWidget {
                 children: [
                   Text(
                     'Monto',
-                    style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                    style: textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
                   Text(
                     '\$${pago.monto}',
-                    style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    style: textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -251,11 +260,13 @@ class _PagoCard extends StatelessWidget {
                 children: [
                   Text(
                     'Próximo Pago',
-                    style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                    style: textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
                   Text(
                     formattedDate,
-                    style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    style: textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -265,7 +276,8 @@ class _PagoCard extends StatelessWidget {
             const SizedBox(height: Space.sm),
             Text(
               'Frecuencia: ${_capitalizeTipoPago(pago.tipoPago)}',
-              style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              style:
+                  textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
           ],
         ],

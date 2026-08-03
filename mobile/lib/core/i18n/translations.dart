@@ -62,7 +62,6 @@ const _translations = {
     'greeting_evening': 'Buenas noches',
     'nav_inventario': 'Inventario',
     'nav_inventario_sub': 'Material y dispositivos',
-
     'profile': 'Mi Perfil',
     'personal_data': 'Datos Personales',
     'settings': 'Ajustes',
@@ -84,7 +83,7 @@ const _translations = {
     'confirm': 'Confirmar',
     'security_desc': 'Seguridad y RGPD local',
     'school_center': 'AulaPro Centro escolar',
-      'nav_horario': 'Horario',
+    'nav_horario': 'Horario',
     'nav_horario_sub': 'Ver calendario de clases',
     'nav_historial': 'Historial',
     'nav_historial_sub': 'Ver actividad del centro',
@@ -128,7 +127,7 @@ const _translations = {
     'metric_hijo': 'Hijo',
     'metric_recibos': 'Recibos',
     'metric_al_dia': 'Al día',
-},
+  },
   'en': {
     'nav_alumnos': 'Students',
     'nav_alumnos_sub': 'Student management',
@@ -143,7 +142,6 @@ const _translations = {
     'greeting_evening': 'Good evening',
     'nav_inventario': 'Inventory',
     'nav_inventario_sub': 'Material and devices',
-
     'profile': 'My Profile',
     'personal_data': 'Personal Data',
     'settings': 'Settings',
@@ -165,7 +163,7 @@ const _translations = {
     'confirm': 'Confirm',
     'security_desc': 'Security & Local GDPR',
     'school_center': 'AulaPro School Center',
-      'nav_horario': 'Schedule',
+    'nav_horario': 'Schedule',
     'nav_horario_sub': 'View class calendar',
     'nav_historial': 'History',
     'nav_historial_sub': 'View center activity',
@@ -209,7 +207,7 @@ const _translations = {
     'metric_hijo': 'Child',
     'metric_recibos': 'Receipts',
     'metric_al_dia': 'Up to date',
-},
+  },
   'ca': {
     'nav_alumnos': 'Alumnes',
     'nav_alumnos_sub': 'Gestió d\'estudiants',
@@ -224,7 +222,6 @@ const _translations = {
     'greeting_evening': 'Bona nit',
     'nav_inventario': 'Inventari',
     'nav_inventario_sub': 'Material i dispositius',
-
     'profile': 'El meu Perfil',
     'personal_data': 'Dades Personals',
     'settings': 'Ajustos',
@@ -246,7 +243,7 @@ const _translations = {
     'confirm': 'Confirmar',
     'security_desc': 'Seguretat i RGPD local',
     'school_center': 'AulaPro Centre escolar',
-      'nav_horario': 'Horari',
+    'nav_horario': 'Horari',
     'nav_horario_sub': 'Veure calendari de classes',
     'nav_historial': 'Historial',
     'nav_historial_sub': 'Veure activitat del centre',
@@ -290,7 +287,7 @@ const _translations = {
     'metric_hijo': 'Fill',
     'metric_recibos': 'Rebuts',
     'metric_al_dia': 'Al dia',
-},
+  },
   'eu': {
     'nav_alumnos': 'Ikasleak',
     'nav_alumnos_sub': 'Ikasleen kudeaketa',
@@ -305,7 +302,6 @@ const _translations = {
     'greeting_evening': 'Gabon',
     'nav_inventario': 'Inbentarioa',
     'nav_inventario_sub': 'Materiala eta gailuak',
-
     'profile': 'Nire Profila',
     'personal_data': 'Datu Pertsonalak',
     'settings': 'Ezarpenak',
@@ -327,7 +323,7 @@ const _translations = {
     'confirm': 'Berretsi',
     'security_desc': 'Segurtasuna eta DBLO',
     'school_center': 'AulaPro Ikastetxea',
-      'nav_horario': 'Ordutegia',
+    'nav_horario': 'Ordutegia',
     'nav_horario_sub': 'Ikusi klaseen egutegia',
     'nav_historial': 'Historiala',
     'nav_historial_sub': 'Ikusi zentroko jarduera',
@@ -376,7 +372,6 @@ const _translations = {
 
 const _faqs = {
   'es': {
-
     'Acceso y Autenticación': [
       FAQItem(
         '¿Cómo inicio sesión con Google?',
@@ -393,9 +388,8 @@ const _faqs = {
         'Tus datos sensibles se almacenan en servidores seguros dentro de la UE y se cifran mediante algoritmos avanzados AES-256.',
       ),
     ],
-},
+  },
   'en': {
-
     'Access & Authentication': [
       FAQItem(
         'How do I log in with Google?',
@@ -414,7 +408,6 @@ const _faqs = {
     ],
   },
   'ca': {
-
     'Accés i Autenticació': [
       FAQItem(
         'Com inicio sessió amb Google?',
@@ -433,7 +426,6 @@ const _faqs = {
     ],
   },
   'eu': {
-
     'Sarbidea eta Egiaztapena': [
       FAQItem(
         'Nola has dezaket saioa Googlekin?',

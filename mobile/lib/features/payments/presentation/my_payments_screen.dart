@@ -54,16 +54,21 @@ class _StudentView extends ConsumerWidget {
       data: (context, data) => RefreshIndicator(
         onRefresh: () async => ref.invalidate(myPaymentsProvider),
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+          padding: const EdgeInsets.fromLTRB(
+              Space.xl, Space.lg, Space.xl, Space.xxxl),
           children: [
             _BalanceCard(estado: data.estado),
             const SizedBox(height: Space.xxl),
             if (data.payments.isEmpty)
-              const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin pagos registrados')
+              const EmptyState(
+                  icon: Icons.receipt_long_outlined,
+                  title: 'Sin pagos registrados')
             else ...[
               const SectionLabel('Historial'),
               for (final p in data.payments)
-                _PaymentTile(payment: p, onUploaded: () => ref.invalidate(myPaymentsProvider)),
+                _PaymentTile(
+                    payment: p,
+                    onUploaded: () => ref.invalidate(myPaymentsProvider)),
             ],
           ],
         ),
@@ -90,9 +95,13 @@ class _TutorViewState extends ConsumerState<_TutorView> {
       onRetry: () => ref.invalidate(tutorPaymentsProvider),
       data: (context, allGroups) {
         if (allGroups.isEmpty) {
-          return const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin estudiantes vinculados');
+          return const EmptyState(
+              icon: Icons.receipt_long_outlined,
+              title: 'Sin estudiantes vinculados');
         }
-        final groups = _hijo == null ? allGroups : allGroups.where((g) => g.idEstudiante == _hijo).toList();
+        final groups = _hijo == null
+            ? allGroups
+            : allGroups.where((g) => g.idEstudiante == _hijo).toList();
 
         return Column(
           children: [
@@ -103,7 +112,10 @@ class _TutorViewState extends ConsumerState<_TutorView> {
                   label: 'Hijo',
                   value: _hijo,
                   allLabel: 'Todos los hijos',
-                  options: [for (final g in allGroups) (g.idEstudiante, g.nombreEstudiante)],
+                  options: [
+                    for (final g in allGroups)
+                      (g.idEstudiante, g.nombreEstudiante)
+                  ],
                   onChanged: (v) => setState(() => _hijo = v),
                 ),
               ]),
@@ -113,14 +125,19 @@ class _TutorViewState extends ConsumerState<_TutorView> {
               child: RefreshIndicator(
                 onRefresh: () async => ref.invalidate(tutorPaymentsProvider),
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
+                  padding: const EdgeInsets.fromLTRB(
+                      Space.xl, Space.sm, Space.xl, Space.xxxl),
                   children: [
                     for (final g in groups) ...[
-                      if (allGroups.length > 1) SectionLabel(g.nombreEstudiante),
+                      if (allGroups.length > 1)
+                        SectionLabel(g.nombreEstudiante),
                       _BalanceCard(estado: g.estado),
                       const SizedBox(height: Space.md),
                       for (final p in g.payments)
-                        _PaymentTile(payment: p, onUploaded: () => ref.invalidate(tutorPaymentsProvider)),
+                        _PaymentTile(
+                            payment: p,
+                            onUploaded: () =>
+                                ref.invalidate(tutorPaymentsProvider)),
                       const SizedBox(height: Space.xxl),
                     ],
                   ],
@@ -144,8 +161,12 @@ class _BalanceCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final ok = estado.restante <= 0;
     final restanteColor = ok
-        ? (scheme.brightness == Brightness.dark ? AppColors.verdeDark : AppColors.verdeLight)
-        : (scheme.brightness == Brightness.dark ? AppColors.rojoDark : AppColors.rojoLight);
+        ? (scheme.brightness == Brightness.dark
+            ? AppColors.verdeDark
+            : AppColors.verdeLight)
+        : (scheme.brightness == Brightness.dark
+            ? AppColors.rojoDark
+            : AppColors.rojoLight);
 
     return AppCard(
       child: Row(
@@ -156,7 +177,8 @@ class _BalanceCard extends StatelessWidget {
               children: [
                 Text('Pagado', style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 2),
-                Text(currency.format(estado.totalPagado), style: Theme.of(context).textTheme.titleMedium),
+                Text(currency.format(estado.totalPagado),
+                    style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           ),
@@ -170,7 +192,10 @@ class _BalanceCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   currency.format(estado.restante),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: restanteColor),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: restanteColor),
                 ),
               ],
             ),
@@ -198,10 +223,14 @@ class _PaymentTileState extends ConsumerState<_PaymentTile> {
     if (archivo == null) return;
     setState(() => _uploading = true);
     try {
-      await ref.read(paymentsRepositoryProvider).uploadComprobante(idPago: widget.payment.id, archivo: archivo);
+      await ref
+          .read(paymentsRepositoryProvider)
+          .uploadComprobante(idPago: widget.payment.id, archivo: archivo);
       widget.onUploaded?.call();
       if (mounted) {
-        await showErrorAlert(context, 'Comprobante enviado. Pendiente de verificación.', title: 'Éxito');
+        await showErrorAlert(
+            context, 'Comprobante enviado. Pendiente de verificación.',
+            title: 'Éxito');
       }
     } catch (_) {
       if (mounted) {
@@ -219,7 +248,8 @@ class _PaymentTileState extends ConsumerState<_PaymentTile> {
     final currency = NumberFormat.currency(locale: 'es_ES', symbol: '€');
     final monto = double.tryParse(payment.monto) ?? 0;
     final estadoLabel = _estadoComprobanteLabels[payment.estadoComprobante];
-    final puedeSubir = payment.estadoComprobante == 'ninguno' || payment.estadoComprobante == 'rechazado';
+    final puedeSubir = payment.estadoComprobante == 'ninguno' ||
+        payment.estadoComprobante == 'rechazado';
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: Space.sm),
@@ -232,25 +262,38 @@ class _PaymentTileState extends ConsumerState<_PaymentTile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(payment.tipoPago, style: const TextStyle(fontWeight: FontWeight.w600)),
-                    Text(payment.fechaPago, style: Theme.of(context).textTheme.bodySmall),
+                    Text(payment.tipoPago,
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                    Text(payment.fechaPago,
+                        style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
-              Text(currency.format(monto), style: const TextStyle(fontWeight: FontWeight.w700)),
+              Text(currency.format(monto),
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
               const SizedBox(width: Space.sm),
-              Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+              Container(
+                  width: 6,
+                  height: 6,
+                  decoration:
+                      BoxDecoration(color: color, shape: BoxShape.circle)),
             ],
           ),
           if (estadoLabel != null) ...[
             const SizedBox(height: 4),
-            Text(estadoLabel, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color)),
+            Text(estadoLabel,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: color)),
           ],
-          if (payment.estadoComprobante == 'rechazado' && (payment.motivoRechazoComprobante?.isNotEmpty ?? false)) ...[
+          if (payment.estadoComprobante == 'rechazado' &&
+              (payment.motivoRechazoComprobante?.isNotEmpty ?? false)) ...[
             const SizedBox(height: 2),
             Text(
               payment.motivoRechazoComprobante!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ],
           if (puedeSubir) ...[
@@ -258,9 +301,14 @@ class _PaymentTileState extends ConsumerState<_PaymentTile> {
             OutlinedButton.icon(
               onPressed: _uploading ? null : _subirComprobante,
               icon: _uploading
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.add_a_photo_outlined, size: 18),
-              label: Text(payment.estadoComprobante == 'rechazado' ? 'Volver a subir' : 'Subir comprobante'),
+              label: Text(payment.estadoComprobante == 'rechazado'
+                  ? 'Volver a subir'
+                  : 'Subir comprobante'),
             ),
           ],
         ],

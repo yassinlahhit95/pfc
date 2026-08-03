@@ -133,12 +133,57 @@ final class R2Client {
         return ['status' => $code, 'body' => (string)$res, 'error' => $err];
     }
 
+    private static function getTenantKey(string $key): string {
+        $prefix = Config::getInstance()->get('R2_TENANT_PREFIX', '');
+        if ($prefix !== '' && $prefix !== 'default') {
+            return $prefix . '/' . ltrim($key, '/');
+        }
+        return ltrim($key, '/');
+    }
+
+    // APCu is a single shared memory space per PHP-FPM pool — if two tenants ever share
+    // a pool, unprefixed keys leak one tenant's storage quota/usage into another's
+    // enforcement. Suffix every SaaS-sync cache key with the same tenant prefix R2 object
+    // keys already use.
+    private static function tenantCacheKey(string $key): string {
+        return $key . ':' . Config::getInstance()->get('R2_TENANT_PREFIX', 'default');
+    }
+
     public static function putObject(string $key, string $bytes, string $contentType): bool {
+        $key = self::getTenantKey($key);
+        if (function_exists('apcu_fetch')) {
+            $limitKey = self::tenantCacheKey('saas_max_storage_gb');
+            $usedKey  = self::tenantCacheKey('saas_used_storage_bytes');
+            $limitGb  = apcu_fetch($limitKey);
+            if ($limitGb !== false && $limitGb > 0) {
+                $usedBytes = apcu_fetch($usedKey);
+                if ($usedBytes === false) {
+                    $usage = self::totalUsage();
+                    $usedBytes = $usage['bytes'];
+                    apcu_store($usedKey, $usedBytes, 3600);
+                }
+
+                $limitBytes = $limitGb * 1024 * 1024 * 1024;
+                if (($usedBytes + strlen($bytes)) > $limitBytes) {
+                    throw new RuntimeException("Límite de almacenamiento SaaS ({$limitGb} GB) excedido. Por favor, contacte a su administrador.");
+                }
+            }
+        }
+
         $res = self::request('PUT', $key, $bytes, $contentType);
+
+        if ($res['status'] === 200 && function_exists('apcu_inc')) {
+            $usedKey = self::tenantCacheKey('saas_used_storage_bytes');
+            if (apcu_exists($usedKey)) {
+                apcu_inc($usedKey, strlen($bytes));
+            }
+        }
+
         return $res['status'] === 200;
     }
 
     public static function deleteObject(string $key): bool {
+        $key = self::getTenantKey($key);
         $res = self::request('DELETE', $key, '');
         // 404 = ya no existe en R2 (o nunca existió ahí, p.ej. un fichero
         // que solo vivía en disco local antes de esta migración) — no es
@@ -156,6 +201,7 @@ final class R2Client {
     // duplicar la firma SigV4, sin cambiar el contrato de listObjects() para
     // quien ya lo usa (listado de una carpeta de la landing, nunca supera 1000).
     private static function listObjectsPage(string $prefix, ?string $continuationToken = null): array {
+        $prefix = self::getTenantKey($prefix);
         [$accountId, $accessKey, $secretKey, $bucket] = self::config();
         $host      = self::host($accountId);
         $amzDate   = gmdate('Ymd\THis\Z');
@@ -279,6 +325,7 @@ final class R2Client {
         ?string $responseContentType = null,
         ?string $responseContentDisposition = null
     ): string {
+        $key = self::getTenantKey($key);
         [$accountId, $accessKey, $secretKey, $bucket] = self::config();
         $host      = self::host($accountId);
         $amzDate   = gmdate('Ymd\THis\Z');
@@ -331,6 +378,7 @@ final class R2Client {
     // contenido genuinamente público (imágenes de landing/blog) — nunca
     // para documentos que hoy pasan por un control de permisos en PHP.
     public static function publicUrl(string $key): string {
+        $key = self::getTenantKey($key);
         $base = Config::getInstance()->get('R2_PUBLIC_URL', '');
         if ($base === '') {
             throw new RuntimeException('R2_PUBLIC_URL no está configurado en .env.');

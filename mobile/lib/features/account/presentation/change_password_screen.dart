@@ -10,7 +10,8 @@ class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
 
   @override
-  ConsumerState<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() =>
+      _ChangePasswordScreenState();
 }
 
 class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
@@ -52,11 +53,16 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             newPassword: _newCtrl.text,
           );
       if (mounted) {
-        await showErrorAlert(context, 'Contraseña actualizada.', title: 'Éxito');
-        Navigator.of(context).pop();
+        await showErrorAlert(context, 'Contraseña actualizada.',
+            title: 'Éxito');
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
     } catch (e) {
-      final message = e is ApiException ? e.message : 'No se pudo actualizar la contraseña.';
+      final message = e is ApiException
+          ? e.message
+          : 'No se pudo actualizar la contraseña.';
       if (mounted) await showErrorAlert(context, message);
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -81,11 +87,15 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   decoration: InputDecoration(
                     labelText: 'Contraseña actual',
                     suffixIcon: IconButton(
-                      icon: Icon(_obscureCurrent ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                      onPressed: () => setState(() => _obscureCurrent = !_obscureCurrent),
+                      icon: Icon(_obscureCurrent
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined),
+                      onPressed: () =>
+                          setState(() => _obscureCurrent = !_obscureCurrent),
                     ),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? 'Requerido' : null,
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: Space.lg),
                 TextFormField(
@@ -94,10 +104,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   decoration: InputDecoration(
                     labelText: 'Nueva contraseña',
                     suffixIcon: IconButton(
-                      icon: Icon(_obscureNew ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                      onPressed: () => setState(() => _obscureNew = !_obscureNew),
+                      icon: Icon(_obscureNew
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined),
+                      onPressed: () =>
+                          setState(() => _obscureNew = !_obscureNew),
                     ),
-                    helperText: 'Mínimo 8 caracteres, con mayúscula, minúscula y número',
+                    helperText:
+                        'Mínimo 8 caracteres, con mayúscula, minúscula y número',
                     helperMaxLines: 2,
                   ),
                   validator: _validateNewPassword,
@@ -106,8 +120,10 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 TextFormField(
                   controller: _confirmCtrl,
                   obscureText: _obscureNew,
-                  decoration: const InputDecoration(labelText: 'Confirmar nueva contraseña'),
-                  validator: (v) => (v == null || v.isEmpty) ? 'Requerido' : null,
+                  decoration: const InputDecoration(
+                      labelText: 'Confirmar nueva contraseña'),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: Space.xxl),
                 FilledButton(
@@ -118,7 +134,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).colorScheme.onPrimary),
                           ),
                         )
                       : const Text('Guardar'),

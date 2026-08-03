@@ -19,7 +19,7 @@ $ok  = false;
 $msg = 'Datos no recibidos';
 
 if (isset($_POST['idModulo'])) {
-    if (!Security::validateCSRFToken()) {
+    if (!Security::validateCSRFToken(null, false)) {
         if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
         $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
         header("Location: ../../../vistas/admin/modulos/verModulos.php"); exit;

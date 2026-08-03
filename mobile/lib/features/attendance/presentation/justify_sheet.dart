@@ -18,10 +18,12 @@ class JustifySheetChrome extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
+      padding:
+          const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
       decoration: BoxDecoration(
         color: scheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -30,7 +32,9 @@ class JustifySheetChrome extends StatelessWidget {
             width: 36,
             height: 4,
             margin: const EdgeInsets.only(bottom: Space.lg),
-            decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(Radii.pill)),
+            decoration: BoxDecoration(
+                color: scheme.outlineVariant,
+                borderRadius: BorderRadius.circular(Radii.pill)),
           ),
           child,
         ],
@@ -59,12 +63,14 @@ Future<bool> showJustifySheet(
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setSheetState) => JustifySheetChrome(
         child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Justificar falta', style: Theme.of(ctx).textTheme.titleMedium),
+              Text('Justificar falta',
+                  style: Theme.of(ctx).textTheme.titleMedium),
               const SizedBox(height: 4),
               Text(subtitulo, style: Theme.of(ctx).textTheme.bodySmall),
               const SizedBox(height: Space.xl),
@@ -80,8 +86,12 @@ Future<bool> showJustifySheet(
                   final picked = await pickPhoto(ctx);
                   if (picked != null) setSheetState(() => archivo = picked);
                 },
-                icon: Icon(archivo == null ? Icons.add_a_photo_outlined : Icons.check_circle_outline),
-                label: Text(archivo == null ? 'Adjuntar foto (opcional)' : 'Foto adjuntada'),
+                icon: Icon(archivo == null
+                    ? Icons.add_a_photo_outlined
+                    : Icons.check_circle_outline),
+                label: Text(archivo == null
+                    ? 'Adjuntar foto (opcional)'
+                    : 'Foto adjuntada'),
               ),
               const SizedBox(height: Space.xl),
               FilledButton(
@@ -96,7 +106,8 @@ Future<bool> showJustifySheet(
                     if (ctx.mounted) Navigator.of(ctx).pop(true);
                   } catch (_) {
                     if (ctx.mounted) {
-                      await showErrorAlert(ctx, 'No se pudo enviar la justificación.');
+                      await showErrorAlert(
+                          ctx, 'No se pudo enviar la justificación.');
                     }
                   }
                 },

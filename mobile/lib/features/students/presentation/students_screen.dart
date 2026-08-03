@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
-import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/profile_detail_sheet.dart';
 import '../../../core/widgets/password_confirmation_dialog.dart';
 import '../../../core/utils/debounce.dart';
@@ -12,7 +11,8 @@ import '../../../core/auth/session.dart';
 import '../data/students_repository.dart';
 import 'add_student_screen.dart';
 import 'family_screen.dart';
-import '../../attendance/presentation/center_attendance_screen.dart' show lookupsProvider;
+import '../../attendance/presentation/center_attendance_screen.dart'
+    show lookupsProvider;
 
 class StudentsFilters {
   const StudentsFilters({
@@ -50,7 +50,8 @@ class StudentsFilters {
   }
 }
 
-final studentsFiltersProvider = StateProvider<StudentsFilters>((ref) => const StudentsFilters());
+final studentsFiltersProvider =
+    StateProvider<StudentsFilters>((ref) => const StudentsFilters());
 
 class StudentsScreen extends ConsumerStatefulWidget {
   const StudentsScreen({super.key});
@@ -63,7 +64,6 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
   late ScrollController _scrollController;
   final Debounce _debounce = Debounce();
 
-
   @override
   void initState() {
     super.initState();
@@ -72,17 +72,20 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
       final filters = ref.read(studentsFiltersProvider);
       _debounce(const Duration(milliseconds: 300), () {
-        ref.read(studentsProvider(
-          (
-            cicloId: filters.ciclo,
-            nivelId: filters.nivel,
-            status: filters.estado,
-            query: filters.q,
-          ),
-        ).notifier).loadMore();
+        ref
+            .read(studentsProvider(
+              (
+                cicloId: filters.ciclo,
+                nivelId: filters.nivel,
+                status: filters.estado,
+                query: filters.q,
+              ),
+            ).notifier)
+            .loadMore();
       });
     }
   }
@@ -105,7 +108,8 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(sessionControllerProvider).valueOrNull;
-    final canManage = session?.role == UserRole.director || session?.role == UserRole.secretaria;
+    final canManage = session?.role == UserRole.director ||
+        session?.role == UserRole.secretaria;
     final filters = ref.watch(studentsFiltersProvider);
     final studentsAsync = ref.watch(studentsProvider(
       (
@@ -126,18 +130,20 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
           ),
         ],
       ),
-      floatingActionButton: canManage ? FloatingActionButton(
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddStudentScreen()),
-          );
-          if (result == true) {
-            ref.invalidate(studentsProvider);
-          }
-        },
-        child: const Icon(Icons.add),
-      ) : null,
+      floatingActionButton: canManage
+          ? FloatingActionButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddStudentScreen()),
+                );
+                if (result == true) {
+                  ref.invalidate(studentsProvider);
+                }
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: Column(
         children: [
           Padding(
@@ -145,19 +151,23 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
             child: TextField(
               onChanged: (value) {
                 _debounce(const Duration(milliseconds: 500), () {
-                  ref.read(studentsFiltersProvider.notifier).update((s) => s.copyWith(q: value));
+                  ref
+                      .read(studentsFiltersProvider.notifier)
+                      .update((s) => s.copyWith(q: value));
                 });
               },
               decoration: InputDecoration(
                 hintText: 'Buscar por nombre...',
                 prefixIcon: const Icon(Icons.search),
-                contentPadding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: Space.md, vertical: Space.sm),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(Radii.md),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                fillColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
             ),
           ),
@@ -167,7 +177,9 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
               onRetry: () => ref.invalidate(studentsProvider),
               data: (context, data) {
                 if (data.students.isEmpty) {
-                  return const EmptyState(icon: Icons.people_outlined, title: 'Sin alumnos registrados');
+                  return const EmptyState(
+                      icon: Icons.people_outlined,
+                      title: 'Sin alumnos registrados');
                 }
                 return Column(
                   children: [
@@ -175,7 +187,8 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
                       child: ListView.separated(
                         controller: _scrollController,
                         itemCount: data.students.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: Space.sm),
                         itemBuilder: (context, index) {
                           final student = data.students[index];
                           return _StudentCard(student: student);
@@ -197,7 +210,8 @@ class _StudentsFiltersSheet extends ConsumerStatefulWidget {
   const _StudentsFiltersSheet();
 
   @override
-  ConsumerState<_StudentsFiltersSheet> createState() => _StudentsFiltersSheetState();
+  ConsumerState<_StudentsFiltersSheet> createState() =>
+      _StudentsFiltersSheetState();
 }
 
 class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
@@ -230,13 +244,17 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
         top: 16,
       ),
       child: lookupsAsync.when(
-        loading: () => const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
-        error: (e, st) => const SizedBox(height: 200, child: Center(child: Text('Error cargando filtros'))),
+        loading: () => const SizedBox(
+            height: 200, child: Center(child: CircularProgressIndicator())),
+        error: (e, st) => const SizedBox(
+            height: 200, child: Center(child: Text('Error cargando filtros'))),
         data: (lookups) {
           final nivelesData = lookups['niveles'] as List? ?? [];
           final ciclos = lookups['ciclos'] as List? ?? [];
           final activeNivelIds = ciclos.map((c) => c['idNivel'] as int).toSet();
-          final niveles = nivelesData.where((n) => activeNivelIds.contains(n['idNivel'] as int)).toList();
+          final niveles = nivelesData
+              .where((n) => activeNivelIds.contains(n['idNivel'] as int))
+              .toList();
 
           final textTheme = Theme.of(context).textTheme;
           return Column(
@@ -246,34 +264,42 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
               Text('Filtros', style: textTheme.titleLarge),
               const SizedBox(height: 16),
               DropdownButtonFormField<int?>(
-                value: _nivel,
+                initialValue: _nivel,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Nivel'),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Todos los niveles')),
-                  ...niveles.map((n) => DropdownMenuItem(value: n['idNivel'] as int, child: Text(n['nombreNivel'], overflow: TextOverflow.ellipsis, maxLines: 1))),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Todos los niveles')),
+                  ...niveles.map((n) => DropdownMenuItem(
+                      value: n['idNivel'] as int,
+                      child: Text(n['nombreNivel'],
+                          overflow: TextOverflow.ellipsis, maxLines: 1))),
                 ],
                 onChanged: (val) => setState(() => _nivel = val),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int?>(
-                value: _ciclo,
+                initialValue: _ciclo,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Ciclo'),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Todos los ciclos')),
-                  ...ciclos.map((c) => DropdownMenuItem(value: c['idCiclo'] as int, child: Text(c['nombreCiclo'], overflow: TextOverflow.ellipsis, maxLines: 1))),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Todos los ciclos')),
+                  ...ciclos.map((c) => DropdownMenuItem(
+                      value: c['idCiclo'] as int,
+                      child: Text(c['nombreCiclo'],
+                          overflow: TextOverflow.ellipsis, maxLines: 1))),
                 ],
                 onChanged: (val) => setState(() => _ciclo = val),
               ),
-
               const SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        ref.read(studentsFiltersProvider.notifier).state = const StudentsFilters();
+                        ref.read(studentsFiltersProvider.notifier).state =
+                            const StudentsFilters();
                         Navigator.pop(context);
                       },
                       child: const Text('Limpiar'),
@@ -283,8 +309,10 @@ class _StudentsFiltersSheetState extends ConsumerState<_StudentsFiltersSheet> {
                   Expanded(
                     child: FilledButton(
                       onPressed: () {
-                        final currentFilters = ref.read(studentsFiltersProvider);
-                        ref.read(studentsFiltersProvider.notifier).state = currentFilters.copyWith(
+                        final currentFilters =
+                            ref.read(studentsFiltersProvider);
+                        ref.read(studentsFiltersProvider.notifier).state =
+                            currentFilters.copyWith(
                           nivel: _nivel,
                           ciclo: _ciclo,
                           anio: _anio,
@@ -317,7 +345,8 @@ class _StudentCard extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final session = ref.watch(sessionControllerProvider).valueOrNull;
-    final canManage = session?.role == UserRole.director || session?.role == UserRole.secretaria;
+    final canManage = session?.role == UserRole.director ||
+        session?.role == UserRole.secretaria;
 
     return InkWell(
       onTap: () {
@@ -328,7 +357,8 @@ class _StudentCard extends ConsumerWidget {
           nombre: student.nombre,
           email: student.email,
           telefono: student.telefono,
-          subtitle: '${student.course} - ${student.year ?? ''} (${student.abreviaturaCiclo})',
+          subtitle:
+              '${student.course} - ${student.year ?? ''} (${student.abreviaturaCiclo})',
         );
       },
       borderRadius: BorderRadius.circular(Radii.md),
@@ -342,104 +372,122 @@ class _StudentCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: scheme.primary.withValues(alpha: 0.15),
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: scheme.primary.withValues(alpha: 0.15),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    student.nombre.isNotEmpty
+                        ? student.nombre[0].toUpperCase()
+                        : '?',
+                    style: textTheme.headlineSmall
+                        ?.copyWith(color: scheme.primary),
+                  ),
                 ),
-                alignment: Alignment.center,
-                child: Text(
-                  student.nombre.isNotEmpty ? student.nombre[0].toUpperCase() : '?',
-                  style: textTheme.headlineSmall?.copyWith(color: scheme.primary),
+                const SizedBox(width: Space.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(student.nombre, style: textTheme.titleSmall),
+                      Text(
+                        student.abreviaturaCiclo,
+                        style: textTheme.bodySmall
+                            ?.copyWith(color: scheme.onSurfaceVariant),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: Space.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(student.nombre, style: textTheme.titleSmall),
-                    Text(
-                      student.abreviaturaCiclo,
-                      style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-                    ),
-                  ],
-                ),
-              ),
-              if (canManage)
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert),
-                  onSelected: (value) async {
-                    if (value == 'family') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => FamilyScreen(idEstudiante: student.id),
-                        ),
-                      );
-                    } else if (value == 'edit') {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => AddStudentScreen(student: student),
-                        ),
-                      );
-                      if (result == true) {
-                        ref.invalidate(studentsProvider);
-                      }
-                    } else if (value == 'password') {
-                      _showChangePasswordDialog(context, ref, student);
-                    } else if (value == 'delete') {
-                      final password = await PasswordConfirmationDialog.show(
-                        context,
-                        title: 'Eliminar Alumno',
-                        message: 'Introduce tu contraseña para confirmar la eliminación de ${student.nombre}.',
-                      );
-                      if (password != null) {
-                        try {
-                          await ref.read(studentsRepositoryProvider).deleteStudent(student.id, password);
+                if (canManage)
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (value) async {
+                      if (value == 'family') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                FamilyScreen(idEstudiante: student.id),
+                          ),
+                        );
+                      } else if (value == 'edit') {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AddStudentScreen(student: student),
+                          ),
+                        );
+                        if (result == true) {
                           ref.invalidate(studentsProvider);
-                        } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: $e'), backgroundColor: Theme.of(context).colorScheme.error),
-                            );
+                        }
+                      } else if (value == 'password') {
+                        _showChangePasswordDialog(context, ref, student);
+                      } else if (value == 'delete') {
+                        final password = await PasswordConfirmationDialog.show(
+                          context,
+                          title: 'Eliminar Alumno',
+                          message:
+                              'Introduce tu contraseña para confirmar la eliminación de ${student.nombre}.',
+                        );
+                        if (password != null) {
+                          try {
+                            await ref
+                                .read(studentsRepositoryProvider)
+                                .deleteStudent(student.id, password);
+                            ref.invalidate(studentsProvider);
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Error: $e'),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.error),
+                              );
+                            }
                           }
                         }
                       }
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(value: 'family', child: Text('Familiares (Tutores)')),
-                    const PopupMenuItem(value: 'edit', child: Text('Editar')),
-                    const PopupMenuItem(value: 'password', child: Text('Cambiar Contraseña')),
-                    const PopupMenuItem(value: 'delete', child: Text('Eliminar', style: TextStyle(color: Colors.red))),
-                  ],
-                ),
-            ],
-          ),
-          if (student.course.isNotEmpty) ...[
-            const SizedBox(height: Space.sm),
-            Text(
-              '${student.course} - ${student.year ?? ''}',
-              style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                          value: 'family', child: Text('Familiares (Tutores)')),
+                      const PopupMenuItem(value: 'edit', child: Text('Editar')),
+                      const PopupMenuItem(
+                          value: 'password', child: Text('Cambiar Contraseña')),
+                      const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Eliminar',
+                              style: TextStyle(color: Colors.red))),
+                    ],
+                  ),
+              ],
             ),
+            if (student.course.isNotEmpty) ...[
+              const SizedBox(height: Space.sm),
+              Text(
+                '${student.course} - ${student.year ?? ''}',
+                style: textTheme.bodySmall
+                    ?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ],
           ],
-        ],
-      ),
+        ),
       ),
     );
   }
 }
 
-Future<void> _showChangePasswordDialog(BuildContext context, WidgetRef ref, Student student) async {
+Future<void> _showChangePasswordDialog(
+    BuildContext context, WidgetRef ref, Student student) async {
   final controller = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  
+
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -453,9 +501,11 @@ Future<void> _showChangePasswordDialog(BuildContext context, WidgetRef ref, Stud
             const SizedBox(height: Space.md),
             TextFormField(
               controller: controller,
-              decoration: const InputDecoration(labelText: 'Nueva Contraseña', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Nueva Contraseña', border: OutlineInputBorder()),
               obscureText: true,
-              validator: (v) => v == null || v.length < 6 ? 'Mínimo 6 caracteres' : null,
+              validator: (v) =>
+                  v == null || v.length < 6 ? 'Mínimo 6 caracteres' : null,
             ),
           ],
         ),
@@ -479,13 +529,17 @@ Future<void> _showChangePasswordDialog(BuildContext context, WidgetRef ref, Stud
 
   if (result == true && context.mounted) {
     try {
-      await ref.read(studentsRepositoryProvider).changeStudentPassword(student.id, controller.text);
+      await ref
+          .read(studentsRepositoryProvider)
+          .changeStudentPassword(student.id, controller.text);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contraseña actualizada correctamente')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Contraseña actualizada correctamente')));
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }

@@ -15,7 +15,8 @@ class RetosScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final retosAsync = ref.watch(retosProvider);
-    final isProfesor = ref.watch(sessionControllerProvider).valueOrNull?.role == UserRole.profesor;
+    final isProfesor = ref.watch(sessionControllerProvider).valueOrNull?.role ==
+        UserRole.profesor;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mis Retos')),
@@ -26,7 +27,9 @@ class RetosScreen extends ConsumerWidget {
           if (retos.isEmpty) {
             return EmptyState(
               icon: Icons.emoji_events_outlined,
-              title: isProfesor ? 'No has publicado retos' : 'Sin retos pendientes',
+              title: isProfesor
+                  ? 'No has publicado retos'
+                  : 'Sin retos pendientes',
             );
           }
           return ListView.separated(
@@ -56,15 +59,18 @@ class _RetoTile extends ConsumerWidget {
     return Card(
       elevation: 0,
       color: scheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
       child: InkWell(
         onTap: () async {
           if (reto.archivoAdjunto != null) {
             final url = ref.read(retosRepositoryProvider).downloadUrl(reto.id);
             final uri = Uri.parse(url);
-            final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+            final ok =
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
             if (!ok && context.mounted) {
-              await showErrorAlert(context, 'No se pudo abrir el PDF del reto.');
+              await showErrorAlert(
+                  context, 'No se pudo abrir el PDF del reto.');
             }
           } else {
             await showErrorAlert(context, 'Este reto no tiene un PDF adjunto.');
@@ -85,7 +91,8 @@ class _RetoTile extends ConsumerWidget {
                       color: scheme.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.picture_as_pdf_outlined, color: scheme.primary),
+                    child: Icon(Icons.picture_as_pdf_outlined,
+                        color: scheme.primary),
                   ),
                   const SizedBox(width: Space.md),
                   Expanded(
@@ -96,7 +103,8 @@ class _RetoTile extends ConsumerWidget {
                         const SizedBox(height: Space.xs),
                         Text(
                           '${reto.nombreModulo} • ${reto.nombreProfesor}',
-                          style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                          style: textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
                     ),

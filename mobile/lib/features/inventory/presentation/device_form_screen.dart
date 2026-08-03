@@ -24,7 +24,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   late final TextEditingController _cantidadController;
   String _status = 'disponible';
   bool _loading = false;
-  
+
   File? _imageFile;
   final _picker = ImagePicker();
 
@@ -32,8 +32,10 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.device?.nombre ?? '');
-    _serialController = TextEditingController(text: widget.device?.numeroSerie ?? '');
-    _cantidadController = TextEditingController(text: widget.device?.cantidad.toString() ?? '1');
+    _serialController =
+        TextEditingController(text: widget.device?.numeroSerie ?? '');
+    _cantidadController =
+        TextEditingController(text: widget.device?.cantidad.toString() ?? '1');
     if (widget.device != null) {
       _status = widget.device!.estado;
     }
@@ -48,16 +50,18 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   }
 
   Future<void> _takePhoto() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera, imageQuality: 70, maxWidth: 800);
+    final pickedFile = await _picker.pickImage(
+        source: ImageSource.camera, imageQuality: 70, maxWidth: 800);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
     }
   }
-  
+
   Future<void> _pickGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 70, maxWidth: 800);
+    final pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 70, maxWidth: 800);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
@@ -69,9 +73,10 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     final nombre = _nameController.text.trim();
     final serial = _serialController.text.trim();
     final cantidad = int.tryParse(_cantidadController.text.trim()) ?? 1;
-    
+
     if (nombre.isEmpty || serial.isEmpty) {
-      await showErrorAlert(context, 'El nombre y número de serie son obligatorios');
+      await showErrorAlert(
+          context, 'El nombre y número de serie son obligatorios');
       return;
     }
 
@@ -86,30 +91,36 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
       if (widget.device == null) {
         // Create
         await ref.read(inventoryRepositoryProvider).addDevice(
-          nombreArticulo: nombre,
-          numeroSerie: serial,
-          cantidad: cantidad,
-          fotoBase64: base64Image,
-        );
+              nombreArticulo: nombre,
+              numeroSerie: serial,
+              cantidad: cantidad,
+              fotoBase64: base64Image,
+            );
         if (mounted) {
-          await showErrorAlert(context, 'Dispositivo añadido exitosamente', title: 'Éxito');
+          await showErrorAlert(context, 'Dispositivo añadido exitosamente',
+              title: 'Éxito');
           ref.invalidate(devicesProvider);
-          Navigator.of(context).pop(true);
+          if (mounted) {
+            Navigator.of(context).pop(true);
+          }
         }
       } else {
         // Update
         await ref.read(inventoryRepositoryProvider).editDevice(
-          idArticulo: widget.device!.id,
-          nombreArticulo: nombre,
-          numeroSerie: serial,
-          estado: _status,
-          cantidad: cantidad,
-          fotoBase64: base64Image,
-        );
+              idArticulo: widget.device!.id,
+              nombreArticulo: nombre,
+              numeroSerie: serial,
+              estado: _status,
+              cantidad: cantidad,
+              fotoBase64: base64Image,
+            );
         if (mounted) {
-          await showErrorAlert(context, 'Dispositivo actualizado exitosamente', title: 'Éxito');
+          await showErrorAlert(context, 'Dispositivo actualizado exitosamente',
+              title: 'Éxito');
           ref.invalidate(devicesProvider);
-          Navigator.of(context).pop(true);
+          if (mounted) {
+            Navigator.of(context).pop(true);
+          }
         }
       }
     } catch (e) {
@@ -123,7 +134,10 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.device == null ? 'Añadir Dispositivo' : 'Editar Dispositivo')),
+      appBar: AppBar(
+          title: Text(widget.device == null
+              ? 'Añadir Dispositivo'
+              : 'Editar Dispositivo')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(Space.xl),
         child: Column(
@@ -131,7 +145,8 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           children: [
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nombre del dispositivo'),
+              decoration:
+                  const InputDecoration(labelText: 'Nombre del dispositivo'),
               enabled: !_loading,
             ),
             const SizedBox(height: Space.lg),
@@ -150,42 +165,52 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             const SizedBox(height: Space.lg),
             if (widget.device != null) ...[
               DropdownButtonFormField<String>(
-                value: _status,
+                initialValue: _status,
                 decoration: const InputDecoration(labelText: 'Estado'),
                 items: const [
-                  DropdownMenuItem(value: 'disponible', child: Text('Disponible')),
+                  DropdownMenuItem(
+                      value: 'disponible', child: Text('Disponible')),
                   DropdownMenuItem(value: 'prestado', child: Text('Prestado')),
                   DropdownMenuItem(value: 'baja', child: Text('Baja / Roto')),
                 ],
-                onChanged: _loading ? null : (v) => setState(() => _status = v!),
+                onChanged:
+                    _loading ? null : (v) => setState(() => _status = v!),
               ),
               const SizedBox(height: Space.lg),
             ],
-            
             Text('Fotografía', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: Space.sm),
             if (_imageFile != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(Radii.md),
-                child: Image.file(_imageFile!, height: 200, width: double.infinity, fit: BoxFit.cover),
+                child: Image.file(_imageFile!,
+                    height: 200, width: double.infinity, fit: BoxFit.cover),
               )
-            else if (widget.device?.foto != null && widget.device!.foto!.isNotEmpty)
+            else if (widget.device?.foto != null &&
+                widget.device!.foto!.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(Radii.md),
                 child: CachedNetworkImage(
-                  imageUrl: '$apiBaseUrl/public/uploads/equipos/${widget.device!.foto}',
-                  height: 200, 
+                  imageUrl:
+                      '$apiBaseUrl/public/uploads/equipos/${widget.device!.foto}',
+                  height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
                     height: 200,
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: const Center(child: CircularProgressIndicator()),
                   ),
                   errorWidget: (context, url, error) => Container(
                     height: 200,
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Center(child: Icon(Icons.broken_image, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: Center(
+                        child: Icon(Icons.broken_image,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant)),
                   ),
                 ),
               )
@@ -195,11 +220,14 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(Radii.md),
-                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.outlineVariant),
                 ),
-                child: Center(child: Icon(Icons.camera_alt_outlined, size: 40, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                child: Center(
+                    child: Icon(Icons.camera_alt_outlined,
+                        size: 40,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ),
-              
             const SizedBox(height: Space.md),
             Row(
               children: [
@@ -220,7 +248,6 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                 ),
               ],
             ),
-            
             const SizedBox(height: Space.xxxl),
             FilledButton.icon(
               onPressed: _loading ? null : _submit,
@@ -230,7 +257,8 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).colorScheme.onPrimary),
                       ),
                     )
                   : const Icon(Icons.save),

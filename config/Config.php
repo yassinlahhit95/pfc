@@ -41,11 +41,34 @@ class Config {
         $dbFile = __DIR__ . '/db.php';
         if (file_exists($dbFile)) require_once $dbFile;
 
+        // [MULTI-TENANT DYNAMIC ROUTING]
+        // Resolve tenant database based on subdomain (e.g., colegio1.aulapro.test -> yassjjzw_pfc_colegio1)
+        $httpHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $httpHost = explode(':', $httpHost)[0];
+        $hostParts = explode('.', $httpHost);
+        $subdomain = (count($hostParts) >= 3 && $hostParts[0] !== 'www') ? $hostParts[0] : 'default';
+        // The Host header is attacker-controlled. Before it ever reaches a DB name or
+        // an APCu/R2 key prefix, restrict it to the same charset a real subdomain can
+        // ever contain — anything else (injected chars, absurd length) falls back to
+        // 'default' rather than being used verbatim. This doesn't confirm the subdomain
+        // maps to a *real* provisioned tenant (that list lives in saas-admin, a separate
+        // service/DB this app doesn't call on every request) — it only guarantees the
+        // value can't smuggle anything unexpected into a database/cache name.
+        if (!preg_match('/^[a-z0-9-]{1,63}$/', $subdomain)) {
+            $subdomain = 'default';
+        }
+
+        $dynamicDbName = "yassjjzw_pfc_" . str_replace('-', '_', $subdomain);
+        
         // Database
         $this->config['DB_HOST'] = $this->env('DB_HOST', defined('DB_HOST_VALUE') ? DB_HOST_VALUE : 'localhost');
-        $this->config['DB_USER'] = $this->env('DB_USER', defined('DB_USER_VALUE') ? DB_USER_VALUE : '');
+        $this->config['DB_USER'] = $this->env('DB_USER', defined('DB_USER_VALUE') ? DB_USER_VALUE : 'root');
         $this->config['DB_PASS'] = $this->env('DB_PASS', defined('DB_PASS_VALUE') ? DB_PASS_VALUE : '');
-        $this->config['DB_NAME'] = $this->env('DB_NAME', defined('DB_NAME_VALUE') ? DB_NAME_VALUE : 'yassjjzw_pfc');
+        // If the dynamic DB exists/applies, use it, otherwise fallback to default env
+        $this->config['DB_NAME'] = $this->env('DB_NAME', $dynamicDbName);
+
+        // Tenant Prefix for R2 isolated file storage
+        $this->config['R2_TENANT_PREFIX'] = $subdomain;
 
         // Firebase
         $this->config['FIREBASE_API_KEY']            = $this->env('FIREBASE_API_KEY', '');
@@ -76,6 +99,13 @@ class Config {
         $this->config['R2_SECRET_ACCESS_KEY'] = $this->env('R2_SECRET_ACCESS_KEY', '');
         $this->config['R2_BUCKET_NAME']       = $this->env('R2_BUCKET_NAME', '');
         $this->config['R2_PUBLIC_URL']        = rtrim($this->env('R2_PUBLIC_URL', ''), '/');
+
+        // SaaS Admin integration (cron/sync_saas_license.php calls saas-admin's
+        // /api/v1/license/verify, which requires HMAC-signed requests). Must match the
+        // api_key/api_secret of the `connections` row saas-admin has for this instance.
+        $this->config['SAAS_ADMIN_URL']    = rtrim($this->env('SAAS_ADMIN_URL', ''), '/');
+        $this->config['SAAS_API_KEY']      = $this->env('SAAS_API_KEY', '');
+        $this->config['SAAS_API_SECRET']   = $this->env('SAAS_API_SECRET', '');
 
         // Application
         // URL pública canónica (p. ej. https://aulapro.yassin.agency). Se usa para

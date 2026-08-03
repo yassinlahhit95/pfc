@@ -50,7 +50,8 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
   Future<void> _search(String query) async {
     setState(() => _loading = true);
     try {
-      final contacts = await ref.read(chatRepositoryProvider).fetchContacts(query: query);
+      final contacts =
+          await ref.read(chatRepositoryProvider).fetchContacts(query: query);
       if (!mounted) return;
       setState(() {
         _contacts = contacts;
@@ -68,7 +69,8 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
     final desc = _descController.text.trim();
 
     if (asunto.isEmpty || desc.isEmpty) {
-      await showErrorAlert(context, 'Por favor, completa el asunto y el mensaje.');
+      await showErrorAlert(
+          context, 'Por favor, completa el asunto y el mensaje.');
       return;
     }
 
@@ -123,8 +125,11 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(c.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
-                          Text('Destinatario: ${_roleLabel(c.rol)}', style: Theme.of(context).textTheme.bodySmall),
+                          Text(c.nombre,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600)),
+                          Text('Destinatario: ${_roleLabel(c.rol)}',
+                              style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
                     ),
@@ -162,7 +167,8 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
                         width: 18,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.onPrimary),
                         ),
                       )
                     : const Text('Enviar mensaje'),
@@ -184,7 +190,8 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
             hintText: 'Buscar destinatario',
             filled: false,
             border: InputBorder.none,
-            hintStyle: TextStyle(color: scheme.onSurfaceVariant, fontWeight: FontWeight.normal),
+            hintStyle: TextStyle(
+                color: scheme.onSurfaceVariant, fontWeight: FontWeight.normal),
             contentPadding: EdgeInsets.zero,
           ),
         ),
@@ -192,7 +199,8 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
           : _contacts.isEmpty
-              ? const EmptyState(icon: Icons.person_search_outlined, title: 'Sin resultados')
+              ? const EmptyState(
+                  icon: Icons.person_search_outlined, title: 'Sin resultados')
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: Space.sm),
                   itemCount: _contacts.length,
@@ -203,7 +211,8 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
                       child: InkWell(
                         onTap: () => setState(() => _selectedContact = c),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Space.xl, vertical: Space.md),
                           child: Row(
                             children: [
                               InitialsAvatar(name: c.nombre, radius: 20),
@@ -212,8 +221,13 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(c.nombre, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                    Text(_roleLabel(c.rol), style: Theme.of(context).textTheme.bodySmall),
+                                    Text(c.nombre,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text(_roleLabel(c.rol),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall),
                                   ],
                                 ),
                               ),

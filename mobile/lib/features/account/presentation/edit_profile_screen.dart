@@ -33,7 +33,8 @@ const Map<UserRole, Map<String, String>> _editableFields = {
 };
 
 class EditProfileScreen extends ConsumerStatefulWidget {
-  const EditProfileScreen({super.key, required this.role, required this.profile});
+  const EditProfileScreen(
+      {super.key, required this.role, required this.profile});
 
   final UserRole role;
   final Profile profile;
@@ -50,7 +51,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void initState() {
     super.initState();
     for (final field in (_editableFields[widget.role] ?? {}).values) {
-      _controllers[field] = TextEditingController(text: widget.profile.data[field]?.toString() ?? '');
+      _controllers[field] = TextEditingController(
+          text: widget.profile.data[field]?.toString() ?? '');
     }
   }
 
@@ -66,15 +68,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     setState(() => _saving = true);
     try {
       await ref.read(accountRepositoryProvider).updateProfile(
-            {for (final e in _controllers.entries) e.key: e.value.text.trim()},
-          );
+        {for (final e in _controllers.entries) e.key: e.value.text.trim()},
+      );
       ref.invalidate(profileProvider);
       if (mounted) {
         await showErrorAlert(context, 'Perfil actualizado.', title: 'Éxito');
-        Navigator.of(context).pop();
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
     } catch (e) {
-      final message = e is ApiException ? e.message : 'No se pudo actualizar el perfil.';
+      final message =
+          e is ApiException ? e.message : 'No se pudo actualizar el perfil.';
       if (mounted) await showErrorAlert(context, message);
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -92,7 +97,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(24),
-                  child: Text('Este rol no tiene datos de contacto editables desde la app.'),
+                  child: Text(
+                      'Este rol no tiene datos de contacto editables desde la app.'),
                 ),
               )
             : SingleChildScrollView(
@@ -116,7 +122,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).colorScheme.onPrimary),
                               ),
                             )
                           : const Text('Guardar'),

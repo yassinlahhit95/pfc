@@ -32,8 +32,10 @@ class DashboardRepository {
   }
 }
 
-final dashboardRepositoryProvider = Provider((ref) => DashboardRepository(ref.watch(apiClientProvider)));
+final dashboardRepositoryProvider =
+    Provider((ref) => DashboardRepository(ref.watch(apiClientProvider)));
 
-final dashboardStatsProvider = FutureProvider.autoDispose<DashboardStats>((ref) {
+final dashboardStatsProvider =
+    FutureProvider.autoDispose<DashboardStats>((ref) {
   return ref.watch(dashboardRepositoryProvider).getStats();
 });

@@ -29,7 +29,7 @@ if (!isset($_POST['enviarRespuesta'])) {
     exit;
 }
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     responder_est_salir(false, "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.", (int)($_POST['idReclamacion'] ?? 0), $isAjax);
 }
 

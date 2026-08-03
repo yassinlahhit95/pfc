@@ -13,12 +13,14 @@ class TutorFormSheet extends ConsumerStatefulWidget {
   final int idEstudiante;
   final Tutor? tutor;
 
-  static Future<bool?> show(BuildContext context, int idEstudiante, {Tutor? tutor}) {
+  static Future<bool?> show(BuildContext context, int idEstudiante,
+      {Tutor? tutor}) {
     return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: TutorFormSheet(idEstudiante: idEstudiante, tutor: tutor),
       ),
     );
@@ -87,7 +89,9 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
       }
 
       if (mounted) {
-        setState(() => _successMessage = widget.tutor == null ? 'Familiar añadido con éxito' : 'Familiar actualizado con éxito');
+        setState(() => _successMessage = widget.tutor == null
+            ? 'Familiar añadido con éxito'
+            : 'Familiar actualizado con éxito');
         await Future.delayed(const Duration(seconds: 1));
         if (mounted) Navigator.pop(context, true);
       }
@@ -113,7 +117,9 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              widget.tutor == null ? 'Añadir Familiar/Tutor' : 'Editar Familiar/Tutor',
+              widget.tutor == null
+                  ? 'Añadir Familiar/Tutor'
+                  : 'Editar Familiar/Tutor',
               style: textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
@@ -124,7 +130,8 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
                 color: Theme.of(context).colorScheme.errorContainer,
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onErrorContainer),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -144,36 +151,43 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
             const SizedBox(height: Space.xl),
             TextFormField(
               controller: _nombreController,
-              decoration: const InputDecoration(labelText: 'Nombre Completo', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Nombre Completo', border: OutlineInputBorder()),
               validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
             ),
             const SizedBox(height: Space.md),
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Email', border: OutlineInputBorder()),
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => v == null || !v.contains('@') ? 'Email inválido' : null,
+              validator: (v) =>
+                  v == null || !v.contains('@') ? 'Email inválido' : null,
             ),
             const SizedBox(height: Space.md),
             TextFormField(
               controller: _dniController,
-              decoration: const InputDecoration(labelText: 'DNI/NIE', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'DNI/NIE', border: OutlineInputBorder()),
               validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
             ),
             const SizedBox(height: Space.md),
             TextFormField(
               controller: _telefonoController,
-              decoration: const InputDecoration(labelText: 'Teléfono', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Teléfono', border: OutlineInputBorder()),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: Space.md),
             DropdownButtonFormField<String>(
-              value: _parentesco,
-              decoration: const InputDecoration(labelText: 'Parentesco', border: OutlineInputBorder()),
+              initialValue: _parentesco,
+              decoration: const InputDecoration(
+                  labelText: 'Parentesco', border: OutlineInputBorder()),
               items: const [
                 DropdownMenuItem(value: 'Madre', child: Text('Madre')),
                 DropdownMenuItem(value: 'Padre', child: Text('Padre')),
-                DropdownMenuItem(value: 'Tutor Legal', child: Text('Tutor Legal')),
+                DropdownMenuItem(
+                    value: 'Tutor Legal', child: Text('Tutor Legal')),
                 DropdownMenuItem(value: 'Otro', child: Text('Otro')),
               ],
               onChanged: (val) {
@@ -183,9 +197,13 @@ class _TutorFormSheetState extends ConsumerState<TutorFormSheet> {
             const SizedBox(height: Space.xl),
             FilledButton(
               onPressed: _isLoading ? null : _submit,
-              child: _isLoading 
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Text('Guardar'),
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
+                  : const Text('Guardar'),
             ),
           ],
         ),

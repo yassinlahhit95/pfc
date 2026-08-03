@@ -13,7 +13,8 @@ class TeacherFormSheet extends ConsumerStatefulWidget {
       context: context,
       isScrollControlled: true,
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: TeacherFormSheet(teacher: teacher),
       ),
     );
@@ -87,14 +88,16 @@ class _TeacherFormSheetState extends ConsumerState<TeacherFormSheet> {
         'codigoPostalProfesor': _codigoPostalCtrl.text.trim(),
         'observacionesProfesor': _observacionesCtrl.text.trim(),
       };
-      
+
       if (widget.teacher == null) {
         await ref.read(teachersRepositoryProvider).createTeacher(data);
       } else {
         await ref.read(teachersRepositoryProvider).updateTeacher(data);
       }
       if (mounted) {
-        setState(() => _successMessage = widget.teacher == null ? 'Profesor creado con éxito' : 'Profesor actualizado con éxito');
+        setState(() => _successMessage = widget.teacher == null
+            ? 'Profesor creado con éxito'
+            : 'Profesor actualizado con éxito');
         await Future.delayed(const Duration(seconds: 1));
         if (mounted) Navigator.pop(context, true);
       }
@@ -131,7 +134,8 @@ class _TeacherFormSheetState extends ConsumerState<TeacherFormSheet> {
                 color: Theme.of(context).colorScheme.errorContainer,
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onErrorContainer),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -157,7 +161,8 @@ class _TeacherFormSheetState extends ConsumerState<TeacherFormSheet> {
             const SizedBox(height: Space.md),
             TextFormField(
               controller: _emailCtrl,
-              decoration: const InputDecoration(labelText: 'Correo Electrónico *'),
+              decoration:
+                  const InputDecoration(labelText: 'Correo Electrónico *'),
               keyboardType: TextInputType.emailAddress,
               validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
             ),
@@ -177,7 +182,9 @@ class _TeacherFormSheetState extends ConsumerState<TeacherFormSheet> {
             const SizedBox(height: Space.xl),
             FilledButton(
               onPressed: _isLoading ? null : _submit,
-              child: _isLoading ? const CircularProgressIndicator() : const Text('Guardar'),
+              child: _isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Guardar'),
             ),
           ],
         ),

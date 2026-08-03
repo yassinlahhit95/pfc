@@ -8,7 +8,7 @@ $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP
 $ok = false; $msg = 'ID no especificado';
 
 if (isset($_POST['idReto'])) {
-    if (!Security::validateCSRFToken()) {
+    if (!Security::validateCSRFToken(null, false)) {
         if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
         $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
         header("Location: ../../../vistas/profesores/retos/lista.php"); exit;

@@ -34,15 +34,19 @@ class MessagesScreen extends ConsumerWidget {
               itemCount: items.length,
               itemBuilder: (context, i) {
                 final t = items[i];
-                final other = t.nombreEstudiante ?? t.nombreProfesor ?? 'Dirección';
+                final other =
+                    t.nombreEstudiante ?? t.nombreProfesor ?? 'Dirección';
                 return Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ThreadDetailScreen(threadId: t.id, asunto: t.asunto)),
+                      MaterialPageRoute(
+                          builder: (_) => ThreadDetailScreen(
+                              threadId: t.id, asunto: t.asunto)),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Space.xl, vertical: Space.md),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Space.xl, vertical: Space.md),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -52,7 +56,9 @@ class MessagesScreen extends ConsumerWidget {
                               width: 7,
                               height: 7,
                               decoration: BoxDecoration(
-                                color: t.leido ? Colors.transparent : scheme.primary,
+                                color: t.leido
+                                    ? Colors.transparent
+                                    : scheme.primary,
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -67,7 +73,10 @@ class MessagesScreen extends ConsumerWidget {
                                     Expanded(
                                       child: Text(
                                         t.asunto,
-                                        style: TextStyle(fontWeight: t.leido ? FontWeight.w500 : FontWeight.w700),
+                                        style: TextStyle(
+                                            fontWeight: t.leido
+                                                ? FontWeight.w500
+                                                : FontWeight.w700),
                                       ),
                                     ),
                                   ],

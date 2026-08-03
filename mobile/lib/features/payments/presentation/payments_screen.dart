@@ -8,12 +8,14 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
-import '../../attendance/presentation/center_attendance_screen.dart' show lookupsProvider;
+import '../../attendance/presentation/center_attendance_screen.dart'
+    show lookupsProvider;
 import '../data/payments_repository.dart';
 import 'cobrar_pago_sheet.dart';
 
 Future<void> _openComprobante(BuildContext context, String url) async {
-  final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  final ok =
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!ok && context.mounted) {
     await showErrorAlert(context, 'No se pudo abrir el comprobante.');
   }
@@ -26,7 +28,8 @@ class PaymentsScreen extends StatefulWidget {
   State<PaymentsScreen> createState() => _PaymentsScreenState();
 }
 
-class _PaymentsScreenState extends State<PaymentsScreen> with SingleTickerProviderStateMixin {
+class _PaymentsScreenState extends State<PaymentsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -98,7 +101,9 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
           onRetry: () => ref.invalidate(paymentsProvider),
           data: (context, allItems) {
             if (allItems.isEmpty) {
-              return const EmptyState(icon: Icons.receipt_long_outlined, title: 'Sin pagos registrados');
+              return const EmptyState(
+                  icon: Icons.receipt_long_outlined,
+                  title: 'Sin pagos registrados');
             }
 
             final nivelesData = lookups['niveles'] as List? ?? [];
@@ -118,78 +123,89 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
               final nombreNivel = nivelNames[idNivel] ?? '';
               if (nombreNivel.isNotEmpty) {
                 niveles.add(nombreNivel);
-                ciclosByNivel.putIfAbsent(nombreNivel, () => {}).add(nombreCiclo);
+                ciclosByNivel
+                    .putIfAbsent(nombreNivel, () => {})
+                    .add(nombreCiclo);
               }
             }
 
             final estados = <String>{};
             for (final p in allItems) {
-              if (p.estadoComprobante.isNotEmpty) estados.add(p.estadoComprobante);
+              if (p.estadoComprobante.isNotEmpty)
+                estados.add(p.estadoComprobante);
             }
 
             // if nivel is selected, show only ciclos for that nivel; else show all ciclos
             final cicloOptions = _nivel != null
                 ? ((ciclosByNivel[_nivel] ?? <String>{}).toList()..sort())
-                : (ciclosByNivel.values.expand((c) => c).toSet().toList()..sort());
+                : (ciclosByNivel.values.expand((c) => c).toSet().toList()
+                  ..sort());
 
-        // reset ciclo if it's no longer valid for the selected nivel
-        if (_nivel != null && !cicloOptions.contains(_ciclo)) {
-          _ciclo = null;
-        }
+            // reset ciclo if it's no longer valid for the selected nivel
+            if (_nivel != null && !cicloOptions.contains(_ciclo)) {
+              _ciclo = null;
+            }
 
-        final items = allItems.where((p) {
-          if (_ciclo != null && p.nombreCiclo != _ciclo) return false;
-          if (_nivel != null && p.nivel != _nivel) return false;
-          if (_estado != null && p.estadoComprobante != _estado) return false;
-          return true;
-        }).toList();
+            final items = allItems.where((p) {
+              if (_ciclo != null && p.nombreCiclo != _ciclo) return false;
+              if (_nivel != null && p.nivel != _nivel) return false;
+              if (_estado != null && p.estadoComprobante != _estado)
+                return false;
+              return true;
+            }).toList();
 
-        return Column(
-          children: [
-            const SizedBox(height: Space.md),
-            FilterBar(children: [
-              FilterPill<String>(
-                label: 'Nivel',
-                value: _nivel,
-                options: [for (final n in niveles) (n, n)],
-                onChanged: (v) => setState(() {
-                  _nivel = v;
-                  _ciclo = null; // reset ciclo when nivel changes
-                }),
-              ),
-              FilterPill<String>(
-                label: 'Ciclo',
-                value: _ciclo,
-                options: [for (final c in cicloOptions) (c, c)],
-                onChanged: (v) => setState(() => _ciclo = v),
-              ),
-              FilterPill<String>(
-                label: 'Estado',
-                value: _estado,
-                options: [for (final e in estados) (e, e)],
-                onChanged: (v) => setState(() => _estado = v),
-              ),
-            ]),
-            const SizedBox(height: Space.sm),
-            Expanded(
-              child: items.isEmpty
-                  ? const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros')
-                  : RefreshIndicator(
-                      onRefresh: () async => ref.invalidate(paymentsProvider),
-                      child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(Space.xl, Space.sm, Space.xl, Space.xxxl),
-                        itemCount: items.length,
-                        itemExtent: 100, // ponytail: optimize list rendering
-                        itemBuilder: (context, i) => _PaymentReviewCard(
-                          payment: items[i],
-                          onResolved: () => ref.invalidate(paymentsProvider),
+            return Column(
+              children: [
+                const SizedBox(height: Space.md),
+                FilterBar(children: [
+                  FilterPill<String>(
+                    label: 'Nivel',
+                    value: _nivel,
+                    options: [for (final n in niveles) (n, n)],
+                    onChanged: (v) => setState(() {
+                      _nivel = v;
+                      _ciclo = null; // reset ciclo when nivel changes
+                    }),
+                  ),
+                  FilterPill<String>(
+                    label: 'Ciclo',
+                    value: _ciclo,
+                    options: [for (final c in cicloOptions) (c, c)],
+                    onChanged: (v) => setState(() => _ciclo = v),
+                  ),
+                  FilterPill<String>(
+                    label: 'Estado',
+                    value: _estado,
+                    options: [for (final e in estados) (e, e)],
+                    onChanged: (v) => setState(() => _estado = v),
+                  ),
+                ]),
+                const SizedBox(height: Space.sm),
+                Expanded(
+                  child: items.isEmpty
+                      ? const EmptyState(
+                          icon: Icons.filter_alt_off_outlined,
+                          title: 'Sin resultados para estos filtros')
+                      : RefreshIndicator(
+                          onRefresh: () async =>
+                              ref.invalidate(paymentsProvider),
+                          child: ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(
+                                Space.xl, Space.sm, Space.xl, Space.xxxl),
+                            itemCount: items.length,
+                            itemExtent:
+                                100, // ponytail: optimize list rendering
+                            itemBuilder: (context, i) => _PaymentReviewCard(
+                              payment: items[i],
+                              onResolved: () =>
+                                  ref.invalidate(paymentsProvider),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-            ),
-          ],
-        );
-      },
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -209,13 +225,17 @@ class _PendingPaymentsTab extends ConsumerWidget {
       onRetry: () => ref.invalidate(pendingPaymentsProvider),
       data: (context, items) {
         if (items.isEmpty) {
-          return const EmptyState(icon: Icons.check_circle_outline, title: 'Sin pagos pendientes');
+          return const EmptyState(
+              icon: Icons.check_circle_outline, title: 'Sin pagos pendientes');
         }
-        final color = Theme.of(context).brightness == Brightness.dark ? AppColors.rojoDark : AppColors.rojoLight;
+        final color = Theme.of(context).brightness == Brightness.dark
+            ? AppColors.rojoDark
+            : AppColors.rojoLight;
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(pendingPaymentsProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+            padding: const EdgeInsets.fromLTRB(
+                Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: items.length,
             itemExtent: 90, // ponytail: optimize list rendering
             itemBuilder: (context, i) {
@@ -243,21 +263,33 @@ class _PendingPaymentsTab extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(p.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
-                            Text(p.nombreCiclo, style: Theme.of(context).textTheme.bodySmall),
+                            Text(p.nombreEstudiante,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600)),
+                            Text(p.nombreCiclo,
+                                style: Theme.of(context).textTheme.bodySmall),
                           ],
                         ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(currency.format(deuda), style: TextStyle(fontWeight: FontWeight.w700, color: color)),
+                          Text(currency.format(deuda),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700, color: color)),
                           const SizedBox(height: 4),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Cobrar', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
-                              Icon(Icons.chevron_right_rounded, size: 14, color: Theme.of(context).colorScheme.primary),
+                              Text('Cobrar',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.w600)),
+                              Icon(Icons.chevron_right_rounded,
+                                  size: 14,
+                                  color: Theme.of(context).colorScheme.primary),
                             ],
                           ),
                         ],
@@ -299,8 +331,12 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
             decoration: const InputDecoration(labelText: 'Motivo del rechazo'),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancelar')),
-            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Rechazar')),
+            TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancelar')),
+            FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Rechazar')),
           ],
         ),
       );
@@ -317,7 +353,9 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
           );
       widget.onResolved();
       if (mounted) {
-        await showErrorAlert(context, aprobar ? 'Comprobante aprobado.' : 'Comprobante rechazado.', title: 'Éxito');
+        await showErrorAlert(context,
+            aprobar ? 'Comprobante aprobado.' : 'Comprobante rechazado.',
+            title: 'Éxito');
       }
     } catch (_) {
       if (mounted) {
@@ -346,7 +384,8 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p.nombreEstudiante, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    Text(p.nombreEstudiante,
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
                     const SizedBox(height: 2),
                     Text('${p.nombreCiclo} · ${p.tipoPago} · ${p.fechaPago}',
                         style: Theme.of(context).textTheme.bodySmall),
@@ -356,7 +395,8 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(currency.format(monto), style: const TextStyle(fontWeight: FontWeight.w700)),
+                  Text(currency.format(monto),
+                      style: const TextStyle(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   StatusPill(label: p.estadoComprobante, color: color),
                 ],
@@ -370,11 +410,15 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.attach_file_rounded, size: 16, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.attach_file_rounded,
+                      size: 16, color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 4),
                   Text(
                     'Ver comprobante',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary),
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.primary),
                   ),
                 ],
               ),
@@ -387,7 +431,8 @@ class _PaymentReviewCardState extends ConsumerState<_PaymentReviewCard> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _resolving ? null : () => _resolve(false),
-                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.rojoLight),
+                    style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.rojoLight),
                     child: const Text('Rechazar'),
                   ),
                 ),

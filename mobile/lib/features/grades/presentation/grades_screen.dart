@@ -61,7 +61,8 @@ class _ModuloCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(m['nombreModulo'] as String? ?? '', style: Theme.of(context).textTheme.titleSmall),
+          Text(m['nombreModulo'] as String? ?? '',
+              style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: Space.md),
           Wrap(
             spacing: Space.sm,
@@ -98,7 +99,8 @@ class _NotaChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('$label  ', style: Theme.of(context).textTheme.bodySmall),
-          Text(_fmtNota(rawValue), style: TextStyle(color: color, fontWeight: FontWeight.w700)),
+          Text(_fmtNota(rawValue),
+              style: TextStyle(color: color, fontWeight: FontWeight.w700)),
         ],
       ),
     );
@@ -125,7 +127,8 @@ class _EstudianteGradesState extends State<_EstudianteGrades> {
 
   @override
   Widget build(BuildContext context) {
-    final modulos = (widget.data['modulos'] as List).cast<Map<String, dynamic>>();
+    final modulos =
+        (widget.data['modulos'] as List).cast<Map<String, dynamic>>();
     final retos = (widget.data['retos'] as List).cast<Map<String, dynamic>>();
     if (modulos.isEmpty && retos.isEmpty) {
       return const EmptyState(
@@ -148,7 +151,8 @@ class _EstudianteGradesState extends State<_EstudianteGrades> {
               decoration: const InputDecoration(
                 labelText: 'Buscar asignatura / módulo...',
                 prefixIcon: Icon(Icons.search_rounded),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               onChanged: (val) {
                 _debounce(const Duration(milliseconds: 300), () {
@@ -161,14 +165,17 @@ class _EstudianteGradesState extends State<_EstudianteGrades> {
           ),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+            padding: const EdgeInsets.fromLTRB(
+                Space.xl, Space.lg, Space.xl, Space.xxxl),
             children: [
               if (filteredModulos.isNotEmpty) ...[
                 const SectionLabel('Módulos'),
                 for (final m in filteredModulos) _ModuloCard(m: m),
                 const SizedBox(height: Space.md),
               ] else if (modulos.isNotEmpty) ...[
-                const EmptyState(icon: Icons.filter_alt_off_outlined, title: 'Sin resultados para estos filtros'),
+                const EmptyState(
+                    icon: Icons.filter_alt_off_outlined,
+                    title: 'Sin resultados para estos filtros'),
               ],
               if (retos.isNotEmpty && _searchQuery.isEmpty) ...[
                 const SectionLabel('Retos'),
@@ -178,16 +185,25 @@ class _EstudianteGradesState extends State<_EstudianteGrades> {
                     children: [
                       for (var i = 0; i < retos.length; i++) ...[
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Space.lg, vertical: Space.md),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Space.lg, vertical: Space.md),
                           child: Row(
                             children: [
-                              Expanded(child: Text(retos[i]['nombreReto'] as String? ?? '')),
-                              Text(_fmtNota(retos[i]['nota']), style: const TextStyle(fontWeight: FontWeight.w700)),
+                              Expanded(
+                                  child: Text(
+                                      retos[i]['nombreReto'] as String? ?? '')),
+                              Text(_fmtNota(retos[i]['nota']),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700)),
                             ],
                           ),
                         ),
                         if (i != retos.length - 1)
-                          Divider(height: 1, indent: Space.lg, color: Theme.of(context).colorScheme.outlineVariant),
+                          Divider(
+                              height: 1,
+                              indent: Space.lg,
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant),
                       ],
                     ],
                   ),
@@ -221,7 +237,8 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
 
   @override
   Widget build(BuildContext context) {
-    final modulos = (widget.data['modulos'] as List).cast<Map<String, dynamic>>();
+    final modulos =
+        (widget.data['modulos'] as List).cast<Map<String, dynamic>>();
     if (modulos.isEmpty) {
       return const EmptyState(
         icon: Icons.grade_outlined,
@@ -231,7 +248,8 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
 
     final filteredModules = <Map<String, dynamic>>[];
     for (final m in modulos) {
-      final allStudents = (m['estudiantes'] as List).cast<Map<String, dynamic>>();
+      final allStudents =
+          (m['estudiantes'] as List).cast<Map<String, dynamic>>();
       final filteredStudents = allStudents.where((e) {
         final name = (e['nombreEstudiante'] as String? ?? '').toLowerCase();
         return _searchQuery.isEmpty || name.contains(_searchQuery);
@@ -266,7 +284,8 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
         ),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+            padding: const EdgeInsets.fromLTRB(
+                Space.xl, Space.lg, Space.xl, Space.xxxl),
             children: [
               for (final m in filteredModules) ...[
                 SectionLabel(m['nombreModulo'] as String? ?? ''),
@@ -275,12 +294,17 @@ class _ProfesorGradesState extends State<_ProfesorGrades> {
                   margin: const EdgeInsets.only(bottom: Space.xxl),
                   child: Column(
                     children: [
-                      for (final e in (m['estudiantes'] as List).cast<Map<String, dynamic>>())
+                      for (final e in (m['estudiantes'] as List)
+                          .cast<Map<String, dynamic>>())
                         Theme(
-                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
-                            title: Text(e['nombreEstudiante'] as String? ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
-                            childrenPadding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.lg),
+                            title: Text(e['nombreEstudiante'] as String? ?? '',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500)),
+                            childrenPadding: const EdgeInsets.fromLTRB(
+                                Space.lg, 0, Space.lg, Space.lg),
                             children: [
                               Wrap(
                                 spacing: Space.sm,
@@ -320,7 +344,8 @@ class _TutorGradesState extends State<_TutorGrades> {
 
   @override
   Widget build(BuildContext context) {
-    final students = (widget.data['students'] as List).cast<Map<String, dynamic>>();
+    final students =
+        (widget.data['students'] as List).cast<Map<String, dynamic>>();
     if (students.isEmpty) {
       return const EmptyState(
         icon: Icons.grade_outlined,
@@ -329,7 +354,8 @@ class _TutorGradesState extends State<_TutorGrades> {
     }
 
     final filteredStudents = students.where((s) {
-      return _selectedStudent == null || s['nombreEstudiante'] == _selectedStudent;
+      return _selectedStudent == null ||
+          s['nombreEstudiante'] == _selectedStudent;
     }).toList();
 
     return Column(
@@ -340,18 +366,28 @@ class _TutorGradesState extends State<_TutorGrades> {
             FilterPill<String>(
               label: 'Hijo/a',
               value: _selectedStudent,
-              options: [for (final s in students) (s['nombreEstudiante'] as String, s['nombreEstudiante'] as String)],
+              options: [
+                for (final s in students)
+                  (
+                    s['nombreEstudiante'] as String,
+                    s['nombreEstudiante'] as String
+                  )
+              ],
               onChanged: (v) => setState(() => _selectedStudent = v),
             ),
           ]),
         ],
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+            padding: const EdgeInsets.fromLTRB(
+                Space.xl, Space.lg, Space.xl, Space.xxxl),
             children: [
               for (final s in filteredStudents) ...[
-                SectionLabel('${s['nombreEstudiante']} · ${s['parentesco'] ?? ''}'),
-                for (final m in (s['modulos'] as List).cast<Map<String, dynamic>>()) _ModuloCard(m: m),
+                SectionLabel(
+                    '${s['nombreEstudiante']} · ${s['parentesco'] ?? ''}'),
+                for (final m
+                    in (s['modulos'] as List).cast<Map<String, dynamic>>())
+                  _ModuloCard(m: m),
                 const SizedBox(height: Space.md),
               ],
             ],

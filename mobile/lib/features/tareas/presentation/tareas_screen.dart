@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
@@ -33,7 +34,8 @@ class _TareasScreenState extends ConsumerState<TareasScreen> {
           if (tasks.isEmpty) {
             return EmptyState(
               icon: Icons.assignment_turned_in_outlined,
-              title: isProfesor ? 'No has creado tareas' : 'Sin tareas pendientes',
+              title:
+                  isProfesor ? 'No has creado tareas' : 'Sin tareas pendientes',
             );
           }
           return ListView.separated(
@@ -48,11 +50,14 @@ class _TareasScreenState extends ConsumerState<TareasScreen> {
                 onPublishToggle: isProfesor
                     ? () async {
                         try {
-                          await ref.read(classroomRepositoryProvider).togglePublish(task.id);
+                          await ref
+                              .read(classroomRepositoryProvider)
+                              .togglePublish(task.id);
                           ref.invalidate(allTasksProvider);
                         } catch (e) {
                           if (context.mounted) {
-                            await showErrorAlert(context, 'Error al cambiar el estado: $e');
+                            await showErrorAlert(
+                                context, 'Error al cambiar el estado: $e');
                           }
                         }
                       }
@@ -67,7 +72,7 @@ class _TareasScreenState extends ConsumerState<TareasScreen> {
   }
 }
 
-class _GlobalTaskTile extends StatelessWidget {
+class _GlobalTaskTile extends ConsumerWidget {
   const _GlobalTaskTile({
     required this.task,
     required this.isProfesor,
@@ -81,19 +86,25 @@ class _GlobalTaskTile extends StatelessWidget {
   final VoidCallback? onSubmitted;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final isEntregado = task.estado == 'entregado' || task.estado == 'calificado';
+    final isEntregado =
+        task.estado == 'entregado' || task.estado == 'calificado';
     final estadoColor = task.estado == 'calificado'
         ? AppColors.azulLight
-        : (isEntregado ? AppColors.verdeLight : (task.estado == 'borrador' ? AppColors.naranjaLight : AppColors.rojoLight));
+        : (isEntregado
+            ? AppColors.verdeLight
+            : (task.estado == 'borrador'
+                ? AppColors.naranjaLight
+                : AppColors.rojoLight));
 
     return Card(
       elevation: 0,
       color: scheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.md)),
       child: InkWell(
         onTap: () {
           // Utilizar la misma hoja de entregas o detalle que el aula digital
@@ -121,7 +132,8 @@ class _GlobalTaskTile extends StatelessWidget {
                         const SizedBox(height: Space.xs),
                         Text(
                           '${task.nombreModulo} • ${task.nombreProfesor}',
-                          style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                          style: textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -129,18 +141,22 @@ class _GlobalTaskTile extends StatelessWidget {
                   if (isProfesor)
                     Switch(
                       value: task.publicado,
-                      onChanged: onPublishToggle != null ? (_) => onPublishToggle!() : null,
+                      onChanged: onPublishToggle != null
+                          ? (_) => onPublishToggle!()
+                          : null,
                     )
                   else
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: estadoColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(Radii.pill),
                       ),
                       child: Text(
                         task.estado?.toUpperCase() ?? 'PENDIENTE',
-                        style: textTheme.labelSmall?.copyWith(color: estadoColor),
+                        style:
+                            textTheme.labelSmall?.copyWith(color: estadoColor),
                       ),
                     ),
                 ],
@@ -154,6 +170,81 @@ class _GlobalTaskTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+              if (task.archivoAdjunto != null) ...[
+                const SizedBox(height: Space.sm),
+                InkWell(
+                  borderRadius: BorderRadius.circular(Radii.sm),
+                  onTap: () async {
+                    final url = ref
+                        .read(classroomRepositoryProvider)
+                        .taskAttachmentUrl(task.id);
+                    final ok = await launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                    if (!ok && context.mounted) {
+                      await showErrorAlert(context, 'No se pudo abrir el archivo.');
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Space.md, vertical: Space.sm),
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(Radii.sm),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.attach_file_rounded,
+                            size: 16, color: scheme.onSurfaceVariant),
+                        const SizedBox(width: Space.xs),
+                        Text('Ver archivo adjunto',
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              if (!isProfesor && task.archivoEntrega != null) ...[
+                const SizedBox(height: Space.sm),
+                InkWell(
+                  borderRadius: BorderRadius.circular(Radii.sm),
+                  onTap: () async {
+                    final url = ref
+                        .read(classroomRepositoryProvider)
+                        .submissionFileUrl(task.id, kind: 'entrega');
+                    final ok = await launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                    if (!ok && context.mounted) {
+                      await showErrorAlert(context, 'No se pudo abrir el archivo.');
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Space.md, vertical: Space.sm),
+                    decoration: BoxDecoration(
+                      color: scheme.primaryContainer.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(Radii.sm),
+                      border: Border.all(
+                        color: scheme.primary.withValues(alpha: 0.25),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.download_rounded,
+                            size: 16, color: scheme.primary),
+                        const SizedBox(width: Space.xs),
+                        Text('Descargar mi tarea entregada',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: scheme.primary,
+                                  fontWeight: FontWeight.w700,
+                                )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               if (isProfesor) ...[
                 const SizedBox(height: Space.md),
                 Row(
@@ -161,18 +252,21 @@ class _GlobalTaskTile extends StatelessWidget {
                   children: [
                     Text(
                       '${task.totalEntregas} entregas',
-                      style: textTheme.bodySmall?.copyWith(color: scheme.primary),
+                      style:
+                          textTheme.bodySmall?.copyWith(color: scheme.primary),
                     ),
                     Text(
                       '${task.totalCorregidas} corregidas',
-                      style: textTheme.bodySmall?.copyWith(color: AppColors.verdeLight),
+                      style: textTheme.bodySmall
+                          ?.copyWith(color: AppColors.verdeLight),
                     ),
                   ],
                 ),
               ] else if (task.nota != null) ...[
                 const SizedBox(height: Space.md),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Space.md, vertical: Space.sm),
                   decoration: BoxDecoration(
                     color: scheme.surface,
                     borderRadius: BorderRadius.circular(Radii.sm),
@@ -180,9 +274,12 @@ class _GlobalTaskTile extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.stars_rounded, size: 16, color: AppColors.naranjaLight),
+                      Icon(Icons.stars_rounded,
+                          size: 16, color: AppColors.naranjaLight),
                       const SizedBox(width: Space.sm),
-                      Text('Nota: ${task.nota}', style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                      Text('Nota: ${task.nota}',
+                          style: textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),

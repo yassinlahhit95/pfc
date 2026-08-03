@@ -28,7 +28,7 @@ if (!isset($_POST['idReclamacion'])) {
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     actualizar_msg_salir(false, "Solicitud inválida. Inténtelo de nuevo.", (int)$_POST['idReclamacion'], $isAjax);
 }
 

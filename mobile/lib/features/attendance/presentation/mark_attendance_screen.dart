@@ -12,7 +12,8 @@ class MarkAttendanceScreen extends ConsumerStatefulWidget {
   const MarkAttendanceScreen({super.key});
 
   @override
-  ConsumerState<MarkAttendanceScreen> createState() => _MarkAttendanceScreenState();
+  ConsumerState<MarkAttendanceScreen> createState() =>
+      _MarkAttendanceScreenState();
 }
 
 class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
@@ -28,13 +29,18 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
     if (_selectedModule == null) return;
     setState(() => _loading = true);
     try {
-      final result =
-          await ref.read(attendanceRepositoryProvider).fetchForModule(_selectedModule!.id, fecha: _fechaStr);
-      final byStudent = {for (final a in result.attendance) a.idEstudiante: a.estado};
+      final result = await ref
+          .read(attendanceRepositoryProvider)
+          .fetchForModule(_selectedModule!.id, fecha: _fechaStr);
+      final byStudent = {
+        for (final a in result.attendance) a.idEstudiante: a.estado
+      };
       setState(() {
         _estados
           ..clear()
-          ..addAll({for (final r in result.roster) r.id: byStudent[r.id] ?? 'presente'});
+          ..addAll({
+            for (final r in result.roster) r.id: byStudent[r.id] ?? 'presente'
+          });
         _roster = result.roster;
         _loading = false;
       });
@@ -53,13 +59,13 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
     setState(() => _saving = true);
     try {
       await ref.read(attendanceRepositoryProvider).submitAttendance(
-            idModulo: _selectedModule!.id,
-            fecha: _fechaStr,
-            registros: [
-              for (final entry in _estados.entries)
-                {'idEstudiante': entry.key, 'estado': entry.value},
-            ],
-          );
+        idModulo: _selectedModule!.id,
+        fecha: _fechaStr,
+        registros: [
+          for (final entry in _estados.entries)
+            {'idEstudiante': entry.key, 'estado': entry.value},
+        ],
+      );
       if (mounted) {
         await showErrorAlert(context, 'Asistencia guardada.', title: 'Éxito');
         ref.invalidate(classroomModulesProvider);
@@ -97,7 +103,8 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                         for (final m in modules)
                           DropdownMenuItem(
                             value: m,
-                            child: Text(m.nombre, overflow: TextOverflow.ellipsis, maxLines: 1),
+                            child: Text(m.nombre,
+                                overflow: TextOverflow.ellipsis, maxLines: 1),
                           ),
                       ],
                       onChanged: (m) {
@@ -112,7 +119,8 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                       final picked = await showDatePicker(
                         context: context,
                         initialDate: _selectedDate,
-                        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                        firstDate:
+                            DateTime.now().subtract(const Duration(days: 365)),
                         lastDate: DateTime.now(),
                       );
                       if (picked != null) {
@@ -128,21 +136,30 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
               const SizedBox(height: Space.lg),
               Expanded(
                 child: _loading
-                    ? const Center(child: CircularProgressIndicator(strokeWidth: 2.4))
+                    ? const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2.4))
                     : _selectedModule == null
-                        ? const EmptyState(icon: Icons.checklist_rounded, title: 'Elige un módulo y una fecha')
+                        ? const EmptyState(
+                            icon: Icons.checklist_rounded,
+                            title: 'Elige un módulo y una fecha')
                         : _roster.isEmpty
-                            ? const EmptyState(icon: Icons.people_outline, title: 'Sin alumnos en este módulo')
+                            ? const EmptyState(
+                                icon: Icons.people_outline,
+                                title: 'Sin alumnos en este módulo')
                             : ListView.separated(
                                 itemCount: _roster.length,
-                                separatorBuilder: (_, __) =>
-                                    Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
+                                separatorBuilder: (_, __) => Divider(
+                                    height: 1,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outlineVariant),
                                 itemBuilder: (context, i) {
                                   final s = _roster[i];
                                   return _StudentRow(
                                     student: s,
                                     estado: _estados[s.id] ?? 'presente',
-                                    onChanged: (v) => setState(() => _estados[s.id] = v),
+                                    onChanged: (v) =>
+                                        setState(() => _estados[s.id] = v),
                                   );
                                 },
                               ),
@@ -157,7 +174,8 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
                           width: 18,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).colorScheme.onPrimary),
                           ),
                         )
                       : const Text('Guardar asistencia'),
@@ -172,7 +190,8 @@ class _MarkAttendanceScreenState extends ConsumerState<MarkAttendanceScreen> {
 }
 
 class _StudentRow extends StatelessWidget {
-  const _StudentRow({required this.student, required this.estado, required this.onChanged});
+  const _StudentRow(
+      {required this.student, required this.estado, required this.onChanged});
   final RosterStudent student;
   final String estado;
   final ValueChanged<String> onChanged;
@@ -183,7 +202,10 @@ class _StudentRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Space.sm),
       child: Row(
         children: [
-          Expanded(child: Text(student.nombre, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w500))),
+          Expanded(
+              child: Text(student.nombre,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w500))),
           SegmentedButton<String>(
             segments: const [
               ButtonSegment(value: 'presente', label: Text('P')),

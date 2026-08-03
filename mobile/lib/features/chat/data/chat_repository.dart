@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 
 class ChatContact {
-  const ChatContact({required this.uid, required this.nombre, required this.rol});
+  const ChatContact(
+      {required this.uid, required this.nombre, required this.rol});
 
   factory ChatContact.fromJson(Map<String, dynamic> json) => ChatContact(
         uid: json['uid'] as int,
@@ -27,7 +28,8 @@ class ChatConversation {
     required this.unreadCount,
   });
 
-  factory ChatConversation.fromJson(Map<String, dynamic> json) => ChatConversation(
+  factory ChatConversation.fromJson(Map<String, dynamic> json) =>
+      ChatConversation(
         id: json['id'] as int,
         otherRol: json['other_rol'] as String? ?? '',
         otherId: json['other_id'] as int? ?? 0,
@@ -99,13 +101,21 @@ class ChatRepository {
   final ApiClient _client;
 
   Future<List<ChatContact>> fetchContacts({String query = ''}) async {
-    final data = await _client.get('/chat.php', query: {'action': 'contacts', 'q': query});
-    return (data['contacts'] as List).cast<Map<String, dynamic>>().map(ChatContact.fromJson).toList();
+    final data = await _client
+        .get('/chat.php', query: {'action': 'contacts', 'q': query});
+    return (data['contacts'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ChatContact.fromJson)
+        .toList();
   }
 
   Future<List<ChatConversation>> fetchConversations() async {
-    final data = await _client.get('/chat.php', query: {'action': 'conversations'});
-    return (data['conversations'] as List).cast<Map<String, dynamic>>().map(ChatConversation.fromJson).toList();
+    final data =
+        await _client.get('/chat.php', query: {'action': 'conversations'});
+    return (data['conversations'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ChatConversation.fromJson)
+        .toList();
   }
 
   Future<List<ChatMessage>> fetchMessages(int convId, {int? after}) async {
@@ -114,10 +124,14 @@ class ChatRepository {
       'conv_id': convId,
       if (after != null) 'after': after,
     });
-    return (data['messages'] as List).cast<Map<String, dynamic>>().map(ChatMessage.fromJson).toList();
+    return (data['messages'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(ChatMessage.fromJson)
+        .toList();
   }
 
-  Future<int> startConversation({required String targetRol, required int targetId}) async {
+  Future<int> startConversation(
+      {required String targetRol, required int targetId}) async {
     final data = await _client.post('/chat.php', data: {
       'action': 'start',
       'target_rol': targetRol,
@@ -150,7 +164,8 @@ final chatRepositoryProvider = Provider<ChatRepository>(
 /// instead of waiting for their own poll timers (4s / 8s) to come around.
 final chatMessagePushProvider = StateProvider<int?>((ref) => null);
 
-final chatConversationsProvider = FutureProvider.autoDispose<List<ChatConversation>>(
+final chatConversationsProvider =
+    FutureProvider.autoDispose<List<ChatConversation>>(
   (ref) => ref.read(chatRepositoryProvider).fetchConversations(),
 );
 

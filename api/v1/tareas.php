@@ -36,6 +36,7 @@ if ($type === 'estudiante') {
         if ($entrega) {
             $fila['entregado'] = true;
             $fila['nota'] = $entrega['nota'];
+            $fila['miEntrega'] = $entrega;
         } else {
             $fila['entregado'] = false;
         }

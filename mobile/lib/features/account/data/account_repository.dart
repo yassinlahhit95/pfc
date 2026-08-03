@@ -6,7 +6,8 @@ class AccountRepository {
   AccountRepository(this._client);
   final ApiClient _client;
 
-  Future<void> changePassword({required String currentPassword, required String newPassword}) {
+  Future<void> changePassword(
+      {required String currentPassword, required String newPassword}) {
     return _client.post('/change-password.php', data: {
       'current_password': currentPassword,
       'new_password': newPassword,

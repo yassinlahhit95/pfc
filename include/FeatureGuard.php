@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/LicenseToken.php';
+require_once __DIR__ . '/../config/Config.php';
 
 // Aplicación server-side de feature flags respaldada por un token de licencia firmado.
 // Jerarquía de confianza (alta → baja):
@@ -10,9 +11,16 @@ class FeatureGuard
 {
     private const TTL          = 5;               // segundos de caché en sesión (fallback sin APCu)
     private const APCU_TTL     = 60;              // segundos de caché APCu compartida entre workers
-    private const APCU_KEY     = 'aulapro_fg';    // clave APCu única por instancia
     private const SESSION_TS   = '_fg_ts';
     private const SESSION_DATA = '_fg_data';
+
+    // APCu is one shared memory space per PHP-FPM pool. 'aulapro_fg' alone is only
+    // unique per instance if every tenant gets its own pool — suffix with the same
+    // R2_TENANT_PREFIX used elsewhere so two tenants sharing a pool can't leak
+    // each other's feature-flag config.
+    private static function apcuKey(): string {
+        return 'aulapro_fg:' . Config::getInstance()->get('R2_TENANT_PREFIX', 'default');
+    }
 
     // ══════════════════════════════════════════════════════════════════════
     // CARGA Y CACHÉ
@@ -27,7 +35,7 @@ class FeatureGuard
         // next request from any user re-reads from DB and repopulates APCu.
         if (function_exists('apcu_fetch')) {
             $found = false;
-            $cached = apcu_fetch(self::APCU_KEY, $found);
+            $cached = apcu_fetch(self::apcuKey(), $found);
             if ($found && is_array($cached)) return $cached;
         }
 
@@ -51,7 +59,7 @@ class FeatureGuard
 
         // Write to both caches so the next request is served from APCu when available.
         if (function_exists('apcu_store')) {
-            apcu_store(self::APCU_KEY, $data, self::APCU_TTL);
+            apcu_store(self::apcuKey(), $data, self::APCU_TTL);
         }
         $_SESSION[self::SESSION_TS]   = time();
         $_SESSION[self::SESSION_DATA] = $data;
@@ -260,7 +268,7 @@ class FeatureGuard
     {
         // Clear APCu first — this immediately invalidates the cache for all workers.
         if (function_exists('apcu_delete')) {
-            apcu_delete(self::APCU_KEY);
+            apcu_delete(self::apcuKey());
         }
         unset($_SESSION[self::SESSION_TS], $_SESSION[self::SESSION_DATA]);
     }

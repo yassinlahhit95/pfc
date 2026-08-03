@@ -15,7 +15,7 @@ import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
 
 class AttendanceScreen extends StatelessWidget {
-  const AttendanceScreen();
+  const AttendanceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +27,13 @@ class _AttendanceScreenWrapper extends ConsumerStatefulWidget {
   const _AttendanceScreenWrapper();
 
   @override
-  ConsumerState<_AttendanceScreenWrapper> createState() => _AttendanceScreenWrapperState();
+  ConsumerState<_AttendanceScreenWrapper> createState() =>
+      _AttendanceScreenWrapperState();
 }
 
-class _AttendanceScreenWrapperState extends ConsumerState<_AttendanceScreenWrapper> with TickerProviderStateMixin {
+class _AttendanceScreenWrapperState
+    extends ConsumerState<_AttendanceScreenWrapper>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -57,7 +60,15 @@ class _AttendanceScreenContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final sessionAsync = ref.watch(sessionControllerProvider);
+    final role = sessionAsync.valueOrNull?.role;
+
+    if (role == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Asistencias')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     if (role == UserRole.profesor) {
       return Scaffold(
@@ -72,7 +83,10 @@ class _AttendanceScreenContent extends ConsumerWidget {
               indicatorSize: TabBarIndicatorSize.label,
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.15),
               ),
               tabs: const [
                 Tab(text: '📋 Pasar lista'),
@@ -93,7 +107,8 @@ class _AttendanceScreenContent extends ConsumerWidget {
 }
 
 Future<void> _openJustificante(BuildContext context, String url) async {
-  final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  final ok =
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!ok && context.mounted) {
     await showErrorAlert(context, 'No se pudo abrir el justificante.');
   }
@@ -113,8 +128,18 @@ const _estadoLabels = {
 };
 
 const _months = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
 ];
 const _weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
@@ -159,28 +184,43 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
         value: attendanceAsync,
         onRetry: () => ref.invalidate(attendanceMineProvider),
         data: (context, allRecords) {
-          final estudiantes = allRecords.map((r) => r.nombreEstudiante).toSet().toList()..sort();
+          final estudiantes = allRecords
+              .map((r) => r.nombreEstudiante)
+              .toSet()
+              .toList()
+            ..sort();
 
           if (_selectedStudent == null && estudiantes.isNotEmpty) {
             _selectedStudent = estudiantes.first;
           }
 
           final studentRecords = _selectedStudent != null
-              ? allRecords.where((r) => r.nombreEstudiante == _selectedStudent).toList()
+              ? allRecords
+                  .where((r) => r.nombreEstudiante == _selectedStudent)
+                  .toList()
               : allRecords;
 
-          final totalDays = DateTime(_focusedMonth.year, _focusedMonth.month + 1, 0).day;
-          final offset = DateTime(_focusedMonth.year, _focusedMonth.month, 1).weekday - 1;
+          final totalDays =
+              DateTime(_focusedMonth.year, _focusedMonth.month + 1, 0).day;
+          final offset =
+              DateTime(_focusedMonth.year, _focusedMonth.month, 1).weekday - 1;
           final totalGridItems = offset + totalDays;
 
-          final monthPrefix = "${_focusedMonth.year}-${_focusedMonth.month.toString().padLeft(2, '0')}";
-          final monthRecords = studentRecords.where((r) => r.fecha.startsWith(monthPrefix)).toList();
-          final totalAusencias = monthRecords.where((r) => r.estado == 'ausente').length;
-          final totalRetrasos = monthRecords.where((r) => r.estado == 'retraso').length;
-          final totalJustificados = monthRecords.where((r) => r.estado == 'justificado').length;
+          final monthPrefix =
+              "${_focusedMonth.year}-${_focusedMonth.month.toString().padLeft(2, '0')}";
+          final monthRecords = studentRecords
+              .where((r) => r.fecha.startsWith(monthPrefix))
+              .toList();
+          final totalAusencias =
+              monthRecords.where((r) => r.estado == 'ausente').length;
+          final totalRetrasos =
+              monthRecords.where((r) => r.estado == 'retraso').length;
+          final totalJustificados =
+              monthRecords.where((r) => r.estado == 'justificado').length;
 
           final dayStr = _normalizeDate(_selectedDay);
-          final dayRecords = studentRecords.where((r) => r.fecha == dayStr).toList();
+          final dayRecords =
+              studentRecords.where((r) => r.fecha == dayStr).toList();
 
           return ListView(
             children: [
@@ -200,91 +240,67 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
 
               const SizedBox(height: Space.lg),
 
-              // Luxury Calendar Card
+              // Modern Minimalist Calendar Card
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Space.md),
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        scheme.surface,
-                        scheme.surfaceContainerLow,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(Radii.xl),
+                    color: scheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: scheme.outlineVariant.withValues(alpha: 0.2),
+                      color: scheme.outlineVariant.withValues(alpha: 0.3),
                       width: 1,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
                   ),
-                  padding: const EdgeInsets.all(Space.lg),
+                  padding: const EdgeInsets.all(Space.md),
                   child: Column(
                     children: [
                       // Month Navigation
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: Material(
-                              color: scheme.primaryContainer.withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(Radii.lg),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(Radii.lg),
-                                onTap: () => setState(() {
-                                  _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1, 1);
-                                }),
-                                child: Icon(Icons.arrow_back_rounded, size: 20, color: scheme.primary),
-                              ),
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_left_rounded),
+                            onPressed: () => setState(() {
+                              _focusedMonth = DateTime(_focusedMonth.year,
+                                  _focusedMonth.month - 1, 1);
+                            }),
+                            color: scheme.onSurfaceVariant,
                           ),
                           Column(
                             children: [
                               Text(
                                 _months[_focusedMonth.month - 1],
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.5,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               Text(
                                 _focusedMonth.year.toString(),
-                                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: scheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: scheme.onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: Material(
-                              color: scheme.primaryContainer.withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(Radii.lg),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(Radii.lg),
-                                onTap: () => setState(() {
-                                  _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1, 1);
-                                }),
-                                child: Icon(Icons.arrow_forward_rounded, size: 20, color: scheme.primary),
-                              ),
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_right_rounded),
+                            onPressed: () => setState(() {
+                              _focusedMonth = DateTime(_focusedMonth.year,
+                                  _focusedMonth.month + 1, 1);
+                            }),
+                            color: scheme.onSurfaceVariant,
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: Space.lg),
+                      const SizedBox(height: Space.md),
 
                       // Weekday Headers
                       Row(
@@ -294,129 +310,112 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
                               child: Center(
                                 child: Text(
                                   _weekdays[i],
-                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: i >= 5 ? scheme.error.withValues(alpha: 0.6) : scheme.onSurfaceVariant,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(
+                                        color: i >= 5
+                                            ? scheme.error.withValues(alpha: 0.7)
+                                            : scheme.onSurfaceVariant,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                 ),
                               ),
                             ),
                         ],
                       ),
 
-                      const SizedBox(height: Space.lg),
+                      const SizedBox(height: Space.md),
 
                       // Calendar Grid
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: totalGridItems,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 7,
                           childAspectRatio: 1,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 6,
+                          crossAxisSpacing: 6,
                         ),
                         itemBuilder: (context, i) {
                           if (i < offset) return const SizedBox.shrink();
 
                           final dayNum = i - offset + 1;
-                          final dayDate = DateTime(_focusedMonth.year, _focusedMonth.month, dayNum);
-                          final active = DateTime(dayDate.year, dayDate.month, dayDate.day) ==
-                              DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
+                          final dayDate = DateTime(
+                              _focusedMonth.year, _focusedMonth.month, dayNum);
+                          final active = DateTime(
+                                  dayDate.year, dayDate.month, dayDate.day) ==
+                              DateTime(_selectedDay.year, _selectedDay.month,
+                                  _selectedDay.day);
                           final isWeekend = _isWeekend(dayDate);
 
                           final itemDayStr = _normalizeDate(dayDate);
-                          final itemRecords = studentRecords.where((r) => r.fecha == itemDayStr).toList();
+                          final itemRecords = studentRecords
+                              .where((r) => r.fecha == itemDayStr)
+                              .toList();
 
-                          final hasIssue = itemRecords.any((r) => r.estado != 'presente');
+                          final hasIssue =
+                              itemRecords.any((r) => r.estado != 'presente');
+                          final issueRecord = hasIssue
+                              ? itemRecords.firstWhere(
+                                  (r) => r.estado != 'presente',
+                                  orElse: () => itemRecords.first)
+                              : itemRecords.isNotEmpty
+                                  ? itemRecords.first
+                                  : null;
+
+                          final stateColor = issueRecord != null
+                              ? (_estadoColors[issueRecord.estado] ??
+                                  scheme.error)
+                              : scheme.outline;
 
                           return GestureDetector(
-                            onTap: isWeekend ? null : () => setState(() => _selectedDay = dayDate),
-                            child: Opacity(
-                              opacity: isWeekend ? 0.4 : 1,
+                            onTap: isWeekend
+                                ? null
+                                : () => setState(() => _selectedDay = dayDate),
+                            child: Center(
                               child: Container(
+                                width: 38,
+                                height: 38,
                                 decoration: BoxDecoration(
-                                  gradient: active
-                                      ? LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      scheme.primary.withValues(alpha: 0.85),
-                                      scheme.primary.withValues(alpha: 0.65),
-                                    ],
-                                  )
-                                      : hasIssue
-                                      ? LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      _estadoColors[itemRecords.first.estado]!.withValues(alpha: 0.12),
-                                      _estadoColors[itemRecords.first.estado]!.withValues(alpha: 0.06),
-                                    ],
-                                  )
-                                      : null,
-                                  color: active || hasIssue ? null : scheme.surfaceContainer,
-                                  borderRadius: BorderRadius.circular(Radii.lg),
-                                  border: Border.all(
-                                    color: active
-                                        ? scheme.onPrimary.withValues(alpha: 0.2)
-                                        : hasIssue
-                                        ? _estadoColors[itemRecords.first.estado]!.withValues(alpha: 0.3)
-                                        : scheme.outlineVariant.withValues(alpha: 0.2),
-                                    width: active ? 2 : 1,
-                                  ),
-                                  boxShadow: active
-                                      ? [
-                                    BoxShadow(
-                                      color: scheme.primary.withValues(alpha: 0.25),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ]
+                                  shape: BoxShape.circle,
+                                  color: active
+                                      ? scheme.primary
                                       : null,
                                 ),
-                                child: Stack(
+                                alignment: Alignment.center,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    if (isWeekend)
-                                      Positioned.fill(
-                                        child: Center(
-                                          child: Text(
-                                            '—',
-                                            style: TextStyle(
-                                              color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 18,
-                                            ),
-                                          ),
+                                    Text(
+                                      dayNum.toString(),
+                                      style: TextStyle(
+                                        fontWeight: active
+                                            ? FontWeight.bold
+                                            : FontWeight.w600,
+                                        color: active
+                                            ? scheme.onPrimary
+                                            : isWeekend
+                                                ? scheme.onSurfaceVariant.withValues(alpha: 0.35)
+                                                : scheme.onSurface,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    if (itemRecords.isNotEmpty) ...[
+                                      const SizedBox(height: 2),
+                                      Container(
+                                        width: 4,
+                                        height: 4,
+                                        decoration: BoxDecoration(
+                                          color: active
+                                              ? scheme.onPrimary
+                                              : stateColor,
+                                          shape: BoxShape.circle,
                                         ),
                                       ),
-                                    if (!isWeekend)
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            dayNum.toString(),
-                                            style: TextStyle(
-                                              fontWeight: active ? FontWeight.w800 : FontWeight.w700,
-                                              color: active ? scheme.onPrimary : scheme.onSurface,
-                                              fontSize: 16,
-                                              letterSpacing: 0.3,
-                                            ),
-                                          ),
-                                          if (itemRecords.isNotEmpty) ...[
-                                            const SizedBox(height: 3),
-                                            Container(
-                                              width: 6,
-                                              height: 6,
-                                              decoration: BoxDecoration(
-                                                color: active ? scheme.onPrimary : _estadoColors[itemRecords.first.estado],
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -476,11 +475,12 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
                     ),
                     const SizedBox(width: Space.md),
                     Text(
-                      DateFormat('EEEE, d MMMM yyyy', 'es').format(_selectedDay),
+                      DateFormat('EEEE, d MMMM yyyy', 'es')
+                          .format(_selectedDay),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.3,
-                      ),
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.3,
+                          ),
                     ),
                   ],
                 ),
@@ -495,7 +495,8 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
                   child: const EmptyState(
                     icon: Icons.check_circle_outline_rounded,
                     title: 'Día sin incidencias',
-                    description: 'No hay registros de faltas o retrasos en esta fecha.',
+                    description:
+                        'No hay registros de faltas o retrasos en esta fecha.',
                   ),
                 )
               else
@@ -505,7 +506,8 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: dayRecords.length,
-                    itemBuilder: (context, i) => _AttendanceCard(record: dayRecords[i]),
+                    itemBuilder: (context, i) =>
+                        _AttendanceCard(record: dayRecords[i]),
                   ),
                 ),
 
@@ -535,55 +537,42 @@ class _LuxuryStat extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    return Container(
-      padding: const EdgeInsets.all(Space.md),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            color.withValues(alpha: 0.15),
-            color.withValues(alpha: 0.05),
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: Space.md, horizontal: Space.sm),
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: scheme.outlineVariant.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(height: Space.xs),
+            Text(
+              count.toString(),
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+                fontSize: 11,
+              ),
+            ),
           ],
         ),
-        borderRadius: BorderRadius.circular(Radii.lg),
-        border: Border.all(
-          color: color.withValues(alpha: 0.25),
-          width: 1.5,
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(Radii.lg),
-            ),
-            child: Icon(icon, size: 22, color: color),
-          ),
-          const SizedBox(height: Space.sm),
-          Text(
-            count.toString(),
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              color: color.withValues(alpha: 0.7),
-              fontWeight: FontWeight.w600,
-              fontSize: 11,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -594,16 +583,17 @@ class _AttendanceCard extends ConsumerWidget {
   final AttendanceRecord record;
 
   IconData _getStatusIcon(String estado) => switch (estado) {
-    'presente' => Icons.check_circle_rounded,
-    'ausente' => Icons.cancel_rounded,
-    'retraso' => Icons.schedule_rounded,
-    'justificado' => Icons.verified_rounded,
-    _ => Icons.help_rounded,
-  };
+        'presente' => Icons.check_circle_rounded,
+        'ausente' => Icons.cancel_rounded,
+        'retraso' => Icons.schedule_rounded,
+        'justificado' => Icons.verified_rounded,
+        _ => Icons.help_rounded,
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final color = _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
+    final color =
+        _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
     final date = DateTime.tryParse(record.fecha);
     final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
     final scheme = Theme.of(context).colorScheme;
@@ -611,29 +601,15 @@ class _AttendanceCard extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: Space.md),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            scheme.surface,
-            scheme.surfaceContainerLow,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(Radii.lg),
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.25),
+          color: scheme.outlineVariant.withValues(alpha: 0.3),
           width: 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Space.lg),
+        padding: const EdgeInsets.all(Space.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -645,7 +621,8 @@ class _AttendanceCard extends ConsumerWidget {
                     color: color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(Radii.lg),
                   ),
-                  child: Icon(_getStatusIcon(record.estado), color: color, size: 20),
+                  child: Icon(_getStatusIcon(record.estado),
+                      color: color, size: 20),
                 ),
                 const SizedBox(width: Space.md),
                 Expanded(
@@ -655,19 +632,20 @@ class _AttendanceCard extends ConsumerWidget {
                       Text(
                         record.nombreModulo,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                              fontWeight: FontWeight.w700,
+                            ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 3),
                       Text(
                         [
                           if (date != null) DateFormat('d MMM').format(date),
-                          if (record.nombreProfesor.isNotEmpty) '• ${record.nombreProfesor}',
+                          if (record.nombreProfesor.isNotEmpty)
+                            '• ${record.nombreProfesor}',
                         ].join(' '),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
+                              color: scheme.onSurfaceVariant,
+                            ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -675,7 +653,8 @@ class _AttendanceCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: Space.md),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Space.md, vertical: Space.sm),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(Radii.pill),
@@ -695,7 +674,10 @@ class _AttendanceCard extends ConsumerWidget {
               const SizedBox(height: Space.md),
               _JustificationBox(justificacion: record.justificacion!),
             ],
-            if ((role == UserRole.tutor || role == UserRole.director || role == UserRole.secretaria) && record.canJustify) ...[
+            if ((role == UserRole.tutor ||
+                    role == UserRole.director ||
+                    role == UserRole.secretaria) &&
+                record.canJustify) ...[
               const SizedBox(height: Space.md),
               SizedBox(
                 width: double.infinity,
@@ -705,7 +687,8 @@ class _AttendanceCard extends ConsumerWidget {
                       context,
                       ref,
                       idAsistencia: record.id,
-                      subtitulo: '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
+                      subtitulo:
+                          '${record.nombreEstudiante} · ${record.nombreModulo} · ${record.fecha}',
                     );
                     if (sent) {
                       ref.invalidate(attendanceMineProvider);
@@ -739,10 +722,10 @@ class _JustificationBox extends StatelessWidget {
   final Justification justificacion;
 
   IconData _getJustIcon(String estado) => switch (estado) {
-    'aprobada' => Icons.verified_rounded,
-    'rechazada' => Icons.cancel_rounded,
-    _ => Icons.pending_actions_rounded,
-  };
+        'aprobada' => Icons.verified_rounded,
+        'rechazada' => Icons.cancel_rounded,
+        _ => Icons.pending_actions_rounded,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -773,15 +756,19 @@ class _JustificationBox extends StatelessWidget {
               const SizedBox(width: Space.sm),
               Expanded(
                 child: Text(
-                  _justEstadoLabels[justificacion.estado] ?? justificacion.estado,
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: color),
+                  _justEstadoLabels[justificacion.estado] ??
+                      justificacion.estado,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, fontSize: 13, color: color),
                 ),
               ),
               if (justificacion.archivoUrl != null)
                 GestureDetector(
-                  onTap: () => _openJustificante(context, justificacion.archivoUrl!),
+                  onTap: () =>
+                      _openJustificante(context, justificacion.archivoUrl!),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: Space.sm, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Space.sm, vertical: 2),
                     decoration: BoxDecoration(
                       color: scheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(Radii.sm),
@@ -789,11 +776,15 @@ class _JustificationBox extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.attach_file_rounded, size: 14, color: scheme.primary),
+                        Icon(Icons.attach_file_rounded,
+                            size: 14, color: scheme.primary),
                         const SizedBox(width: 3),
                         Text(
                           'Ver',
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: scheme.primary),
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: scheme.primary),
                         ),
                       ],
                     ),
@@ -802,12 +793,14 @@ class _JustificationBox extends StatelessWidget {
             ],
           ),
           const SizedBox(height: Space.sm),
-          Text(justificacion.motivo,
+          Text(
+            justificacion.motivo,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: scheme.onSurface.withValues(alpha: 0.8),
-            ),
+                  color: scheme.onSurface.withValues(alpha: 0.8),
+                ),
           ),
-          if (justificacion.estado == 'rechazada' && (justificacion.motivoRechazo?.isNotEmpty ?? false)) ...[
+          if (justificacion.estado == 'rechazada' &&
+              (justificacion.motivoRechazo?.isNotEmpty ?? false)) ...[
             const SizedBox(height: Space.sm),
             Container(
               padding: const EdgeInsets.all(Space.sm),
@@ -818,9 +811,9 @@ class _JustificationBox extends StatelessWidget {
               child: Text(
                 'Rechazo: ${justificacion.motivoRechazo}',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.rojoLight.withValues(alpha: 0.9),
-                  fontWeight: FontWeight.w600,
-                ),
+                      color: AppColors.rojoLight.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ),
           ],
@@ -833,7 +826,8 @@ class _JustificationBox extends StatelessWidget {
 class _PendingJustificationsTab extends ConsumerWidget {
   const _PendingJustificationsTab();
 
-  Future<void> _resolve(BuildContext context, WidgetRef ref, PendingJustification pj, bool aprobar) async {
+  Future<void> _resolve(BuildContext context, WidgetRef ref,
+      PendingJustification pj, bool aprobar) async {
     String? motivoRechazo;
     if (!aprobar) {
       final controller = TextEditingController();
@@ -846,8 +840,12 @@ class _PendingJustificationsTab extends ConsumerWidget {
             decoration: const InputDecoration(labelText: 'Motivo del rechazo'),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancelar')),
-            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Rechazar')),
+            TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancelar')),
+            FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Rechazar')),
           ],
         ),
       );
@@ -863,7 +861,8 @@ class _PendingJustificationsTab extends ConsumerWidget {
           );
       ref.invalidate(pendingJustificationsProvider);
       if (context.mounted) {
-        await showErrorAlert(context, aprobar ? 'Aprobada.' : 'Rechazada.', title: 'Éxito');
+        await showErrorAlert(context, aprobar ? 'Aprobada.' : 'Rechazada.',
+            title: 'Éxito');
       }
     } catch (_) {
       if (context.mounted) {
@@ -880,12 +879,15 @@ class _PendingJustificationsTab extends ConsumerWidget {
       onRetry: () => ref.invalidate(pendingJustificationsProvider),
       data: (context, items) {
         if (items.isEmpty) {
-          return const EmptyState(icon: Icons.fact_check_outlined, title: 'Sin justificaciones pendientes');
+          return const EmptyState(
+              icon: Icons.fact_check_outlined,
+              title: 'Sin justificaciones pendientes');
         }
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(pendingJustificationsProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(Space.xl, Space.lg, Space.xl, Space.xxxl),
+            padding: const EdgeInsets.fromLTRB(
+                Space.xl, Space.lg, Space.xl, Space.xxxl),
             itemCount: items.length,
             itemBuilder: (context, i) {
               final pj = items[i];
@@ -897,7 +899,8 @@ class _PendingJustificationsTab extends ConsumerWidget {
                     Text('${pj.nombreEstudiante} · ${pj.nombreModulo}',
                         style: const TextStyle(fontWeight: FontWeight.w600)),
                     const SizedBox(height: 4),
-                    Text(pj.fecha, style: Theme.of(context).textTheme.bodySmall),
+                    Text(pj.fecha,
+                        style: Theme.of(context).textTheme.bodySmall),
                     const SizedBox(height: Space.sm),
                     Text(pj.motivo),
                     if (pj.archivoUrl != null) ...[
@@ -907,7 +910,9 @@ class _PendingJustificationsTab extends ConsumerWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.attach_file_rounded, size: 16, color: Theme.of(context).colorScheme.primary),
+                            Icon(Icons.attach_file_rounded,
+                                size: 16,
+                                color: Theme.of(context).colorScheme.primary),
                             const SizedBox(width: 4),
                             Text(
                               'Ver justificante',
@@ -927,7 +932,8 @@ class _PendingJustificationsTab extends ConsumerWidget {
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => _resolve(context, ref, pj, false),
-                            style: OutlinedButton.styleFrom(foregroundColor: AppColors.rojoLight),
+                            style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.rojoLight),
                             child: const Text('Rechazar'),
                           ),
                         ),

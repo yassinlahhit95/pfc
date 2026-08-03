@@ -67,7 +67,10 @@ class SectionLabel extends StatelessWidget {
         children: [
           Text(
             text.toUpperCase(),
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: scheme.onSurfaceVariant),
           ),
           if (trailing != null) trailing!,
         ],
@@ -95,11 +98,15 @@ class StatusPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                color: color, fontSize: 12, fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -124,7 +131,10 @@ class InitialsAvatar extends StatelessWidget {
       backgroundColor: scheme.primary.withValues(alpha: 0.1),
       child: Text(
         name.isNotEmpty ? name[0].toUpperCase() : '?',
-        style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w700, fontSize: radius * 0.75),
+        style: TextStyle(
+            color: scheme.primary,
+            fontWeight: FontWeight.w700,
+            fontSize: radius * 0.75),
       ),
     );
   }

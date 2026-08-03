@@ -55,7 +55,8 @@ class HelpCenterScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 6.0),
                   Text(
-                    t['security_desc'] ?? 'Consult app technical guidelines and GDPR data rights',
+                    t['security_desc'] ??
+                        'Consult app technical guidelines and GDPR data rights',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 14.0,
@@ -140,7 +141,8 @@ class HelpCenterScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            t['security_desc'] ?? 'Data Protection (GDPR / LOPD)',
+                            t['security_desc'] ??
+                                'Data Protection (GDPR / LOPD)',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14.0,

@@ -41,16 +41,23 @@ class MessagesRepository {
 
   Future<List<MessageThread>> fetchThreads() async {
     final data = await _client.get('/messages.php');
-    return (data['messages'] as List).cast<Map<String, dynamic>>().map(MessageThread.fromJson).toList();
+    return (data['messages'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(MessageThread.fromJson)
+        .toList();
   }
 
   Future<List<MessageThread>> fetchThread(int id) async {
     final data = await _client.get('/messages.php', query: {'id': id});
-    return (data['thread'] as List).cast<Map<String, dynamic>>().map(MessageThread.fromJson).toList();
+    return (data['thread'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(MessageThread.fromJson)
+        .toList();
   }
 
   Future<void> reply({required int idParent, required String contenido}) {
-    return _client.post('/messages.php', data: {'id_parent': idParent, 'contenido': contenido});
+    return _client.post('/messages.php',
+        data: {'id_parent': idParent, 'contenido': contenido});
   }
 
   Future<void> createThread({
@@ -87,7 +94,8 @@ final messageThreadsProvider = FutureProvider.autoDispose<List<MessageThread>>(
 
 /// Polls the unread mensajería count for the bottom-nav badge (home_shell.dart) —
 /// same pattern as chatUnreadCountProvider in chat_repository.dart.
-final messagesUnreadCountProvider = StreamProvider.autoDispose<int>((ref) async* {
+final messagesUnreadCountProvider =
+    StreamProvider.autoDispose<int>((ref) async* {
   final repo = ref.watch(messagesRepositoryProvider);
   while (true) {
     try {

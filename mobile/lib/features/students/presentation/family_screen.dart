@@ -54,12 +54,16 @@ class FamilyScreen extends ConsumerWidget {
                   leading: CircleAvatar(
                     backgroundColor: scheme.primary.withValues(alpha: 0.15),
                     child: Text(
-                      tutor.nombre.isNotEmpty ? tutor.nombre[0].toUpperCase() : '?',
+                      tutor.nombre.isNotEmpty
+                          ? tutor.nombre[0].toUpperCase()
+                          : '?',
                       style: TextStyle(color: scheme.primary),
                     ),
                   ),
-                  title: Text(tutor.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text('${tutor.parentesco}\n${tutor.email}\n${tutor.telefono}'),
+                  title: Text(tutor.nombre,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: Text(
+                      '${tutor.parentesco}\n${tutor.email}\n${tutor.telefono}'),
                   isThreeLine: true,
                   trailing: PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert),
@@ -74,22 +78,32 @@ class FamilyScreen extends ConsumerWidget {
                           ref.invalidate(studentFamilyProvider(idEstudiante));
                         }
                       } else if (value == 'password') {
-                        final newPassword = await PasswordConfirmationDialog.show(
+                        final newPassword =
+                            await PasswordConfirmationDialog.show(
                           context,
                           title: 'Cambiar Contraseña',
-                          message: 'Introduce la nueva contraseña para ${tutor.nombre}.',
+                          message:
+                              'Introduce la nueva contraseña para ${tutor.nombre}.',
                         );
                         if (newPassword != null) {
                           try {
-                            await ref.read(familyRepositoryProvider).changeFamilyPassword(tutor.id, newPassword);
+                            await ref
+                                .read(familyRepositoryProvider)
+                                .changeFamilyPassword(tutor.id, newPassword);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Contraseña actualizada correctamente'), backgroundColor: Colors.green),
+                                const SnackBar(
+                                    content: Text(
+                                        'Contraseña actualizada correctamente'),
+                                    backgroundColor: Colors.green),
                               );
                             }
                           } catch (e) {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: scheme.error));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Error: $e'),
+                                      backgroundColor: scheme.error));
                             }
                           }
                         }
@@ -98,7 +112,8 @@ class FamilyScreen extends ConsumerWidget {
                           context: context,
                           builder: (ctx) => AlertDialog(
                             title: const Text('Desvincular Familiar'),
-                            content: Text('¿Está seguro de que desea desvincular a ${tutor.nombre}?'),
+                            content: Text(
+                                '¿Está seguro de que desea desvincular a ${tutor.nombre}?'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(ctx, false),
@@ -113,11 +128,16 @@ class FamilyScreen extends ConsumerWidget {
                         );
                         if (confirm == true) {
                           try {
-                            await ref.read(familyRepositoryProvider).removeTutorFromStudent(idEstudiante, tutor.id);
+                            await ref
+                                .read(familyRepositoryProvider)
+                                .removeTutorFromStudent(idEstudiante, tutor.id);
                             ref.invalidate(studentFamilyProvider(idEstudiante));
                           } catch (e) {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: scheme.error));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Error: $e'),
+                                      backgroundColor: scheme.error));
                             }
                           }
                         }
@@ -125,8 +145,12 @@ class FamilyScreen extends ConsumerWidget {
                     },
                     itemBuilder: (context) => [
                       const PopupMenuItem(value: 'edit', child: Text('Editar')),
-                      const PopupMenuItem(value: 'password', child: Text('Cambiar Contraseña')),
-                      const PopupMenuItem(value: 'delete', child: Text('Desvincular', style: TextStyle(color: Colors.red))),
+                      const PopupMenuItem(
+                          value: 'password', child: Text('Cambiar Contraseña')),
+                      const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Desvincular',
+                              style: TextStyle(color: Colors.red))),
                     ],
                   ),
                 ),

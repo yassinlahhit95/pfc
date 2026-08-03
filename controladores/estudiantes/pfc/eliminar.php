@@ -11,7 +11,7 @@ if (!FeatureGuard::check('feature_subida_tfg')) {
     header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
 }
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'Solicitud inválida']); exit; }
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;

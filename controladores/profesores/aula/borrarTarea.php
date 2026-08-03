@@ -7,7 +7,7 @@ $idProfesor = (int)$_SESSION['idProfesor'];
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 $ok = false; $msg = 'ID no especificado';
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     if ($isAjax) {
         header('Content-Type: application/json');
         echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);

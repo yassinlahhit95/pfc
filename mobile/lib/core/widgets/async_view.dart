@@ -30,7 +30,8 @@ class AsyncView<T> extends StatelessWidget {
         // stack trace — the UI only ever shows a friendly fallback message,
         // but this makes them diagnosable from `flutter run` output.
         if (error is! ApiException && error is! ApiConnectionException) {
-          debugPrint('AsyncView unexpected error: ${error.runtimeType}: $error\n$stack');
+          debugPrint(
+              'AsyncView unexpected error: ${error.runtimeType}: $error\n$stack');
         }
         return ErrorRetry(error: error, onRetry: onRetry);
       },
@@ -64,18 +65,25 @@ class ErrorRetry extends StatelessWidget {
             Container(
               width: 56,
               height: 56,
-              decoration: BoxDecoration(color: scheme.error.withValues(alpha: 0.08), shape: BoxShape.circle),
-              child: Icon(Icons.wifi_off_rounded, size: 24, color: scheme.error),
+              decoration: BoxDecoration(
+                  color: scheme.error.withValues(alpha: 0.08),
+                  shape: BoxShape.circle),
+              child:
+                  Icon(Icons.wifi_off_rounded, size: 24, color: scheme.error),
             ),
             const SizedBox(height: Space.lg),
             Text(
               _message,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: scheme.onSurfaceVariant),
             ),
             if (onRetry != null) ...[
               const SizedBox(height: Space.xl),
-              OutlinedButton(onPressed: onRetry, child: const Text('Reintentar')),
+              OutlinedButton(
+                  onPressed: onRetry, child: const Text('Reintentar')),
             ],
           ],
         ),
@@ -115,11 +123,15 @@ class EmptyState extends StatelessWidget {
             Container(
               width: 56,
               height: 56,
-              decoration: BoxDecoration(color: scheme.surfaceContainerHighest, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  shape: BoxShape.circle),
               child: Icon(icon, size: 24, color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: Space.lg),
-            Text(title, style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
+            Text(title,
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center),
             if (description != null) ...[
               const SizedBox(height: Space.xs),
               Text(

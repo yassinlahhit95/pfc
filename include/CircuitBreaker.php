@@ -48,7 +48,9 @@ class CircuitBreaker
 
     private static function apcu_key(string $service): string
     {
-        return 'cb_' . $service;
+        require_once __DIR__ . '/../config/Config.php';
+        $tenant = Config::getInstance()->get('R2_TENANT_PREFIX', 'default');
+        return 'cb_' . $service . ':' . $tenant;
     }
 
     private static function getState(string $service): array
