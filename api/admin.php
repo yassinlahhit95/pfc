@@ -88,6 +88,9 @@ try {
     apiError('Database connection failed.', 503);
 }
 
+require_once dirname(__DIR__) . '/config/Config.php';
+require_once dirname(__DIR__) . '/include/R2Client.php';
+
 // ── Parse action ───────────────────────────────────────────────────────────────
 $payload = $rawBody ? (json_decode($rawBody, true) ?? []) : [];
 $action  = ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($payload['action'])) ? $payload['action'] : ($_GET['action'] ?? '');
@@ -246,6 +249,82 @@ switch ($action) {
     case 'status':
         $row = $pdo->query("SELECT instance_status, suspension_message, saas_lock_features, saas_message, saas_message_type, saas_last_sync FROM configuracion_centro WHERE idConfig = 1 LIMIT 1")->fetch() ?: [];
         apiOk(['control' => $row]);
+
+    // GET /api/admin.php?action=diagnostics
+    case 'diagnostics':
+        $checks = [];
+
+        // DB connectivity + latency
+        $t0 = microtime(true);
+        try {
+            $pdo->query('SELECT 1');
+            $checks['db'] = ['ok' => true, 'latency_ms' => round((microtime(true) - $t0) * 1000, 1)];
+        } catch (PDOException) {
+            $checks['db'] = ['ok' => false, 'error' => 'DB unreachable'];
+        }
+
+        // Disk space (app root)
+        $free  = disk_free_space(dirname(__DIR__));
+        $total = disk_total_space(dirname(__DIR__));
+        $checks['disk'] = [
+            'ok'       => $free !== false && $free > 1_073_741_824,
+            'free_gb'  => $free  !== false ? round($free  / 1e9, 1) : null,
+            'total_gb' => $total !== false ? round($total / 1e9, 1) : null,
+        ];
+
+        // PHP version + required extensions (kept in sync with noDeploy/install-check.php)
+        $requiredExt = ['mysqli', 'zip', 'curl', 'openssl', 'mbstring', 'fileinfo'];
+        $missingExt  = array_values(array_filter($requiredExt, fn($e) => !extension_loaded($e)));
+        $checks['php'] = [
+            'ok'          => version_compare(PHP_VERSION, '8.3.0', '>=') && !$missingExt,
+            'version'     => PHP_VERSION,
+            'missing_ext' => $missingExt,
+        ];
+
+        // Storage writable
+        $checks['storage_writable'] = [
+            'ok'   => is_writable(dirname(__DIR__) . '/public/uploads'),
+            'path' => 'public/uploads',
+        ];
+
+        // Cron job freshness — same table/threshold as api/v1/admin/cron-health.php
+        try {
+            $jobs = $pdo->query('SELECT job_name, last_run, last_run_status FROM cron_execution_log')->fetchAll();
+            $jobChecks = [];
+            foreach ($jobs as $j) {
+                $hoursAgo = $j['last_run'] ? (time() - strtotime($j['last_run'])) / 3600 : 9999.0;
+                $jobChecks[$j['job_name']] = [
+                    'ok'        => $j['last_run_status'] === 'success' && $hoursAgo < 25,
+                    'hours_ago' => round($hoursAgo, 1),
+                ];
+            }
+            $checks['cron_jobs'] = [
+                'ok'   => !in_array(false, array_column($jobChecks, 'ok'), true),
+                'jobs' => $jobChecks,
+            ];
+        } catch (PDOException) {
+            $checks['cron_jobs'] = ['ok' => null, 'note' => 'not tracked on this instance'];
+        }
+
+        // R2 storage reachability + usage (tenant-scoped)
+        try {
+            $prefix = Config::getInstance()->get('R2_TENANT_PREFIX', '');
+            $usage  = R2Client::totalUsage($prefix);
+            $checks['storage_r2'] = ['ok' => true, 'used_bytes' => $usage['bytes']];
+        } catch (\Throwable) {
+            $checks['storage_r2'] = ['ok' => false, 'error' => 'R2 unreachable'];
+        }
+
+        // Schema integrity — presence of a column other features depend on
+        // (no formal migration-version system exists in this project)
+        $colCheck = $pdo->prepare(
+            'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?'
+        );
+        $colCheck->execute(['configuracion_centro', 'license_token']);
+        $checks['schema'] = ['ok' => (bool)$colCheck->fetchColumn()];
+
+        $overallOk = !in_array(false, array_column($checks, 'ok'), true);
+        apiOk(['overall_ok' => $overallOk, 'checks' => $checks]);
 
     // POST — body: {"action":"heartbeat","license_token":"<signed_token>"}
     // Renews the license token. token_exp is extended by SaaS.
