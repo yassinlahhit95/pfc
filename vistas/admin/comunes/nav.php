@@ -381,19 +381,6 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
     <div class="content" id="main-content" tabindex="-1">
-      <script>
-      window.AULAPRO_TOUR = {
-        tourKey: 'primeros_pasos_v1',
-        completeUrl: 'controladores/comunes/tour/completar.php',
-        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
-        steps: [
-          { selector: '[data-tour="estudiantes"]', title: 'Estudiantes', text: 'Gestiona el alumnado del centro: fichas, matrículas y documentación.', placement: 'right' },
-          { selector: '[data-tour="pagos"]', title: 'Pagos', text: 'Controla los recibos y comprobantes de pago de cada estudiante.', placement: 'right' },
-          { selector: '[data-tour="configuracion"]', title: 'Configuración', text: 'Activa o desactiva funciones del centro y personaliza los datos generales.', placement: 'right' },
-          { selector: '[data-tour="busqueda"]', title: 'Búsqueda global', text: 'Pulsa aquí (o Ctrl/Cmd+K) para buscar estudiantes, pagos, mensajes y más desde cualquier página.', placement: 'bottom' }
-        ]
-      };
-      </script>
       <?php
       // SaaS platform message banner — shown on every admin page
       if (class_exists('FeatureGuard')) {
@@ -454,6 +441,7 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
                 }
             }
         </script>
+      <?php if ($tourPendiente_menu): ?>
       <script>
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
@@ -466,3 +454,4 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
         ]
       };
       </script>
+      <?php endif; ?>

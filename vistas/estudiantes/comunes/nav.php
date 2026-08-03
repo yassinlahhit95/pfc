@@ -370,6 +370,7 @@ function _nav_active_est($check) {
      endif; ?>
 
     <div class="content" id="main-content" tabindex="-1">
+      <?php if ($tourPendiente_menu): ?>
       <script>
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
@@ -383,6 +384,7 @@ function _nav_active_est($check) {
         ]
       };
       </script>
+      <?php endif; ?>
        <?php
        $configFB = Config::getInstance();
        ?>
