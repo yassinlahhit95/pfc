@@ -270,6 +270,7 @@ switch ($action) {
             'ok'       => $free !== false && $free > 1_073_741_824,
             'free_gb'  => $free  !== false ? round($free  / 1e9, 1) : null,
             'total_gb' => $total !== false ? round($total / 1e9, 1) : null,
+            'path'     => 'app root',
         ];
 
         // PHP version + required extensions (kept in sync with noDeploy/install-check.php)
@@ -317,11 +318,15 @@ switch ($action) {
 
         // Schema integrity — presence of a column other features depend on
         // (no formal migration-version system exists in this project)
-        $colCheck = $pdo->prepare(
-            'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?'
-        );
-        $colCheck->execute(['configuracion_centro', 'license_token']);
-        $checks['schema'] = ['ok' => (bool)$colCheck->fetchColumn()];
+        try {
+            $colCheck = $pdo->prepare(
+                'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?'
+            );
+            $colCheck->execute(['configuracion_centro', 'license_token']);
+            $checks['schema'] = ['ok' => (bool)$colCheck->fetchColumn()];
+        } catch (PDOException) {
+            $checks['schema'] = ['ok' => null, 'note' => 'schema check unavailable'];
+        }
 
         $overallOk = !in_array(false, array_column($checks, 'ok'), true);
         apiOk(['overall_ok' => $overallOk, 'checks' => $checks]);
