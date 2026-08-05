@@ -11,6 +11,7 @@ import '../../attendance/data/attendance_repository.dart';
 import '../../attendance/presentation/attendance_screen.dart';
 import '../../attendance/presentation/center_attendance_screen.dart';
 import '../../attendance/presentation/staff_justify_screen.dart';
+import '../../chat/presentation/conversations_screen.dart';
 import '../../classroom/data/classroom_repository.dart';
 import '../../classroom/presentation/favorites_screen.dart';
 import '../../classroom/presentation/modules_screen.dart';
@@ -135,6 +136,12 @@ class HomeScreen extends ConsumerWidget {
       if (!isEstudianteOrProfesor)
         _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!,
             t['nav_mensajeria_sub']!, MessagesScreen()),
+      // Chat directo: cualquier rol puede recibir un mensaje iniciado desde su
+      // perfil (ver ProfileDetailSheet, usado desde listados de profesores/
+      // alumnos) — sin esta entrada, quien recibe un chat no tenía forma
+      // alguna de verlo ni responder.
+      _NavItem(Icons.chat_bubble_outline_rounded, t['nav_chat']!,
+          t['nav_chat_sub']!, const ConversationsScreen()),
       _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!,
           EventsScreen()),
     ];
@@ -169,6 +176,9 @@ class HomeScreen extends ConsumerWidget {
       if (isBackOffice)
         _NavItem(Icons.inventory_2_outlined, t['nav_inventario']!,
             t['nav_inventario_sub']!, const InventoryScreen()),
+      if (hasStaffJustify)
+        _NavItem(Icons.edit_note_outlined, t['nav_justificar']!,
+            t['nav_justificar_sub']!, const StaffJustifyScreen()),
     ];
 
     final displayName = profileAsync.valueOrNull?.displayName ?? 'AulaPro';

@@ -6,11 +6,15 @@ require_once __DIR__ . '/../config/Config.php';
 $config = Config::getInstance();
 
 $saasAdminUrl = $config->get('SAAS_ADMIN_URL', '');
-$apiKey       = $config->get('SAAS_API_KEY', '');
-$apiSecret    = $config->get('SAAS_API_SECRET', '');
+// Same connection secret used for admin.php's inbound HMAC auth (ADMIN_API_KEY/
+// ADMIN_API_SECRET) — saas-admin's verifyLicense() looks it up by api_key in its
+// own `connections` table, so there is only ever one shared keypair per
+// connection, not a separate one for each direction of the API relationship.
+$apiKey       = $config->get('ADMIN_API_KEY', '');
+$apiSecret    = $config->get('ADMIN_API_SECRET', '');
 
 if ($saasAdminUrl === '' || $apiKey === '' || $apiSecret === '') {
-    Logger::error('SAAS_SYNC_ERROR', 'SAAS_ADMIN_URL/SAAS_API_KEY/SAAS_API_SECRET no configurados en .env');
+    Logger::error('SAAS_SYNC_ERROR', 'SAAS_ADMIN_URL/ADMIN_API_KEY/ADMIN_API_SECRET no configurados en .env');
     echo "Fallo al sincronizar: credenciales no configuradas.\n";
     exit(1);
 }

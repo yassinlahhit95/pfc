@@ -1,7 +1,14 @@
 <?php
 // Verificación de tokens de licencia HMAC firmados por la plataforma SaaS.
 // Formato del token: base64url(payload JSON) . '.' . base64url(firma HMAC-SHA256)
-// El secreto debe coincidir con SAAS_LICENSE_SECRET en .env (cliente) y en saas-admin (servidor).
+//
+// Firmado con ADMIN_API_SECRET — el mismo secreto que ya autentica las llamadas
+// HMAC del panel de control (suspend/activate/heartbeat/etc.) para esta instancia.
+// Deliberadamente no existe un secreto de licencia separado ni compartido entre
+// clientes: un único valor de confianza para toda la flota significaba que
+// regenerarlo (p. ej. tras una fuga sospechada) rompía todas las instancias a
+// la vez hasta actualizar el .env de cada una a mano. Con un secreto por
+// conexión, rotar la clave de un cliente nunca afecta a los demás.
 class LicenseToken
 {
     // ══════════════════════════════════════════════════════════════════════
@@ -20,7 +27,7 @@ class LicenseToken
                 $line = trim($line);
                 if (!$line || $line[0] === '#' || !str_contains($line, '=')) continue;
                 [$k, $v] = explode('=', $line, 2);
-                if (trim($k) === 'SAAS_LICENSE_SECRET') {
+                if (trim($k) === 'ADMIN_API_SECRET') {
                     self::$cachedSecret = trim($v, " \t\"'");
                     return self::$cachedSecret;
                 }
@@ -83,7 +90,7 @@ class LicenseToken
     public static function generate(array $payload): string
     {
         $secret = self::secret();
-        if (!$secret) throw new \RuntimeException('SAAS_LICENSE_SECRET no está configurado.');
+        if (!$secret) throw new \RuntimeException('ADMIN_API_SECRET no está configurado.');
 
         $payloadB64 = self::b64Encode(json_encode($payload));
         $sig        = self::b64Encode(hash_hmac('sha256', $payloadB64, $secret, true));

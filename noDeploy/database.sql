@@ -1376,7 +1376,7 @@ CREATE TABLE `configuracion_centro` (
 
 LOCK TABLES `configuracion_centro` WRITE;
 /*!40000 ALTER TABLE `configuracion_centro` DISABLE KEYS */;
-INSERT INTO `configuracion_centro` VALUES (1,'AulaPro Formación Profesional','CENTRO001','B12345678','Av. de la Innovación 42','Madrid','28042','912345678','info@aulapro.com','2026-2027','','','','Aviso legal: Este es un entorno de demostración de AulaPro.','Carlos Mendoza',1,1,1,1,'active',NULL,0,NULL,'info',NULL,NULL,NULL,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1);
+INSERT INTO `configuracion_centro` VALUES (1,'AulaPro Formación Profesional','CENTRO001','B12345678','Av. de la Innovación 42','Madrid','28042','912345678','info@aulapro.com','2026-2027','','','',NULL,'Aviso legal: Este es un entorno de demostración de AulaPro.','Carlos Mendoza',1,1,1,1,'active',NULL,0,NULL,'info',NULL,NULL,NULL,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1);
 /*!40000 ALTER TABLE `configuracion_centro` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1434,6 +1434,40 @@ LOCK TABLES `criterios_evaluacion` WRITE;
 /*!40000 ALTER TABLE `criterios_evaluacion` DISABLE KEYS */;
 INSERT INTO `criterios_evaluacion` VALUES (1,1,'CE1.a','Declara variables y estructuras de control.'),(2,2,'CE2.a','Instancia clases y usa herencia.');
 /*!40000 ALTER TABLE `criterios_evaluacion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cron_execution_log`
+--
+-- Written by cron/*.php (rotate_logs.php, procesar_cola_emails.php,
+-- cron_backup.php) via INSERT ... ON DUPLICATE KEY UPDATE keyed on job_name.
+-- Read by api/v1/admin/cron-health.php and api/admin.php's `diagnostics`
+-- action's cron_jobs check. Was missing from this dump — every fresh install
+-- silently had no cron history and the diagnostics cron_jobs check always
+-- fell back to "not tracked on this instance" until this was added.
+--
+
+DROP TABLE IF EXISTS `cron_execution_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cron_execution_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `job_name` varchar(100) NOT NULL,
+  `last_run` datetime NOT NULL,
+  `last_run_status` enum('success','failed') NOT NULL DEFAULT 'success',
+  `error_message` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_job_name` (`job_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cron_execution_log`
+--
+
+LOCK TABLES `cron_execution_log` WRITE;
+/*!40000 ALTER TABLE `cron_execution_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cron_execution_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

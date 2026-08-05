@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_client.dart';
-import '../../../core/auth/auth_state.dart';
 
 class CategoriaGasto {
   const CategoriaGasto({
@@ -62,9 +61,8 @@ class Gasto {
 }
 
 class GastosRepository {
-  GastosRepository(this._client, this._token);
+  GastosRepository(this._client);
   final ApiClient _client;
-  final String? _token;
 
   Future<({List<Gasto> gastos, List<CategoriaGasto> categorias})>
       fetchGastos() async {
@@ -114,8 +112,7 @@ class GastosRepository {
 }
 
 final gastosRepositoryProvider = Provider<GastosRepository>((ref) {
-  final token = ref.watch(sessionControllerProvider).valueOrNull?.token;
-  return GastosRepository(ref.read(apiClientProvider), token);
+  return GastosRepository(ref.read(apiClientProvider));
 });
 
 final gastosListProvider = FutureProvider.autoDispose<

@@ -384,7 +384,11 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       <?php
       // SaaS platform message banner — shown on every admin page
       if (class_exists('FeatureGuard')) {
-          if (FeatureGuard::isSuspended()) {
+          // Exempt saas_estado itself: it's the director's only way to see the
+          // suspension reason and re-pair/reconnect with SaaS-Admin. Blocking it
+          // here too traps them — the modal's own "Ver estado" button links back
+          // to this same page, which would show this same modal again.
+          if (FeatureGuard::isSuspended() && ($seccion ?? '') !== 'saas_estado') {
               $mensajeSuspension = FeatureGuard::getSuspensionMessage() ?: 'Esta instancia ha sido suspendida por la plataforma SaaS. Contacta con el proveedor.';
               echo '<div style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.92);display:flex;align-items:center;justify-content:center;padding:24px;">';
               echo '<div style="max-width:520px;width:100%;background:var(--surface);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">';
@@ -413,7 +417,7 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
               echo '<div style="margin-bottom:16px;padding:12px 18px;border-radius:10px;background:'.$bgSaas.';border:1px solid '.$bordeSaas.';display:flex;align-items:center;gap:12px;">';
               echo '<span style="font-size:1.25rem;line-height:1;color:'.$colorSaas.';"><i class="fas '.$iconoSaas.'"></i></span>';
               echo '<div style="flex:1;"><span style="font-weight:700;color:'.$colorSaas.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:var(--text);">'.htmlspecialchars($saasMensaje, ENT_QUOTES).'</span></div>';
-              echo '<a href="../saas/estado.php" style="font-size:.8rem;color:'.$colorSaas.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
+              echo '<a href="/vistas/admin/saas/estado.php" style="font-size:.8rem;color:'.$colorSaas.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
               echo '</div>';
           }
       }

@@ -70,6 +70,35 @@ function updateCorsOrigin(string $appUrl): void {
 
 $error_msg = null;
 $success_msg = null;
+$pairing_code = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'generate_pairing') {
+    if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+        $error_msg = "Token de seguridad inválido. Recarga la página.";
+    } else {
+        // Generated here, never typed by anyone: the admin only ever sees and
+        // relays the short pairing code below, not these two secrets directly.
+        $apiKey    = bin2hex(random_bytes(16));
+        $apiSecret = bin2hex(random_bytes(32));
+        $code      = strtoupper(bin2hex(random_bytes(4)));
+        $expiresAt = time() + 600; // 10 minutes
+
+        $updated = updateEnvFile([
+            'ADMIN_API_KEY'        => $apiKey,
+            'ADMIN_API_SECRET'     => $apiSecret,
+            'SAAS_PAIRING_CODE'    => $code,
+            'SAAS_PAIRING_EXPIRES' => (string)$expiresAt,
+        ]);
+
+        if ($updated) {
+            FeatureGuard::clearCache();
+            $pairing_code = ['code' => $code, 'expires_at' => $expiresAt];
+            $success_msg  = "Código de emparejamiento generado. Introdúcelo en SaaS-Admin en los próximos 10 minutos.";
+        } else {
+            $error_msg = "No se pudo escribir en el archivo .env. Comprueba los permisos de escritura del archivo en el servidor.";
+        }
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_creds') {
     if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
@@ -78,18 +107,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $url = trim($_POST['app_url'] ?? '');
         $apiKey = trim($_POST['api_key'] ?? '');
         $apiSecret = trim($_POST['api_secret'] ?? '');
-        $licSecret = trim($_POST['lic_secret'] ?? '');
 
-        if (!$url || !$apiKey || !$apiSecret || !$licSecret) {
+        if (!$url || !$apiKey || !$apiSecret) {
             $error_msg = "Todos los campos de credenciales son obligatorios.";
         } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
             $error_msg = "La URL de la Instancia no es una dirección web válida.";
         } else {
+            // ADMIN_API_SECRET also signs/verifies the license token (LicenseToken.php) —
+            // there is no separate license-signing secret to keep in sync anymore.
             $updated = updateEnvFile([
-                'APP_URL'             => rtrim($url, '/'),
-                'ADMIN_API_KEY'       => $apiKey,
-                'ADMIN_API_SECRET'    => $apiSecret,
-                'SAAS_LICENSE_SECRET' => $licSecret
+                'APP_URL'          => rtrim($url, '/'),
+                'ADMIN_API_KEY'    => $apiKey,
+                'ADMIN_API_SECRET' => $apiSecret,
             ]);
             if ($updated) {
                 updateCorsOrigin($url);
@@ -99,6 +128,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $error_msg = "No se pudo escribir en el archivo .env. Por favor, comprueba los permisos de escritura del archivo en el servidor.";
             }
         }
+    }
+}
+
+// If a pairing code from an earlier POST is still pending and unexpired (e.g.
+// the admin reloaded the page after generating one), keep showing it.
+if ($pairing_code === null) {
+    $existingCode = getEnvValue('SAAS_PAIRING_CODE');
+    $existingExp  = (int)getEnvValue('SAAS_PAIRING_EXPIRES', '0');
+    if ($existingCode && $existingExp > time()) {
+        $pairing_code = ['code' => $existingCode, 'expires_at' => $existingExp];
     }
 }
 
@@ -476,31 +515,93 @@ $apcuCards = [
   <?php endif; ?>
 </div>
 
-<!-- Credentials box for copy/paste configuration -->
+<?php if ($error_msg): ?>
+  <div style="background:var(--rojo-suave);border:1px solid var(--rojo-suave);color:var(--rojo-ink);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:20px;display:flex;align-items:center;gap:6px;font-family:sans-serif;">
+    <i class="fas fa-triangle-exclamation"></i>
+    <span><?= htmlspecialchars($error_msg, ENT_QUOTES) ?></span>
+  </div>
+<?php endif; ?>
+
+<?php if ($success_msg): ?>
+  <div style="background:var(--verde-suave);border:1px solid var(--verde-suave);color:var(--verde-ink);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:20px;display:flex;align-items:center;gap:6px;font-family:sans-serif;">
+    <i class="fas fa-circle-check"></i>
+    <span><?= htmlspecialchars($success_msg, ENT_QUOTES) ?></span>
+  </div>
+<?php endif; ?>
+
+<!-- Pairing — the recommended way to connect. No secret is ever typed or pasted
+     by hand; the admin only relays a short, single-use code to SaaS-Admin. -->
+<div class="panel margen-abajo" style="background:var(--surface-2);border:1.5px solid var(--accent);padding:22px;border-radius:14px;margin-top:20px;">
+  <h3 class="panel-titulo" style="font-size:.85rem;font-weight:800;letter-spacing:.05em;color:var(--dim);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;gap:6px;">
+    <i class="fas fa-link" style="color:var(--accent);"></i>
+    Emparejar con SaaS-Admin (recomendado)
+    <span class="readonly-note" style="color:var(--dim);margin-left:auto;font-size:10px;"><i class="fas fa-lock"></i> Solo Directores</span>
+  </h3>
+
+  <?php if ($pairing_code): ?>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:14px;line-height:1.5;">
+      Introduce este código en SaaS-Admin (pantalla «Nueva conexión») antes de que caduque. Nadie necesita ver ni copiar ninguna clave — SaaS-Admin la obtiene directamente de aquí.
+    </p>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div id="pairing-code-box" style="font-family:monospace;font-size:28px;font-weight:800;letter-spacing:.08em;color:var(--accent);background:var(--surface);border:1px solid var(--border-2);border-radius:10px;padding:10px 20px;">
+        <?= htmlspecialchars($pairing_code['code'], ENT_QUOTES) ?>
+      </div>
+      <button type="button" class="btn btn-sm btn-secundario" onclick="copyPairingCode()" style="padding:8px 14px;font-size:12px;height:auto;">
+        <i class="fas fa-copy"></i> Copiar
+      </button>
+      <div style="font-size:13px;color:var(--dim);">
+        Caduca en <strong id="pairing-countdown" style="color:var(--naranja);">10:00</strong>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var expiresAt = <?= (int)$pairing_code['expires_at'] ?>;
+        var el = document.getElementById('pairing-countdown');
+        function tick() {
+          var remaining = expiresAt - Math.floor(Date.now() / 1000);
+          if (remaining <= 0) { el.textContent = 'Caducado'; return; }
+          var m = Math.floor(remaining / 60), s = remaining % 60;
+          el.textContent = m + ':' + String(s).padStart(2, '0');
+          setTimeout(tick, 1000);
+        }
+        tick();
+      })();
+      function copyPairingCode() {
+        navigator.clipboard.writeText(document.getElementById('pairing-code-box').textContent.trim());
+      }
+    </script>
+  <?php else: ?>
+    <?php $alreadyConnected = getEnvValue('ADMIN_API_KEY') !== ''; ?>
+    <?php if ($alreadyConnected): ?>
+      <div style="background:var(--naranja-suave);border:1px solid var(--naranja);color:var(--naranja-ink);padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px;">
+        <i class="fas fa-triangle-exclamation" style="margin-top:2px;"></i>
+        <span>Esta instancia ya parece estar conectada. Generar un código nuevo <strong>sustituye las credenciales actuales de inmediato</strong> — la conexión existente en SaaS-Admin dejará de funcionar hasta que la vuelvas a emparejar allí con el código nuevo.</span>
+      </div>
+    <?php endif; ?>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:14px;line-height:1.5;">
+      Genera un código de un solo uso, válido 10 minutos, e introdúcelo en SaaS-Admin para conectar esta instancia sin copiar ninguna clave a mano.
+    </p>
+    <form method="POST" action="" onsubmit="<?= $alreadyConnected ? "return confirm('¿Seguro? Esto invalidará la conexión actual con SaaS-Admin hasta que la vuelvas a emparejar con el código nuevo.');" : '' ?>">
+      <input type="hidden" name="action" value="generate_pairing">
+      <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+      <button type="submit" class="boton-primario">
+        <i class="fas fa-qrcode"></i> Generar código de emparejamiento
+      </button>
+    </form>
+  <?php endif; ?>
+</div>
+
+<!-- Credentials box for copy/paste configuration (manual fallback) -->
 <div class="panel margen-abajo" style="background:var(--surface-2);border:1.5px dashed var(--border-2);padding:22px;border-radius:14px;margin-top:20px;">
   <h3 class="panel-titulo" style="font-size:.85rem;font-weight:800;letter-spacing:.05em;color:var(--dim);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;gap:6px;">
     <i class="fas fa-key" style="color:var(--accent);"></i>
-    Credenciales de Conexión (saas-admin)
+    Configuración manual (avanzado)
     <span class="readonly-note" style="color:var(--dim);margin-left:auto;font-size:10px;"><i class="fas fa-lock"></i> Solo Directores</span>
   </h3>
   
   <p style="font-size:12px;color:var(--dim);margin-bottom:16px;line-height:1.5;">
-    Puedes ver y editar las credenciales de conexión directamente desde aquí. Asegúrate de guardar los cambios y de que coincidan con los de su panel <strong>saas-admin</strong>.
+    Solo necesario si el emparejamiento automático de arriba no está disponible (p. ej. una versión de SaaS-Admin anterior a esta función). Si lo usas, asegúrate de que coincida exactamente con los datos de su panel <strong>saas-admin</strong>.
   </p>
-
-  <?php if ($error_msg): ?>
-    <div style="background:var(--rojo-suave);border:1px solid var(--rojo-suave);color:var(--rojo-ink);padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;display:flex;align-items:center;gap:6px;font-family:sans-serif;">
-      <i class="fas fa-triangle-exclamation"></i>
-      <span><?= htmlspecialchars($error_msg, ENT_QUOTES) ?></span>
-    </div>
-  <?php endif; ?>
-
-  <?php if ($success_msg): ?>
-    <div style="background:var(--verde-suave);border:1px solid var(--verde-suave);color:var(--verde-ink);padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;display:flex;align-items:center;gap:6px;font-family:sans-serif;">
-      <i class="fas fa-circle-check"></i>
-      <span><?= htmlspecialchars($success_msg, ENT_QUOTES) ?></span>
-    </div>
-  <?php endif; ?>
 
   <form method="POST" action="">
     <input type="hidden" name="action" value="save_creds">
@@ -540,21 +641,6 @@ $apcuCards = [
             <i class="fas fa-eye"></i>
           </button>
           <button type="button" class="btn btn-sm btn-secundario" onclick="copyCredVal('creds-apisecret', this)" style="padding:6px 12px;font-size:12px;height:auto;">
-            <i class="fas fa-copy"></i><span class="btn-txt-mobile"> Copiar</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- License Secret -->
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:11px;font-weight:700;color:var(--dim);">SaaS License Secret (Firma)</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input type="password" id="creds-licsecret" name="lic_secret" autocomplete="new-password" value="<?= htmlspecialchars(getEnvValue('SAAS_LICENSE_SECRET'), ENT_QUOTES) ?>" required 
-                 style="font-family:monospace;font-size:12px;padding:6px 10px;border:1px solid var(--border-2);border-radius:6px;background:var(--surface);color:var(--text);flex:1;">
-          <button type="button" class="btn btn-sm btn-secundario" onclick="togglePassView('creds-licsecret', this)" style="padding:6px 8px;height:auto;" title="Mostrar/Ocultar">
-            <i class="fas fa-eye"></i>
-          </button>
-          <button type="button" class="btn btn-sm btn-secundario" onclick="copyCredVal('creds-licsecret', this)" style="padding:6px 12px;font-size:12px;height:auto;">
             <i class="fas fa-copy"></i><span class="btn-txt-mobile"> Copiar</span>
           </button>
         </div>

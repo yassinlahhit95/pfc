@@ -8,7 +8,6 @@ import '../../features/auth/presentation/onboarding_screen.dart';
 import '../../features/events/presentation/events_screen.dart';
 import '../../features/grades/presentation/grades_screen.dart';
 import '../auth/auth_state.dart';
-import '../theme/app_theme.dart';
 import 'home_shell.dart';
 
 /// Bridges Riverpod's sessionControllerProvider and onboardingCompletedProvider
