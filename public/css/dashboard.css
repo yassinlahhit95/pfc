@@ -647,9 +647,6 @@ a.tile { text-decoration: none; color: inherit; display: flex; }
 
 /* ── Search results dropdown ─────────────────────────────────────────── */
 
-/* search-wrap replaces .searchbar as the topbar flex child */
-/* Deprecated .search-wrap styles removed; using .search-expander instead */
-
 /* ── Hybrid Search (Desktop Inline / Mobile Modal) ────────────── */
 
 .mobile-search-trigger { display: none; }

@@ -106,7 +106,6 @@ textarea:focus-visible,
 
 /* Constrain forms to a comfortable reading width */
 .contenedor-formulario-mediano { max-width: 680px; }
-.contenedor-formulario-pequeno { max-width: 480px; }
 
 /* ── Breadcrumb bar (vistas/comunes/breadcrumb.php) ── */
 .breadcrumb-bar {
@@ -1705,7 +1704,6 @@ a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
 
 /* Flex layout helpers */
 .caja                   { display: flex; }
-.direccion-columna      { flex-direction: column; }
 .caja-libre             { flex-wrap: wrap; }
 .alinear-centro         { align-items: center; }
 .al-final               { align-items: flex-end; }

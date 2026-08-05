@@ -26,7 +26,6 @@ dependencies:
   shared_preferences: ^2.2.3
 
   intl: ^0.19.0
-  cupertino_icons: ^1.0.8
   url_launcher: ^6.3.0
 
   # Inter — the typeface premium SaaS products (Linear, Notion, Vercel,
