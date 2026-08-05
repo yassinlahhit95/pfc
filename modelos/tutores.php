@@ -89,15 +89,6 @@ function obtenerTokensTutores() {
     return $lista;
 }
 
-function listarIdsTutores(): array {
-    $con = obtenerConexion();
-    $resultado = mysqli_query($con, "SELECT idTutor FROM tutores");
-    $ids = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $ids[] = (int)$fila['idTutor'];
-    }
-    return $ids;
-}
 
 /**
  * Actualiza el token FCM de un tutor

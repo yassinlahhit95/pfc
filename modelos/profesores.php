@@ -92,16 +92,6 @@ function obtenerTokensProfesores() {
     return $lista;
 }
 
-function listarIdsProfesores(): array {
-    $con = obtenerConexion();
-    $resultado = mysqli_query($con, "SELECT idProfesor FROM profesores");
-    $ids = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $ids[] = (int)$fila['idProfesor'];
-    }
-    return $ids;
-}
-
 function obtenerTokenFCMProfesor($id) {
     return obtenerTokenFCM('profesores', 'idProfesor', $id);
 }

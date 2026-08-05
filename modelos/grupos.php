@@ -31,15 +31,6 @@ function listarGruposPorCicloYAnio($idCiclo, $anioEstudio) {
     return $lista;
 }
 
-function obtenerGrupoPorId($idGrupo) {
-    $con = obtenerConexion();
-    $sql = "SELECT * FROM grupos WHERE idGrupo = ? LIMIT 1";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idGrupo);
-    mysqli_stmt_execute($stmt);
-    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-}
-
 function insertarGrupo($nombreGrupo, $idCiclo, $anioEstudio) {
     $con = obtenerConexion();
     $sql = "INSERT INTO grupos (nombreGrupo, idCiclo, anioEstudio) VALUES (?, ?, ?)";

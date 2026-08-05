@@ -10,18 +10,6 @@ const EVENTOS_VISIBILIDAD_VALIDAS = ['publica', 'roles', 'personalizado', 'priva
 // CONSULTAS
 // ══════════════════════════════════════════════════════════════════════
 
-// Todos los eventos (pasados y futuros) para la gestión de secretaría:
-// así el buscador encuentra también eventos ya celebrados.
-function listarTodosLosEventos() {
-    $con = obtenerConexion();
-    $res = mysqli_query($con, "SELECT * FROM eventos ORDER BY fechaEvento DESC, horaEvento DESC");
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($res)) {
-        $lista[] = $fila;
-    }
-    return $lista;
-}
-
 // Rol y id del usuario de la sesión actual, como [idUsuario, tipoUsuario].
 // El tipo usa los mismos literales que audiencia_json.roles / tipoUsuario de
 // notificaciones_recordatorios. Devuelve [0, ''] si no hay ninguna sesión.
@@ -80,42 +68,6 @@ function obtenerEventoPorId($idEvento) {
         $evento['recordatorios'] = obtenerRecordatorios($idEvento);
     }
     return $evento;
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// INSERCIONES
-// ══════════════════════════════════════════════════════════════════════
-
-function insertarEvento($titulo, $descripcion, $fecha, $hora, $ubicacion) {
-    $con = obtenerConexion();
-    $sql = "INSERT INTO eventos (tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssss", $titulo, $descripcion, $fecha, $hora, $ubicacion);
-    return mysqli_stmt_execute($stmt);
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// ACTUALIZACIONES
-// ══════════════════════════════════════════════════════════════════════
-
-function actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubicacion) {
-    $con = obtenerConexion();
-    $sql = "UPDATE eventos SET tituloEvento=?, descripcionEvento=?, fechaEvento=?, horaEvento=?, ubicacionEvento=? WHERE idEvento=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssi", $titulo, $descripcion, $fecha, $hora, $ubicacion, $idEvento);
-    return mysqli_stmt_execute($stmt);
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// ELIMINACIONES
-// ══════════════════════════════════════════════════════════════════════
-
-function eliminarEvento($idEvento) {
-    $con = obtenerConexion();
-    $sql = "DELETE FROM eventos WHERE idEvento = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEvento);
-    return mysqli_stmt_execute($stmt);
 }
 
 // ══════════════════════════════════════════════════════════════════════

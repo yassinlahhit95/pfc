@@ -41,25 +41,6 @@ function actualizarTFG($idEstudiante, $nombreArchivo) {
     return $resultado;
 }
 
-function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
-    $con = obtenerConexion();
-    $fechaHoraActual = date('Y-m-d H:i:s');
-
-    if ($nombreArchivo) {
-        $sql = "UPDATE estudiantes SET tituloTFG = ?, archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "sssi", $tituloTFG, $nombreArchivo, $fechaHoraActual, $idEstudiante);
-    } else {
-        $sql = "UPDATE estudiantes SET tituloTFG = ? WHERE idEstudiante = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "si", $tituloTFG, $idEstudiante);
-    }
-
-    $resultado = mysqli_stmt_execute($stmt);
-    
-    return $resultado;
-}
-
 function eliminarTFG($idEstudiante) {
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = ?";

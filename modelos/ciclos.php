@@ -76,12 +76,6 @@ function obtenerTipoFormacion($idCiclo) {
     return $row['tipoFormacion'] ?? 'medio';
 }
 
-function listarAñosPorCiclo($idCiclo) {
-    require_once __DIR__ . '/../include/FPSystem.php';
-    $tipoFormacion = obtenerTipoFormacion($idCiclo);
-    return FPSystem::getYearsForType($tipoFormacion);
-}
-
 function listarProfesoresDeUnCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = ?";
