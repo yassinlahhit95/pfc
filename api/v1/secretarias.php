@@ -88,13 +88,22 @@ if ($method === 'PUT') {
     $id = (int)($body['idSecretaria'] ?? 0);
     $nombre = trim((string)($body['nombreSecretaria'] ?? ''));
     $email = trim((string)($body['emailSecretaria'] ?? ''));
+    $newPassword = (string)($body['newPassword'] ?? '');
 
     if (!$id || !$nombre || !$email) {
         v1Error('id, nombre and email are required.', 400, 'validation');
     }
 
+    if ($newPassword !== '' && strlen($newPassword) < 8) {
+        v1Error('Password must be at least 8 characters.', 400, 'validation');
+    }
+
     if (!actualizarSecretaria($id, $nombre, $email)) {
         v1Error('Could not update secretaria.', 500, 'error');
+    }
+
+    if ($newPassword !== '' && !actualizarPasswordSecretaria($id, $newPassword)) {
+        v1Error('Could not update password.', 500, 'error');
     }
 
     registrarAccion('actualizar', 'secretarias', $id, 'Actualizado desde app');
