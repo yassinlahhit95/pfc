@@ -107,6 +107,9 @@ if ($method === 'PUT') {
     }
 
     registrarAccion('actualizar', 'secretarias', $id, 'Actualizado desde app');
+    if ($newPassword !== '') {
+        registrarAccion('cambiar_password', 'secretarias', $id, 'Contraseña restablecida por director desde app');
+    }
     v1Ok(['success' => true]);
 }
 

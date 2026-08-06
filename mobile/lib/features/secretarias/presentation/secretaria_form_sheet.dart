@@ -153,8 +153,9 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
                   helperText: 'Dejar en blanco para no cambiarla',
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return null;
-                  if (v.length < 8) return 'Mínimo 8 caracteres';
+                  final trimmed = v?.trim() ?? '';
+                  if (trimmed.isEmpty) return null;
+                  if (trimmed.length < 8) return 'Mínimo 8 caracteres';
                   return null;
                 },
               ),
