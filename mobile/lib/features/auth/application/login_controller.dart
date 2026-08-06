@@ -37,22 +37,25 @@ class LoginController extends AsyncNotifier<void> {
   Future<void> submitGoogle() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final googleSignIn = GoogleSignIn(
-        scopes: ['email'],
-      );
+      final googleSignIn = await ref.read(googleSignInProvider.future);
+
       // Disconnect/sign out first to always prompt the account chooser
       try {
         await googleSignIn.signOut();
       } catch (_) {}
 
-      final account = await googleSignIn.signIn();
-      if (account == null) {
-        // User aborted the sign-in
-        return;
+      final GoogleSignInAccount account;
+      try {
+        account = await googleSignIn.authenticate();
+      } on GoogleSignInException catch (e) {
+        if (e.code == GoogleSignInExceptionCode.canceled) {
+          // User aborted the sign-in
+          return;
+        }
+        rethrow;
       }
 
-      final auth = await account.authentication;
-      final idToken = auth.idToken;
+      final idToken = account.authentication.idToken;
       if (idToken == null) {
         throw Exception('No se pudo obtener el ID token de Google.');
       }
@@ -73,3 +76,14 @@ class LoginController extends AsyncNotifier<void> {
 
 final loginControllerProvider =
     AsyncNotifierProvider<LoginController, void>(LoginController.new);
+
+/// google_sign_in v7+ requires `initialize()` to be called exactly once
+/// before any other method — calling it more than once is undefined
+/// behavior per the package's own docs. A FutureProvider's cached future
+/// gives that "exactly once" guarantee for the app's lifetime without a
+/// separate bootstrap step.
+final googleSignInProvider = FutureProvider<GoogleSignIn>((ref) async {
+  final instance = GoogleSignIn.instance;
+  await instance.initialize();
+  return instance;
+});
