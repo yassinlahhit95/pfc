@@ -27,6 +27,7 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nombreController;
   late final TextEditingController _emailController;
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;
@@ -42,6 +43,7 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
   void dispose() {
     _nombreController.dispose();
     _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -63,9 +65,11 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
       if (widget.secretaria == null) {
         await repo.createSecretaria(data);
       } else {
+        final newPassword = _passwordController.text.trim();
         await repo.updateSecretaria({
           'idSecretaria': widget.secretaria!.id,
           ...data,
+          if (newPassword.isNotEmpty) 'newPassword': newPassword,
         });
       }
       if (mounted) {
@@ -139,6 +143,22 @@ class _SecretariaFormSheetState extends ConsumerState<SecretariaFormSheet> {
               keyboardType: TextInputType.emailAddress,
               validator: (v) => v!.isEmpty ? 'Requerido' : null,
             ),
+            if (widget.secretaria != null) ...[
+              const SizedBox(height: Space.md),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Nueva contraseña (opcional)',
+                  helperText: 'Dejar en blanco para no cambiarla',
+                ),
+                validator: (v) {
+                  if (v == null || v.isEmpty) return null;
+                  if (v.length < 8) return 'Mínimo 8 caracteres';
+                  return null;
+                },
+              ),
+            ],
             const SizedBox(height: Space.xl),
             FilledButton(
               onPressed: _isLoading ? null : _submit,
