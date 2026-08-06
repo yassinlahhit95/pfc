@@ -47,6 +47,11 @@ if (!empty($cfg['logoCentro'])) {
     );
 }
 $logoUrlAbsoluta = $logoUrl !== '' && preg_match('#^https?://#i', $logoUrl);
+// _head.php is shared by the homepage, blog.php (listing + post detail) and
+// ciclos.php (listing + detail) via vistas/landing/_head.php's shim — the
+// canonical/og:url must reflect the actual page requested, not always "/",
+// or every blog post would claim the homepage as its canonical URL.
+$_urlActual = $_urlSitio . ($_SERVER['REQUEST_URI'] ?? '/');
 
 // Plus Jakarta Sans es la fuente de cuerpo en todos los temas (base.css --lp-fuente)
 // y también la de titulares en "institucional" y "universidad", así que se
@@ -108,6 +113,13 @@ if (!empty($cfg['direccionCentro']) || !empty($cfg['ciudadCentro'])) {
 <meta property="og:title" content="<?= Security::escapeHtml($tituloSeo) ?>">
 <meta property="og:description" content="<?= Security::escapeHtml($descSeo) ?>">
 <meta property="og:locale" content="es_ES">
+<meta property="og:url" content="<?= Security::escapeHtml($_urlActual) ?>">
+<?php if ($logoUrl): ?>
+<meta property="og:image" content="<?= Security::escapeHtml($logoUrlAbsoluta ? $logoUrl : $_urlSitio . '/' . $logoUrl) ?>">
+<?php endif; ?>
+<?php if (!$preview): ?>
+<link rel="canonical" href="<?= Security::escapeHtml($_urlActual) ?>">
+<?php endif; ?>
 <script type="application/ld+json"><?= json_encode($orgSchema, JSON_UNESCAPED_UNICODE) ?></script>
 <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">

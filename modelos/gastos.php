@@ -31,7 +31,7 @@ function actualizarCategoria($id, $nombre, $presupuestoAnual, $color) {
 
 function borrarCategoria($id) {
     $con  = obtenerConexion();
-    // Soft-delete: preserve referential integrity on existing gastos
+    // Borrado lógico: preserva la integridad referencial de los gastos existentes
     $stmt = mysqli_prepare($con, "UPDATE categorias_gasto SET activo = 0 WHERE idCategoria = ?");
     mysqli_stmt_bind_param($stmt, "i", $id);
     return mysqli_stmt_execute($stmt);
@@ -166,7 +166,7 @@ function actualizarGasto($idGasto, $idCategoria, $idCiclo, $concepto, $importe, 
 
 function borrarGasto($idGasto) {
     $con  = obtenerConexion();
-    // Retrieve filename to delete the physical file after DB delete
+    // Obtener el nombre del fichero para borrarlo físicamente tras el borrado en BD
     $stmt = mysqli_prepare($con, "SELECT archivoJustificante FROM gastos WHERE idGasto = ?");
     mysqli_stmt_bind_param($stmt, "i", $idGasto);
     mysqli_stmt_execute($stmt);

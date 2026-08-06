@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../include/AssetMin.php';
 // Pie de la landing. Espera: $cfg, $ajustes, $menuAnclas, $logoUrl (de _head)
 $redes = is_array($ajustes['redes'] ?? null) ? $ajustes['redes'] : [];
 $iconosRedes = [
@@ -151,7 +152,7 @@ if (!empty($cfg['telefonoCentro'])) {
 
 <script src="/landing-system/assets/js/landing.js"></script>
 
-<link rel="stylesheet" href="/public/css/features/cookie-consent.css">
+<link rel="stylesheet" href="<?= AssetMin::urlAbs(__DIR__ . '/../../..', '/public/css/features/cookie-consent.css') ?>">
 <script src="/public/js/core/cookie-consent.js"></script>
 <script>
   document.addEventListener('click', function (e) {

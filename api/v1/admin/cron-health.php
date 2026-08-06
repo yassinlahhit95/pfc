@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $usuario = v1Auth();
 
-// Only admins can check cron health
+// Solo los admins pueden comprobar el estado de los cron
 if ($usuario['user_type'] !== 'admin') {
     v1Error('Forbidden', 403, 'access_denied');
 }

@@ -75,7 +75,7 @@ if ($method === 'GET') {
         v1Ok(['tutores' => $tutores]);
     }
 
-    // Default list behaviour
+    // Comportamiento por defecto del listado
     $limit  = min(max((int)($_GET['limit']  ?? 20), 1), 100);
     $offset = max((int)($_GET['offset'] ?? 0), 0);
     $ciclo  = (int)($_GET['ciclo'] ?? 0);
@@ -225,7 +225,7 @@ if ($method === 'POST') {
         v1Ok(['success' => true, 'idTutor' => $idTutor]);
     }
 
-    // Default POST
+    // POST por defecto
     $nombre = trim((string)($body['nombreEstudiante'] ?? ''));
     $email = trim((string)($body['emailEstudiante'] ?? ''));
     $telefono = trim((string)($body['telefonoEstudiante'] ?? ''));
@@ -293,7 +293,7 @@ if ($method === 'PUT') {
         v1Ok(['success' => true]);
     }
 
-    // Default PUT
+    // PUT por defecto
     $idEstudiante = (int)($body['idEstudiante'] ?? 0);
     if (!$idEstudiante) v1Error('idEstudiante is required.', 400, 'validation');
 

@@ -140,7 +140,7 @@
                         bubble.dataset.original = content;
                         bubble.classList.remove('editing');
                         bubble.innerHTML = escHtmlMsg(content);
-                        // Show/update the "(Editado)" chip
+                        // Mostrar/actualizar el chip "(Editado)"
                         var foot = row.querySelector('.msg-thread-foot');
                         if (foot && !foot.querySelector('.msg-editado-chip')) {
                             var chip = document.createElement('span');

@@ -35,7 +35,7 @@ session_write_close(); // release session lock before DB work
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-// Search is applied at the DB level inside chatContactosPosibles().
+// La búsqueda se aplica a nivel de base de datos dentro de chatContactosPosibles().
 $q        = trim($_GET['q'] ?? '');
 $contacts = chatContactosPosibles($myRol, $myId, $q);
 

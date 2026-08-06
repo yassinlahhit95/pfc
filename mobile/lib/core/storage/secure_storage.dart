@@ -4,10 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// shared_preferences for the token itself — only for the light
 /// response-cache described in the per-feature repositories.
 class SecureStorage {
-  SecureStorage()
-      : _storage = const FlutterSecureStorage(
-          aOptions: AndroidOptions(encryptedSharedPreferences: true),
-        );
+  SecureStorage() : _storage = const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
 

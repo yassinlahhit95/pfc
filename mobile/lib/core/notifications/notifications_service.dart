@@ -139,7 +139,7 @@ class NotificationsService {
   }
 
   Future<void> _registerToken(String token) async {
-    final session = _ref.read(sessionControllerProvider).valueOrNull;
+    final session = _ref.read(sessionControllerProvider).value;
     if (session == null) return;
     try {
       await _ref
@@ -153,7 +153,7 @@ class NotificationsService {
 
   void _handleTapData(Map<String, dynamic> data) {
     final type = data['type'] as String?;
-    final session = _ref.read(sessionControllerProvider).valueOrNull;
+    final session = _ref.read(sessionControllerProvider).value;
     if (type == null || session == null) return;
 
     final router = _ref.read(routerProvider);

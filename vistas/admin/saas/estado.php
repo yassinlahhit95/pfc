@@ -131,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// If a pairing code from an earlier POST is still pending and unexpired (e.g.
-// the admin reloaded the page after generating one), keep showing it.
+// Si un código de emparejamiento de un POST anterior sigue pendiente y no ha expirado (p.ej.
+// el admin recargó la página tras generarlo), se sigue mostrando.
 if ($pairing_code === null) {
     $existingCode = getEnvValue('SAAS_PAIRING_CODE');
     $existingExp  = (int)getEnvValue('SAAS_PAIRING_EXPIRES', '0');

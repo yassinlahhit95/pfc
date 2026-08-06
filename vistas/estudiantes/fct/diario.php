@@ -9,7 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $idEstudiante = $_SESSION['idEstudiante'];
 $con = obtenerConexion();
 
-// Fetch FCT details
+// Obtiene los detalles del FCT
 $stmt = mysqli_prepare($con, "
     SELECT f.*, p.nombreProfesor, c.nombreCiclo 
     FROM fct f
@@ -29,7 +29,7 @@ $tienePendientes = false;
 if ($fct) {
     $idFCT = $fct['idFCT'];
     
-    // Fetch logs
+    // Obtiene los logs
     $stmtD = mysqli_prepare($con, "SELECT * FROM fct_diarios WHERE idFCT = ? ORDER BY fecha DESC, idDiario DESC");
     mysqli_stmt_bind_param($stmtD, "i", $idFCT);
     mysqli_stmt_execute($stmtD);

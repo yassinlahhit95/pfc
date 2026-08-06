@@ -189,7 +189,7 @@ if ($method === 'GET') {
 if ($method === 'POST') {
     $action = $_POST['action'] ?? ($_GET['action'] ?? '');
     
-    // Resolve action fallback for multipart/form-data where action isn't strictly defined but can be inferred
+    // Resuelve la acción por defecto para multipart/form-data cuando no viene definida explícitamente pero se puede inferir
     if (!$action) {
         if (isset($_POST['idEstudiante']) && isset($_POST['monto'])) $action = 'cobrar';
         elseif (isset($_POST['idPago']) && !isset($_POST['aprobar'])) $action = 'uploadComprobante';

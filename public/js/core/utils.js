@@ -1,12 +1,12 @@
 /**
- * AulaPro Shared Utilities — prevents redundant implementations across modules.
- * Loaded first in footer.php before other core/feature scripts.
+ * Utilidades compartidas de AulaPro — evita implementaciones redundantes entre módulos.
+ * Se carga primero en footer.php, antes que el resto de scripts core/feature.
  */
 (function(window) {
   window.AulaProUtils = {
     /**
-     * Escape HTML special characters to prevent XSS.
-     * Safe for use in both text content and HTML attributes.
+     * Escapa caracteres especiales HTML para prevenir XSS.
+     * Seguro tanto para contenido de texto como para atributos HTML.
      */
     escapeHtml: function(str) {
       const map = {
@@ -20,8 +20,8 @@
     },
 
     /**
-     * Escape HTML and preserve line breaks as <br> tags.
-     * Used in message display, comments, etc. where newlines should be visible.
+     * Escapa HTML y conserva los saltos de línea como etiquetas <br>.
+     * Usado al mostrar mensajes, comentarios, etc. donde los saltos de línea deben verse.
      */
     escapeHtmlWithLineBreaks: function(str) {
       const map = {
@@ -35,8 +35,8 @@
     },
 
     /**
-     * Retrieve CSRF token from common input selectors.
-     * Checks: [name="csrf_token"], [name="modal_csrf"], #csrf-token
+     * Obtiene el token CSRF a partir de los selectores de input habituales.
+     * Comprueba: [name="csrf_token"], [name="modal_csrf"], #csrf-token
      */
     getCSRFToken: function() {
       const selectors = ['[name="csrf_token"]', '[name="modal_csrf"]', '#csrf-token'];
@@ -48,9 +48,9 @@
     },
 
     /**
-     * Resolve app root path from current script location.
-     * Used by notificaciones-dashboard.js, chat-widget.js, etc.
-     * to construct relative URLs from modules that can be 3+ levels deep.
+     * Resuelve la ruta raíz de la app a partir de la ubicación del script actual.
+     * Usado por notificaciones-dashboard.js, chat-widget.js, etc.
+     * para construir URLs relativas desde módulos que pueden estar 3 o más niveles de profundidad.
      */
     resolveAppPath: function(relativePath) {
       const script = document.currentScript || Array.from(document.scripts).pop();

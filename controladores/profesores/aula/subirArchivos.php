@@ -115,9 +115,10 @@ try {
                 }
             }
 
-            // Canonical Content-Type to STORE per extension — always this, never the
-            // sniffed value, so a crafted file can't get stored/served with an
-            // attacker-influenced Content-Type (content-type confusion / inline XSS risk).
+            // Content-Type canónico a GUARDAR según la extensión — siempre este, nunca
+            // el detectado por sniffing, para que un fichero manipulado no pueda
+            // guardarse/servirse con un Content-Type influido por el atacante
+            // (riesgo de confusión de tipo / XSS inline).
             $mimesCanonicos = [
                 'pdf'  => 'application/pdf',
                 'doc'  => 'application/msword',
@@ -138,9 +139,9 @@ try {
                 'rar'  => 'application/x-rar-compressed',
             ];
 
-            // Acceptable *sniffed* MIME variants per extension — several libmagic
-            // versions report Office/zip/rar formats differently, so validation needs
-            // a real allow-list per extension, not a single expected value.
+            // Variantes de MIME *detectado* aceptables por extensión — varias versiones
+            // de libmagic informan los formatos Office/zip/rar de forma distinta, así
+            // que la validación necesita una lista blanca real por extensión, no un único valor esperado.
             $mimesAceptados = [
                 'pdf'  => ['application/pdf'],
                 'doc'  => ['application/msword', 'application/x-ole-storage', 'application/vnd.ms-office'],
@@ -161,9 +162,9 @@ try {
                 'rar'  => ['application/x-rar', 'application/x-rar-compressed', 'application/vnd.rar'],
             ];
 
-            // Reject on ANY mismatch (not just a keyword blocklist) — if we can sniff a
-            // MIME and it's not one of the extension's known-good variants, the upload
-            // is rejected outright.
+            // Rechazar ante CUALQUIER discrepancia (no solo una lista negra de palabras clave)
+            // — si se puede detectar un MIME y no es una de las variantes válidas conocidas
+            // para esa extensión, la subida se rechaza directamente.
             if ($mimeReal !== '' && isset($mimesAceptados[$ext]) && !in_array($mimeReal, $mimesAceptados[$ext], true)) {
                 $errores[] = "$nombreOrig: el contenido no coincide con la extensión ($ext).";
                 continue;

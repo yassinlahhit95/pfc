@@ -60,7 +60,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
-    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final session = ref.watch(sessionControllerProvider).value;
     final role = session?.role;
     final isBackOffice =
         role == UserRole.director || role == UserRole.secretaria;

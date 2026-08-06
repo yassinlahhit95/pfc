@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../features/classroom/presentation/modules_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -86,7 +87,7 @@ String? homeRouteForType(String type) {
 class _HomeShellState extends ConsumerState<HomeShell> {
   @override
   Widget build(BuildContext context) {
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     if (role == null) return const SizedBox.shrink(); // router redirects away
 
     final t = ref.watch(translationsProvider);
@@ -98,7 +99,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // Only watched (and therefore only polled — see messagesUnreadCountProvider)
     // when this role actually has that tab, so a tutor session never fires the poll.
     final messagesUnread = hasMessages
-        ? ref.watch(messagesUnreadCountProvider).valueOrNull ?? 0
+        ? ref.watch(messagesUnreadCountProvider).value ?? 0
         : 0;
 
     return Scaffold(

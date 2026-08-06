@@ -1,6 +1,7 @@
 <IfModule mod_deflate.c>
     # Compress HTML, CSS, JavaScript, Text, XML and fonts
     AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
     AddOutputFilterByType DEFLATE application/rss+xml
     AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
     AddOutputFilterByType DEFLATE application/x-font
@@ -41,10 +42,11 @@
     # Video
     ExpiresByType video/mp4 "access plus 1 year"
     ExpiresByType video/mpeg "access plus 1 year"
-    # CSS, JavaScript
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType text/javascript "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
+    # CSS, JavaScript — safe at 1 year since every core/feature CSS/JS link is
+    # cache-busted with a ?v=filemtime query string (footer.php, nav.php, AssetMin.php)
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
     # Others
     ExpiresByType application/pdf "access plus 1 month"
     ExpiresByType font/woff2 "access plus 1 year"
@@ -52,6 +54,21 @@
 
 # Disable directory listing
 Options -Indexes
+
+# sitemap.xml and robots.txt are PHP scripts (per-tenant: they derive the site's
+# own domain from HTTP_HOST / configuracion_centro rather than hardcoding one
+# client's URL) but keep their conventional static filenames — crawlers only
+# ever check /robots.txt and /sitemap.xml, never a .php equivalent. Without
+# this, Apache serves them as plain static files and a crawler gets the raw
+# PHP source instead of executed output.
+<IfModule mod_mime.c>
+    <Files "sitemap.xml">
+        ForceType application/x-httpd-php
+    </Files>
+    <Files "robots.txt">
+        ForceType application/x-httpd-php
+    </Files>
+</IfModule>
 
 # ── Force HTTPS ────────────────────────────────────────────────────────────────
 # Checks X-Forwarded-Proto too so this doesn't loop behind a proxy/CDN that

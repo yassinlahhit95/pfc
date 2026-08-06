@@ -1,7 +1,7 @@
 // Arrastrar y soltar archivos/carpetas de Aula Digital sobre otra carpeta
 // para moverlos (AJAX). Requiere .recurso-breadcrumbs[data-csrf] en la página.
 document.addEventListener('DOMContentLoaded', () => {
-    // We expect the container to have a data-csrf attribute
+    // Se espera que el contenedor tenga un atributo data-csrf
     const container = document.querySelector('.recurso-breadcrumbs');
     if (!container) return;
     const csrfToken = container.dataset.csrf;
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(result => {
                     if (result.ok) {
-                        // Reload the page to reflect changes
+                        // Recargar la página para reflejar los cambios
                         window.location.reload();
                     } else if (window.Toast) {
                         Toast.show(result.msg || 'Error al mover el recurso', 'error');

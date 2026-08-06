@@ -18,7 +18,7 @@ if (isset($_POST['insertarCategoria'])) {
     $presupuestoAnual = filter_var($_POST['presupuestoAnual'] ?? 0, FILTER_VALIDATE_FLOAT);
     $color            = $_POST['color'] ?? '#4F46E5';
 
-    // Validate hex color
+    // Valida el color hexadecimal
     if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) { $color = '#4F46E5'; }
 
     if (empty($nombre)) {

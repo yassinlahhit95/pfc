@@ -23,18 +23,18 @@ class FPSystem {
         'superior' => 'FP Grado Superior',
     ];
 
-    // Which year has TFG
+    // Qué curso tiene TFG
     const TFG_YEAR = '2º';
 
     /**
-     * Get allowed years for a ciclo type
+     * Devuelve los cursos permitidos para un tipo de ciclo
      */
     public static function getYearsForType($tipoFormacion) {
         return self::YEARS_PER_TYPE[$tipoFormacion] ?? self::YEARS_PER_TYPE['medio'];
     }
 
     /**
-     * Check if a year is TFG year
+     * Comprueba si un curso es el curso de TFG
      */
     public static function isTFGYear($anioEstudio) {
         return $anioEstudio === self::TFG_YEAR;

@@ -33,7 +33,7 @@ if (isset($_POST['guardarTutor'])) {
         exit;
     }
 
-    // If a tutor with the same DNI already exists, reuse them instead of creating a duplicate
+    // Si ya existe un tutor con el mismo DNI, se reutiliza en lugar de crear un duplicado
     $tutorExistente = obtenerTutorPorDni($dni);
     if ($tutorExistente) {
         $idExistente = (int)$tutorExistente['idTutor'];

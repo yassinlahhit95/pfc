@@ -152,7 +152,7 @@ if ($method === 'POST') {
         $reto = obtenerRetoPorId($idReto);
         if (!$reto || !$reto['publicado']) v1Error('The reto is not available.', 404, 'not_found');
         
-        // Check student belongs to cycle
+        // Comprueba que el estudiante pertenece al ciclo
         $idModulo = (int)$reto['idModulo'];
         $modulo = obtenerModuloPorId($idModulo);
         if (!$modulo) v1Error('Module not found.', 404, 'not_found');

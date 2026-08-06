@@ -33,7 +33,7 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
   @override
   Widget build(BuildContext context) {
     final announcementsAsync = ref.watch(announcementsProvider);
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     final canCreate = role == UserRole.director || role == UserRole.secretaria;
 
     return Scaffold(

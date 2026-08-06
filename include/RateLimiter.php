@@ -72,8 +72,8 @@ class RateLimiter {
         $ip  = self::clientIp();
         $now = time();
 
-        // Wrap in a transaction with SELECT FOR UPDATE to prevent concurrent requests
-        // from the same IP racing to INSERT the first row or miscounting hits.
+        // Envolver en una transacción con SELECT FOR UPDATE para evitar que peticiones
+        // concurrentes de la misma IP compitan por insertar la primera fila o cuenten mal los hits.
         mysqli_begin_transaction($con);
         try {
             $stmt = mysqli_prepare($con, "SELECT hits, window_start, blocked_until FROM rate_limits WHERE scope = ? AND ip = ? FOR UPDATE");

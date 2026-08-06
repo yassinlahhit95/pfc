@@ -16,7 +16,7 @@ class GradesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final gradesAsync = ref.watch(gradesProvider);
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Notas')),

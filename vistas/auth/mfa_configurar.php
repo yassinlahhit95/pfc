@@ -78,7 +78,9 @@ $esObligatorio = !empty($_SESSION['mfa_setup_required']);
 
     <div class="banner">Escanea el código con Google Authenticator, Microsoft Authenticator o Authy.</div>
 
+    <?php if (!empty($errores)): ?>
       <div class="alert"><?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?></div>
+    <?php endif; ?>
     <ol>
       <li>Abre tu app de autenticación.</li>
       <li>Escanea este código QR:</li>

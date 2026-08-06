@@ -34,8 +34,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null; // stay on splash
       }
 
-      final loggedIn = sessionAsync.valueOrNull != null;
-      final onboardingCompleted = onboardingAsync.valueOrNull ?? false;
+      final loggedIn = sessionAsync.value != null;
+      final onboardingCompleted = onboardingAsync.value ?? false;
 
       final atLogin = state.matchedLocation == '/login';
       final atOnboarding = state.matchedLocation == '/onboarding';

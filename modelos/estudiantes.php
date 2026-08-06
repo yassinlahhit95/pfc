@@ -20,7 +20,7 @@ function descifrarFilaEstudiante(?array $fila): ?array {
     return _descifrarFilaEstudiante($fila);
 }
 
-// ── Auto-migration: soft-delete columns ──────────────────────────────
+// ── Auto-migración: columnas de borrado lógico (soft-delete) ─────────
 (function() {
     $con = obtenerConexion();
     $cols = [];
@@ -220,7 +220,7 @@ function listarEstudiantesEliminados() {
     return $rows;
 }
 
-// Legacy alias kept for backward compat (hard delete, used only if needed)
+// Alias heredado por compatibilidad (borrado físico, solo si hace falta)
 function eliminarEstudiante($idEstudiante) {
     return softDeleteEstudiante($idEstudiante);
 }

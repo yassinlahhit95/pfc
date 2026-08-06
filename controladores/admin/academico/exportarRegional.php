@@ -19,7 +19,7 @@ if (!$ciclo) {
     die("Ciclo no encontrado.");
 }
 
-// Fetch all modules of this cycle (filtered by year if specified)
+// Obtiene todos los módulos de este ciclo (filtrados por año si se especifica)
 $modulos = listarModulosPorCiclo($idCiclo);
 if (!empty($anioEstudio)) {
     $modulos = array_values(array_filter($modulos, function ($m) use ($anioEstudio) {
@@ -27,7 +27,7 @@ if (!empty($anioEstudio)) {
     }));
 }
 
-// Fetch all students in this cycle (filtered by year if specified)
+// Obtiene todos los estudiantes de este ciclo (filtrados por año si se especifica)
 $con = obtenerConexion();
 $sqlEst = "SELECT e.idEstudiante, e.nombreEstudiante, e.dniEstudiante, e.emailEstudiante
            FROM estudiantes e
@@ -48,7 +48,7 @@ while ($row = mysqli_fetch_assoc($resEst)) {
     $estudiantes[] = $row;
 }
 
-// Fetch school center configuration code
+// Obtiene el código de configuración del centro
 $resCC = mysqli_query($con, "SELECT codigoCentro, cursoEscolar FROM configuracion_centro LIMIT 1");
 $cc = mysqli_fetch_assoc($resCC);
 $codigoCentro = $cc['codigoCentro'] ?? 'CENTRO001';
@@ -71,7 +71,7 @@ if ($sistema === 'euskadi_hezigune') {
 
         $califsNode = $alumnoNode->addChild('Calificaciones');
 
-        // Get final grades calculated dynamically for this student
+        // Obtiene las notas finales calculadas dinámicamente para este estudiante
         $resultados = obtenerResultadosFinalesEstudiante((int)$est['idEstudiante'], $modulos);
 
         foreach (($resultados['detalles_modulos'] ?? []) as $det) {
@@ -91,7 +91,7 @@ if ($sistema === 'euskadi_hezigune') {
         }
     }
 
-    // Format output with spacing
+    // Formatea la salida con espaciado
     $dom = new DOMDocument("1.0");
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;

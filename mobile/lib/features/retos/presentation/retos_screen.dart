@@ -15,7 +15,7 @@ class RetosScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final retosAsync = ref.watch(retosProvider);
-    final isProfesor = ref.watch(sessionControllerProvider).valueOrNull?.role ==
+    final isProfesor = ref.watch(sessionControllerProvider).value?.role ==
         UserRole.profesor;
 
     return Scaffold(

@@ -18,7 +18,7 @@ header('Content-Type: application/json');
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
 if (!Security::validateCSRFToken()) {
-    echo json_encode(['success' => false, 'error' => 'Solicitud inválida.']);
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
     exit;
 }
 
@@ -36,7 +36,7 @@ $sessionOk = (
 );
 
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
-    echo json_encode(['success' => false, 'error' => 'Acción bloqueada']);
+    echo json_encode(['ok' => false, 'msg' => 'Acción bloqueada']);
     exit;
 }
 
@@ -69,10 +69,10 @@ if (!empty($tokenFCM) && $idUsuario > 0 && !empty($rolUsuario) && $sessionOk) {
     // RESPUESTA
     // ══════════════════════════════════════════════════════════════════════
     if ($resultado) {
-        echo json_encode(['success' => true]);
+        echo json_encode(['ok' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el token.']);
+        echo json_encode(['ok' => false, 'msg' => 'No se pudo actualizar el token.']);
     }
 } else {
-    echo json_encode(['success' => false, 'error' => 'Datos incompletos o sesión no válida.']);
+    echo json_encode(['ok' => false, 'msg' => 'Datos incompletos o sesión no válida.']);
 }

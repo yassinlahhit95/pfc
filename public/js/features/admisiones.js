@@ -10,17 +10,9 @@ $(document).ready(function() {
         const allCycleOptions = cycleSelect.find('option').clone();
         
         $('.nivel-filter-tabs button').click(function() {
-            $('.nivel-filter-tabs button').removeClass('active-tab').css({
-                'background': 'var(--surface)',
-                'color': 'var(--text-muted)',
-                'border-color': 'var(--border)'
-            });
-            $(this).addClass('active-tab').css({
-                'background': 'var(--accent)',
-                'color': 'white',
-                'border-color': 'var(--accent)'
-            });
-            
+            $('.nivel-filter-tabs button').removeClass('active-tab');
+            $(this).addClass('active-tab');
+
             const filter = $(this).data('filter');
             cycleSelect.empty();
             

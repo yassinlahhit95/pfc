@@ -56,11 +56,11 @@ $labels  = [
 ];
 $label = $labels[$feature] ?? $label;
 
-// Check if the whole instance is suspended (vs just a disabled module)
+// Comprueba si toda la instancia está suspendida (no solo un módulo desactivado)
 $isSuspended = class_exists('FeatureGuard') && FeatureGuard::isSuspended();
 $suspMsg = $isSuspended ? FeatureGuard::getSuspensionMessage() : '';
 
-// Compute login URL relative to the document root (works on any deployment path)
+// Calcula la URL de login relativa a la raíz del documento (funciona en cualquier ruta de despliegue)
 $docRoot   = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
 $filePath  = str_replace('\\', '/', __FILE__);
 $dirPath   = '/' . ltrim(str_replace($docRoot, '', dirname($filePath)), '/');

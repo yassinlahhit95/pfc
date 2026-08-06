@@ -47,7 +47,7 @@ if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horasReto) && is_numeri
     }
 }
 
-// IDOR: verify all submitted modules belong to this professor
+// IDOR: comprobar que todos los módulos enviados pertenecen a este profesor
 if (!empty($modulosSeleccionados)) {
     $misModulos     = listarModulosDeProfesor($_SESSION['idProfesor']);
     $misModulosIds  = array_column($misModulos, 'idModulo');

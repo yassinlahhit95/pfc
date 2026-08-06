@@ -160,7 +160,7 @@ if ($method === 'POST') {
         $action = $body['action'] ?? '';
     }
     
-    // Fallback based on payload shape if no action specified explicitly
+    // Alternativa según la forma del payload si no se especifica ninguna acción
     if (!$action) {
         if (isset($_POST['idAsistencia']) || isset($body['idAsistencia'])) $action = 'justify';
         elseif (isset($_POST['idJustificacion']) || isset($body['idJustificacion'])) $action = 'resolve';

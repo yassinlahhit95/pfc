@@ -22,7 +22,7 @@ class _TareasScreenState extends ConsumerState<TareasScreen> {
   @override
   Widget build(BuildContext context) {
     final tasksAsync = ref.watch(allTasksProvider);
-    final userRole = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final userRole = ref.watch(sessionControllerProvider).value?.role;
     final isProfesor = userRole == UserRole.profesor;
 
     return Scaffold(

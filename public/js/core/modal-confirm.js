@@ -3,9 +3,9 @@
 //   ModalConfirm.open({url, data, onSuccess, ...})  — confirma y lanza un AJAX
 //   ModalConfirm.prompt(message, title, type)        — reemplaza confirm() nativo, devuelve una Promise<boolean>
 (function($) {
-    if (!$ || window.ModalConfirm) return; // Only init once, requires jQuery
+    if (!$ || window.ModalConfirm) return; // Solo se inicializa una vez, requiere jQuery
 
-    // Create modal HTML structure dynamically
+    // Crear la estructura HTML del modal dinámicamente
     var modalHtml = `
     <div id="global-modal-confirm" class="modal-confirm-overlay" style="display:none;">
         <div class="modal-confirm-dialog">
@@ -75,14 +75,14 @@
         $btnAccept.on('click', function() {
             if (!currentConfig) return;
             
-            // If it's a synchronous UI prompt (returns a promise)
+            // Si es un prompt de UI síncrono (devuelve una promesa)
             if (currentConfig.onAccept) {
                 currentConfig.onAccept();
                 close();
                 return;
             }
 
-            // Otherwise handle AJAX logic
+            // Si no, gestionar la lógica AJAX
             $btnAccept.addClass('loading');
             var data = currentConfig.data || {};
             var csrf = $('[name="csrf_token"]').val() || $('[name="modal_csrf"]').val() || '';
@@ -153,7 +153,7 @@
         open: open,
         close: close,
         
-        // Helper to replace standard confirm() calls inside async functions
+        // Helper para sustituir las llamadas a confirm() nativo dentro de funciones async
         prompt: function(message, title, type) {
             return new Promise(function(resolve) {
                 open({
@@ -177,10 +177,10 @@
     $(document).ready(init);
 
     // Auto-bind to elements with data-ajax-confirm
-    // It captures both clicks on links and buttons
+    // Captura tanto clics en enlaces como en botones
     $(document).on('click', '[data-ajax-confirm]', function(e) {
         var $el = $(this);
-        // If the attribute is on a form, let the submit handler handle it
+        // Si el atributo está en un form, que lo gestione el handler de submit
         if ($el.is('form')) return;
 
         e.preventDefault();
@@ -188,7 +188,7 @@
         var url = $el.attr('href') || $el.data('url');
         var isDelete = msg.toLowerCase().indexOf('eliminar') > -1 || msg.toLowerCase().indexOf('borrar') > -1;
 
-        // If it's a form submit button, intercept the form
+        // Si es un botón de envío de formulario, interceptar el formulario
         if ($el.is('button[type="submit"]') || $el.is('input[type="submit"]')) {
             var $form = $el.closest('form');
             if ($form.length) {
@@ -196,7 +196,7 @@
                 var method = $form.attr('method') || 'POST';
                 var dataArr = $form.serializeArray();
                 var dataObj = {};
-                // Include the button's name/value if it has one
+                // Incluir el name/value del botón si lo tiene
                 if ($el.attr('name')) {
                     dataObj[$el.attr('name')] = $el.val() || '';
                 }
@@ -221,9 +221,9 @@
             }
         }
 
-        // Standard link
+        // Enlace estándar
         var $row = $el.closest('tr');
-        if (!$row.length) $row = $el.closest('.card-ejercicio'); // For generic items
+        if (!$row.length) $row = $el.closest('.card-ejercicio'); // Para ítems genéricos
         if (!$row.length) $row = $el.closest('.lb-item');
 
         var forceReload = $el.data('reload') === true || $el.data('reload') === 'true';
@@ -238,7 +238,7 @@
         });
     });
 
-    // Capture standard form onsubmit if the form itself has the attribute
+    // Capturar el onsubmit estándar si el propio formulario tiene el atributo
     $(document).on('submit', 'form[data-ajax-confirm]', function(e) {
         e.preventDefault();
         var $form = $(this);

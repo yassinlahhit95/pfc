@@ -1,5 +1,5 @@
 <?php
-// Ensure this partial receives required variables:
+// Asegúrate de que este parcial recibe las variables requeridas:
 // $cw_rol          (e.g., 'admin', 'profesor', 'estudiante', 'secretaria', 'tutor')
 // $cw_id           (the user's ID)
 // $cw_unreadCount  (total unread messages for the user)

@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;
 }
 
-// AdminGuard already validated with rotate=false; this second check must also not rotate,
-// otherwise generating the PDF (target="_blank") consumes the token and breaks the horario editor AJAX.
+// El guard ya validó con rotate=false; esta segunda comprobación tampoco debe rotar,
+// o generar el PDF (target="_blank") consumiría el token y rompería el AJAX del editor de horario.
 if (!Security::validateCSRFToken(null, false)) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: $_back"); exit;

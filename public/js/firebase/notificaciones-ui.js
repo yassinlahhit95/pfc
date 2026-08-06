@@ -15,8 +15,8 @@ export function avisoPush(titulo, mensaje, tipo = 'info') {
     if (tipo === 'exito') icon = 'fa-check-circle';
     if (tipo === 'error') icon = 'fa-exclamation-triangle';
 
-    // Static structure via innerHTML is safe here — icon is hardcoded from tipo, not user input.
-    // Title and body are set via .textContent below to prevent XSS from FCM payload content.
+    // Usar innerHTML aquí es seguro porque la estructura es estática — el icono sale de tipo (fijo), no de input del usuario.
+    // El título y el cuerpo se asignan más abajo vía .textContent para prevenir XSS desde el contenido del payload de FCM.
     toastEl.innerHTML = `
         <div class="toast-icono"><i class="fas ${icon}"></i></div>
         <div class="toast-contenido">

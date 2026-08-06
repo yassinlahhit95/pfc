@@ -137,19 +137,6 @@ class Logger {
         return $result;
     }
 
-    public static function cleanup($daysOld = 30) {
-        if (!self::$isInitialized) {
-            self::init();
-        }
-
-        $cutoffTime = time() - (86400 * $daysOld);
-
-        foreach (glob(self::$logDir . '/*.log') as $file) {
-            if (is_file($file) && filemtime($file) < $cutoffTime) {
-                unlink($file);
-            }
-        }
-    }
 }
 
 Logger::init();

@@ -386,7 +386,7 @@ class ClassroomRepository {
   /// opened by an external viewer/browser, not fetched via the app's own
   /// authenticated HTTP client (see api/v1/classroom.php's download action).
   String downloadUrl(int idArchivo) {
-    final token = _ref.read(sessionControllerProvider).valueOrNull?.token ?? '';
+    final token = _ref.read(sessionControllerProvider).value?.token ?? '';
     return '$apiBaseUrl/api/v1/classroom.php?action=download&id=$idArchivo&token=$token';
   }
 
@@ -394,14 +394,14 @@ class ClassroomRepository {
   /// (kind: 'entrega') or the profesor's corrected file sent back (kind:
   /// 'correccion') — a different storage path, see api/v1/classroom.php.
   String submissionFileUrl(int idTarea, {required String kind}) {
-    final token = _ref.read(sessionControllerProvider).valueOrNull?.token ?? '';
+    final token = _ref.read(sessionControllerProvider).value?.token ?? '';
     return '$apiBaseUrl/api/v1/classroom.php?action=download&kind=$kind&id=$idTarea&token=$token';
   }
 
   /// The profesor's own attachment on the task itself (aula_tareas.archivoAdjunto),
   /// as opposed to [submissionFileUrl]'s entrega/correccion files.
   String taskAttachmentUrl(int idTarea) {
-    final token = _ref.read(sessionControllerProvider).valueOrNull?.token ?? '';
+    final token = _ref.read(sessionControllerProvider).value?.token ?? '';
     return '$apiBaseUrl/api/v1/classroom.php?action=download&kind=tarea&id=$idTarea&token=$token';
   }
 }

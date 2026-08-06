@@ -49,9 +49,9 @@ if (!$politica['valid']) {
 }
 
 $hash = Security::hashPassword($newPassword);
-// Only tutores/secretarias have must_change_password (see auth.php's same
-// conditional) — including it unconditionally breaks the UPDATE for every
-// other role's table.
+// Solo tutores/secretarias tienen must_change_password (ver la misma
+// condición en auth.php) — incluirlo incondicionalmente rompe el UPDATE en
+// las tablas del resto de roles.
 $colMustChange = in_array($tabla, ['tutores', 'secretarias'], true) ? ', `must_change_password` = 0' : '';
 $upd = mysqli_prepare($con, "UPDATE `$tabla` SET `password` = ?$colMustChange WHERE `$idCol` = ?");
 mysqli_stmt_bind_param($upd, 'si', $hash, $uid);

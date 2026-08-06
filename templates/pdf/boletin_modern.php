@@ -74,7 +74,7 @@ if (motorAcademicoActivo()) {
 
 <?php include __DIR__ . '/_footer.php'; $cicloInfo = pdfAssertField($ciclo['nombreCiclo'] ?? null, 'ciclo.nombreCiclo') . ' (' . pdfAssertField($ciclo['abreviaturaCiclo'] ?? null, 'ciclo.abreviaturaCiclo') . ')'; ?>
 
-<div style="text-align: center; margin-bottom: var(--pdf-space-9);">
+<div style="text-align: center; margin-bottom: 18px;">
     <h1 class="pdf-title">BOLETÍN DE CALIFICACIONES</h1>
     <div class="pdf-subtitle">Curso Académico <?= pdfAssertField($cfg['cursoEscolar'] ?? null, 'cfg.cursoEscolar') ?></div>
 </div>
@@ -167,9 +167,9 @@ $_codigoEspecial = function($n) {
 
         <!-- FCT (Practicum) — mandatory for both levels -->
         <?php $_notaFCT = $estudiante['nota_fct'] ?? null; ?>
-        <tr style="border-top: 2px solid var(--pdf-primary); background: var(--pdf-bg-light);">
+        <tr style="border-top: 2px solid #1e3a6e; background: #f8fafc;">
             <td>—</td>
-            <td style="font-weight:bold; color:var(--pdf-primary);">Formación en Centros de Trabajo (FCT)</td>
+            <td style="font-weight:bold; color:#1e3a6e;">Formación en Centros de Trabajo (FCT)</td>
             <td>—</td><td>—</td><td>—</td><td>—</td>
             <td><div class="<?= pdfGradeClass($_notaFCT, null, (int)$_notaAprobado) ?>"><?= pdfFormatNumber($_notaFCT) ?></div></td>
         </tr>
@@ -178,9 +178,9 @@ $_codigoEspecial = function($n) {
         <?php if ($_esGradoSuperior):
             $_notaTFG = $estudiante['nota_tfg'] ?? null;
         ?>
-        <tr style="background: var(--pdf-bg-light);">
+        <tr style="background: #f8fafc;">
             <td>—</td>
-            <td style="font-weight:bold; color:var(--pdf-primary);">Módulo de Proyecto</td>
+            <td style="font-weight:bold; color:#1e3a6e;">Módulo de Proyecto</td>
             <td>—</td><td>—</td><td>—</td><td>—</td>
             <td><div class="<?= pdfGradeClass($_notaTFG, null, (int)$_notaMinimaTfg) ?>"><?= pdfFormatNumber($_notaTFG) ?></div></td>
         </tr>
@@ -188,25 +188,25 @@ $_codigoEspecial = function($n) {
 
         <!-- Overall average -->
         <?php $_mediaTotal = $estudiante['promedio_global'] ?? null; ?>
-        <tr style="background: var(--pdf-primary); color: white;">
+        <tr style="background: #1e3a6e; color: white;">
             <td colspan="2" style="color:#fff; font-weight:bold;">NOTA MEDIA FINAL</td>
-            <td colspan="4" style="color:#93c5fd; font-style:italic; text-align:center; font-size: var(--pdf-text-xs);">Media de todas las calificaciones definitivas</td>
+            <td colspan="4" style="color:#93c5fd; font-style:italic; text-align:center; font-size: 6.5pt;">Media de todas las calificaciones definitivas</td>
             <td><div class="pdf-grade-circle <?= is_numeric($_mediaTotal) && $_mediaTotal >= $_notaAprobado ? 'aprobado' : 'suspenso' ?>"><?= pdfFormatNumber($_mediaTotal, 1) ?></div></td>
         </tr>
 
         <!-- Legend -->
-        <tr style="background: var(--pdf-bg-light);">
-            <td colspan="7" style="padding: var(--pdf-space-4);">
-                <table style="width:100%; font-size: var(--pdf-text-xs); color: var(--pdf-text); border-collapse: collapse;">
+        <tr style="background: #f8fafc;">
+            <td colspan="7" style="padding: 8px;">
+                <table style="width:100%; font-size: 6.5pt; color: #1e293b; border-collapse: collapse;">
                     <tr>
-                        <td style="color:var(--pdf-primary); font-weight:bold; white-space:nowrap; padding-right:var(--pdf-space-8);">GLOSARIO:</td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>SB</strong> Sobresaliente <span style="color:var(--pdf-text-muted);">9–10</span></td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>NT</strong> Notable <span style="color:var(--pdf-text-muted);">7–8</span></td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>BI</strong> Bien <span style="color:var(--pdf-text-muted);">6</span></td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>SF</strong> Suficiente <span style="color:var(--pdf-text-muted);">5</span></td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>IN</strong> Insuficiente <span style="color:var(--pdf-text-muted);">1–4</span></td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>NP</strong> No Presentado</td>
-                        <td style="white-space:nowrap; padding-right:var(--pdf-space-3);"><strong>EX</strong> Exento</td>
+                        <td style="color:#1e3a6e; font-weight:bold; white-space:nowrap; padding-right:16px;">GLOSARIO:</td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>SB</strong> Sobresaliente <span style="color:#94a3b8;">9–10</span></td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>NT</strong> Notable <span style="color:#94a3b8;">7–8</span></td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>BI</strong> Bien <span style="color:#94a3b8;">6</span></td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>SF</strong> Suficiente <span style="color:#94a3b8;">5</span></td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>IN</strong> Insuficiente <span style="color:#94a3b8;">1–4</span></td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>NP</strong> No Presentado</td>
+                        <td style="white-space:nowrap; padding-right:6px;"><strong>EX</strong> Exento</td>
                         <td style="white-space:nowrap;"><strong>CO</strong> Convalidado</td>
                     </tr>
                 </table>
@@ -236,10 +236,10 @@ $_codigoEspecial = function($n) {
             <?php if ($_qrSrc): ?>
             <img src="<?= $_qrSrc ?>" alt="Código QR de verificación del documento" style="width:75px; height:75px; display:block; margin:0 auto 4px;">
             <?php endif; ?>
-            <div style="font-size:var(--pdf-text-xs); color:var(--pdf-text-muted); letter-spacing:.5px; font-family:var(--pdf-font-mono);">
+            <div style="font-size:6.5pt; color:#94a3b8; letter-spacing:.5px; font-family:monospace;">
                 <?= htmlspecialchars($_serial, ENT_QUOTES, 'UTF-8') ?>
             </div>
-            <div style="font-size:var(--pdf-text-xs); color:var(--pdf-text-muted); margin-top:var(--pdf-space-1);">
+            <div style="font-size:6.5pt; color:#94a3b8; margin-top:2px;">
                 Documento oficial verificable
             </div>
         </td>

@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <p id="modalConfirmarTexto" style="color:var(--text);margin:0 0 22px;line-height:1.6;font-size:.9rem;"></p>
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button type="button" class="boton-secundario" onclick="AulaRecursos.cerrarModal('modalConfirmar')">Cancelar</button>
-        <button type="button" id="modalConfirmarBtn" class="boton-primario" style="background:var(--rojo);border-color:var(--rojo);">Eliminar</button>
+        <button type="button" id="modalConfirmarBtn" class="boton-peligro">Eliminar</button>
       </div>
     </div>
   </div>

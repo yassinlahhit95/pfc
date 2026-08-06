@@ -28,7 +28,7 @@ if (!in_array($ext, ['csv'])) {
     exit;
 }
 
-// Build ciclo name→id map for lookups
+// Construye un mapa nombre→id de ciclo para las búsquedas
 $ciclos = listarTodosLosCiclos();
 $mapaCiclos = [];
 foreach ($ciclos as $ciclo) {
@@ -47,7 +47,7 @@ if (!$header) {
     exit;
 }
 
-// Normalize header keys
+// Normaliza las claves de cabecera
 $header = array_map(fn($h) => strtolower(trim($h)), $header);
 
 $insertados = 0;
@@ -86,7 +86,7 @@ while (($row = fgetcsv($handle)) !== false) {
         continue;
     }
 
-    // Check if student already exists by email
+    // Comprueba si el estudiante ya existe por email
     $con = obtenerConexion();
     $stmtCheck = mysqli_prepare($con, "SELECT idEstudiante FROM estudiantes WHERE emailEstudiante = ?");
     mysqli_stmt_bind_param($stmtCheck, "s", $email);

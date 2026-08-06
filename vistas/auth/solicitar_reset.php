@@ -47,8 +47,12 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Te enviaremos las instrucciones por email</p>
             </div>
 
+            <?php if (!empty($exito)): ?>
             <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($exito) ?></div>
+            <?php endif; ?>
+            <?php if (!empty($error)): ?>
             <div class="error-alerta"><?= Security::escapeHtml($error) ?></div>
+            <?php endif; ?>
             <form action="../../controladores/auth/solicitar_reset.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
                 <?= BotGuard::renderFields() ?>

@@ -210,7 +210,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div style="background:var(--surface);border-radius:16px;width:100%;max-width:800px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
     <div style="padding:14px 20px;border-bottom:1px solid var(--surface-2);display:flex;align-items:center;justify-content:space-between;">
       <span id="aulaViewerNombre" style="font-size:0.85rem;font-weight:600;color:var(--text);"></span>
-      <button onclick="document.getElementById('aulaViewerModal').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--mut);">✕</button>
+      <button onclick="document.getElementById('aulaViewerModal').style.display='none'" class="modal-cerrar-btn">✕</button>
     </div>
     <div id="aulaViewerContenedor" class="aula-viewer-wrap" style="flex:1;overflow:auto;"></div>
   </div>

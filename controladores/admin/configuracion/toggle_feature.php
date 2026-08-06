@@ -2,8 +2,8 @@
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-// ob_start captures any unexpected PHP warnings/notices so they cannot
-// contaminate the JSON response body (ob_clean() is called before each echo).
+// ob_start captura cualquier warning/notice inesperado de PHP para que no
+// contamine el cuerpo de la respuesta JSON (se llama a ob_clean() antes de cada echo).
 ob_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../include/AdminGuard.php';
@@ -18,8 +18,8 @@ require_once __DIR__ . '/../../../modelos/log.php';
 if (FeatureGuard::isLocked()) {
     ob_clean();
     echo json_encode([
-        'status'   => 'error',
-        'message'  => 'Las funcionalidades están bloqueadas por la plataforma SaaS. Contacta con el proveedor para modificarlas.',
+        'ok'       => false,
+        'msg'      => 'Las funcionalidades están bloqueadas por la plataforma SaaS. Contacta con el proveedor para modificarlas.',
         'new_csrf' => Security::generateCSRFToken(),
     ]);
     exit;
@@ -28,8 +28,8 @@ if (FeatureGuard::isLocked()) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken($_POST['csrf_token'] ?? '', false)) {
     ob_clean();
     echo json_encode([
-        'status'   => 'error',
-        'message'  => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.',
+        'ok'       => false,
+        'msg'      => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.',
         'new_csrf' => Security::generateCSRFToken(),
     ]);
     exit;
@@ -69,15 +69,15 @@ if ($resultado === true) {
     registrarAccion('toggle_feature', 'configuracion', null, "$feature=$estado");
     FeatureGuard::clearCache();
     echo json_encode([
-        'status'   => 'success',
-        'message'  => "Módulo «{$etiqueta}» {$accion} correctamente.",
+        'ok'       => true,
+        'msg'      => "Módulo «{$etiqueta}» {$accion} correctamente.",
         'new_csrf' => Security::generateCSRFToken(),
     ]);
 } else {
     $detalle = is_string($resultado) ? $resultado : 'Error desconocido al actualizar la configuración.';
     echo json_encode([
-        'status'   => 'error',
-        'message'  => "No se pudo {$accion} «{$etiqueta}». {$detalle}",
+        'ok'       => false,
+        'msg'      => "No se pudo {$accion} «{$etiqueta}». {$detalle}",
         'new_csrf' => Security::generateCSRFToken(),
     ]);
 }

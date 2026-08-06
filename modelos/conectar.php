@@ -22,8 +22,8 @@ function obtenerConexion() {
     if (empty($user) || empty($pass)) {
         die("Error: credenciales de base de datos no configuradas.");
     }
-    // Prefix 'p:' enables persistent connection pooling — PHP-FPM workers reuse
-    // existing connections instead of opening new ones under load.
+    // El prefijo 'p:' activa el pool de conexiones persistentes — los workers de
+    // PHP-FPM reutilizan conexiones existentes en vez de abrir otras nuevas bajo carga.
     try {
         $conexion = @mysqli_connect('p:' . $host, $user, $pass, $db);
     } catch (Exception $e) {

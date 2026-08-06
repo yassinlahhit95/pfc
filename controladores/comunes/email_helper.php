@@ -12,7 +12,7 @@ function sendEmail($to, $subject, $htmlContent, $senderName = null) {
     require_once __DIR__ . '/../../config/Config.php';
     require_once __DIR__ . '/../../include/Logger.php';
 
-    // Circuit breaker: stop hammering Brevo when it's down.
+    // Circuit breaker: dejar de machacar Brevo cuando está caído.
     if (CircuitBreaker::isOpen('brevo')) {
         Logger::error("Brevo circuit OPEN — email skipped", ['to' => $to]);
         $_SESSION['ultimo_error_email'] = 'Servicio de correo temporalmente no disponible (circuit open)';

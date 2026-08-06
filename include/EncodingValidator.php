@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /**
- * Validates and fixes encoding issues throughout the application.
- * Prevents tilde corruption (ñ → corrupted characters) caused by encoding mismatches.
+ * Valida y corrige problemas de codificación en toda la aplicación.
+ * Evita la corrupción de tildes (ñ → caracteres corruptos) causada por incompatibilidades de codificación.
  */
 class EncodingValidator {
     /**
-     * Ensure all database strings are properly UTF-8 encoded.
-     * Call this when inserting/updating text fields that may contain accented characters.
+     * Asegura que todas las cadenas de la base de datos estén correctamente codificadas en UTF-8.
+     * Llamar aquí al insertar/actualizar campos de texto que puedan contener caracteres acentuados.
      */
     public static function sanitizeForDatabase(string $input): string {
-        // Detect if string is already UTF-8, if not convert it
+        // Detectar si la cadena ya está en UTF-8; si no, convertirla
         if (!mb_detect_encoding($input, 'UTF-8', true)) {
             $input = mb_convert_encoding($input, 'UTF-8');
         }
@@ -19,7 +19,7 @@ class EncodingValidator {
     }
 
     /**
-     * Validate database connection charset is UTF-8MB4.
+     * Valida que el charset de la conexión a la base de datos sea UTF-8MB4.
      */
     public static function validateConnection(): bool {
         $con = obtenerConexion();
@@ -34,25 +34,25 @@ class EncodingValidator {
         );
 
         if (!$valid) {
-            error_log("⚠ Database charset mismatch detected. Charsets: " . json_encode($charset));
+            error_log("⚠ Se detectó un charset de base de datos incorrecto. Charsets: " . json_encode($charset));
         }
         return $valid;
     }
 
     /**
-     * Detect if a string has corrupted tildes (common encoding bug).
-     * Example corrupted patterns: "niño" → "ni%%o" or "niño" → "ni%¡o"
+     * Detecta si una cadena tiene tildes corruptas (bug de codificación habitual).
+     * Ejemplos de patrones corruptos: "niño" → "ni%%o" o "niño" → "ni%¡o"
      */
     public static function hasCorruptedTildes(string $text): bool {
-        // Check for common corruption patterns
+        // Comprueba patrones de corrupción habituales
         $corruptedPatterns = [
-            '%%',      // ñ corrupted as %%
-            '%¡',      // ñ corrupted as %¡
-            '├',       // UTF-8 decode error
-            '┌',       // UTF-8 decode error
-            '┤',       // UTF-8 decode error
-            '├│',      // double-encoded error
-            '├®',      // double-encoded error
+            '%%',      // ñ corrompida como %%
+            '%¡',      // ñ corrompida como %¡
+            '├',       // error de decodificación UTF-8
+            '┌',       // error de decodificación UTF-8
+            '┤',       // error de decodificación UTF-8
+            '├│',      // error de doble codificación
+            '├®',      // error de doble codificación
         ];
 
         foreach ($corruptedPatterns as $pattern) {
@@ -64,18 +64,18 @@ class EncodingValidator {
     }
 
     /**
-     * Fix common tilde corruptions in text.
-     * WARNING: This is a best-effort fix and may not handle all cases.
+     * Corrige corrupciones habituales de tildes en un texto.
+     * AVISO: esto es una corrección best-effort y puede no cubrir todos los casos.
      */
     public static function fixCorruptedTildes(string $text): string {
-        // Common corrupted patterns and their fixes
+        // Patrones corruptos habituales y su corrección
         $fixes = [
             'ni%%o' => 'niño',
             'se%%or' => 'señor',
             'a%%o' => 'año',
             'lecci%%n' => 'lección',
-            '%%' => 'ñ',  // Last resort
-            // UTF-8 double-encoding corruptions (from UTF-16 imports)
+            '%%' => 'ñ',  // último recurso
+            // Corrupciones por doble codificación UTF-8 (de importaciones UTF-16)
             'Configuraciâ€™n' => 'Configuración',
             'acadâ€™mica' => 'académica',
         ];
@@ -88,8 +88,8 @@ class EncodingValidator {
     }
 
     /**
-     * Validate that database.sql dump file is in proper UTF-8 encoding.
-     * Returns array with validation results.
+     * Valida que el fichero de volcado database.sql esté correctamente codificado en UTF-8.
+     * Devuelve un array con los resultados de la validación.
      */
     public static function validateDumpFile(string $filePath): array {
         $result = [
@@ -106,12 +106,12 @@ class EncodingValidator {
             return $result;
         }
 
-        // Check file encoding
+        // Comprueba la codificación del archivo
         $encoding = shell_exec("file -b " . escapeshellarg($filePath));
         $result['valid_encoding'] = (strpos($encoding, 'UTF-8') !== false);
         $result['has_bom'] = (strpos($encoding, 'BOM') !== false);
 
-        // Check for corruption patterns in first 1000 lines
+        // Comprueba patrones de corrupción en las primeras 1000 líneas
         $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
         $sampleSize = min(1000, count($lines));
 

@@ -30,11 +30,15 @@ function _nav_active_tutor($check) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
+  <?php else: ?>
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/features/notificaciones.css" />
   <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
+  <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
@@ -67,12 +71,15 @@ function _nav_active_tutor($check) {
       </a>
 
       <span class="nav-section-title">MIS HIJOS</span>
+      <?php foreach ($estudiantes_menu as $estudianteMenu):
         $esHijoActivo = ($seccion ?? '') === 'hijo' && (int)($idEstudiante ?? 0) === (int)$estudianteMenu['idEstudiante'];
       ?>
         <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" data-tour="hijo" class="nav-item<?= $esHijoActivo ? ' active' : '' ?>">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
           <span class="nav-label"><?= Security::escapeHtml(explode(' ', $estudianteMenu['nombreEstudiante'])[0]) ?></span>
+          <?php if ($esHijoActivo) { ?><span class="nav-rail"></span><?php } ?>
         </a>
+      <?php endforeach; ?>
       <span class="nav-section-title">CENTRO</span>
       <a href="../anuncios/lista.php" class="nav-item<?= _nav_active_tutor('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>

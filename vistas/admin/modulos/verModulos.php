@@ -312,7 +312,7 @@ function cascadeCicloSelect(selectNivel) {
                     } else {
                         targetProfCell.innerHTML = '<div class="texto-pequeno">' + selectedText.toUpperCase() + '</div>';
                     }
-                    // Update the data attribute for future opens
+                    // Actualiza el atributo de datos para futuras aperturas
                     var $link = $('[data-modal-asignar-prof][data-id-modulo="' + $idModulo.val() + '"]');
                     $link.data('profesor-actual', $select.val() || 0);
                 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
@@ -107,7 +108,7 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final session = ref.watch(sessionControllerProvider).value;
     final canManage = session?.role == UserRole.director ||
         session?.role == UserRole.secretaria;
     final filters = ref.watch(studentsFiltersProvider);
@@ -344,7 +345,7 @@ class _StudentCard extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final session = ref.watch(sessionControllerProvider).value;
     final canManage = session?.role == UserRole.director ||
         session?.role == UserRole.secretaria;
 

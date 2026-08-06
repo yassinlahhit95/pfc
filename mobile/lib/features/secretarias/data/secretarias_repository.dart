@@ -68,12 +68,15 @@ final secretariasRepositoryProvider = Provider<SecretariasRepository>(
   (ref) => SecretariasRepository(ref.read(apiClientProvider)),
 );
 
-class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<
-    ({List<Secretaria> secretarias, int total}), String?> {
+class SecretariasNotifier
+    extends AsyncNotifier<({List<Secretaria> secretarias, int total})> {
+  SecretariasNotifier(this.arg);
+  final String? arg;
+
   bool _isLoadingMore = false;
 
   @override
-  Future<({List<Secretaria> secretarias, int total})> build(String? arg) async {
+  Future<({List<Secretaria> secretarias, int total})> build() async {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(secretariasRepositoryProvider).fetchSecretarias(
           limit: 20,
@@ -84,7 +87,7 @@ class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<
 
   Future<void> loadMore() async {
     if (_isLoadingMore) return;
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
     if (current.secretarias.length >= current.total) return;
 
@@ -108,5 +111,5 @@ class SecretariasNotifier extends AutoDisposeFamilyAsyncNotifier<
 
 final secretariasProvider = AsyncNotifierProvider.autoDispose.family<
     SecretariasNotifier, ({List<Secretaria> secretarias, int total}), String?>(
-  () => SecretariasNotifier(),
+  SecretariasNotifier.new,
 );

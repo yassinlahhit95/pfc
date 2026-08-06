@@ -134,7 +134,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen>
     final text = _inputController.text.trim();
     if (text.isEmpty || _sending) return;
 
-    final session = ref.read(sessionControllerProvider).valueOrNull;
+    final session = ref.read(sessionControllerProvider).value;
     final myId = session?.userId;
     final myRol =
         session?.role == UserRole.director ? 'admin' : session?.role.name;
@@ -190,7 +190,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen>
       if (convId == widget.convId) _poll();
     });
 
-    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final session = ref.watch(sessionControllerProvider).value;
     final myId = session?.userId;
     // Chat's role strings use 'admin' for director (see api/v1/chat.php).
     final myRol =

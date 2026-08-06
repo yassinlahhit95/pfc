@@ -65,7 +65,7 @@ require_once __DIR__ . "/../../../modelos/actualizaciones.php";
 
 try {
     $actualizaciones = obtenerActualizacionesRecientes(5);
-    // Compute seconds until next midnight Spain time (Europe/Madrid)
+    // Calcula los segundos hasta la próxima medianoche en hora de España (Europe/Madrid)
     $tz = new DateTimeZone('Europe/Madrid');
     $now = new DateTime('now', $tz);
     $midnight = (clone $now)->setTime(0,0,0)->modify('+1 day');
@@ -544,6 +544,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
 <script>
 if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   var factor = ((window.TWEAK_DEFAULTS && window.TWEAK_DEFAULTS.animation) || 7) / 10;

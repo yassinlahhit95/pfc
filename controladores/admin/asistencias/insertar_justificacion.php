@@ -18,7 +18,7 @@ if (!$idEstudiante || !$idAsistencia || !$motivo) {
     header("Location: $_back"); exit;
 }
 
-// Get the original attendance record state
+// Obtiene el estado original del registro de asistencia
 $con = obtenerConexion();
 $stmt = mysqli_prepare($con, "SELECT estado FROM asistencias WHERE idAsistencia = ?");
 mysqli_stmt_bind_param($stmt, "i", $idAsistencia);
@@ -31,10 +31,10 @@ if (!$asistencia) {
 }
 $estadoOriginal = $asistencia['estado'];
 
-// Handle file upload
+// Gestiona la subida del archivo
 $archivoPath = null;
 if (!empty($_FILES['archivo']['name'])) {
-    // Validate MIME type before upload
+    // Valida el tipo MIME antes de subir
     $mime = mime_content_type($_FILES['archivo']['tmp_name']);
     $allowed = ['application/pdf', 'image/jpeg', 'image/png'];
     if (!in_array($mime, $allowed)) {
@@ -54,7 +54,7 @@ if (!empty($_FILES['archivo']['name'])) {
 
 $idJustificacion = crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivoPath, $estadoOriginal, 'director', $idDirector);
 if ($idJustificacion) {
-    // Auto-approve since this is registered by an administrator
+    // Auto-aprobar, ya que lo registra un administrador
     resolverJustificacionFalta($idJustificacion, $idAsistencia, true, $idDirector, '', $estadoOriginal, 'director');
     $_SESSION['exito'] = "Justificación registrada y aprobada con éxito.";
 } else {

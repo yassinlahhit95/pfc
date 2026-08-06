@@ -206,8 +206,8 @@ function enviarEmailNotasClase($idDelCicloElegido) {
     return $contadorCorreosEnviados;
 }
 
-// Async variant: builds each email and inserts into cola_emails instead of sending inline.
-// The cron job (cron/procesar_cola_emails.php) picks them up and delivers them.
+// Variante asíncrona: construye cada email y lo inserta en cola_emails en vez de enviarlo directamente.
+// El cron (cron/procesar_cola_emails.php) los recoge y los entrega.
 function encolarEmailsNotasClase(int $idCiclo): int {
     require_once __DIR__ . '/../../modelos/cola_emails.php';
     require_once __DIR__ . '/../../modelos/configuracion.php';

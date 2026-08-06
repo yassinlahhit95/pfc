@@ -9,8 +9,8 @@ class AulaAnalytics {
         this.idModulo = idModulo;
         this.sessionStart = Date.now();
         
-        // Determine the root path relative to this script (public/js/core/analytics.js is
-        // 3 directories below the project root; see CLAUDE.md's note on path-depth-sensitive files).
+        // Calcular la ruta raíz relativa a este script (public/js/core/analytics.js está
+        // 3 directorios por debajo de la raíz del proyecto; ver la nota de CLAUDE.md sobre ficheros sensibles a la profundidad de ruta).
         const scriptUrl = new URL(document.currentScript ? document.currentScript.src : window.location.origin + '/public/js/core/analytics.js');
         this.appRoot = new URL('../../../', scriptUrl).pathname;
         

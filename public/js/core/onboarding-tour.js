@@ -94,7 +94,7 @@
     var target = step.selector ? document.querySelector(step.selector) : null;
 
     if (step.selector && !target) {
-      // Target not on this page (e.g. collapsed nav item) — skip to next
+      // El objetivo no está en esta página (p. ej. un ítem de nav colapsado) — pasar al siguiente
       if (current < cfg.steps.length - 1) { current++; renderStep(); } else { finish("completed"); }
       return;
     }

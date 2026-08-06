@@ -29,7 +29,7 @@ window.addEventListener('scroll', function() {
 });
 </script>
 
-<link rel="stylesheet" href="/public/css/features/cookie-consent.css">
+<link rel="stylesheet" href="<?= AssetMin::urlAbs(__DIR__ . '/../..', '/public/css/features/cookie-consent.css') ?>">
 <script src="/public/js/core/cookie-consent.js"></script>
 <script>
   document.addEventListener('click', function (e) {

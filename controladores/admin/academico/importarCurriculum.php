@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     mysqli_begin_transaction($con);
 
     try {
-        // Fetch first assessment type of type 'ra_ce' for this configuration
+        // Obtiene el primer tipo de evaluación de tipo 'ra_ce' para esta configuración
         $stmtTipo = mysqli_prepare($con, "SELECT idTipo FROM assessment_types WHERE idConfig = ? AND origen = 'ra_ce' ORDER BY orden LIMIT 1");
         mysqli_stmt_bind_param($stmtTipo, "i", $idConfig);
         mysqli_stmt_execute($stmtTipo);
@@ -53,18 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $codigoMod = trim($modData['codigoModulo'] ?? '');
             if (empty($codigoMod)) continue;
 
-            // Find matching module in database for this cycle
+            // Buscar el módulo correspondiente en la base de datos para este ciclo
             $stmtMod = mysqli_prepare($con, "SELECT idModulo FROM modulos WHERE idCiclo = ? AND codigoModulo = ? LIMIT 1");
             mysqli_stmt_bind_param($stmtMod, "is", $idCiclo, $codigoMod);
             mysqli_stmt_execute($stmtMod);
             $resMod = mysqli_stmt_get_result($stmtMod);
             $rowMod = mysqli_fetch_assoc($resMod);
 
-            if (!$rowMod) continue; // Skip modules not configured in this database cycle
+            if (!$rowMod) continue; // Omitir módulos no configurados en este ciclo de la base de datos
             $idModulo = (int)$rowMod['idModulo'];
 
-            // Clear old RAs and CEs for this module to avoid duplicates
-            // Since FK constraint has ON DELETE CASCADE on criterios_evaluacion, deleting from resultados_aprendizaje clears CEs.
+            // Borrar los RA y CE antiguos de este módulo para evitar duplicados
+            // Como la FK de criterios_evaluacion tiene ON DELETE CASCADE, borrar de resultados_aprendizaje ya elimina los CE.
             $stmtClear = mysqli_prepare($con, "DELETE FROM resultados_aprendizaje WHERE idModulo = ?");
             mysqli_stmt_bind_param($stmtClear, "i", $idModulo);
             mysqli_stmt_execute($stmtClear);

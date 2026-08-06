@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Delete log
+    // Elimina el log
     $stmtDel = mysqli_prepare($con, "DELETE FROM fct_diarios WHERE idDiario = ?");
     mysqli_stmt_bind_param($stmtDel, "i", $idDiario);
 

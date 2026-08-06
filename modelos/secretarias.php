@@ -85,8 +85,8 @@ function toggleActivoSecretaria(int $id, int $activo): bool {
     return mysqli_stmt_execute($stmt);
 }
 
-// `secretarias` names its FCM column `token_fcm`, not `fcm_token` like every
-// other role table — can't reuse the generic obtenerTokenFCM() helper.
+// `secretarias` llama a su columna FCM `token_fcm`, no `fcm_token` como el
+// resto de tablas de roles — no se puede reutilizar el helper genérico obtenerTokenFCM().
 function obtenerTokenFCMSecretaria(int $idSecretaria): ?string {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con, "SELECT token_fcm FROM secretarias WHERE idSecretaria = ?");

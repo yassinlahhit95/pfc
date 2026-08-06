@@ -1,13 +1,13 @@
 <?php
-// Circuit breaker for external HTTP services (Brevo, FCM).
-// States: CLOSED (normal) → OPEN (blocking) → HALF-OPEN (testing) → CLOSED.
-// State is stored in APCu when available (shared across workers, survives requests).
-// Without APCu, state is per-request static (still protects within-request loops
-// like mass-email, but does not persist between HTTP requests).
+// Circuit breaker para servicios HTTP externos (Brevo, FCM).
+// Estados: CLOSED (normal) → OPEN (bloqueando) → HALF-OPEN (probando) → CLOSED.
+// El estado se guarda en APCu cuando está disponible (compartido entre workers, persiste entre peticiones).
+// Sin APCu, el estado es estático por petición (sigue protegiendo bucles dentro
+// de una misma petición, como el envío masivo de emails, pero no persiste entre peticiones HTTP).
 class CircuitBreaker
 {
-    private const FAIL_THRESHOLD = 3;   // consecutive failures to open
-    private const OPEN_TIMEOUT   = 60;  // seconds before half-open test
+    private const FAIL_THRESHOLD = 3;   // fallos consecutivos para abrir
+    private const OPEN_TIMEOUT   = 60;  // segundos antes de la prueba half-open
     private const APCU_TTL       = 300; // 5 min APCu TTL (longer than open timeout)
 
     public static function isOpen(string $service): bool

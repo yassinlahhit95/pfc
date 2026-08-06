@@ -84,7 +84,7 @@ if (!empty($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK)
     }
 }
 
-if (crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivo, $asistencia['estado'])) {
+if (crearJustificacionFalta($idAsistencia, $idEstudiante, $motivo, $archivo, $asistencia['estado'], 'tutor', (int)$_SESSION['idTutor'])) {
     $_SESSION['exito'] = "Justificación enviada. El profesor la revisará en breve.";
 } else {
     $_SESSION['errores'] = "No se pudo enviar la justificación. Inténtalo de nuevo.";

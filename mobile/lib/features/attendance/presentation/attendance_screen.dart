@@ -61,7 +61,7 @@ class _AttendanceScreenContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionAsync = ref.watch(sessionControllerProvider);
-    final role = sessionAsync.valueOrNull?.role;
+    final role = sessionAsync.value?.role;
 
     if (role == null) {
       return Scaffold(
@@ -595,7 +595,7 @@ class _AttendanceCard extends ConsumerWidget {
     final color =
         _estadoColors[record.estado] ?? Theme.of(context).colorScheme.outline;
     final date = DateTime.tryParse(record.fecha);
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     final scheme = Theme.of(context).colorScheme;
 
     return Container(

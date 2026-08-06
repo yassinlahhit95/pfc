@@ -20,7 +20,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileProvider);
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     final scheme = Theme.of(context).colorScheme;
     final hasPayments = role == UserRole.estudiante || role == UserRole.tutor;
     final t = ref.watch(translationsProvider);

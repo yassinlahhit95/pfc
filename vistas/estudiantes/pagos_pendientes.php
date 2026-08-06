@@ -88,7 +88,7 @@ include_once __DIR__ . "/comunes/nav.php";
                 <div style="margin-bottom:16px;">
                     <input type="file" name="comprobante" accept=".pdf,.jpg,.jpeg,.png" required style="width:100%; padding:10px; border:1px dashed var(--border-2); border-radius:6px; background:var(--surface);">
                 </div>
-                <button type="submit" style="width:100%; background:var(--accent); color:var(--accent-ink); padding:12px; border:none; border-radius:6px; font-weight:600; cursor:pointer;">
+                <button type="submit" class="boton-primario" style="width:100%; justify-content:center;">
                     Subir Comprobante
                 </button>
             </form>

@@ -16,7 +16,7 @@ function registrarAccion(string $accion, string $tabla, ?int $idRegistro = null,
         mysqli_stmt_bind_param($stmt, "ississ", $idAdmin, $accion, $tabla, $idRegistro, $descripcion, $ip);
         mysqli_stmt_execute($stmt);
     } catch (\Throwable $e) {
-        // Never let logging failure break a request
+        // Un fallo al registrar nunca debe romper la petición
     }
 }
 

@@ -47,11 +47,11 @@ if ($method !== 'GET' && $method !== 'POST') {
     v1Error('Method not allowed.', 405, 'method_not_allowed');
 }
 
-// The download action can't carry an Authorization header (it's opened by
-// an external viewer/browser, not fetched via the app's own HTTP client),
-// so it accepts the same 64-hex Bearer token as a query param instead.
-// Same api_tokens table/expiry/rate-limit — not a weaker auth mechanism,
-// just a different transport for this one action.
+// La acción de descarga no puede llevar cabecera Authorization (la abre
+// un visor/navegador externo, no se obtiene mediante el cliente HTTP de la app),
+// así que acepta el mismo token Bearer de 64 caracteres hex como parámetro de consulta.
+// Misma tabla api_tokens/expiración/rate-limit — no es un mecanismo de autenticación más débil,
+// solo un transporte distinto para esta acción.
 if ($action === 'download') {
     $token = (string)($_GET['token'] ?? '');
     if (strlen($token) !== 64 || !ctype_xdigit($token)) {

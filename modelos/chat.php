@@ -33,9 +33,7 @@ function chatParEsPermitido(string $rolA, int $idA, string $rolB, int $idB): boo
     sort($par);
     $clave = implode('-', $par);
 
-    // Allow all role pairs to chat for maximum flexibility in the center
-    // $paresPermitidos = [ ... ];
-    // if (!in_array($clave, $paresPermitidos, true)) return false;
+    // Se permiten todos los pares de roles, para máxima flexibilidad en el centro.
 
     // Estudiante ↔ estudiante: solo compañeros del mismo ciclo
     if ($clave === 'estudiante-estudiante') {
@@ -100,8 +98,8 @@ function chatNombreUsuario(string $rol, int $id): string {
     }
 }
 
-// Batch-fetches names for an array of ['rol' => string, 'id' => int] pairs.
-// Returns a map of 'rol:id' => name — at most 4 queries regardless of set size.
+// Obtiene en lote los nombres para un array de pares ['rol' => string, 'id' => int].
+// Devuelve un mapa 'rol:id' => nombre — como máximo 4 consultas, sea cual sea el tamaño del conjunto.
 function chatBatchNombres(array $pairs): array {
     if (!$pairs) return [];
     $con = obtenerConexion();
@@ -146,8 +144,8 @@ function chatEncontrarOCrear(string $rolA, int $idA, string $rolB, int $idB): in
     [$nRolA, $nIdA, $nRolB, $nIdB] = chatNormalizar($rolA, $idA, $rolB, $idB);
     $con = obtenerConexion();
 
-    // Atomic upsert: INSERT IGNORE avoids a race between two concurrent opens of the same conversation.
-    // LAST_INSERT_ID(id) makes LAST_INSERT_ID() return the existing row's id on duplicate.
+    // Upsert atómico: INSERT IGNORE evita una carrera entre dos aperturas simultáneas de la misma conversación.
+    // LAST_INSERT_ID(id) hace que LAST_INSERT_ID() devuelva el id de la fila existente si hay duplicado.
     $st = mysqli_prepare($con,
         'INSERT INTO chat_conversaciones (user_a_rol,user_a_id,user_b_rol,user_b_id)
          VALUES (?,?,?,?)
@@ -157,7 +155,7 @@ function chatEncontrarOCrear(string $rolA, int $idA, string $rolB, int $idB): in
     $newId = (int)mysqli_insert_id($con);
     if ($newId > 0) return $newId;
 
-    // Fallback: row existed before the upsert (LAST_INSERT_ID stays 0 in older MySQL)
+    // Alternativa: la fila ya existía antes del upsert (LAST_INSERT_ID queda a 0 en versiones antiguas de MySQL)
     $st = mysqli_prepare($con,
         'SELECT id FROM chat_conversaciones WHERE user_a_rol=? AND user_a_id=? AND user_b_rol=? AND user_b_id=?');
     mysqli_stmt_bind_param($st, 'sisi', $nRolA, $nIdA, $nRolB, $nIdB);
@@ -299,8 +297,8 @@ function chatMarcarLeidos(int $convId, string $lectoRol, int $lectoId): void {
 // CONTACTOS
 // ══════════════════════════════════════════════════════════════════════
 
-// $busqueda filters by name at the DB level, eliminating the PHP-side array_filter.
-// An empty string matches all rows (LIKE '%%').
+// $busqueda filtra por nombre a nivel de base de datos, eliminando el array_filter en PHP.
+// Una cadena vacía coincide con todas las filas (LIKE '%%').
 function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): array {
     $con     = obtenerConexion();
     $results = [];
@@ -408,7 +406,7 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
         while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
     } elseif ($rol === 'tutor') {
-        // Tutors can contact any professor at the school + directors
+        // Los tutores pueden contactar con cualquier profesor del centro + directores
         $st = mysqli_prepare($con,
             "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol
              FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200");
@@ -458,7 +456,7 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
         while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
         }
 
-        // Fallback: if no ciclo-specific professors found, show all professors
+        // Alternativa: si no se encuentran profesores específicos del ciclo, se muestran todos
         if (empty($results)) {
             $st = mysqli_prepare($con,
                 "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol

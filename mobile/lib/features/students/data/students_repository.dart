@@ -149,13 +149,15 @@ typedef StudentFiltersArgs = ({
   String? query
 });
 
-class StudentsNotifier extends AutoDisposeFamilyAsyncNotifier<
-    ({List<Student> students, int total}), StudentFiltersArgs> {
+class StudentsNotifier
+    extends AsyncNotifier<({List<Student> students, int total})> {
+  StudentsNotifier(this.arg);
+  final StudentFiltersArgs arg;
+
   bool _isLoadingMore = false;
 
   @override
-  Future<({List<Student> students, int total})> build(
-      StudentFiltersArgs arg) async {
+  Future<({List<Student> students, int total})> build() async {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(studentsRepositoryProvider).fetchStudents(
           limit: 20,
@@ -169,7 +171,7 @@ class StudentsNotifier extends AutoDisposeFamilyAsyncNotifier<
 
   Future<void> loadMore() async {
     if (_isLoadingMore) return;
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
     if (current.students.length >= current.total) return;
 
@@ -197,5 +199,5 @@ final studentsProvider = AsyncNotifierProvider.autoDispose.family<
     StudentsNotifier,
     ({List<Student> students, int total}),
     StudentFiltersArgs>(
-  () => StudentsNotifier(),
+  StudentsNotifier.new,
 );

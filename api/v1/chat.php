@@ -12,8 +12,8 @@ declare(strict_types=1);
 // POST /api/v1/chat.php  {action:'start', target_rol, target_id}
 // POST /api/v1/chat.php  {action:'send', conv_id, contenido}
 //
-// Note: the API's 'director' role maps to chat's 'admin' role internally —
-// modelos/chat.php was written before the v1 API existed and uses 'admin'.
+// Nota: el rol 'director' de la API se mapea internamente al rol 'admin' del chat —
+// modelos/chat.php se escribió antes de que existiera la API v1 y usa 'admin'.
 
 require_once __DIR__ . '/_api.php';
 require_once __DIR__ . '/../../modelos/chat.php';

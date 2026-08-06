@@ -25,7 +25,7 @@ $token  = trim($_POST['token'] ?? '');
 $pass1  = $_POST['password'] ?? '';
 $pass2  = $_POST['password2'] ?? '';
 
-// Read token to surface email/tipo for the password update — but do NOT mark used yet.
+// Leer el token para obtener email/tipo para la actualización de contraseña — sin marcarlo usado todavía.
 $resetRow = $token ? validarTokenReset($token) : null;
 if (!$resetRow) {
     $_SESSION['reset_error'] = "El enlace ha caducado o ya fue usado. Solicita uno nuevo.";

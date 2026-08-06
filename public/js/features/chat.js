@@ -234,7 +234,7 @@ window.AulaChat = (function () {
             .then(data => {
                 if (data.ok) {
                     appendMsg(data.message);
-                    // Reset polling to fast interval to fetch any new msgs
+                    // Reiniciar el sondeo al intervalo rápido para obtener mensajes nuevos
                     pollInterval = POLL_MIN_MS;
                     clearTimeout(pollTimer);
                     fetchNew();
@@ -278,7 +278,7 @@ window.AulaChat = (function () {
                 pollInterval = POLL_MIN_MS;
                 schedulePoll();
 
-                // Catch up immediately when tab becomes visible again.
+                // Ponerse al día de inmediato cuando la pestaña vuelve a ser visible.
                 document.addEventListener('visibilitychange', function onVisChange() {
                     if (!cfg.convId) { document.removeEventListener('visibilitychange', onVisChange); return; }
                     if (!document.hidden) {

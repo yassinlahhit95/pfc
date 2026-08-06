@@ -4,8 +4,8 @@
 (function () {
   'use strict';
 
-  // Determine the root path (3 levels up from public/js/aula-recursos.js).
-  // document.currentScript is reliable here because the IIFE runs synchronously at parse time.
+  // Calcular la ruta raíz (3 niveles por encima de public/js/aula-recursos.js).
+  // document.currentScript es fiable aquí porque la IIFE se ejecuta de forma síncrona al analizar el script.
   const scriptUrl = new URL((document.currentScript || {src: location.href}).src);
   const appRoot = new URL('../../../', scriptUrl).pathname;
 

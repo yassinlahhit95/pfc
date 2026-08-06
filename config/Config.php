@@ -65,7 +65,7 @@ class Config {
         $this->config['DB_USER'] = $this->env('DB_USER', defined('DB_USER_VALUE') ? DB_USER_VALUE : 'root');
         $this->config['DB_PASS'] = $this->env('DB_PASS', defined('DB_PASS_VALUE') ? DB_PASS_VALUE : '');
         // If the dynamic DB exists/applies, use it, otherwise fallback to default env
-        $this->config['DB_NAME'] = $this->env('DB_NAME', $dynamicDbName);
+        $this->config['DB_NAME'] = $this->env('DB_NAME', defined('DB_NAME_VALUE') ? DB_NAME_VALUE : $dynamicDbName);
 
         // Tenant Prefix for R2 isolated file storage
         $this->config['R2_TENANT_PREFIX'] = $subdomain;
@@ -86,8 +86,8 @@ class Config {
         $this->config['BOLETIN_SECRET'] = $this->env('BOLETIN_SECRET', '');
 
         // Clave maestra de cifrado de datos personales (RGPD Art. 32). Nunca hardcodeada.
-        // A diferencia de APP_KEY, NO tiene fallback aleatorio: si falta, Crypto debe fallar
-        // fuerte en vez de cifrar con una clave distinta en cada request.
+        // Sin fallback aleatorio: si falta, Crypto debe fallar fuerte en vez de
+        // cifrar con una clave distinta en cada request.
         $this->config['PII_ENCRYPTION_KEY'] = $this->env('PII_ENCRYPTION_KEY', '');
 
         // Cloudflare R2 (almacenamiento de ficheros subidos, S3-compatible).
@@ -103,9 +103,16 @@ class Config {
         // SaaS Admin integration (cron/sync_saas_license.php calls saas-admin's
         // /api/v1/license/verify, which requires HMAC-signed requests). Must match the
         // api_key/api_secret of the `connections` row saas-admin has for this instance.
+        // Also doubles as the inbound HMAC auth secret for api/admin.php's
+        // suspend/activate/heartbeat endpoints and signs LicenseToken.php's tokens —
+        // those two files parse .env directly instead of going through Config, which
+        // is why this being missing here went unnoticed: cron/sync_saas_license.php
+        // and vistas/auth/diagnostico_email.php are the only callers that actually go
+        // through Config::get('ADMIN_API_KEY'/'ADMIN_API_SECRET'), and both silently
+        // got '' back on every request since this class never populated the key.
         $this->config['SAAS_ADMIN_URL']    = rtrim($this->env('SAAS_ADMIN_URL', ''), '/');
-        $this->config['SAAS_API_KEY']      = $this->env('SAAS_API_KEY', '');
-        $this->config['SAAS_API_SECRET']   = $this->env('SAAS_API_SECRET', '');
+        $this->config['ADMIN_API_KEY']     = $this->env('ADMIN_API_KEY', '');
+        $this->config['ADMIN_API_SECRET']  = $this->env('ADMIN_API_SECRET', '');
 
         // Application
         // URL pública canónica (p. ej. https://aulapro.yassin.agency). Se usa para
@@ -114,7 +121,6 @@ class Config {
         $this->config['APP_ENV']         = $this->env('APP_ENV', 'development');
         $this->config['APP_DEBUG']        = filter_var($this->env('APP_DEBUG', 'false'), FILTER_VALIDATE_BOOLEAN);
         $this->config['SESSION_TIMEOUT']  = intval($this->env('SESSION_TIMEOUT', '3600'));
-        $this->config['APP_KEY']          = $this->env('APP_KEY', '') ?: $this->generateAppKey();
         $this->config['GOOGLE_CLIENT_ID'] = $this->env('GOOGLE_CLIENT_ID', '');
     }
 
@@ -164,10 +170,6 @@ class Config {
 
     public function getInteger($key, $default = 0) {
         return intval($this->get($key, $default));
-    }
-
-    private function generateAppKey() {
-        return bin2hex(random_bytes(32));
     }
 
     public function isDebug() {

@@ -58,6 +58,14 @@ public/uploads/pfc/*
 public/uploads/retos/*
 !public/uploads/retos/.htaccess
 
+!public/uploads/comprobantes/
+public/uploads/comprobantes/*
+!public/uploads/comprobantes/.htaccess
+
+!public/uploads/configuracion/
+public/uploads/configuracion/*
+!public/uploads/configuracion/.htaccess
+
 # Logs
 logs/
 !logs/.htaccess

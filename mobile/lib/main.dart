@@ -27,7 +27,7 @@ class AulaProApp extends ConsumerWidget {
     // Fires on login and on cold-start session restore alike — a single
     // hook point instead of duplicating this in login_screen.dart.
     ref.listen(sessionControllerProvider, (previous, next) {
-      if (next.valueOrNull != null) {
+      if (next.value != null) {
         ref.read(notificationsServiceProvider).init();
       }
     });

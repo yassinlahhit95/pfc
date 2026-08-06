@@ -96,8 +96,8 @@ function v1AuthHeader(): string {
     return $header;
 }
 
-// Validates Bearer token; returns ['user_type'=>string, 'user_id'=>int].
-// Terminates with 401 on failure.
+// Valida el token Bearer; devuelve ['user_type'=>string, 'user_id'=>int].
+// Termina con 401 si falla.
 function v1Auth(): array {
     $header = v1AuthHeader();
     if (!$header || stripos($header, 'Bearer ') !== 0) {

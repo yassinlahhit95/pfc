@@ -343,7 +343,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div style="background:var(--color-white);border-radius:var(--radius-lg);width:100%;max-width:800px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
     <div style="padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--color-neutral-200);display:flex;align-items:center;justify-content:space-between;">
       <span id="aulaViewerNombre" style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);color:var(--color-neutral-800);"></span>
-      <button onclick="document.getElementById('aulaViewerModal').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--color-neutral-400);">✕</button>
+      <button onclick="document.getElementById('aulaViewerModal').style.display='none'" class="modal-cerrar-btn">✕</button>
     </div>
     <div id="aulaViewerContenedor" style="flex:1;overflow:auto;background:var(--color-neutral-50);"></div>
   </div>

@@ -354,10 +354,12 @@ $warningLogs = Logger::getTail('warning.log', 20);
                     </span>
                 </span>
             </div>
+            <?php if (!empty($dbError)): ?>
             <div class="info-row" style="color: var(--red);">
                 <span class="info-label">Error DB</span>
                 <span class="info-value"><?= Security::escapeHtml($dbError) ?></span>
             </div>
+            <?php endif; ?>
             <div class="info-row">
                 <span class="info-label">Resets en BD</span>
                 <span class="info-value"><?= (int)$resetsCount ?> registros</span>

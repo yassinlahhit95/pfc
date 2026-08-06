@@ -27,7 +27,7 @@ $q      = trim($_GET['q'] ?? '');
 
 $con = obtenerConexion();
 
-// Build WHERE clause
+// Construye la cláusula WHERE
 $where = [];
 $params = [];
 $types = '';
@@ -67,7 +67,7 @@ mysqli_stmt_bind_param($st, $types, ...$params);
 mysqli_stmt_execute($st);
 $rows = mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC);
 
-// Get total count for pagination
+// Obtiene el total de registros para la paginación
 $countSql = "SELECT COUNT(*) as cnt FROM profesores p $whereClause";
 $countParams = array_slice($params, 0, -2); // Remove LIMIT and OFFSET
 $countTypes = substr($types, 0, -2);

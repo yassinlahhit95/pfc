@@ -83,10 +83,10 @@ require __DIR__ . '/../legal/_header.php';
                         <span>Filtrar por Nivel de Grado</span>
                         <span class="text-muted" style="font-size:11px; font-weight:normal;">Selecciona para reducir la lista</span>
                     </label>
-                    <div class="nivel-filter-tabs" style="display:flex; gap: 8px;">
-                        <button type="button" class="btn active-tab" data-filter="all" style="flex:1; padding: 7px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--accent); background: var(--accent); color: white; cursor: pointer; transition: all 0.2s;">Todos</button>
-                        <button type="button" class="btn" data-filter="medio" style="flex:1; padding: 7px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.2s;">Grado Medio</button>
-                        <button type="button" class="btn" data-filter="superior" style="flex:1; padding: 7px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.2s;">Grado Superior</button>
+                    <div class="nivel-filter-tabs">
+                        <button type="button" class="active-tab" data-filter="all">Todos</button>
+                        <button type="button" data-filter="medio">Grado Medio</button>
+                        <button type="button" data-filter="superior">Grado Superior</button>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -239,6 +239,6 @@ require __DIR__ . '/../legal/_header.php';
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js" integrity="sha384-nLoOnA/BDh8A/jxqtckg4DumuCGOBYUnNJLZdQz/zfYNp3wcjGSoWTAzgko06G/2" crossorigin="anonymous"></script>
-<script src="/public/js/features/admisiones.js"></script>
+<script src="<?= AssetMin::urlAbs(__DIR__ . '/../..', '/public/js/features/admisiones.js') ?>"></script>
 
 <?php require __DIR__ . '/../legal/_footer.php'; ?>

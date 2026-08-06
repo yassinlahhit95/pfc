@@ -54,7 +54,7 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final session = ref.watch(sessionControllerProvider).value;
     final canManage = session?.role == UserRole.director ||
         session?.role == UserRole.secretaria;
     final teachersAsync = ref.watch(

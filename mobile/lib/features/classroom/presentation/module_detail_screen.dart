@@ -18,7 +18,7 @@ class ModuleDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     final isProfesor = role == UserRole.profesor;
 
     return DefaultTabController(

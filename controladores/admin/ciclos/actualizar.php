@@ -36,7 +36,7 @@ if (isset($_POST['actualizarCiclo'])) {
         exit;
     }
 
-    // Note: tipoFormacion is not updatable after creation (null = keep existing)
+    // Nota: tipoFormacion no se puede modificar tras la creación (null = mantener el valor actual)
     if (actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo, null)) {
         registrarAccion('actualizar', 'ciclos', $idCiclo, "$nombre ($abreviatura)");
         $_SESSION['exito'] = "El ciclo formativo ha sido actualizado correctamente.";

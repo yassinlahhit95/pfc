@@ -19,10 +19,10 @@ class GastosScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Gastos del Centro')),
-      floatingActionButton: gastosAsync.valueOrNull != null
+      floatingActionButton: gastosAsync.value != null
           ? FloatingActionButton.extended(
               onPressed: () async {
-                final categorias = gastosAsync.valueOrNull!.categorias;
+                final categorias = gastosAsync.value!.categorias;
                 final bool created = await showGastoFormSheet(context, ref,
                     categorias: categorias);
                 if (created) ref.invalidate(gastosListProvider);

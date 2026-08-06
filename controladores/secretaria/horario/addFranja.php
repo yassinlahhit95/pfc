@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../../modelos/horarios.php';
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-// rotate=false — shared token reused across this no-reload drag-and-drop page (see controladores/admin/horario/addFranja.php)
+// rotate=false — token compartido reutilizado en esta pantalla de arrastrar y soltar sin recarga (ver controladores/admin/horario/addFranja.php)
 if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
 }

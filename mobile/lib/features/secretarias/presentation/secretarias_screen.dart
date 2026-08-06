@@ -21,7 +21,7 @@ class _SecretariasScreenState extends ConsumerState<SecretariasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(sessionControllerProvider).valueOrNull;
+    final session = ref.watch(sessionControllerProvider).value;
     final canManage = session?.role == UserRole.director;
     final secretariasAsync = ref.watch(
       secretariasProvider(_searchQuery.isNotEmpty ? _searchQuery : null),

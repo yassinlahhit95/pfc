@@ -1,8 +1,8 @@
 <?php
 /**
  * cron/rotate_logs.php
- * Log rotation script — deletes logs older than 30 days
- * Run weekly: 0 2 * * 0 php /path/to/cron/rotate_logs.php
+ * Script de rotación de logs — borra los logs con más de 30 días
+ * Ejecutar semanalmente: 0 2 * * 0 php /path/to/cron/rotate_logs.php
  */
 
 if (PHP_SAPI !== 'cli' && ($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1') {
@@ -36,7 +36,7 @@ if (is_dir($logsDir)) {
 
 echo "Log rotation complete: $deleted files deleted, " . number_format($totalSize, 0) . " bytes freed.\n";
 
-// Log rotation execution
+// Registra la ejecución de la rotación de logs
 $con = obtenerConexion();
 if ($con) {
     $status = 'success';

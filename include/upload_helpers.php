@@ -1,6 +1,6 @@
 <?php
-// Shared upload logic for reto files.
-// Requires registrarArchivoReto() to be defined (include modelos/retos.php first).
+// Lógica de subida compartida para ficheros de retos.
+// Requiere que registrarArchivoReto() esté definida (incluir antes modelos/retos.php).
 require_once __DIR__ . '/ImageOptimizer.php';
 require_once __DIR__ . '/R2Client.php';
 

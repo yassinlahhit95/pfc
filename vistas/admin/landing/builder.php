@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 FeatureGuard::requirePage('feature_landing');
 
 require_once __DIR__ . "/../../../modelos/landing.php";
@@ -52,7 +53,7 @@ $titulo_pagina = "AULAPRO | CONSTRUCTOR DE LA WEB";
 $seccion       = 'landing';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
-<link rel="stylesheet" href="../../../public/css/features/landing-builder.css?v=<?= filemtime(__DIR__ . '/../../../public/css/features/landing-builder.css') ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/landing-builder.css') ?>">
 
 <div class="cabecera">
     <h1><i class="fas fa-globe"></i> Página web pública</h1>

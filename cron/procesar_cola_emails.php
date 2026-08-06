@@ -56,7 +56,7 @@ if (empty($pendientes)) {
     }
 }
 
-// Log cron execution to database
+// Registra la ejecución del cron en la base de datos
 if ($con) {
     $sql = "INSERT INTO cron_execution_log (job_name, last_run, last_run_status, error_message)
             VALUES ('procesar_cola_emails.php', NOW(), ?, ?)

@@ -9,7 +9,7 @@ if (isset($_POST['lang'])) {
     I18n::setLang((string)$_POST['lang']);
 }
 
-// Redirect back to the referrer or login page
+// Redirigir de vuelta al referrer o a la página de login
 $referrer = $_SERVER['HTTP_REFERER'] ?? '../vistas/login.php';
 header("Location: " . $referrer);
 exit;

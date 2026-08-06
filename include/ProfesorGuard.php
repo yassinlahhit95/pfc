@@ -2,9 +2,10 @@
 require_once __DIR__ . '/../modelos/conectar.php';
 require_once __DIR__ . '/Security.php';
 ob_start();
-// Security::initSession() (not a bare session_start()) so the cookie-hardening
-// flags (Secure/HttpOnly/SameSite/strict_mode) actually get applied — calling
-// session_start() before Security.php loaded used to skip them silently.
+// Security::initSession() (no un session_start() a secas): así los flags de
+// endurecimiento de cookies (Secure/HttpOnly/SameSite/strict_mode) sí se
+// aplican — llamar a session_start() antes de cargar Security.php hacía que
+// se saltaran en silencio.
 Security::initSession();
 
 $_isAjaxGuard = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])

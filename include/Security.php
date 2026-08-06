@@ -11,7 +11,7 @@ class Security {
     const RATE_LIMIT_WINDOW    = 300;   // 5 minutos
 
     public static function initSession() {
-        // Validate database encoding to prevent tilde corruption
+        // Valida la codificación de la base de datos para prevenir corrupción de tildes
         require_once __DIR__ . '/EncodingValidator.php';
         if (!EncodingValidator::validateConnection()) {
             error_log("WARNING: Database connection charset may not be UTF-8. Tilde corruption risk.");
@@ -119,14 +119,14 @@ class Security {
             $_SESSION['_fp'] = $fp;
             $_SESSION['_fp_mismatch_time'] = 0;
         } elseif (!hash_equals($_SESSION['_fp'], $fp)) {
-            // Allow a grace period of 2 minutes for fingerprint mismatches (e.g., after browser updates)
+            // Periodo de gracia de 2 minutos para discrepancias de fingerprint (p.ej. tras actualizar el navegador)
             $now = time();
             $lastMismatch = $_SESSION['_fp_mismatch_time'] ?? 0;
             if ($lastMismatch === 0) {
                 // Record first mismatch timestamp
                 $_SESSION['_fp_mismatch_time'] = $now;
             } elseif ($now - $lastMismatch > 120) {
-                // If mismatch persists beyond grace period, destroy session
+                // Si la discrepancia persiste más allá del periodo de gracia, se destruye la sesión
                 self::destroySession();
                 return;
             }
@@ -265,7 +265,7 @@ class Security {
         }
 
         if ($rotate) {
-            // Rotate: invalidate used token so each form submission gets a fresh one
+            // Rotar: invalidar el token usado para que cada envío de formulario obtenga uno nuevo
             unset($_SESSION['csrf_token'], $_SESSION['csrf_token_time']);
         }
         return true;
@@ -467,8 +467,8 @@ class Security {
     // UTILIDADES
     // ══════════════════════════════════════════════════════════════════════
 
-    // Returns the real client IP, honouring Cloudflare's CF-Connecting-IP header only
-    // when REMOTE_ADDR is a known Cloudflare egress IP (prevents header spoofing).
+    // Devuelve la IP real del cliente, respetando la cabecera CF-Connecting-IP de Cloudflare
+    // solo cuando REMOTE_ADDR es una IP de salida de Cloudflare conocida (evita el spoofing de cabeceras).
     public static function clientIp(): string {
         $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         if (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && self::isCloudflareIp($remote)) {
@@ -499,8 +499,8 @@ class Security {
             $ip = self::clientIp();
         }
 
-        // CF-Connecting-IP is already resolved above in clientIp(); trust CF-IPCountry
-        // only when REMOTE_ADDR is a genuine Cloudflare IP (prevents header spoofing).
+        // CF-Connecting-IP ya se resuelve arriba en clientIp(); solo se confía en CF-IPCountry
+        // cuando REMOTE_ADDR es una IP genuina de Cloudflare (evita el spoofing de cabeceras).
         $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         if (!empty($_SERVER['HTTP_CF_IPCOUNTRY']) && self::isCloudflareIp($remote)) {
             return strtoupper($_SERVER['HTTP_CF_IPCOUNTRY']);
@@ -523,7 +523,7 @@ class Security {
             }
         } catch (\Throwable $th) {}
 
-        // Fallback to 'ES' to prevent locking out the admin if the free API is rate-limiting the server's public IP
+        // Recurre a 'ES' para no bloquear al admin si la API gratuita está limitando la tasa de la IP pública del servidor
         return 'ES';
     }
 
@@ -552,7 +552,7 @@ class Security {
             return null;
         }
 
-        // Validate the audience (aud) matches the Google Client ID
+        // Valida que la audiencia (aud) coincide con el Google Client ID
         if (isset($payload['aud']) && $payload['aud'] !== $googleClientId) {
             return null;
         }

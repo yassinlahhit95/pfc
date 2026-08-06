@@ -44,8 +44,8 @@ if (!$ciclo || empty($resultados)) {
     exit;
 }
 
-// Security: Limit export size (prevent memory exhaustion)
-// Typical grades export: ~500 students × 100 bytes = 50KB, max reasonable ~10MB
+// Seguridad: limitar el tamaño de la exportación (evita agotar la memoria)
+// Exportación típica de notas: ~500 estudiantes × 100 bytes = 50KB, máximo razonable ~10MB
 $maxRowsToExport = 10000;
 if (count($resultados) > $maxRowsToExport) {
     $_SESSION['errores'] = "Demasiados registros para exportar en un único archivo. Contacte al administrador.";
@@ -81,7 +81,7 @@ $estilo_cabecera = [
 $hoja->getStyle('A1:F1')->applyFromArray($estilo_cabecera);
 
 // ── Filas de datos ──
-// Security: Prevent formula injection (= + - @) in cell values
+// Seguridad: evitar inyección de fórmulas (= + - @) en el valor de las celdas
 $sanitizeForExcel = function($value) {
     if (!is_string($value)) return $value;
     $value = (string)$value;

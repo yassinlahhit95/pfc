@@ -213,36 +213,37 @@ function cargarMasAsistencias() {
 
 function renderAsistencias(asistencias) {
     var tbody = $('#asistencias-tbody');
-    
+    var esc = window.AulaProUtils ? window.AulaProUtils.escapeHtml : function (s) { return $('<div>').text(s || '').html(); };
+
     asistencias.forEach(function(asist) {
         var tr = $('<tr>');
-        
+
         var d = new Date(asist.fecha);
         var fechaStr = d.toLocaleDateString('es-ES') + ' ' + (asist.fechaRegistro ? asist.fechaRegistro.substring(11, 16) : '');
-        tr.append('<td>' + fechaStr + '</td>');
-        tr.append('<td>' + (asist.hora ? asist.hora.substring(0, 5) : '—') + '</td>');
-        
+        tr.append('<td>' + esc(fechaStr) + '</td>');
+        tr.append('<td>' + esc(asist.hora ? asist.hora.substring(0, 5) : '—') + '</td>');
+
         var estadoClase = 'gris';
         var estadoLabel = '—';
         if(asist.estado === 'presente') { estadoClase = 'verde'; estadoLabel = 'Presente'; }
         if(asist.estado === 'ausente') { estadoClase = 'rojo'; estadoLabel = 'Ausente'; }
         if(asist.estado === 'retraso') { estadoClase = 'naranja'; estadoLabel = 'Retraso'; }
         if(asist.estado === 'justificado') { estadoClase = 'azul'; estadoLabel = 'Justificado'; }
-        
+
         tr.append('<td><span class="texto-estado ' + estadoClase + '">' + estadoLabel + '</span></td>');
-        tr.append('<td><b>' + (asist.nombreEstudiante || '').toUpperCase() + '</b></td>');
-        tr.append('<td>' + (asist.nombreModulo || '') + '<br><small class="texto-suave">' + (asist.nombreCiclo || '') + '</small></td>');
-        tr.append('<td>' + (asist.nombreProfesor || '') + '</td>');
-        
+        tr.append('<td><b>' + esc((asist.nombreEstudiante || '').toUpperCase()) + '</b></td>');
+        tr.append('<td>' + esc(asist.nombreModulo || '') + '<br><small class="texto-suave">' + esc(asist.nombreCiclo || '') + '</small></td>');
+        tr.append('<td>' + esc(asist.nombreProfesor || '') + '</td>');
+
         var obs = asist.observacion ? asist.observacion : (asist.justificacion ? asist.justificacion.motivo : '');
-        tr.append('<td><small class="texto-suave">' + obs + '</small></td>');
-        
+        tr.append('<td><small class="texto-suave">' + esc(obs) + '</small></td>');
+
         var just = '';
         if (asist.justificacion && asist.justificacion.archivo_url) {
-            just = '<a href="' + asist.justificacion.archivo_url + '" target="_blank" class="boton-secundario boton-pequeno"><i class="fas fa-file-alt"></i> Ver</a>';
+            just = '<a href="' + esc(asist.justificacion.archivo_url) + '" target="_blank" class="boton-secundario boton-pequeno"><i class="fas fa-file-alt"></i> Ver</a>';
         }
         tr.append('<td>' + just + '</td>');
-        
+
         tbody.append(tr);
     });
 }

@@ -20,7 +20,7 @@ if (isset($_POST['idCiclo'])) {
     $idCiclo = (int) $_POST['idCiclo'];
     $con = obtenerConexion();
 
-    // Password required for this sensitive cascade operation
+    // Se requiere contraseña para esta operación sensible en cascada
     $stmtPw = mysqli_prepare($con, "SELECT password FROM directores WHERE idDirector = ?");
     $idAdmin = (int)$_SESSION['idAdmin'];
     mysqli_stmt_bind_param($stmtPw, "i", $idAdmin);

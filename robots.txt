@@ -1,5 +1,13 @@
+<?php
+// PHP, served under the static robots.txt filename (see .htaccess ForceType) so
+// the Sitemap: directive points at this deployment's own domain — each client
+// gets their own copy of this app on their own domain, so a hardcoded host
+// here would point every other client's crawlers back at the template's host.
+$host = preg_replace('/[^a-z0-9.\-:]/i', '', $_SERVER['HTTP_HOST'] ?? 'localhost');
+$base = 'https://' . $host;
+header('Content-Type: text/plain; charset=utf-8');
+?>
 # AulaPro — robots.txt
-# https://aulapro.yassin.agency/
 
 User-agent: *
 Allow: /
@@ -38,4 +46,4 @@ Disallow: /vistas/chat/
 Disallow: /test_*.php
 
 # Mapa del sitio
-Sitemap: https://aulapro.yassin.agency/sitemap.xml
+Sitemap: <?= $base ?>/sitemap.xml

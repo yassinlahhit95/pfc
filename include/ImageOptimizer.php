@@ -9,15 +9,15 @@ class ImageOptimizer
     {
         if (!function_exists('gd_info')) return;
 
-        // ponytail: GIF deliberately excluded — GD's imagegif() only ever writes a
-        // single frame, so routing animated GIFs through this optimizer would
-        // silently destroy their animation. Uploaded GIFs are therefore stored
-        // as-is (not re-encoded), which means any trailing polyglot payload past
-        // valid GIF data isn't stripped for that one format. Low risk in practice
-        // (no known GIF-polyglot-to-script-execution vector under a correct
-        // image/gif Content-Type in modern browsers) — upgrade path if this ever
-        // needs closing: re-encode only static (single-frame) GIFs and leave
-        // multi-frame ones untouched.
+        // ponytail: GIF excluido a propósito — imagegif() de GD solo escribe un único
+        // fotograma, así que pasar GIFs animados por este optimizador destruiría su
+        // animación en silencio. Por eso los GIF subidos se guardan tal cual (sin
+        // reprocesar), lo que significa que un payload polyglot añadido después de
+        // los datos GIF válidos no se elimina para ese formato. Riesgo bajo en la
+        // práctica (no se conoce ningún vector GIF-polyglot-a-ejecución-de-script con
+        // un Content-Type image/gif correcto en navegadores modernos) — vía de mejora
+        // si algún día hay que cerrarlo: reprocesar solo los GIF estáticos (un
+        // fotograma) y dejar los multifotograma sin tocar.
         $creators = [
             'image/jpeg' => 'imagecreatefromjpeg',
             'image/png'  => 'imagecreatefrompng',

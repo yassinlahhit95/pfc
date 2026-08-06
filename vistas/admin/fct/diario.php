@@ -9,7 +9,7 @@ if ($idFCT <= 0) {
 
 $con = obtenerConexion();
 
-// Fetch FCT details
+// Obtiene los detalles del FCT
 $stmt = mysqli_prepare($con, "
     SELECT f.*, e.nombreEstudiante, c.nombreCiclo, p.nombreProfesor
     FROM fct f
@@ -26,7 +26,7 @@ if (!$fct) {
     die("Asignación de prácticas no encontrada.");
 }
 
-// Fetch logs
+// Obtiene los logs
 $stmtD = mysqli_prepare($con, "SELECT * FROM fct_diarios WHERE idFCT = ? ORDER BY fecha DESC, idDiario DESC");
 mysqli_stmt_bind_param($stmtD, "i", $idFCT);
 mysqli_stmt_execute($stmtD);

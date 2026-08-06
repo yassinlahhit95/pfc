@@ -262,7 +262,7 @@ switch ($action) {
             apiError('Missing feature or value.', 400);
         }
 
-        // Allow only safe column names
+        // Solo se permiten nombres de columna seguros
         if (!preg_match('/^feature_[a-z_]+$/', $feature)) {
             apiError('Invalid feature name.', 400);
         }

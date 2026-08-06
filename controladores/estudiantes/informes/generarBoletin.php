@@ -14,7 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;
 }
 
-if (!Security::validateCSRFToken()) {
+// El guard ya validó con rotate=false; esta segunda comprobación tampoco debe rotar,
+// o generar el PDF (target="_blank") consumiría el token sin recargar la página.
+if (!Security::validateCSRFToken(null, false)) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: $_back"); exit;
 }

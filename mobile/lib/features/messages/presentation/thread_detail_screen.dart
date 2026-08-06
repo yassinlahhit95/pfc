@@ -76,7 +76,7 @@ class _ThreadDetailScreenState extends ConsumerState<ThreadDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     final myEmisorRol =
         (role == UserRole.director || role == UserRole.secretaria)
             ? 'admin'

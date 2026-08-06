@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Prevent PHP warnings/notices from polluting the JSON output
+// Evita que los warnings/notices de PHP contaminen la salida JSON
 ini_set('display_errors', '0');
 error_reporting(0);
 
@@ -29,7 +29,7 @@ if ($type !== 'director') {
 
 $date = $_GET['date'] ?? date('Y-m-d');
 
-// Validate date format YYYY-MM-DD
+// Valida el formato de fecha YYYY-MM-DD
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
     v1Error('Invalid date format. Expected YYYY-MM-DD.', 400, 'validation');
 }
@@ -65,7 +65,7 @@ $sqlAdmin = "
 try {
     $logs = [];
 
-    // Fetch secretary logs
+    // Obtiene los logs de secretaría
     $st1 = mysqli_prepare($con, $sqlSecretarias);
     if (!$st1) {
         throw new Exception(mysqli_error($con));
@@ -84,7 +84,7 @@ try {
         ];
     }
 
-    // Fetch admin logs
+    // Obtiene los logs de admin
     $st2 = mysqli_prepare($con, $sqlAdmin);
     if (!$st2) {
         throw new Exception(mysqli_error($con));

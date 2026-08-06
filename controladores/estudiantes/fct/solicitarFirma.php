@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Check if there are pending logs to sign
+    // Comprueba si hay logs pendientes de firmar
     $stmtCount = mysqli_prepare($con, "SELECT COUNT(*) FROM fct_diarios WHERE idFCT = ? AND estado = 'pendiente'");
     mysqli_stmt_bind_param($stmtCount, "i", $idFCT);
     mysqli_stmt_execute($stmtCount);
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config = Config::getInstance();
         $appUrl = rtrim($config->get('APP_URL', ''), '/');
         if (empty($appUrl)) {
-            // Fallback for development
+            // Alternativa para desarrollo
             $appUrl = 'http://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/pfc';
         }
         

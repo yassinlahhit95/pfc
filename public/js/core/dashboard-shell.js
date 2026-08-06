@@ -30,19 +30,19 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /**
-   * Resolves a URL relative to the app root, based on the 'vistas' segment in the path.
-   * This makes paths robust even if the page depth changes.
+   * Resuelve una URL relativa a la raíz de la app, según el segmento 'vistas' de la ruta.
+   * Esto hace que las rutas sean robustas aunque cambie la profundidad de la página.
    */
   function resolveAppPath(relPath) {
     if (!relPath) return "";
-    // If it's already absolute (starts with / or http), return it
+    // Si ya es absoluta (empieza por / o http), devolverla tal cual
     if (relPath.startsWith('/') || relPath.startsWith('http')) return relPath;
 
     var parts = location.pathname.split('/');
     var vi = parts.indexOf('vistas');
     var base = vi > -1 ? parts.slice(0, vi).join('/') : '';
-    
-    // Clean up the relative part (remove leading ../)
+
+    // Limpiar la parte relativa (quitar los ../ iniciales)
     var cleanRel = relPath.replace(/^(\.\.\/)+/, '');
     return base + '/' + cleanRel;
   }
@@ -117,13 +117,14 @@
 
     if (!input || !list) return;
 
-    // Do NOT touch autocomplete here — the HTML already sets the hardened
-    // value (autocomplete="one-time-code", per CLAUDE.md's search-input
-    // convention). This used to reset it to plain "off" on every page load,
-    // silently undoing that fix and letting Chrome's own password-manager
-    // UI (key icon / saved-password suggestions) show up over the search
-    // results again — plain "off" is the exact value already proven not to
-    // work reliably on this class of input.
+    // NO tocar autocomplete aquí — el HTML ya trae el valor endurecido
+    // (autocomplete="one-time-code", según la convención de inputs de búsqueda
+    // de CLAUDE.md). Esto antes lo reseteaba a un simple "off" en cada carga de
+    // página, deshaciendo esa corrección en silencio y dejando que la propia UI
+    // del gestor de contraseñas de Chrome (icono de llave / sugerencias
+    // guardadas) volviera a aparecer sobre los resultados de búsqueda — "off" a
+    // secas es justo el valor que ya se demostró que no funciona de forma
+    // fiable en este tipo de input.
 
     var rawUrl = input.dataset.url;
     if (!rawUrl) return;
@@ -345,7 +346,7 @@
     Array.prototype.forEach.call(titles, function (title) {
       var name = (title.textContent || "").trim();
 
-      // Collect the nav items that belong to this section (until the next title).
+      // Recopilar los ítems de navegación de esta sección (hasta el siguiente título).
       var items = [];
       var el = title.nextElementSibling;
       while (el && !el.classList.contains("nav-section-title")) {
@@ -363,7 +364,7 @@
         items.forEach(function (it) { it.classList.toggle("nav-collapsed", collapsed); });
       }
 
-      // Never start collapsed if the active page lives inside this section.
+      // Nunca empezar colapsado si la página activa está dentro de esta sección.
       var hasActive = items.some(function (it) { return it.classList.contains("active"); });
       var collapsed = !hasActive && saved[name] === true;
       apply(collapsed);
@@ -639,7 +640,7 @@
           });
       }
 
-      // Pause while offline, resume immediately when back online
+      // Pausar mientras está offline, reanudar de inmediato al volver online
       window.addEventListener('offline', function() { paused = true; clearTimeout(timer); });
       window.addEventListener('online',  function() {
         paused = false;
@@ -663,7 +664,7 @@
     animateTiles();
   });
 
-  // Expose helper to global scope if needed
+  // Exponer el helper en el ámbito global por si hace falta
   window.resolveAppPath = resolveAppPath;
 
   /* ── Auto-logout after inactivity ──────────────────────────────────────── */

@@ -258,7 +258,10 @@ function cargarFaltasEstudiante(idEstudiante) {
             } else {
                 selectFaltas.innerHTML = '<option value="">— Selecciona Falta —</option>';
                 data.forEach(function(falta) {
-                    selectFaltas.innerHTML += '<option value="' + falta.idAsistencia + '">' + falta.fecha + ' : ' + falta.nombreModulo + ' (' + falta.estado + ')</option>';
+                    var opt = document.createElement('option');
+                    opt.value = falta.idAsistencia;
+                    opt.textContent = falta.fecha + ' : ' + falta.nombreModulo + ' (' + falta.estado + ')';
+                    selectFaltas.appendChild(opt);
                 });
             }
         })

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 header('Content-Type: application/json; charset=utf-8');
 
-// Only tutores (professor with esTutor=1) may use this endpoint
+// Solo los tutores (profesor con esTutor=1) pueden usar este endpoint
 if (empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
     echo json_encode(['ok' => false, 'msg' => 'Sin permiso.']); exit;
 }

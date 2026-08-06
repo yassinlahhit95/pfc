@@ -25,7 +25,7 @@ class StaffJustifyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(sessionControllerProvider).valueOrNull?.role;
+    final role = ref.watch(sessionControllerProvider).value?.role;
     return Scaffold(
       appBar: AppBar(title: const Text('Justificar falta')),
       body: role == UserRole.profesor

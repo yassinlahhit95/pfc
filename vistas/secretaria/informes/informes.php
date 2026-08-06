@@ -1,6 +1,7 @@
 ﻿<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
 FeatureGuard::requirePage('feature_informes');
 
 $exito   = $_SESSION['exito']   ?? '';
@@ -24,7 +25,7 @@ $ciclosJson = json_encode(array_map(fn($ciclo) => [
     'idNivel' => (int)$ciclo['idNivel'],
 ], $ciclos), JSON_UNESCAPED_UNICODE);
 ?>
-<link rel="stylesheet" href="../../../public/css/features/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/informes.css') ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/informes.css') ?>">
 
 <div class="cabecera">
     <div>

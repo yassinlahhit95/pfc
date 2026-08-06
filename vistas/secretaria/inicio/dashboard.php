@@ -230,22 +230,22 @@ if ($rVencidos) {
     
     <?php if (count($vencidos) > 0): ?>
     <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--rojo);"><i class="fas fa-exclamation-triangle"></i> Acciones Requeridas: Alumnos Morosos</h3>
-    <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
             <thead>
-                <tr style="background:var(--surface-2); border-bottom:2px solid var(--border-2); text-align:left;">
-                    <th style="padding:10px;">Estudiante</th>
-                    <th style="padding:10px;">Fecha Vencimiento</th>
-                    <th style="padding:10px;">Comprobante</th>
-                    <th style="padding:10px;">Acciones</th>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Comprobante</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach($vencidos as $pagoVencido): ?>
-                <tr style="border-bottom:1px solid var(--border);">
-                    <td style="padding:10px; font-weight:600;"><?= Security::escapeHtml($pagoVencido['nombreEstudiante']) ?><br><small style="font-weight:normal; color:var(--dim);"><?= Security::escapeHtml($pagoVencido['emailEstudiante']) ?></small></td>
-                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= date('d/m/Y', strtotime($pagoVencido['fechaProximoPago'])) ?></td>
-                    <td style="padding:10px;">
+                <tr>
+                    <td style="font-weight:600;"><?= Security::escapeHtml($pagoVencido['nombreEstudiante']) ?><br><small style="font-weight:normal; color:var(--dim);"><?= Security::escapeHtml($pagoVencido['emailEstudiante']) ?></small></td>
+                    <td style="color:var(--rojo); font-weight:600;"><?= date('d/m/Y', strtotime($pagoVencido['fechaProximoPago'])) ?></td>
+                    <td>
                         <?php if ($pagoVencido['estadoComprobante'] === 'verificando'): ?>
                             <a href="../pagos/verPagos.php" title="Revisar y aprobar/rechazar el comprobante">
                                 <span class="badge badge-ambar"><i class="fas fa-search"></i> Verificando</span>
@@ -254,7 +254,7 @@ if ($rVencidos) {
                             <span class="texto-suave">Sin comprobante</span>
                         <?php endif; ?>
                     </td>
-                    <td style="padding:10px;">
+                    <td>
                         <button onclick="otorgarProrroga(<?= $pagoVencido['idPago'] ?>)" class="boton-secundario btn-pequeno" style="background:var(--rojo-suave); border-color:var(--rojo); color:var(--rojo);">
                             <i class="fas fa-unlock"></i> Otorgar Prórroga (7 Días)
                         </button>
@@ -273,15 +273,15 @@ if ($rVencidos) {
         <i class="fas fa-file-invoice-dollar" style="color:var(--accent);"></i> Estudiantes con Deuda Pendiente
     </h2>
     <?php if (!empty($estudiantesPendientes)) { ?>
-    <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
             <thead>
-                <tr style="background:var(--surface-2); border-bottom:2px solid var(--border-2); text-align:left;">
-                    <th style="padding:10px;">Estudiante</th>
-                    <th style="padding:10px;">Ciclo</th>
-                    <th style="padding:10px;">Pagado</th>
-                    <th style="padding:10px;">Deuda</th>
-                    <th style="padding:10px;">Acción</th>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Ciclo</th>
+                    <th>Pagado</th>
+                    <th>Deuda</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -290,12 +290,12 @@ if ($rVencidos) {
                 foreach ($estudiantesPendientes as $estudiantePendiente) {
                     if ($contadorPagos >= 8) break;
                 ?>
-                <tr style="border-bottom:1px solid var(--border);">
-                    <td style="padding:10px; font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante'] . ' ' . ($estudiantePendiente['apellidosEstudiante'] ?? '')) ?></td>
-                    <td style="padding:10px;"><span style="background:color-mix(in oklab, var(--accent) 14%, var(--surface)); color:var(--accent); padding:2px 8px; border-radius:8px; font-size:0.78rem; font-weight:600;"><?= Security::escapeHtml($estudiantePendiente['nombreCiclo']) ?></span></td>
-                    <td style="padding:10px; color:var(--verde);"><?= number_format($estudiantePendiente['totalPagado'], 2) ?> €</td>
-                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= number_format($estudiantePendiente['deuda'], 2) ?> €</td>
-                    <td style="padding:10px;">
+                <tr>
+                    <td style="font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante'] . ' ' . ($estudiantePendiente['apellidosEstudiante'] ?? '')) ?></td>
+                    <td><span style="background:color-mix(in oklab, var(--accent) 14%, var(--surface)); color:var(--accent); padding:2px 8px; border-radius:8px; font-size:0.78rem; font-weight:600;"><?= Security::escapeHtml($estudiantePendiente['nombreCiclo']) ?></span></td>
+                    <td style="color:var(--verde);"><?= number_format($estudiantePendiente['totalPagado'], 2) ?> €</td>
+                    <td style="color:var(--rojo); font-weight:600;"><?= number_format($estudiantePendiente['deuda'], 2) ?> €</td>
+                    <td>
                         <a href="../pagos/agregarPago.php?idEstudiante=<?= $estudiantePendiente['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
                     </td>
                 </tr>

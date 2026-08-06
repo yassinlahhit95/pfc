@@ -64,7 +64,7 @@ if ($returnVar === 0) {
     $errorMsg = "Exit code: {$returnVar}";
 }
 
-// Log cron execution to database
+// Registra la ejecución del cron en la base de datos
 if ($con) {
     $sql = "INSERT INTO cron_execution_log (job_name, last_run, last_run_status, error_message)
             VALUES ('cron_backup.php', NOW(), ?, ?)

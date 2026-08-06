@@ -14,7 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;
 }
 
-if (!Security::validateCSRFToken()) {
+// TutorGuard ya validó con rotate=false; esta segunda comprobación tampoco debe rotar,
+// o generar el PDF (target="_blank") consumiría el token y rompería un segundo intento
+// de descarga sin recargar expediente.php (mismo fallo que generarHorario.php).
+if (!Security::validateCSRFToken(null, false)) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: $_back"); exit;
 }

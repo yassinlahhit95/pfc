@@ -56,8 +56,12 @@ $csrf = Security::generateCSRFToken();
     <h1>Cambia tu contraseña</h1>
     <p class="sub">Por tu seguridad, establece una contraseña nueva y personal.</p>
 
+    <?php if ($obligatorio): ?>
       <div class="banner">Estás usando una contraseña temporal. Debes cambiarla para continuar.</div>
+    <?php endif; ?>
+    <?php if (!empty($errores)): ?>
       <div class="alert"><?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?></div>
+    <?php endif; ?>
     <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrf) ?>">
 
     <label for="nueva">Nueva contraseña</label>

@@ -36,5 +36,6 @@ noDeploy/
   API_DOCS.md                     ← REST API v1 request/response reference
   CLOUDFLARE_R2_SETUP.md          ← R2 bucket setup walkthrough
   INSTALL_WIZARD_SETUP.md         ← wizard implementation notes
+  VENDOR_SECURITY_ALERT.md        ← tracks unpatched CVEs in composer deps (moved from root — was a stray doc, same category as the others above)
   DO_NOT_UPLOAD.md                ← this file
 ```

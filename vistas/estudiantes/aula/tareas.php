@@ -15,7 +15,7 @@ $idCiclo = $estudianteActual['idCiclo'] ?? 0;
 
 $todasLasTareas = [];
 
-// Get all tasks and check entregas efficiently
+// Obtiene todas las tareas y comprueba las entregas de forma eficiente
 $db = obtenerConexion();
 $sql = "
     SELECT t.*, m.nombreModulo, p.nombreProfesor, ent.idEntrega, ent.nota, k.estado AS kanban_estado
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             col.classList.remove('drag-over');
             const dragged = document.querySelector('.dragging');
             if (dragged) {
-                // If it moved to a different column
+                // Si se movió a otra columna
                 const oldCol = dragged.closest('.kanban-col');
                 if (oldCol !== col) {
                     col.appendChild(dragged);

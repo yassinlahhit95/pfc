@@ -351,7 +351,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 </div>
 
 <?php
-// Build chart data — only modules/retos that have at least one grade recorded
+// Construye los datos de la gráfica — solo módulos/retos con al menos una nota registrada
 $chartLabels   = [];
 $chartNotas    = [];
 $chartColores  = [];
@@ -435,6 +435,7 @@ foreach ($califRetos as $califReto) {
 </script>
 <?php } ?>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
 <script>
 if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   var factor = ((window.TWEAK_DEFAULTS && window.TWEAK_DEFAULTS.animation) || 7) / 10;

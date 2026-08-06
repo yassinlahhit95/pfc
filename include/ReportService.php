@@ -83,7 +83,7 @@ class ReportService {
     public function generateHorario($cfg, $ciclo, $celdas, $franjas, $dias) {
         $this->mpdf->SetTitle('Horario — ' . ($cfg['nombreCentro'] ?? ''));
         $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
-        // Landscape with extra top margin for the 3-row header (accent + logos + info band)
+        // Apaisado con margen superior extra para la cabecera de 3 filas (acento + logos + banda de info)
         $this->mpdf->AddPage('L', '', '', '', '', '', 56, 20, 4, 3);
         ob_start();
         include __DIR__ . '/../templates/pdf/horario.php';

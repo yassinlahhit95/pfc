@@ -88,7 +88,7 @@ if ($method === 'POST') {
             if (!is_dir($dir)) mkdir($dir, 0755, true);
             $foto = uniqid('dev_') . '.jpg';
 
-            // Validate and decode base64 strictly
+            // Valida y decodifica el base64 de forma estricta
             $fotoContenido = base64_decode($fotoBase64, true);
             if ($fotoContenido === false) {
                 v1Error('Foto inválida (formato base64 corrupto).', 400, 'validation');
@@ -131,7 +131,7 @@ if ($method === 'POST') {
             if (!is_dir($dir)) mkdir($dir, 0755, true);
             $foto = uniqid('dev_') . '.jpg';
 
-            // Validate and decode base64 strictly
+            // Valida y decodifica el base64 de forma estricta
             $fotoContenido = base64_decode($fotoBase64, true);
             if ($fotoContenido === false) {
                 v1Error('Foto inválida (formato base64 corrupto).', 400, 'validation');
@@ -148,7 +148,7 @@ if ($method === 'POST') {
             }
         }
 
-        // Update DB FIRST, then delete old photo (race condition fix)
+        // Actualiza la BD PRIMERO y luego elimina la foto antigua (corrige condición de carrera)
         $ok = actualizarArticulo($idArticulo, $nombre, $numeroSerie, $estado, $cantidad, $foto);
         if (!$ok) {
             // Clean up new photo on DB error

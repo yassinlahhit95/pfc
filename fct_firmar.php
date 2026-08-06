@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/modelos/conectar.php";
 require_once __DIR__ . "/include/Security.php";
-session_start();
 $token = trim($_GET['token'] ?? $_POST['token'] ?? '');
 $exito = '';
 $error = '';
@@ -262,6 +261,7 @@ if (empty($token)) {
 
         <h3 class="actividades-titulo">Jornadas pendientes de firma</h3>
         <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                <?php foreach ($diarios as $d): ?>
                 <div class="jornada-item">
                     <div>
                         <span class="jornada-fecha"><?= date('d/m/Y', strtotime($d['fecha'])) ?></span>
@@ -269,6 +269,7 @@ if (empty($token)) {
                     </div>
                     <div class="jornada-desc"><?= nl2br(Security::escapeHtml($d['actividades'])) ?></div>
                 </div>
+                <?php endforeach; ?>
         </div>
 
         <form method="POST" action="fct_firmar.php">

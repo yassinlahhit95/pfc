@@ -450,6 +450,25 @@ button.breadcrumb-item:hover {
   font-size: 12px !important;
 }
 
+/* -- Large gradient CTA (grade-submission forms: evaluarReto, evaluarTFG) -- */
+.boton-degradado {
+  padding: 14px 30px;
+  font-size: 1.1rem;
+  width: 100%;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--violeta));
+  border: none;
+}
+
+/* -- Modal close icon button ("✕") -- */
+.modal-cerrar-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--mut);
+}
+
 /* -- Table inline action buttons (btn-accion) -- */
 .btn-accion {
   padding: 6px 11px;

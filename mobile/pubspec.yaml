@@ -11,28 +11,28 @@ dependencies:
     sdk: flutter
 
   # State management
-  flutter_riverpod: ^2.6.1
+  flutter_riverpod: ^3.4.2
 
   # Networking
   dio: ^5.4.3+1
 
   # Routing
-  go_router: ^14.8.1
+  go_router: ^17.4.0
 
   # Secure token storage (Keystore-backed on Android)
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.3.1
 
   # Light local cache for last-fetched JSON blobs (instant cold-start display)
   shared_preferences: ^2.2.3
 
-  intl: ^0.19.0
+  intl: ^0.20.3
   url_launcher: ^6.3.0
 
   # Inter — the typeface premium SaaS products (Linear, Notion, Vercel,
   # Stripe) actually use; the default platform Roboto/San Francisco fallback
   # is a big part of why an app reads as "generic Material template".
-  google_fonts: ^6.3.3
-  google_sign_in: ^6.3.0
+  google_fonts: ^8.2.1
+  google_sign_in: ^7.2.0
 
   # Native file picker for entrega uploads (PDF/DOCX/TXT). Pinned to 10.x+,
   # not the 8.x line pub resolves to by default — 8.x's Android AAR is built
@@ -50,8 +50,8 @@ dependencies:
   # android/app/google-services.json hasn't been added yet (see
   # NotificationsService) — the manual Firebase-console step is documented
   # in mobile/README.md, not a build-time requirement.
-  firebase_core: ^3.6.0
-  firebase_messaging: ^15.2.10
+  firebase_core: ^4.13.0
+  firebase_messaging: ^16.5.0
   # FCM only auto-displays a tray notification when the app is backgrounded
   # or terminated — with the app foregrounded (the common case while
   # actively using it) nothing appears unless we show one ourselves.

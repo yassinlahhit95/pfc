@@ -4,8 +4,8 @@ require_once __DIR__ . "/estudiantes.php";
 require_once __DIR__ . "/directores.php";
 
 /**
- * Collects all personal data for a student (RGPD Art. 20 – portability).
- * Returns an associative array ready for JSON export.
+ * Recopila todos los datos personales de un estudiante (RGPD Art. 20 – portabilidad).
+ * Devuelve un array asociativo listo para exportar como JSON.
  */
 function exportarDatosEstudiante(int $idEstudiante): array {
     $con = obtenerConexion();
@@ -16,10 +16,10 @@ function exportarDatosEstudiante(int $idEstudiante): array {
     mysqli_stmt_execute($stmt);
     $perfil = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     if (!$perfil) return [];
-    unset($perfil['password']); // never export password hash
+    unset($perfil['password']); // nunca exportar el hash de la contraseña
     $perfil = descifrarFilaEstudiante($perfil);
 
-    // Grades – modules
+    // Notas – módulos
     $stmt = mysqli_prepare($con,
         "SELECT cm.*, m.nombreModulo FROM calificaciones_modulos cm
          JOIN modulos m ON m.idModulo = cm.idModulo
@@ -28,7 +28,7 @@ function exportarDatosEstudiante(int $idEstudiante): array {
     mysqli_stmt_execute($stmt);
     $notasModulos = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 
-    // Grades – retos
+    // Notas – retos
     $stmt = mysqli_prepare($con,
         "SELECT cr.*, r.nombreReto FROM calificaciones_retos cr
          JOIN retos r ON r.idReto = cr.idReto
@@ -37,20 +37,20 @@ function exportarDatosEstudiante(int $idEstudiante): array {
     mysqli_stmt_execute($stmt);
     $notasRetos = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 
-    // Payments
+    // Pagos
     $stmt = mysqli_prepare($con, "SELECT * FROM pagos WHERE idEstudiante = ?");
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $pagos = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 
-    // Messages (sent/received)
+    // Mensajes (enviados/recibidos)
     $stmt = mysqli_prepare($con,
         "SELECT * FROM reclamaciones WHERE idEstudiante = ? ORDER BY fecha ASC");
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $mensajes = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 
-    // Attendance
+    // Asistencias
     $stmt = mysqli_prepare($con,
         "SELECT a.fecha, m.nombreModulo, a.estado, a.observacion, a.fechaRegistro
          FROM asistencias a
@@ -60,7 +60,7 @@ function exportarDatosEstudiante(int $idEstudiante): array {
     mysqli_stmt_execute($stmt);
     $asistencias = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 
-    // Consent log
+    // Registro de consentimientos
     $stmt = mysqli_prepare($con,
         "SELECT tipo, ip, fecha FROM consentimientos WHERE idEstudiante = ? ORDER BY fecha ASC");
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
@@ -81,16 +81,16 @@ function exportarDatosEstudiante(int $idEstudiante): array {
 }
 
 /**
- * Hard-deletes a student and all related data (RGPD Art. 17 – right to erasure).
- * Saves a JSON backup and logs the deletion in rgpd_eliminaciones.
- * Requires the admin's plaintext password for confirmation.
+ * Borra físicamente a un estudiante y todos sus datos relacionados (RGPD Art. 17 – derecho al olvido).
+ * Guarda una copia de seguridad en JSON y registra el borrado en rgpd_eliminaciones.
+ * Requiere la contraseña en claro del admin como confirmación.
  *
  * @return array ['ok' => bool, 'msg' => string]
  */
 function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin, string $adminPassword): array {
     $con = obtenerConexion();
 
-    // Verify admin password
+    // Verificar la contraseña del admin
     $stmt = mysqli_prepare($con, "SELECT password FROM directores WHERE idDirector = ?");
     mysqli_stmt_bind_param($stmt, "i", $idAdmin);
     mysqli_stmt_execute($stmt);
@@ -99,7 +99,7 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
         return ['ok' => false, 'msg' => 'Contraseña de administrador incorrecta.'];
     }
 
-    // Collect backup data
+    // Recopilar los datos de la copia de seguridad
     $backup = exportarDatosEstudiante($idEstudiante);
     if (empty($backup)) {
         return ['ok' => false, 'msg' => 'Estudiante no encontrado.'];
@@ -126,7 +126,7 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
             if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException("delete $tabla");
         }
 
-        // Delete physical TFG file if present (local disk and R2, whichever holds it)
+        // Borrar el fichero físico del TFG si existe (disco local o R2, donde esté)
         if (!empty($backup['perfil']['archivoTFG'])) {
             $tfgPath = __DIR__ . "/../public/uploads/pfc/" . $backup['perfil']['archivoTFG'];
             if (file_exists($tfgPath)) { @unlink($tfgPath); }
@@ -134,12 +134,12 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
             R2Client::deleteObject('pfc/' . $backup['perfil']['archivoTFG']);
         }
 
-        // Delete main student record
+        // Borrar el registro principal del estudiante
         $stmt = mysqli_prepare($con, "DELETE FROM estudiantes WHERE idEstudiante = ?");
         mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
         if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException("delete estudiantes");
 
-        // Record evidence
+        // Dejar constancia de la evidencia
         $ip          = $_SERVER['REMOTE_ADDR'] ?? null;
         $backupJson  = json_encode($backup, JSON_UNESCAPED_UNICODE);
         $stmt = mysqli_prepare($con,
@@ -159,8 +159,8 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
 }
 
 /**
- * Purges log_acciones entries older than $years years (LOPDGDD minimum: 3 years).
- * Returns the number of rows deleted.
+ * Purga las entradas de log_acciones con más de $years años (mínimo LOPDGDD: 3 años).
+ * Devuelve el número de filas borradas.
  */
 function purgarLogsAntiguos(int $years = 3): int {
     $con = obtenerConexion();
@@ -172,7 +172,7 @@ function purgarLogsAntiguos(int $years = 3): int {
 }
 
 /**
- * Returns RGPD deletion log entries (for audit display).
+ * Devuelve las entradas del registro de eliminaciones RGPD (para mostrar en auditoría).
  */
 function listarEliminacionesRGPD(int $limit = 50): array {
     $con = obtenerConexion();

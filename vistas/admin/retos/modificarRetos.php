@@ -156,12 +156,12 @@ function borrarArchivoSmooth(idArchivo, idReto) {
             data: { id: idArchivo, idReto: idReto, ajax: 1, csrf_token: $('[name="csrf_token"]').val() },
             success: function(res) {
                 const data = typeof res === 'string' ? JSON.parse(res) : res;
-                if (data.status === 'success') {
+                if (data.ok) {
                     $item.addClass('removing');
                     setTimeout(() => $item.remove(), 400);
                     if (window.Toast) Toast.show('Archivo eliminado', 'success');
                 } else {
-                    if (window.Toast) Toast.show('Error: ' + data.message, 'error');
+                    if (window.Toast) Toast.show('Error: ' + data.msg, 'error');
                 }
             },
             error: function(jqXHR) {

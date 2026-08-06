@@ -4,50 +4,26 @@
 ?>
 <style>
 /* ══════════════════════════════════════════════════════════════════════
-   DESIGN TOKENS
+   DESIGN TOKENS (reference only — mPDF does not support CSS custom
+   properties/var(), so every value below is hardcoded literally at each
+   use site across _styles.php and the *.php templates instead of a live
+   :root block. Change a value here AND everywhere it's used if a token
+   needs to change; there is no single source of truth to edit.
+
+   Color palette:   --pdf-primary #1e3a6e | --pdf-secondary #64748b |
+                     --pdf-border #e2e8f0 | --pdf-text #1e293b |
+                     --pdf-text-muted #94a3b8 | --pdf-text-light #6b7280 |
+                     --pdf-bg-light #f8fafc | --pdf-bg-lighter #f3f4f6
+   Accent colors:    --pdf-success #10b981 | --pdf-error #ef4444 |
+                     --pdf-warning #fcd34d | --pdf-info #2563eb
+   Spacing (8px base): --pdf-space-0 0 | -1 2px | -2 4px | -3 6px | -4 8px |
+                     -5 10px | -6 12px | -7 14px | -8 16px | -9 18px | -10 20px
+   Typography:       --pdf-font-sans 'Roboto','Helvetica',sans-serif |
+                     --pdf-font-mono monospace | --pdf-text-xs 6.5pt |
+                     --pdf-text-sm 8pt | --pdf-text-base 9pt |
+                     --pdf-text-lg 9.5pt | --pdf-text-xl 10pt |
+                     --pdf-text-2xl 14pt | --pdf-text-3xl 18pt
    ══════════════════════════════════════════════════════════════════════ */
-
-:root {
-  /* Color palette */
-  --pdf-primary: #1e3a6e;
-  --pdf-secondary: #64748b;
-  --pdf-border: #e2e8f0;
-  --pdf-text: #1e293b;
-  --pdf-text-muted: #94a3b8;
-  --pdf-text-light: #6b7280;
-  --pdf-bg-light: #f8fafc;
-  --pdf-bg-lighter: #f3f4f6;
-
-  /* Accent colors */
-  --pdf-success: #10b981;
-  --pdf-error: #ef4444;
-  --pdf-warning: #fcd34d;
-  --pdf-info: #2563eb;
-
-  /* Spacing scale (8px base) */
-  --pdf-space-0: 0;
-  --pdf-space-1: 2px;
-  --pdf-space-2: 4px;
-  --pdf-space-3: 6px;
-  --pdf-space-4: 8px;
-  --pdf-space-5: 10px;
-  --pdf-space-6: 12px;
-  --pdf-space-7: 14px;
-  --pdf-space-8: 16px;
-  --pdf-space-9: 18px;
-  --pdf-space-10: 20px;
-
-  /* Typography */
-  --pdf-font-sans: 'Roboto', 'Helvetica', sans-serif;
-  --pdf-font-mono: monospace;
-  --pdf-text-xs: 6.5pt;
-  --pdf-text-sm: 8pt;
-  --pdf-text-base: 9pt;
-  --pdf-text-lg: 9.5pt;
-  --pdf-text-xl: 10pt;
-  --pdf-text-2xl: 14pt;
-  --pdf-text-3xl: 18pt;
-}
 
 /* ══════════════════════════════════════════════════════════════════════
    RESET & BASE STYLES
@@ -59,9 +35,9 @@
 }
 
 body {
-  font-family: var(--pdf-font-sans);
-  color: var(--pdf-text);
-  font-size: var(--pdf-text-base);
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+  color: #1e293b;
+  font-size: 9pt;
 }
 
 table {
@@ -75,57 +51,57 @@ table {
 
 /* Footer strip (shared across all PDFs) */
 .pdf-footer {
-  border-top: 1px solid var(--pdf-border);
-  padding-top: var(--pdf-space-8);
-  font-size: var(--pdf-text-xs);
-  color: var(--pdf-text-muted);
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
+  font-size: 6.5pt;
+  color: #94a3b8;
   text-align: center;
 }
 
 /* Section titles */
 .pdf-title {
-  font-size: var(--pdf-text-3xl);
-  color: var(--pdf-text);
+  font-size: 18pt;
+  color: #1e293b;
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .pdf-subtitle {
-  font-size: var(--pdf-text-sm);
-  color: var(--pdf-text-muted);
-  margin-top: var(--pdf-space-2);
+  font-size: 8pt;
+  color: #94a3b8;
+  margin-top: 4px;
 }
 
 /* Labels (field names) */
 .pdf-label {
-  font-size: var(--pdf-text-xs);
-  color: var(--pdf-text-muted);
+  font-size: 6.5pt;
+  color: #94a3b8;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.04em;
-  margin-bottom: var(--pdf-space-1);
+  margin-bottom: 2px;
 }
 
 /* Values (field content) */
 .pdf-value {
-  font-size: var(--pdf-text-base);
-  color: var(--pdf-text);
+  font-size: 9pt;
+  color: #1e293b;
   font-weight: 500;
 }
 
 .pdf-value-small {
-  font-size: var(--pdf-text-sm);
-  color: var(--pdf-text);
+  font-size: 8pt;
+  color: #1e293b;
   font-weight: 500;
 }
 
 /* Status badges */
 .pdf-badge {
   display: inline-block;
-  padding: var(--pdf-space-2) var(--pdf-space-4);
+  padding: 4px 8px;
   border-radius: 20px;
-  font-size: var(--pdf-text-xs);
+  font-size: 6.5pt;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -146,7 +122,7 @@ table {
 }
 
 .pdf-badge.pending {
-  background: var(--pdf-bg-light);
+  background: #f8fafc;
   color: #475569;
 }
 
@@ -154,13 +130,13 @@ table {
 .pdf-summary-bar {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: var(--pdf-space-8);
+  margin-bottom: 16px;
 }
 
 .pdf-summary-bar td {
-  padding: var(--pdf-space-6);
-  background: var(--pdf-bg-light);
-  border: 1px solid var(--pdf-border);
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   vertical-align: middle;
 }
 
@@ -168,35 +144,35 @@ table {
 .pdf-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: var(--pdf-space-5);
+  margin-top: 10px;
 }
 
 .pdf-table th {
-  background: var(--pdf-primary);
+  background: #1e3a6e;
   color: #ffffff;
-  padding: var(--pdf-space-4) var(--pdf-space-3);
-  font-size: var(--pdf-text-sm);
+  padding: 8px 6px;
+  font-size: 8pt;
   text-align: left;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.04em;
-  border-bottom: 2px solid var(--pdf-primary);
+  border-bottom: 2px solid #1e3a6e;
 }
 
 .pdf-table td {
-  padding: var(--pdf-space-4);
-  border-bottom: 1px solid var(--pdf-border);
-  font-size: var(--pdf-text-base);
+  padding: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 9pt;
   vertical-align: middle;
 }
 
 .pdf-table tr:nth-child(even) {
-  background: var(--pdf-bg-light);
+  background: #f8fafc;
 }
 
 /* Alternating row colors (explicit for PDFs) */
 .pdf-row-even {
-  background: var(--pdf-bg-light);
+  background: #f8fafc;
 }
 
 .pdf-row-odd {
@@ -205,48 +181,48 @@ table {
 
 /* Header row */
 .pdf-table-header {
-  background: var(--pdf-primary);
+  background: #1e3a6e;
   color: #ffffff;
 }
 
 .pdf-table-header td {
-  padding: var(--pdf-space-4) var(--pdf-space-3);
-  font-size: var(--pdf-text-sm);
+  padding: 8px 6px;
+  font-size: 8pt;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.04em;
-  border-bottom: 2px solid var(--pdf-primary);
+  border-bottom: 2px solid #1e3a6e;
 }
 
 /* Section header row */
 .pdf-section-header td {
-  background: var(--pdf-primary);
+  background: #1e3a6e;
   color: #ffffff;
-  padding: var(--pdf-space-4) var(--pdf-space-5);
-  font-size: var(--pdf-text-base);
+  padding: 8px 10px;
+  font-size: 9pt;
   font-weight: 700;
 }
 
 /* Signature area */
 .pdf-signature-area {
-  margin-top: var(--pdf-space-10);
+  margin-top: 20px;
   width: 100%;
 }
 
 .pdf-signature-box {
-  border-top: 1px solid var(--pdf-text-muted);
-  padding-top: var(--pdf-space-5);
+  border-top: 1px solid #94a3b8;
+  padding-top: 10px;
   text-align: center;
-  font-size: var(--pdf-text-base);
+  font-size: 9pt;
 }
 
 /* Legal/footer text */
 .pdf-legal {
-  margin-top: var(--pdf-space-8);
-  padding-top: var(--pdf-space-5);
-  border-top: 1px solid var(--pdf-border);
-  font-size: var(--pdf-text-xs);
-  color: var(--pdf-text-muted);
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 6.5pt;
+  color: #94a3b8;
   text-align: center;
 }
 
@@ -260,37 +236,37 @@ table {
   text-align: center;
   font-weight: 700;
   color: #ffffff;
-  font-size: var(--pdf-text-base);
+  font-size: 9pt;
 }
 
 .pdf-grade-circle.aprobado {
-  background: var(--pdf-success);
+  background: #10b981;
 }
 
 .pdf-grade-circle.suspenso {
-  background: var(--pdf-error);
+  background: #ef4444;
 }
 
 .pdf-grade-circle.vacio {
-  color: var(--pdf-text-muted);
+  color: #94a3b8;
 }
 
 .pdf-grade-circle.especial {
-  background: var(--pdf-secondary);
-  font-size: var(--pdf-text-xs);
+  background: #64748b;
+  font-size: 6.5pt;
   width: 34px;
 }
 
 /* Break/recreation row */
 .pdf-break-row {
-  background: var(--pdf-bg-light);
+  background: #f8fafc;
 }
 
 .pdf-break-row td {
-  padding: var(--pdf-space-5);
+  padding: 10px;
   text-align: center;
   font-weight: 500;
-  color: var(--pdf-text);
-  font-size: var(--pdf-text-base);
+  color: #1e293b;
+  font-size: 9pt;
 }
 </style>

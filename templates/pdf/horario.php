@@ -60,13 +60,13 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    margin-top: var(--pdf-space-2);
+    margin-top: 4px;
 }
 .pdf-schedule thead th {
     background: #0f172a;
     color: #e2e8f0;
-    padding: var(--pdf-space-3) var(--pdf-space-2);
-    font-size: var(--pdf-text-sm);
+    padding: 6px 4px;
+    font-size: 8pt;
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
@@ -77,24 +77,24 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
     width: 56px;
 }
 .pdf-schedule tbody td {
-    border: 1px solid var(--pdf-border);
-    padding: var(--pdf-space-1);
+    border: 1px solid #e2e8f0;
+    padding: 2px;
     height: 50px;
     vertical-align: middle;
     text-align: center;
-    font-size: var(--pdf-text-xs);
+    font-size: 6.5pt;
     background: #ffffff;
 }
 
 /* Time column */
 .pdf-time-cell {
-    background: var(--pdf-bg-light);
+    background: #f8fafc;
     border-right: 2px solid #cbd5e1 !important;
     vertical-align: middle;
     text-align: center;
 }
-.pdf-time-start { font-size: var(--pdf-text-sm); font-weight: bold; color: var(--pdf-text); }
-.pdf-time-end   { font-size: 6pt; color: var(--pdf-text-muted); margin-top: var(--pdf-space-1); }
+.pdf-time-start { font-size: 8pt; font-weight: bold; color: #1e293b; }
+.pdf-time-end   { font-size: 6pt; color: #94a3b8; margin-top: 2px; }
 
 /* Break row */
 .pdf-break-row td { height: 26px !important; }
@@ -102,7 +102,7 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
     background: #fefce8;
     color: #a16207;
     font-weight: bold;
-    font-size: var(--pdf-text-base);
+    font-size: 9pt;
 }
 
 /* Module cell */
@@ -134,24 +134,24 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
 
 /* Legend section */
 .pdf-legend-title {
-    font-size: var(--pdf-text-base);
+    font-size: 9pt;
     font-weight: bold;
-    color: var(--pdf-primary);
-    margin-top: var(--pdf-space-9);
-    margin-bottom: var(--pdf-space-5);
+    color: #1e3a6e;
+    margin-top: 18px;
+    margin-bottom: 10px;
     text-transform: uppercase;
 }
 .pdf-legend-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: var(--pdf-text-xs);
+    font-size: 6.5pt;
 }
 .pdf-legend-dot {
     display: inline-block;
     width: 12px;
     height: 12px;
     border-radius: 2px;
-    margin-right: var(--pdf-space-2);
+    margin-right: 4px;
     vertical-align: middle;
 }
 </style>
@@ -160,34 +160,34 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
     <!-- Accent strip -->
     <table style="width:100%; border-collapse:collapse; margin-bottom:0;">
         <tr>
-            <td style="background:var(--pdf-primary); height:7px; font-size:1pt; padding:0; line-height:1;"></td>
+            <td style="background:#1e3a6e; height:7px; font-size:1pt; padding:0; line-height:1;"></td>
         </tr>
     </table>
 
     <!-- Logos + Center identity -->
-    <table style="width:100%; border-collapse:collapse; padding:var(--pdf-space-3) 0;">
+    <table style="width:100%; border-collapse:collapse; padding:6px 0;">
         <tr>
-            <td style="width:14%; vertical-align:middle; padding:0 var(--pdf-space-3) 0 0; text-align:left;">
+            <td style="width:14%; vertical-align:middle; padding:0 6px 0 0; text-align:left;">
                 <?php if ($_logo1): ?>
                 <img src="<?= $_logo1 ?>" alt="Logotipo del gobierno" style="max-height:42px; max-width:88px;">
                 <?php endif; ?>
             </td>
-            <td style="vertical-align:middle; text-align:center; padding:0 var(--pdf-space-4);">
-                <div style="font-size:var(--pdf-text-2xl); font-weight:bold; color:var(--pdf-primary); letter-spacing:0.02em; line-height:1.2;">
+            <td style="vertical-align:middle; text-align:center; padding:0 8px;">
+                <div style="font-size:14pt; font-weight:bold; color:#1e3a6e; letter-spacing:0.02em; line-height:1.2;">
                     <?= pdfAssertField($cfg['nombreCentro'] ?? null, 'cfg.nombreCentro') ?>
                 </div>
                 <?php if ($_centroDireccion): ?>
-                <div style="font-size:var(--pdf-text-sm); color:var(--pdf-text-light); margin-top:var(--pdf-space-1);">
+                <div style="font-size:8pt; color:#6b7280; margin-top:2px;">
                     <?= htmlspecialchars($_centroDireccion, ENT_QUOTES, 'UTF-8') ?>
                 </div>
                 <?php endif; ?>
                 <?php if ($_contactoStr): ?>
-                <div style="font-size:var(--pdf-text-xs); color:var(--pdf-text-muted); margin-top:var(--pdf-space-1);">
+                <div style="font-size:6.5pt; color:#94a3b8; margin-top:2px;">
                     <?= htmlspecialchars($_contactoStr, ENT_QUOTES, 'UTF-8') ?>
                 </div>
                 <?php endif; ?>
             </td>
-            <td style="width:14%; vertical-align:middle; padding:0 0 0 var(--pdf-space-3); text-align:right;">
+            <td style="width:14%; vertical-align:middle; padding:0 0 0 6px; text-align:right;">
                 <?php if ($_logo2): ?>
                 <img src="<?= $_logo2 ?>" alt="Logotipo del centro" style="max-height:42px; max-width:88px;">
                 <?php endif; ?>
@@ -196,25 +196,25 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
     </table>
 
     <!-- Info band -->
-    <table style="width:100%; border-collapse:collapse; background:var(--pdf-primary); border-radius:4px;">
+    <table style="width:100%; border-collapse:collapse; background:#1e3a6e; border-radius:4px;">
         <tr>
-            <td style="padding:var(--pdf-space-4) var(--pdf-space-6); vertical-align:middle;">
-                <span style="font-size:var(--pdf-text-xs); color:#93c5fd; font-weight:bold; letter-spacing:0.09em; text-transform:uppercase;">Cuadro Horario Semanal</span>
-                <span style="color:#e2e8f0; font-size:var(--pdf-text-base); font-weight:bold; margin-left:var(--pdf-space-4);">
+            <td style="padding:8px 12px; vertical-align:middle;">
+                <span style="font-size:6.5pt; color:#93c5fd; font-weight:bold; letter-spacing:0.09em; text-transform:uppercase;">Cuadro Horario Semanal</span>
+                <span style="color:#e2e8f0; font-size:9pt; font-weight:bold; margin-left:8px;">
                     <?= pdfAssertField($ciclo['nombreCiclo'] ?? null, 'ciclo.nombreCiclo') ?>
                 </span>
-                <span style="background:#ffffff22; border-radius:3px; padding:var(--pdf-space-1) var(--pdf-space-3); font-size:var(--pdf-text-xs); color:#bfdbfe; font-weight:bold; margin-left:var(--pdf-space-3);">
+                <span style="background:#ffffff22; border-radius:3px; padding:2px 6px; font-size:6.5pt; color:#bfdbfe; font-weight:bold; margin-left:6px;">
                     <?= pdfAssertField($ciclo['abreviaturaCiclo'] ?? null, 'ciclo.abreviaturaCiclo') ?>
                 </span>
                 <?php if (!empty($cfg['codigoCentro'])): ?>
-                <span style="color:var(--pdf-text-light); font-size:var(--pdf-text-xs); margin-left:var(--pdf-space-5);">
+                <span style="color:#6b7280; font-size:6.5pt; margin-left:10px;">
                     Código: <?= pdfAssertField($cfg['codigoCentro'] ?? null, 'cfg.codigoCentro') ?>
                 </span>
                 <?php endif; ?>
             </td>
-            <td style="text-align:right; padding:var(--pdf-space-4) var(--pdf-space-6); white-space:nowrap; width:1%; vertical-align:middle;">
-                <span style="color:#93c5fd; font-size:var(--pdf-text-xs); font-weight:bold;">Curso <?= pdfAssertField($cfg['cursoEscolar'] ?? null, 'cfg.cursoEscolar') ?></span>
-                <span style="color:#4b6080; font-size:var(--pdf-text-xs); margin-left:var(--pdf-space-4);"><?= date('d/m/Y') ?></span>
+            <td style="text-align:right; padding:8px 12px; white-space:nowrap; width:1%; vertical-align:middle;">
+                <span style="color:#93c5fd; font-size:6.5pt; font-weight:bold;">Curso <?= pdfAssertField($cfg['cursoEscolar'] ?? null, 'cfg.cursoEscolar') ?></span>
+                <span style="color:#4b6080; font-size:6.5pt; margin-left:8px;"><?= date('d/m/Y') ?></span>
             </td>
         </tr>
     </table>
@@ -296,7 +296,7 @@ $_contactoStr = implode('  ·  ', $_centroContacto);
     <?php foreach ($_legendRows as $_fila): ?>
     <tr>
         <?php foreach ($_fila as $_id): ?>
-        <td style="padding:var(--pdf-space-2) var(--pdf-space-3) var(--pdf-space-2) 0; width:25%; vertical-align:middle;">
+        <td style="padding:4px 6px 4px 0; width:25%; vertical-align:middle;">
             <span class="pdf-legend-dot" style="background:<?= htmlspecialchars($_colorMap[$_id], ENT_QUOTES, 'UTF-8') ?>;"></span>
             <span><?= pdfAssertField($_modulosEnHorario[$_id] ?? null, 'modulo.nombre') ?></span>
         </td>

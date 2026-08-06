@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($idGrupo > 0) {
-        // Update
+        // Actualizar
         if (actualizarGrupo($idGrupo, $nombreGrupo, $idCiclo, $anioEstudio)) {
             $_SESSION['exito'] = 'Grupo actualizado con éxito.';
         } else {

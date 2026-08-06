@@ -84,12 +84,15 @@ final teachersRepositoryProvider = Provider<TeachersRepository>(
   (ref) => TeachersRepository(ref.read(apiClientProvider)),
 );
 
-class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<
-    ({List<Teacher> teachers, int total}), String?> {
+class TeachersNotifier
+    extends AsyncNotifier<({List<Teacher> teachers, int total})> {
+  TeachersNotifier(this.arg);
+  final String? arg;
+
   bool _isLoadingMore = false;
 
   @override
-  Future<({List<Teacher> teachers, int total})> build(String? arg) async {
+  Future<({List<Teacher> teachers, int total})> build() async {
     ref.cacheFor(const Duration(minutes: 5));
     return ref.read(teachersRepositoryProvider).fetchTeachers(
           limit: 20,
@@ -100,7 +103,7 @@ class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<
 
   Future<void> loadMore() async {
     if (_isLoadingMore) return;
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
     if (current.teachers.length >= current.total) return;
 
@@ -123,5 +126,5 @@ class TeachersNotifier extends AutoDisposeFamilyAsyncNotifier<
 
 final teachersProvider = AsyncNotifierProvider.autoDispose
     .family<TeachersNotifier, ({List<Teacher> teachers, int total}), String?>(
-  () => TeachersNotifier(),
+  TeachersNotifier.new,
 );

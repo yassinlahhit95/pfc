@@ -28,12 +28,12 @@ if ($method === 'GET') {
         ]);
     }
 } elseif ($method === 'POST') {
-    // Validate action is provided
+    // Valida que se proporciona la acción
     if (empty($action)) {
         v1Error('Acción no especificada.', 400, 'validation');
     }
 
-    // Validate action is supported
+    // Valida que la acción está soportada
     $validActions = ['create'];
     if (!in_array($action, $validActions, true)) {
         v1Error('Acción inválida: ' . Security::escapeHtml($action), 400, 'validation');

@@ -141,10 +141,11 @@ final class R2Client {
         return ltrim($key, '/');
     }
 
-    // APCu is a single shared memory space per PHP-FPM pool — if two tenants ever share
-    // a pool, unprefixed keys leak one tenant's storage quota/usage into another's
-    // enforcement. Suffix every SaaS-sync cache key with the same tenant prefix R2 object
-    // keys already use.
+    // APCu es un único espacio de memoria compartida por pool de PHP-FPM — si dos
+    // tenants llegan a compartir pool, las claves sin prefijo filtran la cuota/uso
+    // de almacenamiento de un tenant hacia la aplicación de límites de otro. Se añade
+    // a cada clave de caché de sincronización SaaS el mismo prefijo de tenant que ya
+    // usan las claves de objeto de R2.
     private static function tenantCacheKey(string $key): string {
         return $key . ':' . Config::getInstance()->get('R2_TENANT_PREFIX', 'default');
     }

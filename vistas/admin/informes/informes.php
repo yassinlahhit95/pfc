@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . '/../../../include/AssetMin.php';
 FeatureGuard::requirePage('feature_informes');
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -17,7 +18,7 @@ $seccion = 'informes';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
-<link rel="stylesheet" href="../../../public/css/features/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/informes.css') ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/informes.css') ?>">
 
 <div class="cabecera">
     <div>

@@ -144,9 +144,9 @@ if (toggleEl) {
         })
         .then(function(r) { return r.json(); })
         .then(function(data) {
-            if (data.status !== 'success') {
+            if (!data.ok) {
                 toggle.checked = !toggle.checked;
-                Toast.show(data.message || 'No se pudo actualizar la configuración.', 'error');
+                Toast.show(data.msg || 'No se pudo actualizar la configuración.', 'error');
             } else {
                 var desc = toggle.closest('.feature-card').querySelector('.feature-desc');
                 desc.textContent = toggle.checked

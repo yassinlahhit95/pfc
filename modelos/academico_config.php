@@ -127,7 +127,7 @@ function crearConfigAcademicaVacia(string $nombre, string $tipoEducacion, ?strin
         mysqli_stmt_execute($stmt);
         $idConfig = (int)mysqli_insert_id($con);
 
-        // Create default config tables with prepared statements
+        // Crea las tablas de configuración por defecto con sentencias preparadas
         foreach (['grading_policies', 'promotion_rules', 'internship_config', 'tfg_config', 'challenge_config'] as $table) {
             $stmt = mysqli_prepare($con, "INSERT INTO $table (idConfig) VALUES (?)");
             mysqli_stmt_bind_param($stmt, "i", $idConfig);
@@ -136,7 +136,7 @@ function crearConfigAcademicaVacia(string $nombre, string $tipoEducacion, ?strin
             }
         }
 
-        // Create default assessment types
+        // Crea los tipos de evaluación por defecto
         $stmt = mysqli_prepare($con, "INSERT INTO assessment_types (idConfig, nombre, peso, obligatorio, origen, orden) VALUES (?, ?, ?, ?, ?, ?)");
         $types = [
             [$idConfig, 'Examen', 3.00, 1, 'examen', 1],

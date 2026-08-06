@@ -83,7 +83,7 @@ function obtenerAccessToken() {
 function enviarNotificacionFirebase($token, $titulo, $mensaje, string $tipo = 'chat_message', array $extra = []) {
     if (empty($token)) return false;
 
-    // Circuit breaker: don't hammer FCM/Google OAuth when they're returning errors.
+    // Circuit breaker: no machacar FCM/Google OAuth cuando están devolviendo errores.
     if (CircuitBreaker::isOpen('fcm')) {
         error_log("FCM circuit OPEN — push skipped for token " . substr($token, 0, 20));
         return false;
@@ -102,8 +102,8 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje, string $tipo = 'c
 
     $urlLogo = "https://yassin.agency/public/imagenes/aulapro.png";
 
-    // FCM's `data` payload only accepts string values — cast every $extra
-    // entry (may carry ints like idModulo/idTarea) before merging.
+    // El payload `data` de FCM solo acepta valores string — convertir cada
+    // entrada de $extra (puede llevar enteros como idModulo/idTarea) antes de fusionarlas.
     $dataPayload = array_merge(
         ['title' => $titulo, 'body' => $mensaje, 'type' => $tipo],
         array_map('strval', $extra)

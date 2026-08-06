@@ -19,10 +19,10 @@
   let pollTimer     = null;
   let pollInterval  = 3000;
   let contactTimer  = null;
-  // Ids already rendered in #cw-messages for the open conversation — lets
-  // the initial history fetch and an optimistically-appended just-sent
-  // message race safely instead of one wiping the other out (see appendMsg
-  // and renderMessages).
+  // Ids ya renderizados en #cw-messages para la conversación abierta — permite
+  // que la carga inicial del historial y un mensaje añadido de forma optimista
+  // (recién enviado) compitan de forma segura, en vez de que uno borre al otro
+  // (ver appendMsg y renderMessages).
   let renderedMsgIds = new Set();
 
   /* ── Helpers ─────────────────────────────────────────────────────────────── */
@@ -119,7 +119,7 @@
     const overlay = $('cw-overlay');
     if (overlay) overlay.hidden = true;
     $('cw-fab')?.classList.remove('open');
-    // We intentionally don't stop poll here, we just change interval/endpoint in fetchNew
+    // A propósito no se detiene el sondeo aquí, solo se cambia el intervalo/endpoint en fetchNew
   }
 
   /* ── Panels ──────────────────────────────────────────────────────────────── */
@@ -190,7 +190,7 @@
     lastDateLabel  = '';
     renderedMsgIds = new Set();
 
-    // Update header
+    // Actualizar la cabecera
     const avaEl = $('cw-conv-ava');
     if (avaEl) { avaEl.className = avaClass(rol); avaEl.textContent = avaInit(name); }
     const nameEl = $('cw-conv-name');
@@ -221,10 +221,10 @@
   function renderMessages(messages, initial) {
     const box = $('cw-messages');
     if (!box) return;
-    // Only safe to wipe the box when nothing real has been rendered yet —
-    // if a message was already optimistically appended (fast send racing
-    // this fetch), clearing here would erase it even though it's already
-    // saved; just merge instead (appendMsg dedupes by id).
+    // Solo es seguro vaciar la caja cuando todavía no se ha renderizado nada
+    // real — si ya se añadió un mensaje de forma optimista (un envío rápido
+    // que compite con este fetch), vaciar aquí lo borraría aunque ya esté
+    // guardado; en vez de eso, simplemente se fusiona (appendMsg deduplica por id).
     if (initial && renderedMsgIds.size === 0) { box.innerHTML = ''; lastDateLabel = ''; }
     messages.forEach(msg => appendMsg(msg));
     if (messages.length) {
@@ -237,11 +237,11 @@
     const box = $('cw-messages');
     if (!box) return;
     const msgId = parseInt(msg.id || 0);
-    if (msgId && renderedMsgIds.has(msgId)) return; // already shown (race with initial history fetch)
+    if (msgId && renderedMsgIds.has(msgId)) return; // ya se mostró (compite con la carga inicial del historial)
     if (msgId) renderedMsgIds.add(msgId);
-    // Whichever of the optimistic send / initial history fetch lands first
-    // clears the "Cargando…" placeholder — renderMessages() no longer does
-    // this unconditionally (see there), so it has to happen here instead.
+    // El primero que llegue, ya sea el envío optimista o la carga inicial del
+    // historial, quita el placeholder "Cargando…" — renderMessages() ya no lo
+    // hace de forma incondicional (ver ahí), así que tiene que pasar aquí.
     box.querySelector('.cw-loading')?.remove();
     const isMe = (msg.emisor_rol === myRol && parseInt(msg.emisor_id) === myId);
 
@@ -326,14 +326,14 @@
           schedulePoll();
         });
     } else {
-      // Poll conversation list to update badges and list view dynamically
+      // Sondear la lista de conversaciones para actualizar badges y la vista de lista dinámicamente
       const url = resolveUrl(BASE + 'controladores/chat/conversaciones.php');
       fetch(url, { credentials: 'same-origin' })
         .then(r => r.json())
         .then(data => {
           if (data.ok) {
             if (isOpen && currentView === 'list') {
-              // Instead of showing a loading state, silently render list
+              // En vez de mostrar un estado de carga, renderizar la lista en silencio
               renderConversations(data.convs);
             }
             let unread = 0;
@@ -346,7 +346,7 @@
             }
             updateBadge(unread);
             
-            // Also update the sidebar badge if it exists
+            // Actualizar también el badge de la barra lateral si existe
             const navBadge = document.querySelector('.nav-item[href*="chat"] .nav-badge-alert');
             if (navBadge) {
                if (unread > 0) { navBadge.textContent = unread; navBadge.style.display = ''; }
@@ -546,14 +546,15 @@
       window.visualViewport.addEventListener('scroll', adjustForKeyboard);
     }
 
-    // Close on outside click (desktop) or overlay tap (mobile).
-    // Uses composedPath() (the ancestor chain captured at dispatch time),
-    // not e.target.closest() — several click handlers in this widget
-    // (startConversation, openConversation) synchronously replace the
-    // clicked row's parent via innerHTML before this listener runs, which
-    // detaches the row from the DOM. closest() on a detached node can never
-    // reach #cw, so it always looked like an "outside" click and closed the
-    // widget the instant a contact/conversation was picked.
+    // Cerrar al hacer clic fuera (escritorio) o toque en el overlay (móvil).
+    // Usa composedPath() (la cadena de ancestros capturada en el momento del
+    // evento), no e.target.closest() — varios handlers de clic de este widget
+    // (startConversation, openConversation) reemplazan de forma síncrona el
+    // padre de la fila pulsada vía innerHTML antes de que se ejecute este
+    // listener, lo que desconecta la fila del DOM. closest() sobre un nodo
+    // desconectado nunca puede llegar a #cw, así que siempre parecía un clic
+    // "fuera" y cerraba el widget en el instante en que se elegía un
+    // contacto/conversación.
     document.addEventListener('click', e => {
       if (!isOpen) return;
       const cw = $('cw');

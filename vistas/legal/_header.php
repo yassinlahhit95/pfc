@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 Security::initSession();
-require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/configuracion.php';
 require_once __DIR__ . '/../../include/FeatureGuard.php';
 require_once __DIR__ . '/../../include/AssetMin.php';
@@ -26,6 +25,7 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= AssetMin::urlAbs(__DIR__ . '/../..', '/public/css/features/legal.css') ?>">
+    <?php foreach (($extra_css ?? []) as $_css):
         // Cada entrada puede ser una URL simple (recurso propio) o
         // ['url' => ..., 'integrity' => ...] para un CDN externo (SRI).
         $_cssUrl  = is_array($_css) ? ($_css['url'] ?? '') : $_css;
@@ -33,6 +33,7 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
         if ($_cssUrl === '') continue;
     ?>
     <link rel="stylesheet" href="<?= htmlspecialchars($_cssUrl) ?>"<?= $_cssIntg ? ' integrity="' . htmlspecialchars($_cssIntg) . '" crossorigin="anonymous"' : '' ?>>
+    <?php endforeach; ?>
 </head>
 <body>
 

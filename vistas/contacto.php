@@ -9,6 +9,7 @@ require_once __DIR__ . '/../include/landing/plantillas.php';
 // PÁGINA DE CONTACTO SEPARADA
 // ══════════════════════════════════════════════════════════════════════
 $cfg = obtenerConfiguracionCentro();
+$preview = false;
 
 // Si la landing está desactivada, mostramos fallback
 if (!FeatureGuard::check('feature_landing')) {
@@ -17,7 +18,7 @@ if (!FeatureGuard::check('feature_landing')) {
 }
 
 $landing = obtenerLandingConfig();
-$tema    = $landing['plantilla_pub'] ?: 'institucional';
+$tema    = in_array($landing['plantilla_pub'], landing_plantillas_slugs(), true) ? $landing['plantilla_pub'] : 'institucional';
 $ajustes = json_decode($landing['ajustes_pub'] ?? '', true) ?: [];
 
 // Construir el menú de navegación basado en la configuración guardada

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/AssetMin.php';
 require_once __DIR__ . '/../../../modelos/academico_config.php';
 require_once __DIR__ . '/../../../modelos/plantillas_academicas.php';
 require_once __DIR__ . '/../../../modelos/ciclos.php';
@@ -33,7 +34,7 @@ $seccion = 'configuracion_academica';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
-<link rel="stylesheet" href="../../../public/css/features/academico-wizard.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/academico-wizard.css') ?>">
+<link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/academico-wizard.css') ?>">
 
 <div class="cabecera">
   <div>

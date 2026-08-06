@@ -32,7 +32,7 @@ $fecha       = $_POST['fecha'] ?? '';
 $tipoJust    = $_POST['tipoJustificante'] ?? 'otro';
 $numRef      = trim($_POST['numeroReferencia'] ?? '');
 $observ      = trim($_POST['observaciones'] ?? '');
-// Path for justificantes (ensure defined for later cleanup)
+// Ruta de los justificantes (definida aquí para poder limpiarla después)
 $directorio  = __DIR__ . "/../../../public/uploads/justificantes/";
 $archivosAntiguos = null;
 

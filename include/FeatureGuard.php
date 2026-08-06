@@ -14,10 +14,10 @@ class FeatureGuard
     private const SESSION_TS   = '_fg_ts';
     private const SESSION_DATA = '_fg_data';
 
-    // APCu is one shared memory space per PHP-FPM pool. 'aulapro_fg' alone is only
-    // unique per instance if every tenant gets its own pool — suffix with the same
-    // R2_TENANT_PREFIX used elsewhere so two tenants sharing a pool can't leak
-    // each other's feature-flag config.
+    // APCu es un único espacio de memoria compartida por pool de PHP-FPM. 'aulapro_fg'
+    // a secas solo es único por instancia si cada tenant tiene su propio pool — se le
+    // añade el mismo sufijo R2_TENANT_PREFIX usado en otros sitios para que dos
+    // tenants que compartan pool no se filtren la configuración de feature flags entre sí.
     private static function apcuKey(): string {
         return 'aulapro_fg:' . Config::getInstance()->get('R2_TENANT_PREFIX', 'default');
     }
@@ -30,16 +30,16 @@ class FeatureGuard
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        // L1: APCu shared memory — 60 s TTL, visible to all PHP-FPM workers.
-        // When admin saves config, clearCache() deletes this key so the very
-        // next request from any user re-reads from DB and repopulates APCu.
+        // L1: memoria compartida APCu — TTL de 60 s, visible para todos los workers de PHP-FPM.
+        // Cuando el admin guarda la configuración, clearCache() borra esta clave para que la
+        // siguiente petición de cualquier usuario relea de la BD y repueble APCu.
         if (function_exists('apcu_fetch')) {
             $found = false;
             $cached = apcu_fetch(self::apcuKey(), $found);
             if ($found && is_array($cached)) return $cached;
         }
 
-        // L2: Per-user session cache — 5 s TTL, used when APCu is unavailable.
+        // L2: caché de sesión por usuario — TTL de 5 s, usada cuando APCu no está disponible.
         if (
             isset($_SESSION[self::SESSION_TS], $_SESSION[self::SESSION_DATA]) &&
             $_SESSION[self::SESSION_TS] > time() - self::TTL
@@ -50,14 +50,14 @@ class FeatureGuard
         require_once __DIR__ . '/../modelos/conectar.php';
         $con = obtenerConexion();
 
-        // SELECT * avoids breaking when optional columns (added by migrations) don't exist yet.
+        // SELECT * evita romperse cuando columnas opcionales (añadidas por migraciones) todavía no existen.
         $res = mysqli_query($con,
             'SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1');
         $row = ($res ? mysqli_fetch_assoc($res) : null) ?? [];
 
         $data = self::resolve($row);
 
-        // Write to both caches so the next request is served from APCu when available.
+        // Escribir en ambas cachés para que la siguiente petición se sirva desde APCu cuando esté disponible.
         if (function_exists('apcu_store')) {
             apcu_store(self::apcuKey(), $data, self::APCU_TTL);
         }
@@ -266,7 +266,7 @@ class FeatureGuard
 
     public static function clearCache(): void
     {
-        // Clear APCu first — this immediately invalidates the cache for all workers.
+        // Borrar APCu primero — invalida la caché de inmediato para todos los workers.
         if (function_exists('apcu_delete')) {
             apcu_delete(self::apcuKey());
         }

@@ -528,7 +528,7 @@ $csrfToken = Security::generateCSRFToken();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create moving floating particle constellation
+    // Crea la constelación de partículas flotantes en movimiento
     const count = 100;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);

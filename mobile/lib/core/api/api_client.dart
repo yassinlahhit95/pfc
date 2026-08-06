@@ -25,7 +25,7 @@ class ApiClient {
         )) {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final session = _ref.read(sessionControllerProvider).valueOrNull;
+        final session = _ref.read(sessionControllerProvider).value;
         // Validate session is not expired before attaching token
         if (session != null && !session.isExpired) {
           options.headers['Authorization'] = 'Bearer ${session.token}';

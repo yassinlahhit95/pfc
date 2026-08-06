@@ -47,7 +47,7 @@ if (isset($_POST['actualizarArticulo'])) {
             $foto = uniqid('dev_') . '.jpg';
             move_uploaded_file($_FILES['foto']['tmp_name'], $dir . $foto);
             
-            // Delete old photo if it exists
+            // Elimina la foto antigua si existe
             if ($fotoActual && file_exists($dir . $fotoActual)) {
                 @unlink($dir . $fotoActual);
             }

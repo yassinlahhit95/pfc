@@ -344,6 +344,26 @@ input[type="file"].file-input { display: none; }
 }
 .btn-secondary-asistente:hover { background: var(--adm-border); color: var(--adm-text); }
 
+/* ── Nivel filter tabs (Grado Medio / Superior) ── */
+.nivel-filter-tabs { display: flex; gap: 8px; }
+.nivel-filter-tabs button {
+    flex: 1;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1.5px solid var(--adm-border);
+    background: var(--adm-surface);
+    color: var(--adm-muted);
+    cursor: pointer;
+    transition: all .2s;
+}
+.nivel-filter-tabs button.active-tab {
+    border-color: var(--adm-primary);
+    background: var(--adm-primary);
+    color: #fff;
+}
+
 /* ── Responsive ── */
 @media (width <= 640px) {
     .admisiones-main { padding: 24px 16px 60px; }

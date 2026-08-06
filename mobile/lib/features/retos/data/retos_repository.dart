@@ -71,7 +71,7 @@ class RetosRepository {
 }
 
 final retosRepositoryProvider = Provider<RetosRepository>((ref) {
-  final token = ref.watch(sessionControllerProvider).valueOrNull?.token;
+  final token = ref.watch(sessionControllerProvider).value?.token;
   return RetosRepository(ref.read(apiClientProvider), token);
 });
 

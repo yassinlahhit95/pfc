@@ -198,7 +198,7 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
     try {
-        // If tipoFormacion not provided, keep existing value
+        // Si no se indica tipoFormacion, se mantiene el valor existente
         if ($tipoFormacion === null) {
             $stmt = mysqli_prepare($con, "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?");
             mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);

@@ -311,6 +311,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             <?php endforeach; ?>
         </div>
     </div>
+    </div>
 
     <!-- ── Save button (bottom) ──────────────────────────────────── -->
     <div class="acciones" style="margin-bottom:32px;">
@@ -473,12 +474,12 @@ $(document).ready(function () {
                     csrfToken = res.new_csrf;
                     $('input[name="csrf_token"]').val(res.new_csrf);
                 }
-                if (!res || res.status !== 'success') {
+                if (!res || !res.ok) {
                     $toggle.prop('checked', !$toggle.prop('checked'));
-                    var msg = (res && (res.message || res.msg)) || 'Error al actualizar el módulo.';
+                    var msg = (res && res.msg) || 'Error al actualizar el módulo.';
                     if (window.Toast) Toast.show(msg, 'error');
                 } else {
-                    if (window.Toast) Toast.show(res.message || 'Módulo actualizado.', 'success');
+                    if (window.Toast) Toast.show(res.msg || 'Módulo actualizado.', 'success');
                 }
             },
             error: function (xhr) {

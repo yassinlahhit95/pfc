@@ -65,7 +65,7 @@ if ($type === 'profesor') {
 
 // ── Tutor ─────────────────────────────────────────────────────────────────────
 if ($type === 'tutor') {
-    // Get all cycle IDs of tutored students
+    // Obtiene todos los idCiclo de los estudiantes tutorizados
     $st = mysqli_prepare($con,
         'SELECT DISTINCT e.idCiclo, c.nombreCiclo, c.abreviaturaCiclo
          FROM estudiante_tutor et

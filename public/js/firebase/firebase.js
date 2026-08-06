@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
 import { avisoPush } from "./notificaciones-ui.js";
 
-// Determine the root path relative to this script (3 levels up from public/js/firebase/firebase.js)
+// Calcular la ruta raíz relativa a este script (3 niveles por encima de public/js/firebase/firebase.js)
 const scriptUrl = new URL(import.meta.url);
 const appRoot = new URL('../../../', scriptUrl).pathname;
 
@@ -52,11 +52,11 @@ export async function setupFirebase(id, rol) {
         });
 
         if (!sw) {
-            // Use appRoot to make the path robust
+            // Usar appRoot para que la ruta sea robusta
             sw = await navigator.serviceWorker.register(appRoot + 'firebase-messaging-sw.js');
         }
 
-        // Wait until the SW is active
+        // Esperar hasta que el service worker esté activo
         if (sw.installing || sw.waiting) {
             await new Promise(function(resolve, reject) {
                 var target = sw.installing || sw.waiting;
@@ -104,7 +104,7 @@ export async function setupFirebase(id, rol) {
             fd.append('userRole', rol);
             fd.append('csrf_token', document.querySelector('[name="modal_csrf"]')?.value || '');
 
-            // Use appRoot for the fetch path
+            // Usar appRoot para la ruta del fetch
             await fetch(appRoot + 'controladores/firebase/guardar_token.php', {
                 method: 'POST',
                 body: fd

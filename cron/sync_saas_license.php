@@ -6,10 +6,10 @@ require_once __DIR__ . '/../config/Config.php';
 $config = Config::getInstance();
 
 $saasAdminUrl = $config->get('SAAS_ADMIN_URL', '');
-// Same connection secret used for admin.php's inbound HMAC auth (ADMIN_API_KEY/
-// ADMIN_API_SECRET) — saas-admin's verifyLicense() looks it up by api_key in its
-// own `connections` table, so there is only ever one shared keypair per
-// connection, not a separate one for each direction of the API relationship.
+// Mismo secreto de conexión que usa la autenticación HMAC entrante de admin.php
+// (ADMIN_API_KEY/ADMIN_API_SECRET) — verifyLicense() de saas-admin lo busca por
+// api_key en su propia tabla `connections`, así que solo hay un par de claves
+// compartido por conexión, no uno distinto para cada sentido de la relación API.
 $apiKey       = $config->get('ADMIN_API_KEY', '');
 $apiSecret    = $config->get('ADMIN_API_SECRET', '');
 
@@ -24,8 +24,8 @@ $domain = $_SERVER['HTTP_HOST'] ?? 'pfc.test';
 
 $url = $saasAdminUrl . '/api/v1/license/verify?domain=' . urlencode($domain);
 
-// saas-admin's /api/v1/license/verify requires the same HMAC scheme its own
-// Connector uses outbound: X-API-Key/X-Timestamp/X-Signature over "GET|timestamp|".
+// /api/v1/license/verify de saas-admin exige el mismo esquema HMAC que usa su
+// propio Connector de salida: X-API-Key/X-Timestamp/X-Signature sobre "GET|timestamp|".
 $timestamp = time();
 $signature = hash_hmac('sha256', 'GET|' . $timestamp . '|', $apiSecret);
 

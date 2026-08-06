@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/chat.php';
-// Security::initSession() (not a bare session_start()) so the cookie-hardening
-// flags (Secure/HttpOnly/SameSite/strict_mode) actually get applied.
+// Security::initSession() (no un session_start() a secas): así los flags de
+// endurecimiento de cookies (Secure/HttpOnly/SameSite/strict_mode) sí se aplican.
 Security::initSession();
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');

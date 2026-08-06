@@ -242,7 +242,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div style="display:flex; justify-content:flex-end;">
-                <button type="submit" name="calificarTFG" class="boton-primario btn-animado" style="padding:14px 30px; font-size:1.1rem; width:100%; display:flex; justify-content:center; align-items:center; gap:10px; background: linear-gradient(135deg, var(--accent), var(--violeta)); border:none;">
+                <button type="submit" name="calificarTFG" class="boton-primario boton-degradado btn-animado">
                     <i class="fas fa-save"></i> Guardar Calificación
                 </button>
             </div>

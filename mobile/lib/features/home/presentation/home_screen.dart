@@ -81,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ponytail: watch role once, derive everything else from it to reduce rebuild surface
     final role =
-        ref.watch(sessionControllerProvider.select((s) => s.valueOrNull?.role));
+        ref.watch(sessionControllerProvider.select((s) => s.value?.role));
     final profileAsync = ref.watch(profileProvider);
 
     final t = ref.watch(translationsProvider);
@@ -96,9 +96,9 @@ class HomeScreen extends ConsumerWidget {
         role == UserRole.profesor ||
         role == UserRole.tutor;
     final isTutorTeacher = role == UserRole.profesor &&
-        (profileAsync.valueOrNull?.data['esTutor'] == 1 ||
-            profileAsync.valueOrNull?.data['esTutor'] == '1' ||
-            profileAsync.valueOrNull?.data['esTutor'] == true);
+        (profileAsync.value?.data['esTutor'] == 1 ||
+            profileAsync.value?.data['esTutor'] == '1' ||
+            profileAsync.value?.data['esTutor'] == true);
     final hasStaffJustify = isTutorTeacher ||
         role == UserRole.director ||
         role == UserRole.secretaria;
@@ -181,33 +181,33 @@ class HomeScreen extends ConsumerWidget {
             t['nav_justificar_sub']!, const StaffJustifyScreen()),
     ];
 
-    final displayName = profileAsync.valueOrNull?.displayName ?? 'AulaPro';
+    final displayName = profileAsync.value?.displayName ?? 'AulaPro';
     // Watch metrics only when needed per role, using .select() to avoid cascading rebuilds
     final attendanceMine = role == UserRole.estudiante
-        ? ref.watch(attendanceMineProvider.select((a) => a.valueOrNull ?? []))
+        ? ref.watch(attendanceMineProvider.select((a) => a.value ?? []))
         : [];
     final studentPendingTasks = role == UserRole.estudiante
         ? ref.watch(
-            studentPendingTasksCountProvider.select((t) => t.valueOrNull ?? 0))
+            studentPendingTasksCountProvider.select((t) => t.value ?? 0))
         : 0;
     final studentGrades = role == UserRole.estudiante
-        ? ref.watch(gradesProvider.select((g) => g.valueOrNull))
+        ? ref.watch(gradesProvider.select((g) => g.value))
         : null;
 
     // Watch professor metrics
     final scheduleSlots =
         (role == UserRole.profesor || role == UserRole.estudiante)
-            ? ref.watch(scheduleProvider.select((s) => s.valueOrNull ?? []))
+            ? ref.watch(scheduleProvider.select((s) => s.value ?? []))
             : [];
     final pendingGradesCount = role == UserRole.profesor
         ? ref
-            .watch(pendingGradesCountProvider.select((p) => p.valueOrNull ?? 0))
+            .watch(pendingGradesCountProvider.select((p) => p.value ?? 0))
         : 0;
 
     // Watch admin metrics
     final dashboardStats =
         (role == UserRole.director || role == UserRole.secretaria)
-            ? ref.watch(dashboardStatsProvider).valueOrNull
+            ? ref.watch(dashboardStatsProvider).value
             : null;
 
     // Build role-specific metric cards
@@ -255,7 +255,7 @@ class HomeScreen extends ConsumerWidget {
       final clasesHoyCount =
           scheduleSlots.where((s) => s.diaSemana == todayName).length;
       final tutorCicloAbreviatura =
-          profileAsync.valueOrNull?.ciclo?['abreviaturaCiclo'] as String? ??
+          profileAsync.value?.ciclo?['abreviaturaCiclo'] as String? ??
               'Ninguna';
 
       metrics.addAll([
@@ -330,7 +330,7 @@ class HomeScreen extends ConsumerWidget {
         ),
       ]);
     } else if (role == UserRole.tutor) {
-      final hijosCount = profileAsync.valueOrNull?.data['hijos_count'] ?? 0;
+      final hijosCount = profileAsync.value?.data['hijos_count'] ?? 0;
 
       metrics.addAll([
         _MetricCard(

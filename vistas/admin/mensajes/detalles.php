@@ -28,7 +28,7 @@ if (!$mensaje['leido'] && $esParaAdmin) {
 
 $hilo = obtenerHiloCompleto($idReclamacion);
 
-// Build header metadata
+// Construye los metadatos de la cabecera
 if ($mensaje['emisor_rol'] === 'admin') {
     $fromName = '';
     $fromAva  = 'msg-ava-lg inbox-ava-admin';

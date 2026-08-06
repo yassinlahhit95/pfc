@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $con = obtenerConexion();
 
-// Fetch Niveles
+// Obtiene los Niveles
 $resNiveles = mysqli_query($con, "SELECT idNivel, nombreNivel FROM niveles ORDER BY nombreNivel ASC");
 $niveles = [];
 if ($resNiveles) {
@@ -25,7 +25,7 @@ if ($resNiveles) {
     }
 }
 
-// Fetch Ciclos
+// Obtiene los Ciclos
 $resCiclos = mysqli_query($con, "SELECT idCiclo, idNivel, nombreCiclo, abreviaturaCiclo FROM ciclos ORDER BY nombreCiclo ASC");
 $ciclos = [];
 if ($resCiclos) {
@@ -39,7 +39,7 @@ if ($resCiclos) {
     }
 }
 
-// Fetch Grupos
+// Obtiene los Grupos
 $resGrupos = mysqli_query($con, "SELECT idGrupo, idCiclo, nombreGrupo, anioEstudio FROM grupos ORDER BY nombreGrupo ASC");
 $grupos = [];
 if ($resGrupos) {

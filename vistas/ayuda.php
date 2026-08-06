@@ -26,7 +26,7 @@ require_once __DIR__ . "/../include/I18n.php";
 $tituloDelPagina = "AulaPro | " . __('help_center', 'Centro de Ayuda');
 $titulo_pagina = $tituloDelPagina;
 
-// Load the correct navigation template based on active role
+// Carga la plantilla de navegación correcta según el rol activo
 if ($role === 'admin') {
     $seccion = 'ayuda';
     include_once __DIR__ . "/admin/comunes/nav.php";
@@ -470,7 +470,7 @@ $(function() {
 </script>
 
 <?php
-// Load correct footer
+// Carga el footer correcto
 if ($role === 'admin') {
     include_once __DIR__ . "/admin/comunes/footer.php";
 } elseif ($role === 'profesor') {
