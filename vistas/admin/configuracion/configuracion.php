@@ -18,6 +18,12 @@ $cfg         = obtenerConfiguracionCentro();
 $adminActual = obtenerDirectorPorId((int)$_SESSION['idAdmin']);
 $mfaActivo   = $adminActual && !empty($adminActual['mfa_enabled']);
 $saasLocked  = FeatureGuard::isLocked();
+// Effective (post-license) state — a feature can be toggled on here (raw DB
+// value) while the client's actual plan caps it off (FeatureGuard::resolve()'s
+// licensedOn && adminOn). Without comparing the two, this page showed the
+// toggle as "on" with no indication it's actually inert everywhere else in
+// the app — an admin could enable something that silently does nothing.
+$featureState = FeatureGuard::getAll();
 
 $titulo_pagina = "AULAPRO | CONFIGURACIÓN DEL CENTRO";
 $seccion = 'configuracion';
@@ -78,6 +84,10 @@ include_once __DIR__ . '/../comunes/nav.php';
         ];
         foreach ($features as $feat):
             $featureActivo = $cfg[$feat['key']] ?? 1;
+            // prematricula_filtrar_niveles is a plain UI preference, not part of
+            // the license schema — isset() guards it out of the plan-capped check.
+            $capadoPorPlan = !$saasLocked && isset($featureState[$feat['key']])
+                && (int)$featureActivo === 1 && (int)$featureState[$feat['key']] === 0;
         ?>
         <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
             <div class="feature-info">
@@ -85,6 +95,9 @@ include_once __DIR__ . '/../comunes/nav.php';
                 <div>
                     <div class="feature-label"><?= $feat['label'] ?></div>
                     <div class="feature-desc"><?= $feat['desc'] ?></div>
+                    <?php if ($capadoPorPlan): ?>
+                        <div class="feature-plan-cap"><i class="fas fa-triangle-exclamation"></i> Activado aquí, pero tu plan actual no lo incluye — no funcionará hasta que se amplíe el plan.</div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php if ($saasLocked): ?>
@@ -351,6 +364,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 }
 .feature-label { font-weight: 700; font-size: .9rem; color: var(--text); }
 .feature-desc  { font-size: .78rem; color: var(--mut); margin-top: 1px; }
+.feature-plan-cap { font-size: .76rem; color: var(--naranja); margin-top: 4px; font-weight: 600; }
 .lock-badge {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 3px 10px; border-radius: 20px;

@@ -50,7 +50,12 @@ $isToggleFeature = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/controladores/admin/c
 if (!$isToggleFeature && $_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuard) {
         header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.']);
+        // new_csrf lets a long-lived AJAX page (dashboard widgets, not just
+        // one-shot forms) recover on its own instead of getting permanently
+        // stuck until a manual reload — the failed validateCSRFToken() call
+        // above already cleared the session token if it was merely expired,
+        // so this generates a genuinely fresh one for the client to retry with.
+        echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.', 'new_csrf' => Security::generateCSRFToken()]);
         exit;
     }
     require __DIR__ . '/../vistas/error.php';

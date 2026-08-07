@@ -22,6 +22,7 @@ import '../../inventory/presentation/inventory_screen.dart';
 import '../../payments/presentation/payments_screen.dart';
 import '../../payments/presentation/my_payments_screen.dart';
 import '../../messages/presentation/messages_screen.dart';
+import '../../planificacion/presentation/planificacion_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
 import '../../schedule/presentation/schedule_screen.dart';
@@ -99,9 +100,11 @@ class HomeScreen extends ConsumerWidget {
         (profileAsync.value?.data['esTutor'] == 1 ||
             profileAsync.value?.data['esTutor'] == '1' ||
             profileAsync.value?.data['esTutor'] == true);
-    final hasStaffJustify = isTutorTeacher ||
-        role == UserRole.director ||
-        role == UserRole.secretaria;
+    // director/secretaria no longer get "Justificar Faltas" on Inicio — they
+    // manage attendance/justifications from the full Asistencias screens
+    // instead; kept for a profesor who is also a form tutor (isTutorTeacher),
+    // since that's a distinct per-tutoría workflow, not center-wide management.
+    final hasStaffJustify = isTutorTeacher;
     final isBackOffice =
         role == UserRole.director || role == UserRole.secretaria;
     final academico = <_NavItem>[
@@ -132,20 +135,31 @@ class HomeScreen extends ConsumerWidget {
     final centro = <_NavItem>[
       _NavItem(Icons.campaign_outlined, t['nav_anuncios']!,
           t['nav_anuncios_sub']!, AnnouncementsScreen()),
-      // Mensajería solo para director/secretaría/tutor (NO para estudiante/profesor)
-      if (!isEstudianteOrProfesor)
+      // Mensajería (reclamaciones) solo para director/secretaría — nunca
+      // soportó tutores (api/v1/messages.php devuelve 403 para ese rol);
+      // el tutor tiene su propia pestaña "Mensajería" en la barra inferior,
+      // respaldada por Chat en su lugar (ver home_shell.dart).
+      if (!isEstudianteOrProfesor && role != UserRole.tutor)
         _NavItem(Icons.mail_outline_rounded, t['nav_mensajeria']!,
             t['nav_mensajeria_sub']!, MessagesScreen()),
-      // Chat directo: cualquier rol puede recibir un mensaje iniciado desde su
-      // perfil (ver ProfileDetailSheet, usado desde listados de profesores/
-      // alumnos) — sin esta entrada, quien recibe un chat no tenía forma
-      // alguna de verlo ni responder.
-      _NavItem(Icons.chat_bubble_outline_rounded, t['nav_chat']!,
-          t['nav_chat_sub']!, const ConversationsScreen()),
+      // Chat solo para director/secretaría — son los únicos roles que lo
+      // inician de verdad (ProfileDetailSheet, desde listados de profesores/
+      // estudiantes). El tutor ya tiene Chat como su pestaña "Mensajería"
+      // dedicada (ver home_shell.dart). NOTA: profesor/estudiante ya no ven
+      // esta entrada aunque director/secretaría les inicie un chat desde su
+      // perfil — no tienen dónde verlo ni responder en el móvil a partir de
+      // este cambio; si eso vuelve a hacer falta, esa vía de contacto
+      // debería pasar a usar Mensajería en su lugar, no reabrir esta tarjeta.
+      if (role == UserRole.director || role == UserRole.secretaria)
+        _NavItem(Icons.chat_bubble_outline_rounded, t['nav_chat']!,
+            t['nav_chat_sub']!, const ConversationsScreen()),
       _NavItem(Icons.event_outlined, t['nav_eventos']!, t['nav_eventos_sub']!,
           EventsScreen()),
     ];
     final gestion = <_NavItem>[
+      if (isBackOffice)
+        _NavItem(Icons.checklist_rounded, t['nav_planificacion'] ?? 'Planificación',
+            'Tareas pendientes del centro', const PlanificacionScreen()),
       if (isBackOffice)
         _NavItem(Icons.receipt_long_outlined, t['nav_pagos']!,
             t['nav_pagos_sub']!, const PaymentsScreen()),

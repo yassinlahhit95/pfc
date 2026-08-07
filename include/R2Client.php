@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config/Config.php';
 require_once __DIR__ . '/CircuitBreaker.php';
 require_once __DIR__ . '/Logger.php';
+require_once __DIR__ . '/FeatureGuard.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // CLOUDFLARE R2 — almacenamiento de ficheros subidos (API S3-compatible,
@@ -152,22 +153,26 @@ final class R2Client {
 
     public static function putObject(string $key, string $bytes, string $contentType): bool {
         $key = self::getTenantKey($key);
-        if (function_exists('apcu_fetch')) {
-            $limitKey = self::tenantCacheKey('saas_max_storage_gb');
-            $usedKey  = self::tenantCacheKey('saas_used_storage_bytes');
-            $limitGb  = apcu_fetch($limitKey);
-            if ($limitGb !== false && $limitGb > 0) {
-                $usedBytes = apcu_fetch($usedKey);
-                if ($usedBytes === false) {
-                    $usage = self::totalUsage();
-                    $usedBytes = $usage['bytes'];
-                    apcu_store($usedKey, $usedBytes, 3600);
-                }
+        // Cuota real del plan, vía el mismo token de licencia que ya usa
+        // FeatureGuard (empujado por saas-admin en cada heartbeat) — antes
+        // leía una clave APCu aparte (saas_max_storage_gb) que solo
+        // cron/sync_saas_license.php escribía, y ese cron nunca funcionó en
+        // producción (resolvía el dominio con $_SERVER['HTTP_HOST'], que bajo
+        // CLI cae siempre al literal 'pfc.test'), así que el límite jamás se
+        // aplicaba de verdad.
+        $limitGb = FeatureGuard::getMaxStorageGb();
+        if ($limitGb !== null && $limitGb > 0) {
+            $usedKey = self::tenantCacheKey('saas_used_storage_bytes');
+            $usedBytes = function_exists('apcu_fetch') ? apcu_fetch($usedKey) : false;
+            if ($usedBytes === false) {
+                $usage = self::totalUsage();
+                $usedBytes = $usage['bytes'];
+                if (function_exists('apcu_store')) apcu_store($usedKey, $usedBytes, 3600);
+            }
 
-                $limitBytes = $limitGb * 1024 * 1024 * 1024;
-                if (($usedBytes + strlen($bytes)) > $limitBytes) {
-                    throw new RuntimeException("Límite de almacenamiento SaaS ({$limitGb} GB) excedido. Por favor, contacte a su administrador.");
-                }
+            $limitBytes = $limitGb * 1024 * 1024 * 1024;
+            if (($usedBytes + strlen($bytes)) > $limitBytes) {
+                throw new RuntimeException("Límite de almacenamiento SaaS ({$limitGb} GB) excedido. Por favor, contacte a su administrador.");
             }
         }
 

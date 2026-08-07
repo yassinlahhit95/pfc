@@ -72,6 +72,28 @@ $error_msg = null;
 $success_msg = null;
 $pairing_code = null;
 
+// Guarantees this instance's R2 file storage is isolated from every other
+// tenant sharing the same Cloudflare bucket — Config.php derives
+// R2_TENANT_PREFIX from the subdomain by default, but that only actually
+// varies per client on a subdomain-per-tenant deployment; a white-label
+// client on their own bare custom domain (2 DNS labels, e.g. cliente.com)
+// always falls back to the literal 'default', silently merging their R2
+// usage/quota tracking with every other bare-domain client.
+//
+// Only ever runs for a genuinely first-time pairing (no ADMIN_API_KEY yet) —
+// an instance that's already paired before may already have real R2 uploads
+// sitting under whatever prefix it's been implicitly resolving to (subdomain
+// or 'default'); silently switching that on a later re-pair would orphan
+// every one of those files (still in the bucket, just invisible to
+// totalUsage()/listObjectsPage() under the new prefix). A collision that
+// already exists for an established instance needs a deliberate, manual R2
+// migration, not an automatic one sprung by clicking "generar código" again.
+function ensureR2TenantPrefix(): void {
+    if (getEnvValue('R2_TENANT_PREFIX') === '' && getEnvValue('ADMIN_API_KEY') === '') {
+        updateEnvFile(['R2_TENANT_PREFIX' => bin2hex(random_bytes(8))]);
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'generate_pairing') {
     if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
         $error_msg = "Token de seguridad inválido. Recarga la página.";
@@ -83,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $code      = strtoupper(bin2hex(random_bytes(4)));
         $expiresAt = time() + 600; // 10 minutes
 
+        ensureR2TenantPrefix();
         $updated = updateEnvFile([
             'ADMIN_API_KEY'        => $apiKey,
             'ADMIN_API_SECRET'     => $apiSecret,
@@ -115,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         } else {
             // ADMIN_API_SECRET also signs/verifies the license token (LicenseToken.php) —
             // there is no separate license-signing secret to keep in sync anymore.
+            ensureR2TenantPrefix();
             $updated = updateEnvFile([
                 'APP_URL'          => rtrim($url, '/'),
                 'ADMIN_API_KEY'    => $apiKey,
@@ -183,8 +207,10 @@ $features = [
     'feature_gastos'       => ['Gastos',           'fa-receipt',       '#ef4444'],
     'feature_informes'     => ['Informes PDF',     'fa-file-pdf',      '#64748b'],
     'feature_horario'      => ['Cuadro Horario',   'fa-calendar-alt',  '#4f46e5'],
+    'feature_modulos'      => ['Módulos Académicos','fa-book',         '#8b5cf6'],
     'feature_geoblock_admin'=>['Geo-Block (España)','fa-globe-europe', '#dc2626'],
     'feature_ra_ce'        => ['Eval. LOMLOE',     'fa-star-half-stroke','#f59e0b'],
+    'feature_academico_config' => ['Motor de Calificaciones Configurable', 'fa-sliders', '#7c3aed'],
     'feature_fp_dual'      => ['FP Dual',          'fa-building',      '#10b981'],
     'feature_landing'      => ['Página Web Pública','fa-globe',         '#0ea5e9'],
     'feature_fct'          => ['FCT',              'fa-briefcase',     '#0891b2'],
@@ -449,7 +475,7 @@ $apcuCards = [
         barEl.style.width = Math.max(pct, 1) + '%';
         barEl.style.background = color;
         if (iconEl) { iconEl.style.background = bg; iconEl.style.color = color; }
-        subEl.textContent = data.objectCount + ' objeto(s) · ' + pct + '% del límite gratuito (10 GB)';
+        subEl.textContent = data.objectCount + ' objeto(s) · ' + pct + '% del límite (' + humanBytes(data.limitBytes) + ')';
       })
       .catch(() => { subEl.textContent = 'No se pudo consultar el uso de almacenamiento.'; });
   }

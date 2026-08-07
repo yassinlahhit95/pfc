@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
 import '../data/schedule_repository.dart';
 
@@ -27,11 +28,18 @@ const _dayShort = {
   'Domingo': 'Dom',
 };
 
-class ScheduleScreen extends ConsumerWidget {
+class ScheduleScreen extends ConsumerStatefulWidget {
   const ScheduleScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
+}
+
+class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
+  String? _selectedCiclo;
+
+  @override
+  Widget build(BuildContext context) {
     final scheduleAsync = ref.watch(scheduleProvider);
 
     return Scaffold(
@@ -41,13 +49,28 @@ class ScheduleScreen extends ConsumerWidget {
         child: AsyncView<List<ScheduleSlot>>(
           value: scheduleAsync,
           onRetry: () => ref.invalidate(scheduleProvider),
-          data: (context, slots) {
-            if (slots.isEmpty) {
+          data: (context, allSlots) {
+            if (allSlots.isEmpty) {
               return const EmptyState(
                 icon: Icons.calendar_month_outlined,
                 title: 'Sin horario disponible',
               );
             }
+
+            // Only populated for a tutor's merged multi-child schedule — a
+            // single-cycle role (estudiante/profesor) has nombreCiclo null
+            // or all-equal, so ciclos.length never exceeds 1 for them.
+            final ciclos = allSlots
+                .map((s) => s.nombreCiclo)
+                .whereType<String>()
+                .toSet()
+                .toList()
+              ..sort();
+
+            final slots = (ciclos.length > 1 && _selectedCiclo != null)
+                ? allSlots.where((s) => s.nombreCiclo == _selectedCiclo).toList()
+                : allSlots;
+
             final byDay = <String, List<ScheduleSlot>>{};
             for (final s in slots) {
               byDay.putIfAbsent(s.diaSemana, () => []).add(s);
@@ -57,7 +80,22 @@ class ScheduleScreen extends ConsumerWidget {
               list.sort((a, b) => a.horaInicio.compareTo(b.horaInicio));
             }
 
-            return _DaySchedule(byDay: byDay, days: days);
+            return Column(
+              children: [
+                if (ciclos.length > 1) ...[
+                  const SizedBox(height: Space.md),
+                  FilterBar(children: [
+                    FilterPill<String>(
+                      label: 'Hijo/a',
+                      value: _selectedCiclo,
+                      options: [for (final c in ciclos) (c, c)],
+                      onChanged: (v) => setState(() => _selectedCiclo = v),
+                    ),
+                  ]),
+                ],
+                Expanded(child: _DaySchedule(byDay: byDay, days: days)),
+              ],
+            );
           },
         ),
       ),

@@ -10,6 +10,10 @@ $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $nombre = $secretaria['nombreSecretaria'] ?? 'Secretaria';
 
 require_once __DIR__ . "/../../../include/Cache.php";
+require_once __DIR__ . "/../../../include/AssetMin.php";
+require_once __DIR__ . "/../../../modelos/planificacion.php";
+$planPendientes = listarPlanificacionPendientes(5);
+$rolBase = 'secretaria';
 
 $stats = Cache::remember('secretaria_dashboard_stats_' . $_SESSION['idSecretaria'], 60, function () {
     $con = obtenerConexion();
@@ -95,7 +99,7 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
+<div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px;flex-wrap:wrap;">
     <!-- Accesos rápidos con 4 tarjetas principales -->
     <div class="panel">
         <h2 style="font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--text);"><?= I18n::translate('quick_access', 'Acceso Rápido') ?></h2>
@@ -173,6 +177,8 @@ include __DIR__ . '/../comunes/nav.php';
             </ul>
         <?php endif; ?>
     </div>
+
+    <?php include __DIR__ . '/../../comunes/planificacion/_widget.php'; ?>
 </div>
 
 <?php

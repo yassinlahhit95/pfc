@@ -123,7 +123,7 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alumnos'),
+        title: const Text('Estudiantes'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),

@@ -35,7 +35,7 @@
   </div>
 </div>
 
-<script src="../../../public/js/core/utils.js"></script>
+<script src="../../../public/js/core/utils.js?v=<?= filemtime(__DIR__.'/../../public/js/core/utils.js') ?>"></script>
 <script>
 $(document).ajaxError(function(event, xhr) {
     if (!window.Toast) return;

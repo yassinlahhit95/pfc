@@ -189,40 +189,6 @@ class ClassroomSubmission {
   bool get hasSubmitted => idEntrega != null;
 }
 
-class ClassroomSession {
-  const ClassroomSession({
-    required this.id,
-    required this.titulo,
-    required this.descripcion,
-    required this.fechaSesion,
-    required this.horaSesion,
-    required this.enlaceReunion,
-    required this.plataforma,
-    required this.nombreProfesor,
-  });
-
-  factory ClassroomSession.fromJson(Map<String, dynamic> json) =>
-      ClassroomSession(
-        id: json['idSesion'] as int,
-        titulo: json['titulo'] as String? ?? '',
-        descripcion: json['descripcion'] as String?,
-        fechaSesion: json['fechaSesion'] as String? ?? '',
-        horaSesion: json['horaSesion'] as String? ?? '',
-        enlaceReunion: json['enlaceReunion'] as String?,
-        plataforma: json['plataforma'] as String?,
-        nombreProfesor: json['nombreProfesor'] as String? ?? '',
-      );
-
-  final int id;
-  final String titulo;
-  final String? descripcion;
-  final String fechaSesion;
-  final String horaSesion;
-  final String? enlaceReunion;
-  final String? plataforma;
-  final String nombreProfesor;
-}
-
 class ClassroomRepository {
   ClassroomRepository(this._client, this._ref);
   final ApiClient _client;
@@ -325,37 +291,6 @@ class ClassroomRepository {
     final data = await _client.post('/classroom.php',
         data: {'idTarea': idTarea}, query: {'action': 'publish'});
     return data['publicado'] == 1;
-  }
-
-  Future<List<ClassroomSession>> fetchSessions(int idModulo) async {
-    final data = await _client.get('/classroom.php',
-        query: {'action': 'sessions', 'idModulo': idModulo});
-    return (data['sessions'] as List)
-        .cast<Map<String, dynamic>>()
-        .map(ClassroomSession.fromJson)
-        .toList();
-  }
-
-  Future<void> createSession({
-    required int idModulo,
-    required String titulo,
-    String descripcion = '',
-    required String fechaSesion,
-    required String horaSesion,
-    String enlaceReunion = '',
-    String plataforma = '',
-  }) {
-    return _client.post('/classroom.php', data: {
-      'idModulo': idModulo,
-      'titulo': titulo,
-      'descripcion': descripcion,
-      'fechaSesion': fechaSesion,
-      'horaSesion': horaSesion,
-      'enlaceReunion': enlaceReunion,
-      'plataforma': plataforma,
-    }, query: {
-      'action': 'create-session'
-    });
   }
 
   Future<List<ClassroomFile>> fetchFavorites() async {

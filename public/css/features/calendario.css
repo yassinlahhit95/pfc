@@ -98,122 +98,158 @@
 #cal-widget-mensual {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px;
   max-width: 100%;
+  box-shadow: var(--shadow-sm);
 }
 
 .cal-encabezado {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
 
 .cal-encabezado button {
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--dim);
   cursor: pointer;
-  padding: 4px 8px;
-  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s;
+  flex-shrink: 0;
+  transition: background-color 0.15s, color 0.15s, transform 0.1s;
 }
 
 .cal-encabezado button:hover {
+  background: var(--surface-2);
   color: var(--accent);
-  opacity: 0.7;
+}
+
+.cal-encabezado button:active {
+  transform: scale(0.92);
 }
 
 .cal-mes-titulo {
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: var(--text);
   text-transform: capitalize;
+  letter-spacing: -0.01em;
 }
 
 .cal-crear-btn {
   background: var(--accent);
-  color: white;
+  color: var(--accent-ink, #fff);
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 7px 14px;
+  border-radius: 9px;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: opacity 0.2s;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
 }
 
 .cal-crear-btn:hover {
-  opacity: 0.9;
+  opacity: 0.92;
+  box-shadow: var(--shadow-sm);
+}
+
+.cal-crear-btn:active {
+  transform: scale(0.96);
 }
 
 .cal-mes {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 0;
+  gap: 4px;
 }
 
 .cal-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background: var(--border);
-  padding: 1px;
-  margin-bottom: 1px;
+  gap: 4px;
 }
 
 .cal-semana:first-child {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .cal-dia-encabezado {
-  background: var(--surface-2);
-  padding: 10px 6px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--text);
+  padding: 4px 2px 10px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--mut);
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.06em;
 }
 
 .cal-dia {
   background: var(--surface);
-  min-height: 45px;
+  min-height: 52px;
   padding: 6px;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
+  border-radius: 10px;
   border: 1px solid transparent;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
 }
 
 .cal-dia:hover {
   background: var(--surface-2);
-  border-color: var(--accent);
+  border-color: var(--border-2, var(--border));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  z-index: 1;
 }
 
 .cal-dia-otra {
-  background: var(--bg);
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: default;
 }
 
 .cal-dia-otra:hover {
-  background: var(--bg);
+  background: var(--surface);
   border-color: transparent;
+  transform: none;
+  box-shadow: none;
 }
 
 .cal-dia-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: var(--text);
+  border-radius: 50%;
   margin-bottom: 4px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+/* Hoy: círculo relleno con el color de acento — el punto de referencia visual
+   que un calendario "moderno" necesita y que este nunca tuvo (no había forma
+   de saber en qué día del mes real estabas sin mirar el reloj del sistema). */
+.cal-dia-hoy .cal-dia-num {
+  background: var(--accent);
+  color: var(--accent-ink, #fff);
+}
+
+.cal-dia-con-eventos:not(.cal-dia-hoy) .cal-dia-num {
+  color: var(--accent);
 }
 
 .cal-dia-eventos {
@@ -223,31 +259,54 @@
 }
 
 .cal-evento-mini {
-  font-size: 0.75rem;
-  padding: 2px 4px;
-  background: var(--accent);
-  color: white;
-  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+  border-left: 2.5px solid var(--accent);
+  border-radius: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background-color 0.15s, transform 0.1s;
 }
 
 .cal-evento-mini:hover {
-  opacity: 0.85;
+  background: var(--accent);
+  color: var(--accent-ink, #fff);
+  transform: translateX(1px);
 }
 
 .cal-evento-mas {
-  background: var(--dim);
+  background: var(--surface-2);
+  color: var(--mut);
+  border-left-color: transparent;
   cursor: default;
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
 }
 
-.cal-dia-con-eventos .cal-dia-num {
-  color: var(--accent);
+.cal-evento-mas:hover {
+  background: var(--surface-2);
+  color: var(--mut);
+  transform: none;
+}
+
+/* Fines de semana ligeramente atenuados — convención habitual de calendario,
+   igual que ya hace el widget de asistencias de la app móvil. La semana
+   empieza en domingo aquí (['Dom','Lun',...,'Sáb']), así que el fin de
+   semana son las posiciones 1 (Dom) y 7 (Sáb), no las últimas dos. */
+.cal-dia[data-fecha]:nth-child(1) .cal-dia-num,
+.cal-dia[data-fecha]:nth-child(7) .cal-dia-num {
+  color: var(--mut);
+}
+.cal-dia[data-fecha]:nth-child(1).cal-dia-hoy .cal-dia-num,
+.cal-dia[data-fecha]:nth-child(7).cal-dia-hoy .cal-dia-num,
+.cal-dia[data-fecha]:nth-child(1).cal-dia-con-eventos .cal-dia-num,
+.cal-dia[data-fecha]:nth-child(7).cal-dia-con-eventos .cal-dia-num {
+  color: inherit;
 }
 
 @media (max-width: 1024px) {
@@ -258,21 +317,21 @@
 
 @media (max-width: 768px) {
   #cal-widget-mensual {
-    padding: 12px;
+    padding: 14px;
   }
 
   .cal-dia {
-    min-height: 40px;
+    min-height: 44px;
     padding: 4px;
   }
 
   .cal-dia-num {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .cal-evento-mini {
-    font-size: 0.7rem;
-    padding: 1px 3px;
+    font-size: 0.65rem;
+    padding: 1px 4px;
   }
 }
 

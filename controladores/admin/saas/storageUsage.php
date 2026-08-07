@@ -8,28 +8,24 @@
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/R2Client.php';
 require_once __DIR__ . '/../../../include/Cache.php';
-require_once __DIR__ . '/../../../config/Config.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
 // 10 GB — límite de almacenamiento del nivel gratuito de Cloudflare R2 (noDeploy/CLOUDFLARE_R2_SETUP.md).
-// Solo se usa como respaldo cuando este tenant aún no tiene cacheada una cuota de
-// plan asignada por el SaaS (p. ej. cron/sync_saas_license.php no se ha ejecutado
-// desde la última limpieza de APCu).
+// Solo se usa como respaldo cuando no hay token de licencia válido (periodo de
+// gracia) o el plan asignado no trae cuota propia.
 const R2_FREE_TIER_LIMIT_BYTES = 10 * 1024 * 1024 * 1024;
 
 try {
     $usage = Cache::remember('r2_storage_usage', 60, fn() => R2Client::totalUsage());
 
-    // Misma clave con prefijo de tenant que escribe cron/sync_saas_license.php
-    // tras consultar a saas-admin la cuota real del plan de este cliente — sin
-    // esto, todos los clientes veían el número plano de 10GB del nivel gratuito
-    // sin importar su plan real (p. ej. un cliente con 1GB asignado por el SaaS
-    // seguiría viendo aquí "X / 10 GB").
-    $tenantPrefix = Config::getInstance()->get('R2_TENANT_PREFIX', 'default');
-    $planLimitGb  = function_exists('apcu_fetch') ? apcu_fetch("saas_max_storage_gb:{$tenantPrefix}") : false;
-    $limitBytes   = ($planLimitGb !== false && $planLimitGb > 0)
-        ? (int)$planLimitGb * 1024 * 1024 * 1024
+    // Cuota real del plan del cliente, embebida en el token de licencia firmado
+    // por saas-admin (mismo canal que features/lock/status — se actualiza al
+    // instante en cada heartbeat, no depende de un cron aparte).
+    $planLimitGb = FeatureGuard::getMaxStorageGb();
+    $limitBytes  = $planLimitGb !== null && $planLimitGb > 0
+        ? $planLimitGb * 1024 * 1024 * 1024
         : R2_FREE_TIER_LIMIT_BYTES;
 
     echo json_encode([

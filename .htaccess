@@ -106,5 +106,21 @@ Options -Indexes
     # script/resource (the main way an XSS payload would exfiltrate data or pull
     # in additional attacker code), plus object-src/base-uri/frame-ancestors,
     # which unsafe-inline does NOT weaken.
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://www.gstatic.com https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https://www.gravatar.com https://*.googleusercontent.com; frame-src 'self' https://player.vimeo.com https://www.youtube-nocookie.com https://accounts.google.com; connect-src 'self' https://*.googleapis.com https://*.gstatic.com wss://*.firebaseio.com https://*.firebaseio.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'self'"
+    #
+    # IMPORTANT — this is a SECOND, independent CSP definition. include/Security.php's
+    # buildCsp() (sent via header() by Security::initSession(), called from every
+    # role Guard) is the other one. Because Apache's "Header always set" runs as an
+    # output filter *after* PHP has already sent its headers, this one silently wins
+    # and replaces whatever buildCsp() sent — on every page, not just ones without a
+    # Guard. The two drifted apart once already (this one was missing
+    # images.unsplash.com / videos.pexels.com / the R2 public host, breaking landing
+    # demo images+video and R2-hosted blog/landing images site-wide until fixed here).
+    # If you add a new external host to buildCsp(), add it here too, or it will be
+    # silently blocked in production regardless of what PHP sends.
+    #
+    # The R2 host below (pub-7950bc18f89...r2.dev) is hardcoded because this file
+    # can't read .env's R2_PUBLIC_URL at request time the way buildCsp() does — if
+    # that bucket's public URL ever changes (new bucket, moved account, white-label
+    # deployment with its own R2), update the host in img-src below too.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://www.gstatic.com https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https://www.gravatar.com https://*.googleusercontent.com https://images.unsplash.com https://pub-7950bc18f89d4d87970adbf3ebde7f2a.r2.dev; media-src 'self' https://videos.pexels.com; frame-src 'self' https://player.vimeo.com https://www.youtube-nocookie.com https://accounts.google.com; connect-src 'self' https://*.googleapis.com https://*.gstatic.com wss://*.firebaseio.com https://*.firebaseio.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'self'"
 </IfModule>

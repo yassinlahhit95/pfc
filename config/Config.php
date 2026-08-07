@@ -67,8 +67,16 @@ class Config {
         // If the dynamic DB exists/applies, use it, otherwise fallback to default env
         $this->config['DB_NAME'] = $this->env('DB_NAME', defined('DB_NAME_VALUE') ? DB_NAME_VALUE : $dynamicDbName);
 
-        // Tenant Prefix for R2 isolated file storage
-        $this->config['R2_TENANT_PREFIX'] = $subdomain;
+        // Tenant Prefix for R2 isolated file storage. Prefer an explicit .env
+        // value (set once, automatically, by api/admin.php's pairing step) over
+        // the Host-header-derived subdomain — the latter only actually varies
+        // per client on a subdomain-per-tenant deployment (client1.aulapro.tld).
+        // A white-label client on their own bare custom domain (client1.tld,
+        // 2 labels) always resolves $subdomain to the literal 'default', same
+        // as every other bare-domain client — silently merging all of their R2
+        // usage/quota tracking into one shared namespace. An explicit prefix
+        // is guaranteed unique regardless of DNS topology.
+        $this->config['R2_TENANT_PREFIX'] = $this->env('R2_TENANT_PREFIX', $subdomain);
 
         // Firebase
         $this->config['FIREBASE_API_KEY']            = $this->env('FIREBASE_API_KEY', '');
@@ -100,16 +108,15 @@ class Config {
         $this->config['R2_BUCKET_NAME']       = $this->env('R2_BUCKET_NAME', '');
         $this->config['R2_PUBLIC_URL']        = rtrim($this->env('R2_PUBLIC_URL', ''), '/');
 
-        // SaaS Admin integration (cron/sync_saas_license.php calls saas-admin's
-        // /api/v1/license/verify, which requires HMAC-signed requests). Must match the
-        // api_key/api_secret of the `connections` row saas-admin has for this instance.
-        // Also doubles as the inbound HMAC auth secret for api/admin.php's
-        // suspend/activate/heartbeat endpoints and signs LicenseToken.php's tokens —
-        // those two files parse .env directly instead of going through Config, which
-        // is why this being missing here went unnoticed: cron/sync_saas_license.php
-        // and vistas/auth/diagnostico_email.php are the only callers that actually go
-        // through Config::get('ADMIN_API_KEY'/'ADMIN_API_SECRET'), and both silently
-        // got '' back on every request since this class never populated the key.
+        // SaaS Admin integration — must match the api_key/api_secret of the
+        // `connections` row saas-admin has for this instance. Also doubles as
+        // the inbound HMAC auth secret for api/admin.php's suspend/activate/
+        // heartbeat endpoints and signs LicenseToken.php's tokens — those two
+        // files parse .env directly instead of going through Config, which is
+        // why this being missing here went unnoticed: vistas/auth/diagnostico_email.php
+        // was the only caller that actually went through
+        // Config::get('ADMIN_API_KEY'/'ADMIN_API_SECRET'), and it silently got
+        // '' back on every request since this class never populated the key.
         $this->config['SAAS_ADMIN_URL']    = rtrim($this->env('SAAS_ADMIN_URL', ''), '/');
         $this->config['ADMIN_API_KEY']     = $this->env('ADMIN_API_KEY', '');
         $this->config['ADMIN_API_SECRET']  = $this->env('ADMIN_API_SECRET', '');

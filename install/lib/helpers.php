@@ -37,6 +37,14 @@ function lockInstall(): void {
 function installTryConnectFromEnv() {
     $vars = installParseEnvFile(__DIR__ . '/../../.env');
     if (!$vars || empty($vars['DB_HOST']) || empty($vars['DB_USER']) || empty($vars['DB_NAME'])) return false;
+    // Runs on every install-wizard page load (installIsLocked()'s belt-and-suspenders
+    // check) with whatever's currently in .env — which, mid-setup, is often wrong or
+    // incomplete. mysqli throws exceptions by default since PHP 8.1; @ only suppresses
+    // warnings, not exceptions, so a bad/missing password here was crashing the wizard
+    // with a raw, uncaught mysqli_sql_exception instead of the friendly "not installed
+    // yet" fallback below. testDbConnection()/runSchemaImport() already disable this —
+    // this function was the one call site that forgot to.
+    mysqli_report(MYSQLI_REPORT_OFF);
     return @mysqli_connect($vars['DB_HOST'], $vars['DB_USER'], $vars['DB_PASS'] ?? '', $vars['DB_NAME']);
 }
 

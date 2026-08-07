@@ -122,6 +122,7 @@ class FeatureGuard
                     'saas_message'         => $payload['msg']      ?? '',
                     'saas_message_type'    => $payload['msg_type'] ?? 'info',
                     'sub_exp'              => isset($payload['sub_exp']) ? (int)$payload['sub_exp'] : null,
+                    'max_storage_gb'       => isset($payload['max_storage_gb']) ? (int)$payload['max_storage_gb'] : null,
                     '_source'              => 'token',
                 ];
             }
@@ -170,6 +171,7 @@ class FeatureGuard
             'saas_message'         => $row['saas_message']      ?? '',
             'saas_message_type'    => $row['saas_message_type'] ?? 'info',
             'sub_exp'              => null,
+            'max_storage_gb'       => null,
             '_source'              => 'grace',
         ];
     }
@@ -204,6 +206,7 @@ class FeatureGuard
             'saas_lock_features'   => 1,
             'saas_message'         => '',
             'saas_message_type'    => 'info',
+            'max_storage_gb'       => null,
             '_source'              => 'fail_closed',
         ];
     }
@@ -305,5 +308,14 @@ class FeatureGuard
     public static function getSuspensionMessage(): string
     {
         return (string)(self::load()['suspension_message'] ?? '');
+    }
+
+    // Plan-assigned storage quota (GB), pushed via the license token. Null
+    // when there's no token yet (grace period) or the plan has no quota set —
+    // callers should fall back to the R2 free-tier limit in that case.
+    public static function getMaxStorageGb(): ?int
+    {
+        $val = self::load()['max_storage_gb'] ?? null;
+        return $val !== null ? (int)$val : null;
     }
 }

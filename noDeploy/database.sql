@@ -2460,6 +2460,37 @@ LOCK TABLES `password_resets` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `planificacion_tareas`
+--
+
+DROP TABLE IF EXISTS `planificacion_tareas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `planificacion_tareas` (
+  `idPlanTarea` int NOT NULL AUTO_INCREMENT,
+  `texto` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `completada` tinyint(1) NOT NULL DEFAULT '0',
+  `tipoCreador` enum('director','secretaria') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idCreador` int NOT NULL,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fechaCompletada` datetime DEFAULT NULL,
+  `tipoCompletadaPor` enum('director','secretaria') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `completadaPorNombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`idPlanTarea`),
+  KEY `idx_plan_completada` (`completada`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `planificacion_tareas`
+--
+
+LOCK TABLES `planificacion_tareas` WRITE;
+/*!40000 ALTER TABLE `planificacion_tareas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `planificacion_tareas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `pre_matricula_archivos`
 --
 

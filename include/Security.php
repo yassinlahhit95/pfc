@@ -62,6 +62,11 @@ class Security {
     // dominio no listado aquí, que es la vía de exfiltración/inyección que
     // más importa si alguna vez se cuela un XSS.
     private static function buildCsp(): string {
+        // IMPORTANT — root .htaccess has its own "Header always set
+        // Content-Security-Policy" that runs *after* this header() call (Apache
+        // output filter, applies post-PHP) and silently replaces it — so .htaccess's
+        // copy, not this one, is what a browser actually receives. Keep both in sync;
+        // if you add a host here, add it there too.
         // images.unsplash.com: fotos de stock usadas como contenido demo por
         // defecto en las plantillas de landing (landing-system/engine/secciones.php)
         // — dominio fijo y de confianza, igual de justificado que gravatar.com.

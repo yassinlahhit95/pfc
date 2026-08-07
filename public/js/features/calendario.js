@@ -202,6 +202,8 @@
         var diasEnMes = new Date(año, mes + 1, 0).getDate();
         var primerDia = fecha.getDay();
         var eventoPorFecha = {};
+        var hoy = new Date();
+        var hoyStr = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0') + '-' + String(hoy.getDate()).padStart(2, '0');
 
         eventosDelMes = eventosDelMes || [];
         eventosDelMes.forEach(function (evt) {
@@ -230,6 +232,7 @@
                         var fechaStr = año + '-' + String(mes + 1).padStart(2, '0') + '-' + String(diaActual).padStart(2, '0');
                         var eventosHoy = eventoPorFecha[fechaStr] || [];
                         var claseExtra = eventosHoy.length > 0 ? 'cal-dia-con-eventos' : '';
+                        if (fechaStr === hoyStr) claseExtra += ' cal-dia-hoy';
                         html += '<div class="cal-dia ' + claseExtra + '" data-fecha="' + fechaStr + '">' +
                                 '<div class="cal-dia-num">' + diaActual + '</div>';
                         if (eventosHoy.length > 0) {

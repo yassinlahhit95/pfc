@@ -27,6 +27,7 @@ if (!$row) {
 // Attach cycle info for students or professors (if they are a tutor)
 $ciclo = null;
 $hijosCount = 0;
+$hijos = [];
 
 if ($type === 'estudiante' && !empty($row['idCiclo'])) {
     $sc = mysqli_prepare($con,
@@ -41,11 +42,9 @@ if ($type === 'estudiante' && !empty($row['idCiclo'])) {
     mysqli_stmt_execute($sc);
     $ciclo = mysqli_fetch_assoc(mysqli_stmt_get_result($sc)) ?: null;
 } elseif ($type === 'tutor') {
-    $sc = mysqli_prepare($con, 'SELECT COUNT(*) as c FROM estudiante_tutor WHERE idTutor = ?');
-    mysqli_stmt_bind_param($sc, 'i', $uid);
-    mysqli_stmt_execute($sc);
-    $res = mysqli_fetch_assoc(mysqli_stmt_get_result($sc));
-    $hijosCount = (int)($res['c'] ?? 0);
+    require_once __DIR__ . '/../../modelos/tutores.php';
+    $hijos = listarEstudiantesPorTutor($uid);
+    $hijosCount = count($hijos);
 }
 
 v1Ok([
@@ -53,4 +52,5 @@ v1Ok([
     'profile'   => v1Strip($row),
     'ciclo'     => $ciclo,
     'hijos_count' => $hijosCount,
+    'hijos'     => $hijos,
 ]);

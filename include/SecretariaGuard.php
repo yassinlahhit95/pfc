@@ -34,7 +34,10 @@ if (!empty($_SESSION['must_change_password'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuardSec) {
         header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.']);
+        // new_csrf lets a long-lived AJAX page (dashboard widgets, not just
+        // one-shot forms) recover on its own instead of getting permanently
+        // stuck until a manual reload — see AdminGuard.php's matching comment.
+        echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.', 'new_csrf' => Security::generateCSRFToken()]);
         exit;
     }
     require __DIR__ . '/../vistas/error.php';

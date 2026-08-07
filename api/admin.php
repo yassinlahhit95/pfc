@@ -106,9 +106,8 @@ if ($action === 'pair') {
     }
 
     // Single-use: clear the code immediately so it can't be replayed. Also
-    // auto-fill SAAS_ADMIN_URL from the pairing request if saas-admin sent one —
-    // cron/sync_saas_license.php needs it to call back out, and this saves the
-    // admin from having to hand-configure it too.
+    // auto-fill SAAS_ADMIN_URL from the pairing request if saas-admin sent one,
+    // saving the admin from having to hand-configure it too.
     $envUpdates = ['SAAS_PAIRING_CODE' => '', 'SAAS_PAIRING_EXPIRES' => '0'];
     $saasUrl = trim((string)($payload['saas_url'] ?? ''));
     if ($saasUrl !== '' && filter_var($saasUrl, FILTER_VALIDATE_URL)) {
@@ -197,6 +196,13 @@ $licenseToken = trim($payload['license_token'] ?? '');
 $licenseTokenStored = false;
 if ($licenseToken) {
     $licenseTokenStored = storeLicenseToken($pdo, $licenseToken);
+    // Without this, a pushed token (e.g. after a force-feature toggle from saas-admin)
+    // sits behind FeatureGuard's APCu (60s) / session (5s) cache instead of applying
+    // immediately — same reason toggle_feature.php clears it on the local-admin path.
+    if ($licenseTokenStored) {
+        require_once dirname(__DIR__) . '/include/FeatureGuard.php';
+        FeatureGuard::clearCache();
+    }
 }
 
 // ── Route ──────────────────────────────────────────────────────────────────────
@@ -230,6 +236,27 @@ switch ($action) {
             }
         }
         apiOk(['stats' => $counts]);
+
+    // GET /api/admin.php?action=storage — real R2 usage + this client's plan
+    // quota, for saas-admin's connection page (same numbers Estado de la
+    // Plataforma shows locally, via the same R2Client/FeatureGuard).
+    case 'storage':
+        require_once dirname(__DIR__) . '/include/R2Client.php';
+        require_once dirname(__DIR__) . '/include/FeatureGuard.php';
+        try {
+            $usage = R2Client::totalUsage();
+            $limitGb = FeatureGuard::getMaxStorageGb();
+            $limitBytes = ($limitGb !== null && $limitGb > 0)
+                ? $limitGb * 1024 * 1024 * 1024
+                : 10 * 1024 * 1024 * 1024; // R2 free-tier default, no plan quota assigned yet
+            apiOk([
+                'bytes'       => $usage['bytes'],
+                'objectCount' => $usage['objectCount'],
+                'limitBytes'  => $limitBytes,
+            ]);
+        } catch (Throwable $e) {
+            apiOk(['bytes' => null, 'objectCount' => null, 'limitBytes' => null, 'configured' => false]);
+        }
 
     // GET /api/admin.php?action=features
     case 'features':

@@ -50,7 +50,7 @@ final faqsProvider = Provider<Map<String, List<FAQItem>>>((ref) {
 
 const _translations = {
   'es': {
-    'nav_alumnos': 'Alumnos',
+    'nav_alumnos': 'Estudiantes',
     'nav_alumnos_sub': 'Gestión de estudiantes',
     'nav_asistencias_centro': 'Asistencia Centro',
     'nav_asistencias_centro_sub': 'Control general',
@@ -58,6 +58,7 @@ const _translations = {
     'nav_profesores_sub': 'Claustro docente',
     'nav_secretarias': 'Secretarías',
     'nav_secretarias_sub': 'Gestión de personal',
+    'nav_planificacion': 'Planificación',
     'greeting_morning': 'Buenos días',
     'greeting_afternoon': 'Buenas tardes',
     'greeting_evening': 'Buenas noches',
@@ -140,6 +141,7 @@ const _translations = {
     'nav_profesores_sub': 'Teaching staff',
     'nav_secretarias': 'Secretaries',
     'nav_secretarias_sub': 'Staff management',
+    'nav_planificacion': 'Planning',
     'greeting_morning': 'Good morning',
     'greeting_afternoon': 'Good afternoon',
     'greeting_evening': 'Good evening',
@@ -214,7 +216,7 @@ const _translations = {
     'metric_al_dia': 'Up to date',
   },
   'ca': {
-    'nav_alumnos': 'Alumnes',
+    'nav_alumnos': 'Estudiants',
     'nav_alumnos_sub': 'Gestió d\'estudiants',
     'nav_asistencias_centro': 'Assistència Centre',
     'nav_asistencias_centro_sub': 'Control general',
@@ -222,6 +224,7 @@ const _translations = {
     'nav_profesores_sub': 'Claustre docent',
     'nav_secretarias': 'Secretaries',
     'nav_secretarias_sub': 'Gestió de personal',
+    'nav_planificacion': 'Planificació',
     'greeting_morning': 'Bon dia',
     'greeting_afternoon': 'Bona tarda',
     'greeting_evening': 'Bona nit',
@@ -304,6 +307,7 @@ const _translations = {
     'nav_profesores_sub': 'Irakasle taldea',
     'nav_secretarias': 'Idazkariak',
     'nav_secretarias_sub': 'Langileen kudeaketa',
+    'nav_planificacion': 'Plangintza',
     'greeting_morning': 'Egun on',
     'greeting_afternoon': 'Arratsalde on',
     'greeting_evening': 'Gabon',

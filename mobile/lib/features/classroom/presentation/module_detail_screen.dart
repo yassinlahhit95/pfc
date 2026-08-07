@@ -9,7 +9,6 @@ import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
-import '../../../core/widgets/premium.dart';
 import '../data/classroom_repository.dart';
 
 class ModuleDetailScreen extends ConsumerWidget {
@@ -19,29 +18,14 @@ class ModuleDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(sessionControllerProvider).value?.role;
-    final isProfesor = role == UserRole.profesor;
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(module.nombre),
-          bottom: const TabBar(tabs: [
-            Tab(text: 'Archivos'),
-            Tab(text: 'Sesiones'),
-          ]),
-        ),
-        body: TabBarView(
-          children: [
-            _FilesTab(
-                idModulo: module.id, canFavorite: role == UserRole.estudiante),
-            _SessionsTab(
-                idModulo: module.id,
-                moduleName: module.nombre,
-                isProfesor: isProfesor),
-          ],
-        ),
-      ),
+    // "Sesiones vivas" removed for every role — was the only reason this
+    // screen needed a TabBar at all, so it's back to a single body instead
+    // of a tab bar with one lonely tab.
+    return Scaffold(
+      appBar: AppBar(title: Text(module.nombre)),
+      body: _FilesTab(
+          idModulo: module.id, canFavorite: role == UserRole.estudiante),
     );
   }
 }
@@ -301,7 +285,10 @@ Future<bool?> showTaskDetailSheet(
   }
 }
 
-/// Shared bottom-sheet chrome — rounded top, drag handle.
+/// Shared bottom-sheet chrome — rounded top, drag handle, scrollable body.
+/// The scroll view matters once a task's full description (previously
+/// nowhere in this sheet at all, see _SubmitSheet/_ViewSubmissionSheet) is
+/// long enough to push the submit button off-screen on a small device.
 class _Sheet extends StatelessWidget {
   const _Sheet({required this.child});
   final Widget child;
@@ -312,6 +299,9 @@ class _Sheet extends StatelessWidget {
     return Container(
       padding:
           const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.88,
+      ),
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius:
@@ -328,7 +318,7 @@ class _Sheet extends StatelessWidget {
                 color: scheme.outlineVariant,
                 borderRadius: BorderRadius.circular(Radii.pill)),
           ),
-          child,
+          Flexible(child: SingleChildScrollView(child: child)),
         ],
       ),
     );
@@ -397,6 +387,23 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
             const SizedBox(height: 4),
             Text(widget.task.titulo,
                 style: Theme.of(context).textTheme.bodySmall),
+            // Enunciado completo del profesor — antes no aparecía en ningún
+            // sitio de este sheet (solo un resumen de 2 líneas en la tarjeta
+            // de la lista), así que si la tarea no llevaba archivo adjunto el
+            // estudiante no tenía forma de leer las instrucciones completas.
+            if (widget.task.descripcion.isNotEmpty) ...[
+              const SizedBox(height: Space.md),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(Space.md),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(Radii.md),
+                ),
+                child: Text(widget.task.descripcion,
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ),
+            ],
             if (widget.task.archivoAdjunto != null) ...[
               const SizedBox(height: Space.sm),
               Align(
@@ -526,6 +533,21 @@ class _ViewSubmissionSheet extends ConsumerWidget {
                       : task.titulo,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
+                if (task.descripcion.isNotEmpty) ...[
+                  const SizedBox(height: Space.md),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(Space.md),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(Radii.md),
+                    ),
+                    child: Text(task.descripcion,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ),
+                ],
                 const SizedBox(height: Space.xl),
                 if (task.archivoAdjunto != null) ...[
                   Align(
@@ -741,243 +763,6 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
               : const Text('Guardar'),
         ),
       ],
-    );
-  }
-}
-
-// ── Sesiones vivas ─────────────────────────────────────────────────────
-
-final _sessionsProvider =
-    FutureProvider.autoDispose.family<List<ClassroomSession>, int>(
-  (ref, idModulo) =>
-      ref.read(classroomRepositoryProvider).fetchSessions(idModulo),
-);
-
-class _SessionsTab extends ConsumerWidget {
-  const _SessionsTab(
-      {required this.idModulo,
-      required this.moduleName,
-      required this.isProfesor});
-  final int idModulo;
-  final String moduleName;
-  final bool isProfesor;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sessionsAsync = ref.watch(_sessionsProvider(idModulo));
-    return Scaffold(
-      body: AsyncView<List<ClassroomSession>>(
-        value: sessionsAsync,
-        onRetry: () => ref.invalidate(_sessionsProvider(idModulo)),
-        data: (context, sessions) {
-          if (sessions.isEmpty) {
-            return const EmptyState(
-                icon: Icons.video_camera_front_outlined,
-                title: 'Sin sesiones vivas');
-          }
-          return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(_sessionsProvider(idModulo)),
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(
-                  Space.xl, Space.lg, Space.xl, Space.xxxl),
-              itemCount: sessions.length,
-              itemBuilder: (context, i) => _SessionCard(session: sessions[i]),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: isProfesor
-          ? FloatingActionButton(
-              onPressed: () async {
-                final created = await showModalBottomSheet<bool>(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (_) => _CreateSessionSheet(
-                      idModulo: idModulo, moduleName: moduleName),
-                );
-                if (created == true)
-                  ref.invalidate(_sessionsProvider(idModulo));
-              },
-              child: const Icon(Icons.add_rounded),
-            )
-          : null,
-    );
-  }
-}
-
-class _SessionCard extends StatelessWidget {
-  const _SessionCard({required this.session});
-  final ClassroomSession session;
-
-  @override
-  Widget build(BuildContext context) {
-    final date = DateTime.tryParse(session.fechaSesion);
-    return AppCard(
-      margin: const EdgeInsets.only(bottom: Space.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(session.titulo, style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: Space.sm),
-          if (session.descripcion != null && session.descripcion!.isNotEmpty)
-            Text(session.descripcion!,
-                style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: Space.sm),
-          Text(
-            '${date != null ? DateFormat('d MMM yyyy').format(date) : session.fechaSesion} · ${session.horaSesion.substring(0, 5)}'
-            '${session.plataforma != null && session.plataforma!.isNotEmpty ? ' · ${session.plataforma}' : ''}',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          if (session.enlaceReunion != null &&
-              session.enlaceReunion!.isNotEmpty) ...[
-            const SizedBox(height: Space.md),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.videocam_outlined),
-              label: const Text('Unirse'),
-              onPressed: () async {
-                await launchUrl(Uri.parse(session.enlaceReunion!),
-                    mode: LaunchMode.externalApplication);
-              },
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _CreateSessionSheet extends ConsumerStatefulWidget {
-  const _CreateSessionSheet({required this.idModulo, required this.moduleName});
-  final int idModulo;
-  final String moduleName;
-
-  @override
-  ConsumerState<_CreateSessionSheet> createState() =>
-      _CreateSessionSheetState();
-}
-
-class _CreateSessionSheetState extends ConsumerState<_CreateSessionSheet> {
-  final _tituloController = TextEditingController();
-  final _descripcionController = TextEditingController();
-  final _enlaceController = TextEditingController();
-  final _plataformaController = TextEditingController();
-  DateTime? _fecha;
-  TimeOfDay? _hora;
-  bool _saving = false;
-
-  Future<void> _create() async {
-    if (_tituloController.text.trim().isEmpty ||
-        _fecha == null ||
-        _hora == null) return;
-    setState(() => _saving = true);
-    final fechaStr = DateFormat('yyyy-MM-dd').format(_fecha!);
-    final horaStr =
-        '${_hora!.hour.toString().padLeft(2, '0')}:${_hora!.minute.toString().padLeft(2, '0')}:00';
-    try {
-      await ref.read(classroomRepositoryProvider).createSession(
-            idModulo: widget.idModulo,
-            titulo: _tituloController.text.trim(),
-            descripcion: _descripcionController.text.trim(),
-            fechaSesion: fechaStr,
-            horaSesion: horaStr,
-            enlaceReunion: _enlaceController.text.trim(),
-            plataforma: _plataformaController.text.trim(),
-          );
-      if (mounted) Navigator.of(context).pop(true);
-    } catch (e) {
-      setState(() => _saving = false);
-      if (mounted) {
-        await showErrorAlert(context, 'No se pudo crear la sesión.');
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _Sheet(
-      child: Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('Nueva sesión viva',
-                style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text(widget.moduleName,
-                style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: Space.xl),
-            TextField(
-                controller: _tituloController,
-                decoration: const InputDecoration(labelText: 'Título')),
-            const SizedBox(height: Space.md),
-            TextField(
-              controller: _descripcionController,
-              minLines: 2,
-              maxLines: 4,
-              decoration:
-                  const InputDecoration(labelText: 'Descripción (opcional)'),
-            ),
-            const SizedBox(height: Space.md),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-                      if (picked != null) setState(() => _fecha = picked);
-                    },
-                    child: Text(_fecha != null
-                        ? DateFormat('d MMM yyyy').format(_fecha!)
-                        : 'Fecha'),
-                  ),
-                ),
-                const SizedBox(width: Space.md),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final picked = await showTimePicker(
-                          context: context, initialTime: TimeOfDay.now());
-                      if (picked != null) setState(() => _hora = picked);
-                    },
-                    child:
-                        Text(_hora != null ? _hora!.format(context) : 'Hora'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Space.md),
-            TextField(
-              controller: _enlaceController,
-              decoration: const InputDecoration(
-                  labelText: 'Enlace de la reunión (opcional)'),
-            ),
-            const SizedBox(height: Space.md),
-            TextField(
-              controller: _plataformaController,
-              decoration:
-                  const InputDecoration(labelText: 'Plataforma (opcional)'),
-            ),
-            const SizedBox(height: Space.xl),
-            FilledButton(
-              onPressed: _saving ? null : _create,
-              child: _saving
-                  ? const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Crear sesión'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -20,6 +20,9 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../include/Cache.php";
 require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../modelos/notificacionesRecordatorios.php";
+require_once __DIR__ . "/../../../modelos/planificacion.php";
+$planPendientes = listarPlanificacionPendientes(5);
+$rolBase = 'admin';
 
 $stats = Cache::remember('admin_dashboard_stats_' . $_SESSION['idAdmin'], 60, function () {
     return [
@@ -460,11 +463,14 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 
 </section>
 
-<!-- Calendar widget -->
-<?php include __DIR__ . '/../../comunes/eventos/_calendario_widget.php'; ?>
+<!-- Calendar + Planificación, side by side -->
+<div class="dash-panels" style="grid-template-columns:1.4fr 1fr;">
+  <?php include __DIR__ . '/../../comunes/eventos/_calendario_widget.php'; ?>
+  <?php include __DIR__ . '/../../comunes/planificacion/_widget.php'; ?>
+</div>
 
 <!-- Modal evento (para calendar widget CRUD) -->
-<?php $rolBase = 'admin'; include __DIR__ . '/../../comunes/eventos/_modal_evento.php'; ?>
+<?php include __DIR__ . '/../../comunes/eventos/_modal_evento.php'; ?>
 
 <!-- Announcements + Events panels -->
 <div class="dash-panels">

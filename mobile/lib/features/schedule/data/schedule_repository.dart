@@ -11,6 +11,8 @@ class ScheduleSlot {
     required this.nombreProfesor,
     required this.codigoAula,
     required this.nombreAula,
+    this.nombreCiclo,
+    this.abreviaturaCiclo,
   });
 
   factory ScheduleSlot.fromJson(Map<String, dynamic> json) => ScheduleSlot(
@@ -21,6 +23,11 @@ class ScheduleSlot {
         nombreProfesor: json['nombreProfesor'] as String? ?? '',
         codigoAula: json['codigoAula'] as String? ?? '',
         nombreAula: json['nombreAula'] as String? ?? '',
+        // Only present for the tutor branch of /schedule.php — a tutor's
+        // merged multi-child schedule needs it to tell each child's cycle
+        // apart; null for every other role.
+        nombreCiclo: json['nombreCiclo'] as String?,
+        abreviaturaCiclo: json['abreviaturaCiclo'] as String?,
       );
 
   final String diaSemana;
@@ -30,6 +37,8 @@ class ScheduleSlot {
   final String nombreProfesor;
   final String codigoAula;
   final String nombreAula;
+  final String? nombreCiclo;
+  final String? abreviaturaCiclo;
 }
 
 class ScheduleRepository {
