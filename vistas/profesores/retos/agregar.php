@@ -20,7 +20,7 @@ $modulosElegidos = $datos['modulos'] ?? [];
 $mapaModulosElegidos = [];
 foreach ($modulosElegidos as $idModuloElegido) { $mapaModulosElegidos[$idModuloElegido] = true; }
 
-$tituloDelPagina = "AULAPRO | NUEVO RETO";
+$titulo_pagina = "Nuevo Reto";
 $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -71,7 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 }
 </style>
 <div class="cabecera">
-    <h1>NUEVO RETO</h1>
+    <h1>Nuevo Reto</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -154,7 +154,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 $(document).ready(function() {
     <?php if ($exito): ?>
-    if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');
+    if (window.Toast) Toast.show(<?= Security::jsonEncodeSafe($exito) ?>, 'success');
     <?php endif; ?>
 
     $('.formulario').on('submit', function(e) {

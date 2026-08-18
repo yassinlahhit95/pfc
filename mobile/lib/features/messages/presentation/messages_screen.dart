@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/messages_repository.dart';
 import 'new_thread_screen.dart';
 import 'thread_detail_screen.dart';
@@ -14,9 +15,10 @@ class MessagesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final threadsAsync = ref.watch(messageThreadsProvider);
     final scheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mensajes')),
+      appBar: AppBar(title: Text(t['nav_mensajeria'] ?? 'Mensajería')),
       body: AsyncView<List<MessageThread>>(
         value: threadsAsync,
         onRetry: () => ref.invalidate(messageThreadsProvider),

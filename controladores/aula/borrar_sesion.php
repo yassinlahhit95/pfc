@@ -11,6 +11,7 @@ require_once __DIR__ . "/../../include/Logger.php";
 // ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+if ($isAjax) { header('Content-Type: application/json'); }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'Método no permitido']); exit; }

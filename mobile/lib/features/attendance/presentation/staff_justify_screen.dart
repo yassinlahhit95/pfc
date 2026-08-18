@@ -10,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../../chat/data/chat_repository.dart';
 import '../../classroom/data/classroom_repository.dart';
 import '../data/attendance_repository.dart';
@@ -26,8 +27,10 @@ class StaffJustifyScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(sessionControllerProvider).value?.role;
+    final t = ref.watch(translationsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Justificar falta')),
+      appBar: AppBar(
+          title: Text(t['title_justificar_falta'] ?? 'Justificar falta')),
       body: role == UserRole.profesor
           ? const _ProfesorPicker()
           : const _StudentSearchPicker(),
@@ -99,9 +102,10 @@ class _ProfesorPickerState extends ConsumerState<_ProfesorPicker> {
       final result = await ref
           .read(attendanceRepositoryProvider)
           .fetchForModule(modulo.id);
-      if (mounted)
+      if (mounted) {
         setState(() =>
             _records = result.attendance.where((r) => r.canJustify).toList());
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -209,9 +213,10 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
     try {
       final contacts =
           await ref.read(chatRepositoryProvider).fetchContacts(query: query);
-      if (mounted)
+      if (mounted) {
         setState(() =>
             _results = contacts.where((c) => c.rol == 'estudiante').toList());
+      }
     } catch (_) {
       // keep previous results on error
     } finally {
@@ -228,8 +233,9 @@ class _StudentSearchPickerState extends ConsumerState<_StudentSearchPicker> {
       final records = await ref
           .read(attendanceRepositoryProvider)
           .fetchForStudent(student.uid);
-      if (mounted)
+      if (mounted) {
         setState(() => _records = records.where((r) => r.canJustify).toList());
+      }
     } finally {
       if (mounted) setState(() => _loadingRecords = false);
     }

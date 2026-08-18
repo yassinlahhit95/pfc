@@ -16,7 +16,7 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
 $profesoresPorModulo = listarProfesoresPorModulos(array_column($listaDeModulosActuales, 'idModulo'));
 
-$titulo_pagina = "AULAPRO | MÓDULOS PROFESIONALES";
+$titulo_pagina = "Módulos Profesionales";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -24,7 +24,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <div>
-        <h1>MÓDULOS PROFESIONALES</h1>
+        <h1>Módulos Profesionales</h1>
     </div>
     <div class="acciones-pagina">
         <a href="agregarModulos.php" class="boton-primario">
@@ -218,11 +218,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 iniciarPaginacion('tablaModulos', 15);
-var _ciclosData = <?= json_encode(array_map(fn($ciclo) => [
+var _ciclosData = <?= Security::jsonEncodeSafe(array_map(fn($ciclo) => [
     'valor'    => mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8'),
     'label'    => '[' . $ciclo['nombreNivel'] . '] ' . mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8'),
     'idNivel'  => (int)$ciclo['idNivel']
-], $listaDeCiclosParaFiltro), JSON_UNESCAPED_UNICODE) ?>;
+], $listaDeCiclosParaFiltro)) ?>;
 
 function cascadeCicloSelect(selectNivel) {
     var idNivel = parseInt($(selectNivel).val(), 10) || 0;

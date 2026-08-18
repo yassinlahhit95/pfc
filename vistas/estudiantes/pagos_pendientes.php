@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['comprobante'])) {
     }
 }
 
-$tituloDelPagina = "AulaPro - Pagos Pendientes";
+$titulo_pagina = "Pagos Pendientes";
 include_once __DIR__ . "/comunes/nav.php";
 ?>
 

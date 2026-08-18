@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
 
   # State management
-  flutter_riverpod: ^3.4.2
+  flutter_riverpod: any
 
   # Networking
   dio: ^5.4.3+1
@@ -64,11 +64,19 @@ dependencies:
   # separate `flutter pub run flutter_native_splash:create` asset-generation
   # step below, not for code that runs in the shipped app.
   flutter_native_splash: ^2.4.0
-
+  flutter_dotenv: ^6.0.1
+  riverpod_annotation: ^4.0.3
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  riverpod_generator: ^4.0.4
+  freezed: ^3.2.6-dev.1
+  json_serializable: ^6.14.1
+  go_router_builder: ^4.4.0
+  build_runner: ^2.15.1
 
 flutter_native_splash:
   color: "#0A0E1A"
@@ -78,3 +86,7 @@ flutter_native_splash:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
+    - .env.example
+    - assets/images/

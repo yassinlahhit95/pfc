@@ -128,7 +128,7 @@ function reemplazarBorradorLanding($plantilla, array $secciones) {
             "INSERT INTO landing_secciones (version, tipo, orden, visible, contenido) VALUES ('draft', ?, ?, 1, ?)");
         foreach (array_values($secciones) as $i => $seccion) {
             $orden = $i + 1;
-            $json  = json_encode($seccion['contenido'], JSON_UNESCAPED_UNICODE);
+            $json  = Security::jsonEncodeSafe($seccion['contenido']);
             mysqli_stmt_bind_param($stmt, 'sis', $seccion['tipo'], $orden, $json);
             if (!mysqli_stmt_execute($stmt)) throw new Exception(mysqli_stmt_error($stmt));
         }

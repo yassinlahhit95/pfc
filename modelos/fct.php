@@ -165,3 +165,44 @@ function obtenerNotaFCTEscala10(int $idEstudiante, int $idCiclo, string $metodoE
     if (empty($valores)) return ['media' => 0.0, 'huboNota' => false];
     return ['media' => array_sum($valores) / count($valores), 'huboNota' => true];
 }
+
+// Versión en lote de obtenerNotaFCTEscala10 para evitar consultas N+1.
+// Devuelve un array indexado por idEstudiante con ['media' => float, 'huboNota' => bool].
+function obtenerNotasFCTEscala10PorCiclo(int $idCiclo, string $metodoEvaluacion = 'ambos'): array {
+    $con = obtenerConexion();
+    $stmt = mysqli_prepare($con, "SELECT idEstudiante, nota, apto FROM fct WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    $valoresPorEstudiante = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $idEstudiante = (int)$fila['idEstudiante'];
+        if (!isset($valoresPorEstudiante[$idEstudiante])) {
+            $valoresPorEstudiante[$idEstudiante] = [];
+        }
+
+        if ($metodoEvaluacion === 'nota' && $fila['nota'] !== null) {
+            $valoresPorEstudiante[$idEstudiante][] = (float)$fila['nota'];
+        } elseif ($metodoEvaluacion === 'apto_no_apto' && $fila['apto'] !== null) {
+            $valoresPorEstudiante[$idEstudiante][] = ((int)$fila['apto'] === 1) ? 10.0 : 0.0;
+        } elseif ($metodoEvaluacion === 'ambos') {
+            if ($fila['nota'] !== null) {
+                $valoresPorEstudiante[$idEstudiante][] = (float)$fila['nota'];
+            } elseif ($fila['apto'] !== null) {
+                $valoresPorEstudiante[$idEstudiante][] = ((int)$fila['apto'] === 1) ? 10.0 : 0.0;
+            }
+        }
+    }
+
+    $resultados = [];
+    foreach ($valoresPorEstudiante as $idEst => $valores) {
+        if (empty($valores)) {
+            $resultados[$idEst] = ['media' => 0.0, 'huboNota' => false];
+        } else {
+            $resultados[$idEst] = ['media' => array_sum($valores) / count($valores), 'huboNota' => true];
+        }
+    }
+
+    return $resultados;
+}

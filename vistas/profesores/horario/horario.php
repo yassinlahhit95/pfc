@@ -49,7 +49,7 @@ if ($esTutor && $idCicloTutor) {
 
 $horarioCeldas = $idCicloHorario ? listarHorarioPorCiclo($idCicloHorario) : [];
 
-$tituloDelPagina = "AULAPRO | CUADRO HORARIO";
+$titulo_pagina = "Cuadro Horario";
 $seccionActual   = 'horario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -230,8 +230,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-window.HORARIO_AULAS     = <?= json_encode($aulasParaJs, JSON_UNESCAPED_UNICODE) ?>;
-window.HORARIO_END_SLOTS = <?= json_encode($endSlots) ?>;
+window.HORARIO_AULAS     = <?= Security::jsonEncodeSafe($aulasParaJs) ?>;
+window.HORARIO_END_SLOTS = <?= Security::jsonEncodeSafe($endSlots) ?>;
 window.HORARIO_CTRL_BASE = '../../../controladores/profesores/horario/';
 </script>
 <script src="<?= AssetMin::url(__DIR__, '../../../public/js/features/horario.js') ?>"></script>

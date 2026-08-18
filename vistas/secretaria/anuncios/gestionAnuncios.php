@@ -7,13 +7,13 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $anuncios = listarTodosLosAnuncios();
 
-$titulo_pagina = "AULAPRO | ANUNCIOS";
+$titulo_pagina = "Anuncios";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>ANUNCIOS</h1>
+    <h1>Anuncios</h1>
     <a href="agregarAnuncio.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVO ANUNCIO</a>
 </div>
 

@@ -20,7 +20,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 $resultados = listarRAPorModulo($idModulo);
 
-$titulo_pagina = "AULAPRO | GESTIONAR RA Y CE";
+$titulo_pagina = "Gestionar Ra y Ce";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -54,6 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php if (empty($criterios)): ?>
                         <div class="texto-suave texto-pequeno">No hay Criterios de Evaluación para este RA.</div>
                     <?php else: ?>
+                        <div class="contenedor-tabla">
                         <table style="width:100%; border-collapse:collapse;">
                             <?php foreach ($criterios as $ce): ?>
                                 <tr style="border-bottom:1px solid var(--border-1);">
@@ -62,6 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 </tr>
                             <?php endforeach; ?>
                         </table>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>

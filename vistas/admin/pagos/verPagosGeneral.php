@@ -34,7 +34,7 @@ $listaDePagosAMostrar = $idDelCicloParaFiltrar
 // igual que el widget del dashboard, para que ambos conteos coincidan.
 $listaPendientes = listarEstudiantesConPagosPendientes();
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE PAGOS";
+$titulo_pagina = "Gestión de Pagos";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -50,7 +50,7 @@ function _comprobanteUrlWeb(string $archivo): string {
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE PAGOS</h1>
+    <h1>Gestión de Pagos</h1>
     <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <button type="button" class="boton-secundario" onclick="$('#modal-pendientes').addClass('modal-abierto').removeClass('modal-cerrando')"
                 style="border-color:var(--rojo); color:var(--rojo); display:inline-flex; align-items:center; gap:8px;">

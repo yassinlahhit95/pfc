@@ -25,13 +25,13 @@ unset($_SESSION['datos_pago']);
 
 $todosLosEstudiantes = listarEstudiantes();
 
-$titulo_pagina = "AULAPRO | MODIFICAR PAGO";
+$titulo_pagina = "Modificar Pago";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR PAGO</h1>
+    <h1>Modificar Pago</h1>
     <a href="verPagos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

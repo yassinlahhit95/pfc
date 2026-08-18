@@ -9,15 +9,15 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $listaDeTodosLosProfesores = listarProfesores();
 
-$titulo_pagina = "AULAPRO | PROFESORES DEL CENTRO";
+$titulo_pagina = "Profesores del Centro";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
 ?>
 
 <div class="cabecera">
-    <h1>PROFESORES DEL CENTRO</h1>
-    <div class="acciones-pagina" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <h1>Profesores del Centro</h1>
+    <div class="acciones-pagina">
         <a href="../../../controladores/admin/profesores/exportarCSV.php" class="boton-secundario">
             <i class="fas fa-file-export"></i> EXPORTAR CSV
         </a>

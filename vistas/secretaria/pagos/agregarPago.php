@@ -31,13 +31,13 @@ $fechaLimite     = date('Y') . '-06-30';
 // Secretaría puede registrar pagos fuera de plazo.
 $esDespuesDeJunio = false;
 
-$titulo_pagina = "AULAPRO | REGISTRAR PAGO";
+$titulo_pagina = "Registrar Pago";
 $seccion = 'pagos';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
-    <h1>REGISTRAR NUEVO PAGO</h1>
+    <h1>Registrar Nuevo Pago</h1>
     <a href="verPagos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

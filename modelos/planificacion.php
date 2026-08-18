@@ -2,10 +2,18 @@
 // Cuaderno de planificación compartido entre director y secretaría — un único
 // listado de tareas por centro (no hay noción de "tablero personal").
 
+// Prepared statement (not mysqli_query) so numeric/tinyint columns come back
+// as native PHP int/bool via mysqlnd's binary protocol instead of strings —
+// mysqli_query's text protocol returns every column as a string, which made
+// json_encode emit "completada":"1" instead of 1. The mobile app's
+// `json['completada'] == 1` check never matched that string, so a task
+// toggled complete always displayed as still pending after the list refresh.
 function listarPlanificacion(): array {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM planificacion_tareas ORDER BY completada ASC, fechaCreacion ASC";
-    $res = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con,
+        "SELECT * FROM planificacion_tareas ORDER BY completada ASC, fechaCreacion ASC");
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $items = [];
     while ($fila = mysqli_fetch_assoc($res)) $items[] = $fila;
     return $items;

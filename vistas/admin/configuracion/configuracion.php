@@ -25,7 +25,7 @@ $saasLocked  = FeatureGuard::isLocked();
 // the app — an admin could enable something that silently does nothing.
 $featureState = FeatureGuard::getAll();
 
-$titulo_pagina = "AULAPRO | CONFIGURACIÓN DEL CENTRO";
+$titulo_pagina = "Configuración del Centro";
 $seccion = 'configuracion';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>

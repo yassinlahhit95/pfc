@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $estudiantesEliminados = listarEstudiantesEliminados();
 
-$titulo_pagina = 'AULAPRO | PAPELERA DE ESTUDIANTES';
+$titulo_pagina = 'Papelera de Estudiantes';
 $seccion = 'estudiantes';
 include __DIR__ . '/../comunes/nav.php';
 ?>
@@ -34,7 +34,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
     <?php else: ?>
         <div class="contenedor-tabla">
-            <table class="tabla-datos">
+            <table class="tabla-datos" id="tabla-papelera-estudiantes">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -87,3 +87,8 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-papelera-estudiantes', 15);
+});
+</script>

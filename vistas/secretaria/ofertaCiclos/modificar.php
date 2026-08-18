@@ -20,7 +20,7 @@ if (!$ciclo) {
 
 $rolBase = 'secretaria';
 
-$titulo_pagina = "AULAPRO | MODIFICAR CICLO";
+$titulo_pagina = "Modificar Ciclo";
 $seccion = 'ofertaCiclos';
 include_once __DIR__ . "/../comunes/nav.php";
 require __DIR__ . '/../../comunes/ofertaCiclos/_modificar.php';

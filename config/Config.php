@@ -89,6 +89,7 @@ class Config {
 
         // Brevo
         $this->config['BREVO_API_KEY'] = $this->env('BREVO_API_KEY', '');
+        $this->config['BREVO_SENDER_EMAIL'] = $this->env('BREVO_SENDER_EMAIL', $this->env('MAIL_FROM_ADDRESS', 'notas@yassin.agency'));
 
         // El secreto del QR del boletín debe estar en .env; nunca hardcodeado
         $this->config['BOLETIN_SECRET'] = $this->env('BOLETIN_SECRET', '');

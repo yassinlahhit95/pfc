@@ -27,7 +27,7 @@
             <li><strong>Telèfon:</strong> <?= !empty($cfg['telefonoCentro']) ? htmlspecialchars($cfg['telefonoCentro']) : '[Telèfon del centre]' ?></li>
             <li><strong>Correu electrònic:</strong> <?= !empty($emailCentro) ? '<a href="mailto:' . htmlspecialchars($emailCentro) . '">' . htmlspecialchars($emailCentro) . '</a>' : '[Email del centre]' ?></li>
             <li><strong>Activitat principal:</strong> Centre de formació professional i gestió educativa.</li>
-            <li><strong>Plataforma tecnològica:</strong> AulaPro — sistema de gestió escolar desenvolupat per AulaPro SaaS.</li>
+            <li><strong>Plataforma tecnològica:</strong> <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> — sistema de gestió escolar desenvolupat per <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> SaaS.</li>
         </ul>
     </section>
 

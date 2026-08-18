@@ -23,6 +23,7 @@ $idProfesor = $_SESSION['idProfesor'];
 $idSesion = (int)($_GET['id'] ?? 0);
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+if ($isAjax) { header('Content-Type: application/json'); }
 
 if (!Security::validateCSRFToken(null, false)) {
     if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'Solicitud inválida']); exit; }

@@ -29,7 +29,7 @@ $configTFG = $idConfig ? obtenerConfigTFG((int)$idConfig) : null;
 $configRetos = $idConfig ? obtenerConfigRetos((int)$idConfig) : null;
 $plantillas = listarPlantillasAcademicas();
 
-$titulo_pagina = "AULAPRO | CONFIGURACIÓN ACADÉMICA";
+$titulo_pagina = "Configuración Académica";
 $seccion = 'configuracion_academica';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
@@ -38,7 +38,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <div class="cabecera">
   <div>
-    <h1>CONFIGURACIÓN ACADÉMICA</h1>
+    <h1>Configuración Académica</h1>
     <p class="subtitulo-encabezado">Sustituye las reglas de nota fijas (peso examen/reto, aprobado=5, 2 evaluaciones) por una configuración propia del centro.</p>
   </div>
   <div>
@@ -397,7 +397,7 @@ if (!empty($todasConfigs)):
       <h2>Plantillas</h2>
       <p class="aw-ayuda">Aplica una plantilla para arrancar rápido (crea una configuración nueva, no toca la activa), o guarda la configuración actual como plantilla reutilizable.</p>
       <div class="contenedor-tabla">
-      <table class="tabla-datos">
+      <table class="tabla-datos" id="tabla-plantillas">
         <thead><tr><th>Nombre</th><th>Descripción</th><th></th></tr></thead>
         <tbody>
           <?php if (!$plantillas): ?>

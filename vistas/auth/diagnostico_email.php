@@ -19,7 +19,7 @@ if (isset($_SESSION['idAdmin'])) {
 
 if (!$hasAccess) {
     header('HTTP/1.1 403 Forbidden');
-    echo "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>Acceso Denegado</title><style>body{font-family:sans-serif;background:#0f172a;color:#f8fafc;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;}div{text-align:center;padding:2rem;background:#1e293b;border-radius:12px;border:1px solid #334155;box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);max-width:450px;line-height:1.6;}p{margin:10px 0;}</style></head><body><div><h2>Acceso Denegado</h2><p>La llave de API (?key=...) es incorrecta o no está configurada en el archivo <code>.env</code> de producción.</p><p style='font-size:0.9rem;color:#94a3b8;margin-top:1rem;'><strong>Tip para acceder:</strong> Inicia sesión como administrador en tu panel de AulaPro y vuelve a entrar a esta URL. Se te dará acceso automático sin necesidad de usar la llave.</p></div></body></html>";
+    echo "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>Acceso Denegado</title><style>body{font-family:sans-serif;background:#0f172a;color:#f8fafc;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;}div{text-align:center;padding:2rem;background:#1e293b;border-radius:12px;border:1px solid #334155;box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);max-width:450px;line-height:1.6;}p{margin:10px 0;}</style></head><body><div><h2>Acceso Denegado</h2><p>La llave de API (?key=...) es incorrecta o no está configurada en el archivo <code>.env</code> de producción.</p><p style='font-size:0.9rem;color:#94a3b8;margin-top:1rem;'><strong>Tip para acceder:</strong> Inicia sesión como administrador en tu panel de Centro Educativo y vuelve a entrar a esta URL. Se te dará acceso automático sin necesidad de usar la llave.</p></div></body></html>";
     exit;
 }
 
@@ -87,7 +87,7 @@ $testEmailVal = $_POST['test_email'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'test_mail' && !empty($testEmailVal)) {
     $testEmail = filter_var($testEmailVal, FILTER_VALIDATE_EMAIL);
     if ($testEmail) {
-        $sent = sendEmail($testEmail, "Test de Correo — AulaPro Diagnóstico", "<h3>Test de Conexión</h3><p>Si recibes este correo, significa que el servidor web se conecta correctamente a la API de Brevo y el remitente es aceptado.</p>");
+        $sent = sendEmail($testEmail, "Test de Correo — Centro Educativo Diagnóstico", "<h3>Test de Conexión</h3><p>Si recibes este correo, significa que el servidor web se conecta correctamente a la API de Brevo y el remitente es aceptado.</p>");
         if ($sent) {
             $testResult = "<div class='alerta exito'>✓ ¡Email de prueba enviado exitosamente! Revisa tu bandeja de entrada o spam.</div>";
         } else {
@@ -109,7 +109,7 @@ $warningLogs = Logger::getTail('warning.log', 20);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AulaPro — Diagnóstico Integrado</title>
+    <title>Centro Educativo — Diagnóstico Integrado</title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <style>
         :root {
@@ -314,7 +314,7 @@ $warningLogs = Logger::getTail('warning.log', 20);
 <div class="container">
     <header>
         <div>
-            <h1>AulaPro — <span>Centro de Diagnóstico Integrado</span></h1>
+            <h1>Centro Educativo — <span>Centro de Diagnóstico Integrado</span></h1>
             <p style="color: var(--text-muted);">Herramienta de depuración de conexión, emails, base de datos y Firebase FCM</p>
         </div>
         <span class="badge badge-blue">Modo Diagnóstico</span>
@@ -526,13 +526,13 @@ $warningLogs = Logger::getTail('warning.log', 20);
         }
 
         // 4. Cargar configuraciones del backend
-        const apiKey = <?= json_encode($config->get('FIREBASE_API_KEY')) ?>;
-        const appId = <?= json_encode($config->get('FIREBASE_APP_ID')) ?>;
-        const projectId = <?= json_encode($config->get('FIREBASE_PROJECT_ID')) ?>;
-        const senderId = <?= json_encode($config->get('FIREBASE_MESSAGING_SENDER_ID')) ?>;
-        const authDomain = <?= json_encode($config->get('FIREBASE_AUTH_DOMAIN')) ?>;
-        const databaseURL = <?= json_encode($config->get('FIREBASE_DATABASE_URL')) ?>;
-        const vapidKey = <?= json_encode($config->get('FIREBASE_VAPID_KEY')) ?>;
+        const apiKey = <?= Security::jsonEncodeSafe($config->get('FIREBASE_API_KEY')) ?>;
+        const appId = <?= Security::jsonEncodeSafe($config->get('FIREBASE_APP_ID')) ?>;
+        const projectId = <?= Security::jsonEncodeSafe($config->get('FIREBASE_PROJECT_ID')) ?>;
+        const senderId = <?= Security::jsonEncodeSafe($config->get('FIREBASE_MESSAGING_SENDER_ID')) ?>;
+        const authDomain = <?= Security::jsonEncodeSafe($config->get('FIREBASE_AUTH_DOMAIN')) ?>;
+        const databaseURL = <?= Security::jsonEncodeSafe($config->get('FIREBASE_DATABASE_URL')) ?>;
+        const vapidKey = <?= Security::jsonEncodeSafe($config->get('FIREBASE_VAPID_KEY')) ?>;
 
         if (!apiKey || !appId || !projectId || !senderId || !vapidKey) {
             log("Faltan variables de Firebase en tu archivo `.env`. Verifica que todas estén definidas.", "error");

@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/I18n.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/tours.php";
 $datosTutor_menu        = obtenerTutorPorId($_SESSION['idTutor']);
@@ -26,11 +27,11 @@ function _nav_active_tutor($check) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title><?= Security::escapeHtml($titulo_pagina ?? FeatureGuard::getCenterName() . ' Familias') ?></title>
+  <title><?= Security::escapeHtml(FeatureGuard::getCenterName() . (isset($titulo_pagina) && !empty($titulo_pagina) ? ' | ' . $titulo_pagina : '')) ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
   <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
   <?php else: ?>
@@ -41,7 +42,7 @@ function _nav_active_tutor($check) {
   <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
-  <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
   <script>window.TWEAK_DEFAULTS={accent:"#10B981",dark:false,animation:7,density:"regular"};</script>
 </head>
@@ -206,7 +207,7 @@ function _nav_active_tutor($check) {
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
         completeUrl: 'controladores/comunes/tour/completar.php',
-        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        csrfToken: <?= Security::jsonEncodeSafe(Security::generateCSRFToken()) ?>,
         steps: [
           { selector: '[data-tour="hijo"]', title: 'Mis Hijos', text: 'Accede al expediente académico de cada hijo o hija vinculado a tu cuenta.', placement: 'right' },
           { selector: '[data-tour="pagos"]', title: 'Pagos y Recibos', text: 'Consulta los recibos y sube el comprobante cuando realices un pago.', placement: 'right' },

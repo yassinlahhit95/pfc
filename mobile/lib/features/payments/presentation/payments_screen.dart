@@ -8,6 +8,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../../attendance/presentation/center_attendance_screen.dart'
     show lookupsProvider;
 import '../data/payments_repository.dart';
@@ -48,7 +49,10 @@ class _PaymentsScreenState extends State<PaymentsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pagos'),
+        title: Consumer(
+          builder: (context, ref, _) =>
+              Text(ref.watch(translationsProvider)['nav_pagos'] ?? 'Pagos'),
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -131,8 +135,9 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
 
             final estados = <String>{};
             for (final p in allItems) {
-              if (p.estadoComprobante.isNotEmpty)
+              if (p.estadoComprobante.isNotEmpty) {
                 estados.add(p.estadoComprobante);
+              }
             }
 
             // if nivel is selected, show only ciclos for that nivel; else show all ciclos
@@ -149,8 +154,9 @@ class _AllPaymentsTabState extends ConsumerState<_AllPaymentsTab> {
             final items = allItems.where((p) {
               if (_ciclo != null && p.nombreCiclo != _ciclo) return false;
               if (_nivel != null && p.nivel != _nivel) return false;
-              if (_estado != null && p.estadoComprobante != _estado)
+              if (_estado != null && p.estadoComprobante != _estado) {
                 return false;
+              }
               return true;
             }).toList();
 

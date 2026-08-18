@@ -8,7 +8,7 @@ if (!$items) return;
     <div class="lp-sec-cabecera">
       <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['subtitulo'])): ?>
-      <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+      <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'] ?? '')) ?></p>
       <?php endif; ?>
     </div>
 

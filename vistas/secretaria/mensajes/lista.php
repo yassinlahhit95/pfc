@@ -29,7 +29,7 @@ $cAlumnos  = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor
 $cProfes   = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'profesor'));
 $cEnviados = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'admin'));
 
-$titulo_pagina = "AULAPRO | MENSAJERÍA";
+$titulo_pagina = "Mensajería";
 $seccion = 'mensajes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

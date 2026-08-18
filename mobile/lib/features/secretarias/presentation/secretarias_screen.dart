@@ -6,6 +6,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/password_confirmation_dialog.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/auth/auth_state.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/secretarias_repository.dart';
 import 'secretaria_form_sheet.dart';
 
@@ -26,10 +27,11 @@ class _SecretariasScreenState extends ConsumerState<SecretariasScreen> {
     final secretariasAsync = ref.watch(
       secretariasProvider(_searchQuery.isNotEmpty ? _searchQuery : null),
     );
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Secretarías'),
+        title: Text(t['nav_secretarias'] ?? 'Secretarías'),
       ),
       floatingActionButton: canManage
           ? FloatingActionButton(

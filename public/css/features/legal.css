@@ -13,7 +13,7 @@
     --mut:       var(--dim);
     --border:    var(--border-2);
     --shadow:    0 1px 4px rgb(0 0 0 / 8%), 0 4px 20px rgb(0 0 0 / 6%);
-    --font-head: "Schibsted Grotesk", system-ui, sans-serif;
+    --font-head: "Space Grotesk", system-ui, sans-serif;
     --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
     --nav-h:     72px;
     --container: 1200px;

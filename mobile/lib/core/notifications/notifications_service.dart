@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/chat/data/chat_repository.dart';
@@ -15,8 +16,8 @@ import '../router/home_shell.dart';
 /// `android.notification` block, so background/terminated tray entries (FCM
 /// auto-displayed) and foreground ones (shown by us via flutter_local_notifications
 /// below) land in the same, identically-named Android channel.
-const _kAndroidChannelId = 'aulapro_default';
-const _kAndroidChannelName = 'AulaPro';
+const _kAndroidChannelId = 'default_channel';
+final String _kAndroidChannelName = dotenv.env['APP_NAME'] ?? 'App';
 
 /// Top-level (required by the plugin) — runs in a separate isolate when a
 /// data message arrives while the app is backgrounded/terminated. Nothing to
@@ -98,7 +99,7 @@ class NotificationsService {
     await _localNotifs
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(const AndroidNotificationChannel(
+        ?.createNotificationChannel(AndroidNotificationChannel(
           _kAndroidChannelId,
           _kAndroidChannelName,
           importance: Importance.high,
@@ -111,8 +112,9 @@ class NotificationsService {
     // should refresh immediately either way, not just when a popup fires.
     if (message.data['type'] == 'chat_message') {
       final convId = int.tryParse(message.data['conv_id']?.toString() ?? '');
-      if (convId != null)
+      if (convId != null) {
         _ref.read(chatMessagePushProvider.notifier).state = convId;
+      }
     }
 
     final notif = message.notification;
@@ -122,14 +124,14 @@ class NotificationsService {
         id: message.hashCode,
         title: notif.title,
         body: notif.body,
-        notificationDetails: const NotificationDetails(
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _kAndroidChannelId,
             _kAndroidChannelName,
             importance: Importance.high,
             priority: Priority.high,
           ),
-          iOS: DarwinNotificationDetails(),
+          iOS: const DarwinNotificationDetails(),
         ),
         payload: jsonEncode(message.data),
       );

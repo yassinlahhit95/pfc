@@ -8,6 +8,12 @@ if (empty($slides)) {
 }
 $autoplay = ($contenido['autoplay'] ?? 'si') === 'si';
 $sliderId = 'hero-slider-' . uniqid();
+
+// LCP Optimization: Preload the first slide's background image
+$firstSlideImg = landing_img_url($slides[0]['imagen'] ?? '');
+if ($firstSlideImg !== '') {
+    echo '<link rel="preload" as="image" href="' . Security::escapeHtml($firstSlideImg) . '" fetchpriority="high">';
+}
 ?>
 <section class="lp-sec lp-hero-slider" id="hero-slider"<?= $styleInline ?? '' ?>>
   <div class="lp-slider-container" id="<?= $sliderId ?>">

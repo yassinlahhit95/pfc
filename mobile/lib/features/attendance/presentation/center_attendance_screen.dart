@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/attendance_repository.dart';
 import 'justify_sheet.dart';
 
@@ -74,10 +75,11 @@ class CenterAttendanceScreen extends ConsumerWidget {
     final filters = ref.watch(attendanceFiltersProvider);
     final asyncData = ref.watch(centerAttendanceProvider);
     final scheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Asistencias Centro'),
+        title: Text(t['nav_asistencias_centro'] ?? 'Asistencia Centro'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),

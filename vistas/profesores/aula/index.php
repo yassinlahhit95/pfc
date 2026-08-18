@@ -19,7 +19,7 @@ if ($esTutor && $idCicloTutor) {
     $ciclos = listarCiclosDeProfesor($idProfesor);
 }
 
-$tituloDelPagina = "AULAPRO | RECURSOS";
+$titulo_pagina = "Recursos";
 $seccionActual   = 'aula_recursos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

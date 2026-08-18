@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/gastos_repository.dart';
 import 'gasto_form_sheet.dart';
 
@@ -16,9 +17,11 @@ class GastosScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gastosAsync = ref.watch(gastosListProvider);
     final scheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Gastos del Centro')),
+      appBar: AppBar(
+          title: Text(t['title_gastos_centro'] ?? 'Gastos del Centro')),
       floatingActionButton: gastosAsync.value != null
           ? FloatingActionButton.extended(
               onPressed: () async {

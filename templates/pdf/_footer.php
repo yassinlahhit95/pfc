@@ -4,7 +4,7 @@
 ?>
 <htmlpagefooter name="page-footer">
   <div class="pdf-footer">
-    <?= htmlspecialchars($cfg['nombreCentro'] ?? 'AulaPro', ENT_QUOTES, 'UTF-8') ?>
+    <?= htmlspecialchars($cfg['nombreCentro'] ?? $cfg['nombreCentro'] ?? 'Centro Educativo', ENT_QUOTES, 'UTF-8') ?>
     <?php if (!empty($cicloInfo)): ?>
       &nbsp;—&nbsp; <?= htmlspecialchars($cicloInfo, ENT_QUOTES, 'UTF-8') ?>
     <?php endif; ?>

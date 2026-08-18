@@ -16,7 +16,7 @@ $idCiclo    = $estudiante['idCiclo'] ?? 0;
 $idModulo      = intval($_GET['id'] ?? 0);
 $carpetaActual = intval($_GET['carpeta'] ?? 0) ?: null;
 
-$tituloDelPagina = "AULAPRO | RECURSOS";
+$titulo_pagina = "Recursos";
 $seccionActual   = 'aula_recursos';
 
 // ── Vista 1: listado de módulos del ciclo (no se ha elegido módulo) ──
@@ -124,6 +124,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (empty($archivos) && empty($carpetas)): ?>
   <div class="recurso-vacio"><i class="fas fa-folder-open"></i><p>No hay materiales en esta carpeta.</p></div>
 <?php elseif (!empty($archivos)): ?>
+<div class="contenedor-tabla">
 <table class="recurso-lista">
   <thead><tr><th>Nombre</th><th>Fecha</th><th>Profesor</th><th>Tamaño</th><th style="text-align:right;">Acciones</th></tr></thead>
   <tbody>
@@ -143,7 +144,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
           <div class="recurso-menu">
             <?php if ($previa): ?>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl) ?>&modo=ver', <?= Security::escapeHtml(json_encode($archivo['nombreOriginal'])) ?>, '<?= Security::escapeHtml($archivo['extension']) ?>')"><i class="fas fa-eye"></i> Ver</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl) ?>&modo=ver', <?= Security::escapeHtml(Security::jsonEncodeSafe($archivo['nombreOriginal'])) ?>, '<?= Security::escapeHtml($archivo['extension']) ?>')"><i class="fas fa-eye"></i> Ver</button>
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
@@ -155,6 +156,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php endforeach; ?>
   </tbody>
 </table>
+</div>
 <?php endif; ?>
 
 <!-- Visor de documentos -->

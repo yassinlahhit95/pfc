@@ -54,7 +54,7 @@ $clasesHoy  = $idModulo ? listarClasesDeModuloPorDia($idModulo, $diaSemana) : []
 
 $paletaAvatares = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6'];
 
-$tituloDelPagina = "AULAPRO | Asistencia";
+$titulo_pagina = "Asistencia";
 $seccionActual   = "asistencias";
 require_once __DIR__ . "/../comunes/nav.php";
 ?>

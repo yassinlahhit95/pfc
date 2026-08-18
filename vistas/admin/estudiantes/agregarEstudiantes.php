@@ -16,13 +16,13 @@ $listaNiveles   = listarNiveles();
 $datos = $_SESSION['datos_estudiante'] ?? [];
 unset($_SESSION['datos_estudiante']);
 
-$titulo_pagina = "AULAPRO | NUEVO ESTUDIANTE";
+$titulo_pagina = "Nuevo Estudiante";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO ESTUDIANTE</h1>
+    <h1>Nuevo Estudiante</h1>
     <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -141,10 +141,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($todosLosCiclos) ?>;
-var todosCursos = <?= json_encode($todosLosCursos) ?>;
-var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? '') ?>;
-var idGrupoActual = <?= json_encode($datos['idGrupo'] ?? '') ?>;
+var todosCiclos = <?= Security::jsonEncodeSafe($todosLosCiclos) ?>;
+var todosCursos = <?= Security::jsonEncodeSafe($todosLosCursos) ?>;
+var anioEstudioActual = <?= Security::jsonEncodeSafe($datos['anioEstudio'] ?? '') ?>;
+var idGrupoActual = <?= Security::jsonEncodeSafe($datos['idGrupo'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();

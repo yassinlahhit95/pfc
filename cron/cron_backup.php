@@ -5,6 +5,11 @@
  * Requiere que "mysqldump" esté disponible en el PATH del servidor.
  */
 
+if (PHP_SAPI !== 'cli' && ($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1') {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 require_once __DIR__ . '/../config/Config.php';
 require_once __DIR__ . '/../modelos/conectar.php';
 

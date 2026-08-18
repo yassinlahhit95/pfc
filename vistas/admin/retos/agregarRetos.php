@@ -16,13 +16,13 @@ $listaCiclos = listarTodosLosCiclos();
 $datos = $_SESSION['datos_reto'] ?? [];
 unset($_SESSION['datos_reto']);
 
-$titulo_pagina = "AULAPRO | NUEVO RETO";
+$titulo_pagina = "Nuevo Reto";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>CREAR NUEVO RETO</h1>
+    <h1>Crear Nuevo Reto</h1>
     <a href="verRetos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -123,7 +123,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var _todosModulos = <?= json_encode(array_map(fn($modulo) => ['id' => (int)$modulo['idModulo'], 'ciclo' => (int)$modulo['idCiclo']], $todosLosModulos)) ?>;
+var _todosModulos = <?= Security::jsonEncodeSafe(array_map(fn($modulo) => ['id' => (int)$modulo['idModulo'], 'ciclo' => (int)$modulo['idCiclo']], $todosLosModulos)) ?>;
 
 function filtrarModulosReto() {
     var idCiclo = parseInt($('#filtroCicloReto').val()) || 0;

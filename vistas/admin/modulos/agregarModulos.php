@@ -24,13 +24,13 @@ if (!empty($datos['idCiclo'])) {
     }
 }
 
-$titulo_pagina = "AULAPRO | REGISTRAR MÓDULO";
+$titulo_pagina = "Registrar Módulo";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>REGISTRAR NUEVO MÓDULO</h1>
+    <h1>Registrar Nuevo Módulo</h1>
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -104,9 +104,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($todosLosCiclos) ?>;
-var todosCursos = <?= json_encode($todosLosCursos) ?>;
-var cursoAnioActual = <?= json_encode($datos['cursoAnio'] ?? '') ?>;
+var todosCiclos = <?= Security::jsonEncodeSafe($todosLosCiclos) ?>;
+var todosCursos = <?= Security::jsonEncodeSafe($todosLosCursos) ?>;
+var cursoAnioActual = <?= Security::jsonEncodeSafe($datos['cursoAnio'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivelNombre = $('#nivel').val();

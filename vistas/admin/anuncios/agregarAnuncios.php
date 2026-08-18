@@ -11,14 +11,14 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $datos = $_SESSION['datos_anuncio'] ?? [];
 unset($_SESSION['datos_anuncio']);
 
-$titulo_pagina = "AULAPRO | PUBLICAR NUEVO ANUNCIO";
+$titulo_pagina = "Publicar Nuevo Anuncio";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="contenedor-formulario-mediano">
     <div class="cabecera">
-        <h1>NUEVO ANUNCIO</h1>
+        <h1>Nuevo Anuncio</h1>
         <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 

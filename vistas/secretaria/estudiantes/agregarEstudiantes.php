@@ -14,13 +14,13 @@ require_once __DIR__ . "/../../../modelos/academico_config.php";
 $ciclos = listarTodosLosCiclos();
 $todosLosCursos = listarTodosLosCursosAcademicos();
 
-$titulo_pagina = 'AULAPRO | NUEVO ESTUDIANTE';
+$titulo_pagina = 'Nuevo Estudiante';
 $seccion = 'estudiantes';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO ESTUDIANTE</h1>
+    <h1>Nuevo Estudiante</h1>
     <a href="verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
@@ -107,9 +107,9 @@ include __DIR__ . '/../comunes/nav.php';
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
-var todosCiclos = <?= json_encode($ciclos) ?>;
-var todosCursos = <?= json_encode($todosLosCursos) ?>;
-var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? '') ?>;
+var todosCiclos = <?= Security::jsonEncodeSafe($ciclos) ?>;
+var todosCursos = <?= Security::jsonEncodeSafe($todosLosCursos) ?>;
+var anioEstudioActual = <?= Security::jsonEncodeSafe($datos['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();

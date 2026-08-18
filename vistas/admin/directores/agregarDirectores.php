@@ -9,13 +9,13 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $datos = $_SESSION['datos_director'] ?? [];
 unset($_SESSION['datos_director']);
 
-$titulo_pagina = "AULAPRO | REGISTRAR DIRECTOR";
+$titulo_pagina = "Registrar Director";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO DIRECTOR DE CICLO</h1>
+    <h1>Nuevo Director de Ciclo</h1>
     <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

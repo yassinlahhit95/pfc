@@ -127,6 +127,35 @@ String? homeRouteForType(String type) {
 }
 
 class _HomeShellState extends ConsumerState<HomeShell> {
+  // One controller per tab slot (5 = the largest role group's tab count) so
+  // switching tabs never disturbs another tab's scroll position. Each
+  // screen's own top-level ListView has no explicit controller of its own,
+  // so it automatically binds to whichever PrimaryScrollController wraps it
+  // (see IndexedStack below) — no changes needed in any individual screen.
+  final List<ScrollController> _scrollControllers =
+      List.generate(5, (_) => ScrollController());
+
+  @override
+  void dispose() {
+    for (final c in _scrollControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onDestinationSelected(int tapped, int current) {
+    if (tapped == current) {
+      final controller = _scrollControllers[tapped];
+      if (controller.hasClients) {
+        controller.animateTo(0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic);
+      }
+      return;
+    }
+    ref.read(homeTabIndexProvider.notifier).state = tapped;
+  }
+
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(sessionControllerProvider).value?.role;
@@ -148,12 +177,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     return Scaffold(
       body: IndexedStack(
         index: index,
-        children: [for (final tab in tabs) tab.screen],
+        children: [
+          for (var i = 0; i < tabs.length; i++)
+            PrimaryScrollController(
+              controller: _scrollControllers[i],
+              child: tabs[i].screen,
+            ),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
-        onDestinationSelected: (i) =>
-            ref.read(homeTabIndexProvider.notifier).state = i,
+        onDestinationSelected: (i) => _onDestinationSelected(i, index),
         destinations: tabs.map((tab) {
           final count = switch (tab.badge) {
             _Badge.messages => messagesUnread,

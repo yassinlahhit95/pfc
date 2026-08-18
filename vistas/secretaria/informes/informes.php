@@ -14,22 +14,22 @@ require_once __DIR__ . "/../../../modelos/niveles.php";
 $ciclos  = listarTodosLosCiclos();
 $niveles = listarNiveles();
 
-$titulo_pagina = "AULAPRO | INFORMES";
+$titulo_pagina = "Informes";
 $seccion = 'informes';
 include_once __DIR__ . "/../comunes/nav.php";
 
-$ciclosJson = json_encode(array_map(fn($ciclo) => [
+$ciclosJson = Security::jsonEncodeSafe(array_map(fn($ciclo) => [
     'id'      => (int)$ciclo['idCiclo'],
     'nombre'  => $ciclo['nombreCiclo'],
     'abrev'   => $ciclo['abreviaturaCiclo'],
     'idNivel' => (int)$ciclo['idNivel'],
-], $ciclos), JSON_UNESCAPED_UNICODE);
+], $ciclos));
 ?>
 <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/informes.css') ?>">
 
 <div class="cabecera">
     <div>
-        <h1>INFORMES Y DOCUMENTOS</h1>
+        <h1>Informes y Documentos</h1>
         <p class="subtitulo-encabezado">Genera documentos PDF automáticamente desde los datos del sistema</p>
     </div>
 </div>

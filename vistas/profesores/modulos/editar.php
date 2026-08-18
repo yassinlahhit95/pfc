@@ -23,13 +23,13 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$tituloDelPagina = "AULAPRO | EDITAR MÓDULO";
+$titulo_pagina = "Editar Módulo";
 $seccionActual   = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR MÓDULO</h1>
+    <h1>Editar Módulo</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

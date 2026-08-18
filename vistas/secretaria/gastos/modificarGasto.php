@@ -21,13 +21,13 @@ unset($_SESSION['datos_gasto']);
 
 $valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $gasto[$k] ?? '');
 
-$titulo_pagina = "AULAPRO | EDITAR GASTO";
+$titulo_pagina = "Editar Gasto";
 $seccion = 'gastos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR GASTO</h1>
+    <h1>Editar Gasto</h1>
     <a href="verGastos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

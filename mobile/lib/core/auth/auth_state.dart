@@ -1,16 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../storage/secure_storage.dart';
 import 'session.dart';
 
-final secureStorageProvider = Provider<SecureStorage>((ref) => SecureStorage());
+part 'auth_state.g.dart';
 
-final onboardingCompletedProvider =
-    AsyncNotifierProvider<OnboardingCompletedController, bool>(
-        OnboardingCompletedController.new);
+@Riverpod(keepAlive: true)
+SecureStorage secureStorage(Ref ref) {
+  return SecureStorage();
+}
 
-class OnboardingCompletedController extends AsyncNotifier<bool> {
+@Riverpod(keepAlive: true)
+class OnboardingCompletedController extends _$OnboardingCompletedController {
   @override
   Future<bool> build() async {
     final prefs = await SharedPreferences.getInstance();
@@ -27,7 +29,8 @@ class OnboardingCompletedController extends AsyncNotifier<bool> {
 /// Holds the current session (or null when logged out). Hydrated from
 /// [SecureStorage] on first read; every write is mirrored to storage so a
 /// force-killed app restores the session on next launch.
-class SessionController extends AsyncNotifier<Session?> {
+@Riverpod(keepAlive: true)
+class SessionController extends _$SessionController {
   @override
   Future<Session?> build() async {
     final storage = ref.read(secureStorageProvider);
@@ -99,6 +102,3 @@ class SessionController extends AsyncNotifier<Session?> {
     ref.invalidate(secureStorageProvider);
   }
 }
-
-final sessionControllerProvider =
-    AsyncNotifierProvider<SessionController, Session?>(SessionController.new);

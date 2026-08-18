@@ -26,9 +26,10 @@ if (!empty($_SESSION['idAdmin'])) {
     // Dirección puede supervisar cualquier recurso del aula
     $autorizado = true;
 } elseif (!empty($_SESSION['idProfesor'])) {
-    // El profesor solo puede acceder a recursos de los módulos que imparte
+    // El profesor puede acceder a recursos de los módulos que imparte o de ciclos que tutoriza
     $misModulos = listarModulosDeProfesor($_SESSION['idProfesor']);
-    if (in_array($archivo['idModulo'], array_column($misModulos, 'idModulo'))) {
+    $esTutorCiclo = (!empty($_SESSION['esTutor']) && !empty($_SESSION['idCicloTutor']) && $_SESSION['idCicloTutor'] == $idCiclo);
+    if (in_array($archivo['idModulo'], array_column($misModulos, 'idModulo')) || $esTutorCiclo) {
         $autorizado = true;
     }
 } elseif (!empty($_SESSION['idEstudiante'])) {

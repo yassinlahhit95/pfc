@@ -22,13 +22,13 @@ $estudiantes = $idCicloSeleccionado ? listarEstudiantesPorCiclo($idCicloSeleccio
 $profesores = listarProfesores();
 $empresas = listarEmpresas();
 
-$titulo_pagina = "AULAPRO | NUEVA FCT";
+$titulo_pagina = "Nueva FCT";
 $seccion = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVA FCT</h1>
+    <h1>Nueva FCT</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

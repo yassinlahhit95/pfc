@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../../include/FeatureGuard.php';
 require_once __DIR__ . '/../../../modelos/asistencias.php';
 require_once __DIR__ . '/../../../modelos/justificacionesFalta.php';
 require_once __DIR__ . '/../../../modelos/pagos.php';
-$titulo_pagina = 'AulaPro Familias — Panel Principal';
+$titulo_pagina = 'Aulapro Familias — Panel Principal';
 $seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 

@@ -5,6 +5,7 @@ require_once __DIR__ . "/../include/Security.php";
 Security::initSession();
 
 require_once __DIR__ . "/../include/FeatureGuard.php";
+require_once __DIR__ . "/../include/AccountLockout.php";
 require_once __DIR__ . "/../modelos/conectar.php";
 require_once __DIR__ . "/../modelos/directores.php";
 require_once __DIR__ . "/../modelos/profesores.php";
@@ -51,6 +52,15 @@ $email = strtolower(trim($payload['email']));
 $ip    = Security::clientIp();
 $con   = obtenerConexion();
 
+// Bloqueo por cuenta independiente de la IP (resistente a fuerza bruta distribuida)
+$lock = AccountLockout::status($con, $email);
+if ($lock['locked']) {
+    $_SESSION['errores'] = "Esta cuenta ha sido bloqueada temporalmente por motivos de seguridad. Por favor, inténtelo de nuevo en {$lock['minutes']} minutos.";
+    Logger::security('ACCOUNT_LOCKED', ['email' => $email, 'method' => 'google']);
+    header("Location: ../vistas/login.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN POR ROL (SCAN ALL USER TABLES)
 // ══════════════════════════════════════════════════════════════════════
@@ -74,7 +84,20 @@ if ($row) {
         }
     }
     Security::clearFailedLogins($email);
+    AccountLockout::clear($con, $email);
     Security::regenerateSession();
+
+    if (!empty($row['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $row['idDirector'],
+            'role'        => 'idAdmin',
+            'must_change' => false,
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $row['idDirector'], 'email' => $email, 'method' => 'google']);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
 
     $_SESSION['idAdmin'] = $row['idDirector'];
     $_SESSION['must_change_password'] = false;
@@ -91,7 +114,20 @@ mysqli_stmt_execute($st);
 $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
 if ($row) {
     Security::clearFailedLogins($email);
+    AccountLockout::clear($con, $email);
     Security::regenerateSession();
+
+    if (!empty($row['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $row['idProfesor'],
+            'role'        => 'idProfesor',
+            'must_change' => false,
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $row['idProfesor'], 'email' => $email, 'method' => 'google']);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
 
     $_SESSION['idProfesor']   = $row['idProfesor'];
     $_SESSION['esTutor']      = !empty($row['esTutor']) ? 1 : 0;
@@ -110,7 +146,20 @@ mysqli_stmt_execute($st);
 $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
 if ($row) {
     Security::clearFailedLogins($email);
+    AccountLockout::clear($con, $email);
     Security::regenerateSession();
+
+    if (!empty($row['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $row['idTutor'],
+            'role'        => 'idTutor',
+            'must_change' => false,
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $row['idTutor'], 'email' => $email, 'method' => 'google']);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
 
     $_SESSION['idTutor'] = $row['idTutor'];
     $_SESSION['must_change_password'] = false;
@@ -136,7 +185,20 @@ if ($row) {
         }
     }
     Security::clearFailedLogins($email);
+    AccountLockout::clear($con, $email);
     Security::regenerateSession();
+
+    if (!empty($row['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $row['idSecretaria'],
+            'role'        => 'idSecretaria',
+            'must_change' => false,
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $row['idSecretaria'], 'email' => $email, 'method' => 'google']);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
 
     $_SESSION['idSecretaria'] = $row['idSecretaria'];
     $_SESSION['must_change_password'] = false;
@@ -147,13 +209,29 @@ if ($row) {
 }
 
 // 5. Estudiante
-$st = mysqli_prepare($con, "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND eliminado = 0 LIMIT 1");
+$st = mysqli_prepare($con, "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND deleted_at IS NULL AND (eliminado = 0 OR eliminado IS NULL) LIMIT 1");
 mysqli_stmt_bind_param($st, 's', $email);
 mysqli_stmt_execute($st);
 $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
 if ($row) {
+    if (function_exists('_descifrarFilaEstudiante')) {
+        $row = _descifrarFilaEstudiante($row);
+    }
     Security::clearFailedLogins($email);
+    AccountLockout::clear($con, $email);
     Security::regenerateSession();
+
+    if (!empty($row['mfa_enabled'])) {
+        $_SESSION['mfa_pending'] = [
+            'id'          => $row['idEstudiante'],
+            'role'        => 'idEstudiante',
+            'must_change' => false,
+            'ts'          => time(),
+        ];
+        Logger::security('LOGIN_MFA_REQUIRED', ['id' => $row['idEstudiante'], 'email' => $email, 'method' => 'google']);
+        header("Location: ../vistas/auth/mfa_verificar.php");
+        exit;
+    }
 
     $_SESSION['idEstudiante'] = $row['idEstudiante'];
     $_SESSION['must_change_password'] = false;
@@ -168,3 +246,4 @@ $_SESSION['errores'] = "Acceso denegado: esta cuenta de Google ({$email}) no est
 Logger::warning('GOOGLE_AUTH_USER_NOT_FOUND', ['email' => $email]);
 header("Location: ../vistas/login.php");
 exit;
+

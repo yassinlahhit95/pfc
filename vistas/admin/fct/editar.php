@@ -26,7 +26,7 @@ unset($_SESSION['datos_fct']);
 $empresas = listarEmpresas();
 $profesores = listarProfesores();
 
-$titulo_pagina = "AULAPRO | EDITAR FCT";
+$titulo_pagina = "Editar FCT";
 $seccion = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

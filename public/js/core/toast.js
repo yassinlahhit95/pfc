@@ -36,6 +36,10 @@
         '.toast-info .toast-bar{background:#3b82f6;}',
         '.toast-warn .toast-bar{background:#f59e0b;}',
         '.toast.removing{animation:toastOut .22s ease forwards;}',
+        '[data-theme="dark"] .toast-ok{background:#064e3b;color:#a7f3d0;border-color:#059669;}',
+        '[data-theme="dark"] .toast-err{background:#7f1d1d;color:#fecaca;border-color:#dc2626;}',
+        '[data-theme="dark"] .toast-info{background:#1e3a8a;color:#bfdbfe;border-color:#2563eb;}',
+        '[data-theme="dark"] .toast-warn{background:#78350f;color:#fde68a;border-color:#d97706;}',
         '@keyframes toastIn{from{opacity:0;transform:translateX(50px) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}',
         '@keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(50px);}}',
         /* En móvil el FAB pasa a bottom:max(20px,safe-area), 56px de alto —
@@ -105,7 +109,13 @@
 
         var selectors = [
             { sel: '.mensaje-exito', type: 'ok' },
-            { sel: '.mensaje-error', type: 'err' }
+            { sel: '.mensaje-error', type: 'err' },
+            { sel: '.alerta-exito', type: 'ok' },
+            { sel: '.alerta-error', type: 'err' },
+            { sel: '.alerta-info', type: 'info' },
+            { sel: '.alerta-warning', type: 'warn' },
+            { sel: '.mensaje-info', type: 'info' },
+            { sel: '.mensaje-advertencia', type: 'warn' }
         ];
 
         selectors.forEach(function (entry) {

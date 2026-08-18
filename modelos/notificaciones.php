@@ -16,7 +16,9 @@ function crearNotificacion(int $idUsuario, string $tipoUsuario, string $tipo, st
     $stmt = mysqli_prepare($con,
         "INSERT INTO notificaciones (idUsuario, tipoUsuario, tipo, mensaje, url) VALUES (?, ?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, "issss", $idUsuario, $tipoUsuario, $tipo, $mensaje, $url);
-    return mysqli_stmt_execute($stmt);
+    $ok = mysqli_stmt_execute($stmt);
+    if ($ok) Cache::forget("notif_no_leidas_{$tipoUsuario}_{$idUsuario}");
+    return $ok;
 }
 
 function contarNotificacionesNoLeidas(int $idUsuario, string $tipoUsuario): int {
@@ -56,5 +58,30 @@ function marcarNotificacionesLeidas(int $idUsuario, string $tipoUsuario, array $
         "UPDATE notificaciones SET leido = 1
          WHERE idUsuario = ? AND tipoUsuario = ? AND idNotificacion IN ($placeholders)");
     mysqli_stmt_bind_param($stmt, "is{$tipos}", $idUsuario, $tipoUsuario, ...$ids);
-    return mysqli_stmt_execute($stmt);
+    $ok = mysqli_stmt_execute($stmt);
+    if ($ok) Cache::forget("notif_no_leidas_{$tipoUsuario}_{$idUsuario}");
+    return $ok;
+}
+
+function marcarTodasNotificacionesLeidas(int $idUsuario, string $tipoUsuario): bool {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "UPDATE notificaciones SET leido = 1 WHERE idUsuario = ? AND tipoUsuario = ? AND leido = 0");
+    mysqli_stmt_bind_param($stmt, "is", $idUsuario, $tipoUsuario);
+    $ok = mysqli_stmt_execute($stmt);
+    if ($ok) Cache::forget("notif_no_leidas_{$tipoUsuario}_{$idUsuario}");
+    return $ok;
+}
+
+// Historial completo (leídas + no leídas) para una bandeja de entrada real —
+// a diferencia de listarNotificacionesNoLeidas(), que solo alimenta la
+// vista previa de la campana con las pendientes.
+function listarNotificaciones(int $idUsuario, string $tipoUsuario, int $limite = 50): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT * FROM notificaciones WHERE idUsuario = ? AND tipoUsuario = ?
+         ORDER BY idNotificacion DESC LIMIT ?");
+    mysqli_stmt_bind_param($stmt, "isi", $idUsuario, $tipoUsuario, $limite);
+    mysqli_stmt_execute($stmt);
+    return mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 }

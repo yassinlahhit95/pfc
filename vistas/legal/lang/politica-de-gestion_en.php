@@ -21,7 +21,7 @@
 
     <section class="legal-section" id="objetivo">
         <h2><i class="fas fa-bullseye"></i> 1. Objective & Scope</h2>
-        <p>This <strong>Management Policy</strong> describes the service quality, information security, and continuity commitments of the <strong>AulaPro</strong> school management platform.</p>
+        <p>This <strong>Management Policy</strong> describes the service quality, information security, and continuity commitments of the <strong><?= htmlspecialchars(FeatureGuard::getCenterName()) ?></strong> school management platform.</p>
     </section>
 
     <section class="legal-section" id="sla">
@@ -48,7 +48,7 @@
 
     <section class="legal-section" id="seguridad">
         <h2><i class="fas fa-shield-alt"></i> 3. Information Security</h2>
-        <p>AulaPro implements advanced security: access controls with bcrypt hashing, 2FA for administrative roles, international IP geoblocking, secure session cookies, HTTPS/TLS protocols, SQL prepared statements, and CSRF/XSS prevention.</p>
+        <p><?= htmlspecialchars(FeatureGuard::getCenterName()) ?> implements advanced security: access controls with bcrypt hashing, 2FA for administrative roles, international IP geoblocking, secure session cookies, HTTPS/TLS protocols, SQL prepared statements, and CSRF/XSS prevention.</p>
     </section>
 
     <section class="legal-section" id="datos">
@@ -68,7 +68,7 @@
 
     <section class="legal-section" id="responsabilidades">
         <h2><i class="fas fa-handshake"></i> 7. Responsibilities</h2>
-        <p>AulaPro handles platform maintenance and encryption; the school is responsible for secure access credentials and staff permissions management.</p>
+        <p><?= htmlspecialchars(FeatureGuard::getCenterName()) ?> handles platform maintenance and encryption; the school is responsible for secure access credentials and staff permissions management.</p>
     </section>
 
     <section class="legal-section" id="mejora">

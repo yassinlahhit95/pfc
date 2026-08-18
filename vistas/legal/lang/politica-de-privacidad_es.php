@@ -53,7 +53,7 @@
             Solo tú ves este aviso (sesión de administrador): faltan datos de contacto del responsable del tratamiento por configurar en Administración → Configuración del Centro antes de publicar o enlazar esta política públicamente.
         </p>
         <?php endif; ?>
-        <p style="margin-top:12px;"><strong>Proveedor tecnológico (Encargado del tratamiento):</strong> AulaPro SaaS, responsable del sistema de gestión escolar, actúa como encargado del tratamiento bajo contrato de confidencialidad con el centro, en los términos del Art. 28 RGPD.</p>
+        <p style="margin-top:12px;"><strong>Proveedor tecnológico (Encargado del tratamiento):</strong> <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> SaaS, responsable del sistema de gestión escolar, actúa como encargado del tratamiento bajo contrato de confidencialidad con el centro, en los términos del Art. 28 RGPD.</p>
     </section>
 
     <section class="legal-section" id="datos">
@@ -135,7 +135,7 @@
 
     <section class="legal-section" id="app-movil">
         <h2><i class="fas fa-mobile-screen-button"></i> 8. Aplicación Móvil</h2>
-        <p>Al acceder con la app móvil de AulaPro se trata adicionalmente el token FCM (Firebase Cloud Messaging) para notificaciones push. La app almacena tus credenciales cifradas localmente y no solicita accesos invasivos.</p>
+        <p>Al acceder con la app móvil de <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> se trata adicionalmente el token FCM (Firebase Cloud Messaging) para notificaciones push. La app almacena tus credenciales cifradas localmente y no solicita accesos invasivos.</p>
     </section>
 
     <section class="legal-section" id="seguridad">

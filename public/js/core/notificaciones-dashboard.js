@@ -15,7 +15,13 @@
         if (window.AulaProUtils && window.AulaProUtils.resolveAppPath) {
             return window.AulaProUtils.resolveAppPath(relPath);
         }
-        return relPath;
+        if (window.AulaProResolveAppPath) return window.AulaProResolveAppPath(relPath);
+        if (window.resolveAppPath) return window.resolveAppPath(relPath);
+        var cleanRel = relPath.replace(/^(\.\.\/)+/, '');
+        var path = location.pathname.split('/');
+        var vIndex = path.indexOf('vistas');
+        var base = vIndex > -1 ? path.slice(0, vIndex).join('/') : '';
+        return base + '/' + cleanRel;
     }
 
     function csrfToken() {

@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $rolBase = 'secretaria';
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE EVENTOS";
+$titulo_pagina = "Gestión de Eventos";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 

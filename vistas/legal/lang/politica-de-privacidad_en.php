@@ -111,7 +111,7 @@
 
     <section class="legal-section" id="app-movil">
         <h2><i class="fas fa-mobile-screen-button"></i> 8. Mobile Application</h2>
-        <p>When accessing via the AulaPro app, the Firebase Cloud Messaging token is processed for notifications. Device parameters and access tokens are saved locally and encrypted (AES-256 via Android Keystore).</p>
+        <p>When accessing via the <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> app, the Firebase Cloud Messaging token is processed for notifications. Device parameters and access tokens are saved locally and encrypted (AES-256 via Android Keystore).</p>
     </section>
 
     <section class="legal-section" id="seguridad">

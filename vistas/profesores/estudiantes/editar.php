@@ -19,7 +19,7 @@ if (!$estudiante) {
     exit;
 }
 
-$tituloDelPagina = "AULAPRO | EDITAR ESTUDIANTE";
+$titulo_pagina = "Editar Estudiante";
 $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -30,7 +30,7 @@ $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR ESTUDIANTE</h1>
+    <h1>Editar Estudiante</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

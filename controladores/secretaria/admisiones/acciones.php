@@ -67,7 +67,7 @@ switch ($action) {
                 $email  = $datos['email'];
                 $nombre = $datos['nombre'];
                 $ciclo  = $datos['nombreCiclo'];
-                $subject = "Actualización de tu solicitud de admisión - AulaPro";
+                $subject = "Actualización de tu solicitud de admisión - ' . FeatureGuard::getCenterName() . '";
                 $html    = "";
 
                 if ($estado === 'aceptada') {
@@ -81,7 +81,7 @@ switch ($action) {
 
                     $nombreLimpio    = $cleanString($datos['nombre']);
                     $apellidosLimpio = $cleanString($datos['apellidos']);
-                    $emailInstitucional = $nombreLimpio . "." . $apellidosLimpio . "@aulapro.com";
+                    $emailInstitucional = $nombreLimpio . "." . $apellidosLimpio . "@centro.edu";
 
                     $con = obtenerConexion();
                     $dniCifrado = Crypto::encryptDeterministic($datos['dni']);
@@ -133,12 +133,12 @@ switch ($action) {
                                 mysqli_stmt_execute($stmtTI);
                                 $idTutorFinal = mysqli_insert_id($con);
 
-                                $subjT = "Bienvenida a AulaPro - Cuenta de Tutor Legal";
+                                $subjT = "Bienvenida a ' . FeatureGuard::getCenterName() . ' - Cuenta de Tutor Legal";
                                 $htmlT = "<h3>Hola {$datos['nombreTutor']},</h3>
-                                          <p>Su hijo/a <strong>{$datos['nombre']}</strong> ha sido admitido/a en AulaPro.</p>
+                                          <p>Su hijo/a <strong>{$datos['nombre']}</strong> ha sido admitido/a en ' . FeatureGuard::getCenterName() . '.</p>
                                           <p>Se le ha creado una cuenta de tutor para realizar el seguimiento académico.</p>
                                           <div style='background:#f3f4f6; padding:15px; border-radius:8px;'>
-                                            <p><strong>URL:</strong> <a href='{$loginUrl}'>Acceso AulaPro</a></p>
+                                            <p><strong>URL:</strong> <a href='{$loginUrl}'>Acceso ' . FeatureGuard::getCenterName() . '</a></p>
                                             <p><strong>Usuario (Email):</strong> {$datos['emailTutor']}</p>
                                             <p><strong>Contraseña:</strong> $passTutor</p>
                                           </div>";
@@ -162,13 +162,13 @@ switch ($action) {
                         $emailInstitucional = $filaRec['emailEstudiante'];
                     }
 
-                    $subject = "¡Enhorabuena! Has sido admitido en AulaPro";
+                    $subject = "¡Enhorabuena! Has sido admitido en ' . FeatureGuard::getCenterName() . '";
                     $html = "<h2>Hola {$datos['nombre']},</h2>
                              <p>Nos complace informarte que tu solicitud de admisión para el ciclo <strong>$ciclo</strong> ha sido <strong>APROBADA</strong>.</p>
                              <p>Se ha generado tu nueva cuenta institucional para acceder a la plataforma:</p>
                              <div style='background: #f3f4f6; padding: 20px; border-radius: 10px; margin: 20px 0;'>
                                 <h3 style='margin-top: 0;'>Tus credenciales de acceso:</h3>
-                                <p><strong>URL:</strong> <a href='{$loginUrl}'>Acceso AulaPro</a></p>
+                                <p><strong>URL:</strong> <a href='{$loginUrl}'>Acceso ' . FeatureGuard::getCenterName() . '</a></p>
                                 <p><strong>Email Institucional:</strong> <span style='color: #4f46e5; font-weight: bold;'>$emailInstitucional</span></p>
                                 <p><strong>Contraseña Temporal:</strong> $tempPass</p>
                                 <p><small>* Por seguridad, cambia tu contraseña al entrar por primera vez.</small></p>

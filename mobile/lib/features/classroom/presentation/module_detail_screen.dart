@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_bottom_sheet.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../data/classroom_repository.dart';
@@ -25,7 +26,10 @@ class ModuleDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(module.nombre)),
       body: _FilesTab(
-          idModulo: module.id, canFavorite: role == UserRole.estudiante),
+        idModulo: module.id,
+        canFavorite: role == UserRole.estudiante,
+        canManage: role == UserRole.profesor,
+      ),
     );
   }
 }
@@ -33,9 +37,13 @@ class ModuleDetailScreen extends ConsumerWidget {
 // ── Archivos ────────────────────────────────────────────────────────────
 
 class _FilesTab extends ConsumerStatefulWidget {
-  const _FilesTab({required this.idModulo, required this.canFavorite});
+  const _FilesTab(
+      {required this.idModulo,
+      required this.canFavorite,
+      required this.canManage});
   final int idModulo;
   final bool canFavorite;
+  final bool canManage;
 
   @override
   ConsumerState<_FilesTab> createState() => _FilesTabState();
@@ -45,13 +53,102 @@ class _FilesTabState extends ConsumerState<_FilesTab> {
   int? _openFolderId;
   String? _openFolderName;
 
+  Future<void> _openAddMenu() async {
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.cloud_upload_outlined),
+              title: const Text('Subir archivo'),
+              onTap: () => Navigator.of(context).pop('upload'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.create_new_folder_outlined),
+              title: const Text('Nueva carpeta'),
+              onTap: () => Navigator.of(context).pop('folder'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || choice == null) return;
+
+    final created = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => choice == 'upload'
+          ? _UploadFileSheet(idModulo: widget.idModulo, idCarpeta: _openFolderId)
+          : _CreateFolderSheet(idModulo: widget.idModulo, idPadre: _openFolderId),
+    );
+    if (created == true) {
+      ref.invalidate(_foldersProvider(widget.idModulo));
+      ref.invalidate(_filesProvider((widget.idModulo, _openFolderId)));
+      if (mounted) {
+        showSuccessSnack(
+            context, choice == 'upload' ? 'Archivo subido.' : 'Carpeta creada.');
+      }
+    }
+  }
+
+  Future<void> _deleteFolder(ClassroomFolder folder) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Eliminar carpeta'),
+        content: Text(
+            '¿Eliminar «${folder.nombre}» y todo su contenido? Esta acción no se puede deshacer.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar')),
+          FilledButton.tonal(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Eliminar')),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+    try {
+      await ref.read(classroomRepositoryProvider).deleteFolder(folder.id);
+      ref.invalidate(_foldersProvider(widget.idModulo));
+      if (mounted) showSuccessSnack(context, 'Carpeta eliminada.');
+    } catch (_) {
+      if (mounted) {
+        await showErrorAlert(context, 'No se pudo eliminar la carpeta.');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final body = _buildBody(context);
+    if (!widget.canManage) return body;
+    return Stack(
+      children: [
+        Positioned.fill(child: body),
+        Positioned(
+          right: Space.lg,
+          bottom: Space.lg,
+          child: FloatingActionButton(
+            onPressed: _openAddMenu,
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     if (_openFolderId != null) {
       return _FileList(
         idModulo: widget.idModulo,
         idCarpeta: _openFolderId,
         canFavorite: widget.canFavorite,
+        canManage: widget.canManage,
         header: ListTile(
           leading: const Icon(Icons.arrow_back),
           title: Text(_openFolderName ?? ''),
@@ -104,10 +201,17 @@ class _FilesTabState extends ConsumerState<_FilesTab> {
                                 ],
                               ),
                             ),
-                            Icon(Icons.chevron_right_rounded,
-                                size: 20,
-                                color: scheme.onSurfaceVariant
-                                    .withValues(alpha: 0.6)),
+                            if (widget.canManage)
+                              IconButton(
+                                icon: Icon(Icons.delete_outline_rounded,
+                                    size: 20, color: scheme.onSurfaceVariant),
+                                onPressed: () => _deleteFolder(f),
+                              )
+                            else
+                              Icon(Icons.chevron_right_rounded,
+                                  size: 20,
+                                  color: scheme.onSurfaceVariant
+                                      .withValues(alpha: 0.6)),
                           ],
                         ),
                       ),
@@ -119,7 +223,8 @@ class _FilesTabState extends ConsumerState<_FilesTab> {
             Expanded(
                 child: _FileList(
                     idModulo: widget.idModulo,
-                    canFavorite: widget.canFavorite)),
+                    canFavorite: widget.canFavorite,
+                    canManage: widget.canManage)),
           ],
         );
       },
@@ -145,11 +250,13 @@ class _FileList extends ConsumerWidget {
       {required this.idModulo,
       this.idCarpeta,
       this.header,
-      required this.canFavorite});
+      required this.canFavorite,
+      required this.canManage});
   final int idModulo;
   final int? idCarpeta;
   final Widget? header;
   final bool canFavorite;
+  final bool canManage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -173,7 +280,11 @@ class _FileList extends ConsumerWidget {
                 child: Center(child: Text('Sin archivos en esta carpeta')),
               ),
             for (final f in files)
-              _FileTile(file: f, filesKey: key, canFavorite: canFavorite),
+              _FileTile(
+                  file: f,
+                  filesKey: key,
+                  canFavorite: canFavorite,
+                  canManage: canManage),
           ],
         );
       },
@@ -183,10 +294,14 @@ class _FileList extends ConsumerWidget {
 
 class _FileTile extends ConsumerWidget {
   const _FileTile(
-      {required this.file, required this.filesKey, required this.canFavorite});
+      {required this.file,
+      required this.filesKey,
+      required this.canFavorite,
+      required this.canManage});
   final ClassroomFile file;
   final (int, int?) filesKey;
   final bool canFavorite;
+  final bool canManage;
 
   IconData get _icon => switch (file.extension.toLowerCase()) {
         'pdf' => Icons.picture_as_pdf_outlined,
@@ -238,6 +353,45 @@ class _FileTile extends ConsumerWidget {
             ),
           Icon(Icons.file_download_outlined,
               size: 20, color: scheme.onSurfaceVariant),
+          if (canManage)
+            IconButton(
+              icon: Icon(Icons.delete_outline_rounded,
+                  size: 20, color: scheme.onSurfaceVariant),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Eliminar archivo'),
+                    content: Text(
+                        '¿Eliminar «${file.nombreOriginal}»? Esta acción no se puede deshacer.'),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancelar')),
+                      FilledButton.tonal(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Eliminar')),
+                    ],
+                  ),
+                );
+                if (confirm != true) return;
+                try {
+                  await ref
+                      .read(classroomRepositoryProvider)
+                      .deleteFile(file.id);
+                  ref.invalidate(_filesProvider(filesKey));
+                  ref.invalidate(_foldersProvider(filesKey.$1));
+                  if (context.mounted) {
+                    showSuccessSnack(context, 'Archivo eliminado.');
+                  }
+                } catch (_) {
+                  if (context.mounted) {
+                    await showErrorAlert(
+                        context, 'No se pudo eliminar el archivo.');
+                  }
+                }
+              },
+            ),
         ],
       ),
       onTap: () async {
@@ -252,6 +406,163 @@ class _FileTile extends ConsumerWidget {
   }
 }
 
+class _UploadFileSheet extends ConsumerStatefulWidget {
+  const _UploadFileSheet({required this.idModulo, this.idCarpeta});
+  final int idModulo;
+  final int? idCarpeta;
+
+  @override
+  ConsumerState<_UploadFileSheet> createState() => _UploadFileSheetState();
+}
+
+class _UploadFileSheetState extends ConsumerState<_UploadFileSheet> {
+  final _tituloController = TextEditingController();
+  PlatformFile? _picked;
+  bool _uploading = false;
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const [
+        'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt', 'xls', 'xlsx', 'ods',
+        'csv', 'ppt', 'pptx', 'odp', 'jpg', 'jpeg', 'png', 'gif', 'webp',
+        'zip', 'rar',
+      ],
+    );
+    if (result != null && result.files.isNotEmpty) {
+      setState(() => _picked = result.files.single);
+    }
+  }
+
+  Future<void> _upload() async {
+    final picked = _picked;
+    if (picked?.path == null) return;
+    setState(() => _uploading = true);
+    try {
+      await ref.read(classroomRepositoryProvider).uploadFile(
+            idModulo: widget.idModulo,
+            idCarpeta: widget.idCarpeta,
+            titulo: _tituloController.text.trim(),
+            filePath: picked!.path!,
+            fileName: picked.name,
+          );
+      if (mounted) Navigator.of(context).pop(true);
+    } catch (_) {
+      setState(() => _uploading = false);
+      if (mounted) {
+        await showErrorAlert(context, 'No se pudo subir el archivo.');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBottomSheet(
+      child: Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Subir archivo', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: Space.xl),
+            OutlinedButton.icon(
+              onPressed: _pickFile,
+              icon: const Icon(Icons.attach_file_rounded),
+              label: Text(_picked?.name ?? 'Elegir archivo (máx. 20 MB)'),
+            ),
+            const SizedBox(height: Space.md),
+            TextField(
+              controller: _tituloController,
+              decoration: const InputDecoration(
+                  labelText: 'Título (opcional)',
+                  helperText: 'Si lo dejas vacío, se conserva el nombre del archivo'),
+            ),
+            const SizedBox(height: Space.xl),
+            FilledButton(
+              onPressed: (_picked == null || _uploading) ? null : _upload,
+              child: _uploading
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Text('Subir'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CreateFolderSheet extends ConsumerStatefulWidget {
+  const _CreateFolderSheet({required this.idModulo, this.idPadre});
+  final int idModulo;
+  final int? idPadre;
+
+  @override
+  ConsumerState<_CreateFolderSheet> createState() => _CreateFolderSheetState();
+}
+
+class _CreateFolderSheetState extends ConsumerState<_CreateFolderSheet> {
+  final _nombreController = TextEditingController();
+  bool _saving = false;
+
+  Future<void> _create() async {
+    final nombre = _nombreController.text.trim();
+    if (nombre.isEmpty) return;
+    setState(() => _saving = true);
+    try {
+      await ref.read(classroomRepositoryProvider).createFolder(
+            idModulo: widget.idModulo,
+            nombre: nombre,
+            idPadre: widget.idPadre,
+          );
+      if (mounted) Navigator.of(context).pop(true);
+    } catch (_) {
+      setState(() => _saving = false);
+      if (mounted) {
+        await showErrorAlert(context, 'No se pudo crear la carpeta.');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBottomSheet(
+      child: Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Nueva carpeta', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: Space.xl),
+            TextField(
+              controller: _nombreController,
+              autofocus: true,
+              decoration: const InputDecoration(labelText: 'Nombre *'),
+              onSubmitted: (_) => _create(),
+            ),
+            const SizedBox(height: Space.xl),
+            FilledButton(
+              onPressed: _saving ? null : _create,
+              child: _saving
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Text('Crear'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ── Helper Tareas Global ──────────────────────────────────────────────────
 
 Future<bool?> showTaskDetailSheet(
@@ -261,11 +572,12 @@ Future<bool?> showTaskDetailSheet(
   VoidCallback? onSubmitted,
 }) async {
   if (isProfesor) {
-    if (context.mounted) {
-      await showErrorAlert(context,
-          'Las entregas y calificaciones se gestionan desde la versión web.');
-    }
-    return null;
+    return showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _SubmissionsSheet(task: task, onGraded: onSubmitted),
+    );
   } else {
     if (task.estado != null) {
       return showModalBottomSheet<bool>(
@@ -282,46 +594,6 @@ Future<bool?> showTaskDetailSheet(
         builder: (_) => _SubmitSheet(task: task),
       );
     }
-  }
-}
-
-/// Shared bottom-sheet chrome — rounded top, drag handle, scrollable body.
-/// The scroll view matters once a task's full description (previously
-/// nowhere in this sheet at all, see _SubmitSheet/_ViewSubmissionSheet) is
-/// long enough to push the submit button off-screen on a small device.
-class _Sheet extends StatelessWidget {
-  const _Sheet({required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding:
-          const EdgeInsets.fromLTRB(Space.xl, Space.md, Space.xl, Space.xl),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.88,
-      ),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(Radii.xl)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 36,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: Space.lg),
-            decoration: BoxDecoration(
-                color: scheme.outlineVariant,
-                borderRadius: BorderRadius.circular(Radii.pill)),
-          ),
-          Flexible(child: SingleChildScrollView(child: child)),
-        ],
-      ),
-    );
   }
 }
 
@@ -371,7 +643,7 @@ class _SubmitSheetState extends ConsumerState<_SubmitSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return _Sheet(
+    return AppBottomSheet(
       child: Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -484,7 +756,7 @@ class _ViewSubmissionSheet extends ConsumerWidget {
     final submissionAsync = ref.watch(_submissionProvider(task.id));
     final scheme = Theme.of(context).colorScheme;
 
-    return _Sheet(
+    return AppBottomSheet(
       child: submissionAsync.when(
         loading: () => const Padding(
           padding: EdgeInsets.symmetric(vertical: Space.xxxl),
@@ -644,8 +916,9 @@ class _ViewSubmissionSheet extends ConsumerWidget {
                           task: task,
                           initialRespuesta: submission.respuesta ?? ''),
                     );
-                    if (sent == true && context.mounted)
+                    if (sent == true && context.mounted) {
                       Navigator.of(context).pop(true);
+                    }
                   },
                   child: const Text('Actualizar entrega'),
                 ),
@@ -660,8 +933,121 @@ class _ViewSubmissionSheet extends ConsumerWidget {
 
 // ── Entregas (profesor) ────────────────────────────────────────────────
 
+final _submissionsProvider =
+    FutureProvider.autoDispose.family<List<ClassroomSubmission>, int>(
+  (ref, idTarea) =>
+      ref.read(classroomRepositoryProvider).fetchSubmissions(idTarea),
+);
+
+/// Full roster for a task — every student in the ciclo, with or without an
+/// entrega — with a "Calificar" action per row. Reached from
+/// [showTaskDetailSheet] when a profesor taps a task; previously that just
+/// showed an error telling the profesor to use the web, even though the
+/// roster fetch (fetchSubmissions) and the grading dialog (_GradeDialog)
+/// were already fully built and simply never wired to any UI.
+class _SubmissionsSheet extends ConsumerWidget {
+  const _SubmissionsSheet({required this.task, this.onGraded});
+  final ClassroomTask task;
+  final VoidCallback? onGraded;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final submissionsAsync = ref.watch(_submissionsProvider(task.id));
+    final scheme = Theme.of(context).colorScheme;
+
+    return AppBottomSheet(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(task.titulo, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text('${task.totalEntregas} entregas · ${task.totalCorregidas} corregidas',
+              style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: Space.lg),
+          submissionsAsync.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.symmetric(vertical: Space.xxxl),
+              child: Center(child: CircularProgressIndicator(strokeWidth: 2.4)),
+            ),
+            error: (_, __) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: Space.xl),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('No se pudieron cargar las entregas.'),
+                  const SizedBox(height: Space.md),
+                  OutlinedButton(
+                    onPressed: () =>
+                        ref.invalidate(_submissionsProvider(task.id)),
+                    child: const Text('Reintentar'),
+                  ),
+                ],
+              ),
+            ),
+            data: (submissions) {
+              if (submissions.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: Space.xl),
+                  child: Text('No hay estudiantes matriculados en este ciclo.'),
+                );
+              }
+              return Column(
+                children: [
+                  for (final s in submissions)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Space.xs),
+                      child: Material(
+                        color: scheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(Radii.md),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(Radii.md)),
+                          title: Text(s.nombreEstudiante ?? 'Estudiante'),
+                          subtitle: Text(!s.hasSubmitted
+                              ? 'Sin entregar'
+                              : s.estado == 'corregida'
+                                  ? 'Corregida · ${s.nota ?? '—'}/10'
+                                  : 'Entregada, pendiente de corregir'),
+                          trailing: s.hasSubmitted
+                              ? FilledButton.tonal(
+                                  onPressed: () async {
+                                    final saved = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) => _GradeDialog(
+                                          idTarea: task.id, submission: s),
+                                    );
+                                    if (saved == true) {
+                                      ref.invalidate(
+                                          _submissionsProvider(task.id));
+                                      onGraded?.call();
+                                      if (context.mounted) {
+                                        showSuccessSnack(context,
+                                            'Calificación guardada.');
+                                      }
+                                    }
+                                  },
+                                  child: Text(s.estado == 'corregida'
+                                      ? 'Editar nota'
+                                      : 'Calificar'),
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _GradeDialog extends ConsumerStatefulWidget {
-  const _GradeDialog({required this.submission});
+  const _GradeDialog({required this.idTarea, required this.submission});
+  final int idTarea;
   final ClassroomSubmission submission;
 
   @override
@@ -691,9 +1077,45 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
     final hasExistingCorrection = widget.submission.archivoCorreccion != null;
     return AlertDialog(
       title: Text('Calificar a ${widget.submission.nombreEstudiante ?? ''}'),
-      content: Column(
+      content: SingleChildScrollView(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // La respuesta y el archivo entregados por el estudiante — antes el
+          // profesor tenía que abrir la web para leerlos antes de calificar,
+          // aunque los datos ya llegaban en la propia entrega.
+          if (widget.submission.respuesta != null &&
+              widget.submission.respuesta!.isNotEmpty) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(Space.md),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(Radii.sm),
+              ),
+              child: Text(widget.submission.respuesta!),
+            ),
+            const SizedBox(height: Space.md),
+          ],
+          if (widget.submission.archivoEntrega != null) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final url = ref.read(classroomRepositoryProvider).submissionFileUrl(
+                      widget.idTarea,
+                      kind: 'entrega',
+                      idEstudiante: widget.submission.idEstudiante);
+                  await launchUrl(Uri.parse(url),
+                      mode: LaunchMode.externalApplication);
+                },
+                icon: const Icon(Icons.attach_file_rounded, size: 18),
+                label: const Text('Abrir archivo entregado'),
+              ),
+            ),
+            const SizedBox(height: Space.md),
+          ],
           TextField(
             controller: _notaController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -722,6 +1144,7 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
             ),
           ),
         ],
+        ),
       ),
       actions: [
         TextButton(
@@ -736,7 +1159,9 @@ class _GradeDialogState extends ConsumerState<_GradeDialog> {
                   if (nota == null ||
                       nota < 0 ||
                       nota > 10 ||
-                      widget.submission.idEntrega == null) return;
+                      widget.submission.idEntrega == null) {
+                    return;
+                  }
                   setState(() => _saving = true);
                   try {
                     await ref.read(classroomRepositoryProvider).grade(

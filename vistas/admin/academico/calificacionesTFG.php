@@ -29,7 +29,7 @@ $listaEvaluacion = listarEvaluacionTFG($idCicloElegido ?: null);
 $aniosDisponibles = array_values(array_unique(array_filter(array_column($listaEvaluacion, 'anioEstudio'))));
 sort($aniosDisponibles, SORT_NATURAL);
 
-$titulo_pagina = "AULAPRO | GESTIÓN TFG";
+$titulo_pagina = "Gestión TFG";
 $seccion = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -84,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-calificaciones-tfg">
             <thead>
                 <tr>
                     <th>Estudiante</th>

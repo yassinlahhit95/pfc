@@ -14,7 +14,7 @@ function listarTodosLosPrestamos() {
             JOIN estudiantes  ON prestamos.idEstudiante = estudiantes.idEstudiante
             JOIN dispositivos ON prestamos.idDispositivo  = dispositivos.idDispositivo
             WHERE prestamos.deleted_at IS NULL
-            ORDER BY prestamos.idPrestamo DESC";
+            ORDER BY prestamos.idPrestamo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/api/api_exception.dart';
+import '../../../core/i18n/translations.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_mode_provider.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../application/login_controller.dart';
@@ -21,11 +23,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
-  final _pageController = PageController();
 
   bool _obscure = true;
-  bool _showOnboarding = false;
-  int _onboardingPageIndex = 0;
 
   late final AnimationController _entrance;
 
@@ -34,23 +33,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.initState();
     _entrance = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
-    _checkOnboarding();
-  }
-
-  Future<void> _checkOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    final completed = prefs.getBool('has_seen_onboarding') ?? false;
-    if (!completed) {
-      setState(() => _showOnboarding = true);
-    } else {
-      _entrance.forward();
-    }
-  }
-
-  Future<void> _completeOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('has_seen_onboarding', true);
-    setState(() => _showOnboarding = false);
     _entrance.forward();
   }
 
@@ -59,7 +41,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     _entrance.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -109,86 +90,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               child: _AccentGlow(
                   color: AppColors.accent, opacity: isDark ? 0.16 : 0.10),
             ),
-            if (_showOnboarding)
-              _buildOnboardingView(scheme)
-            else
-              _buildLoginView(isLoading, scheme),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOnboardingView(ColorScheme scheme) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: Space.lg, top: Space.sm),
-              child: TextButton(
-                onPressed: _completeOnboarding,
-                child: const Text('Saltar'),
+            _buildLoginView(isLoading, scheme),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      right: Space.sm, top: Space.xs),
+                  child: const _TopBar(),
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (idx) =>
-                  setState(() => _onboardingPageIndex = idx),
-              children: const [
-                _OnboardingSlide(
-                  icon: Icons.auto_stories_rounded,
-                  title: 'Aula Digital Interactiva',
-                  description:
-                      'Accede a tus temas, descarga apuntes y sube tus tareas de forma rápida y sencilla.',
-                ),
-                _OnboardingSlide(
-                  icon: Icons.forum_rounded,
-                  title: 'Comunicación Directa',
-                  description:
-                      'Chatea con tus profesores y compañeros, y recibe avisos en tiempo real.',
-                ),
-                _OnboardingSlide(
-                  icon: Icons.insights_rounded,
-                  title: 'Seguimiento al Día',
-                  description:
-                      'Consulta tu horario de clases, asistencia y notas desde un único portal personalizado.',
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Space.xxl, vertical: Space.xxxl),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _PageIndicator(count: 3, current: _onboardingPageIndex),
-                const SizedBox(height: Space.xxl),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () {
-                      if (_onboardingPageIndex < 2) {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 320),
-                          curve: Curves.easeOutCubic,
-                        );
-                      } else {
-                        _completeOnboarding();
-                      }
-                    },
-                    child: Text(
-                        _onboardingPageIndex == 2 ? 'Comenzar' : 'Siguiente'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -342,7 +256,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                         const SizedBox(height: Space.xxl),
                         Text(
-                          'AulaPro · Gestión académica',
+                          dotenv.env['APP_NAME'] != null ? '${dotenv.env['APP_NAME']} · Gestión académica' : 'Gestión académica',
                           style: textTheme.bodySmall
                               ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
@@ -354,6 +268,75 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Language + light/dark toggle, visible before login (a first-run device
+/// may never see the in-app settings screen where these also live under
+/// Mi Perfil). Both write through the same persisted providers
+/// (localeProvider/themeModeNotifierProvider) so a choice made here already applies
+/// once the user reaches the rest of the app, and survives an app restart.
+class _TopBar extends ConsumerWidget {
+  const _TopBar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsProvider);
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    final scheme = Theme.of(context).colorScheme;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(Icons.language_rounded, color: scheme.onSurfaceVariant),
+          tooltip: t['language'] ?? 'Idioma',
+          onPressed: () => _showLanguagePicker(context, ref, t),
+        ),
+        IconButton(
+          icon: Icon(
+            isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+            color: scheme.onSurfaceVariant,
+          ),
+          tooltip: t['theme'] ?? 'Tema',
+          onPressed: () => ref.read(themeModeProvider.notifier).toggle(),
+        ),
+      ],
+    );
+  }
+
+  void _showLanguagePicker(
+      BuildContext context, WidgetRef ref, Map<String, String> t) {
+    final current = ref.read(localeProvider);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t['select_language'] ?? 'Seleccionar Idioma'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final entry in const {
+              'es': 'spanish',
+              'en': 'english',
+              'ca': 'catalan',
+              'eu': 'basque',
+            }.entries)
+              ListTile(
+                title: Text(t[entry.value] ?? entry.key),
+                trailing:
+                    entry.key == current ? const Icon(Icons.check) : null,
+                onTap: () {
+                  ref.read(localeProvider.notifier).setLocale(entry.key);
+                  Navigator.of(context).pop();
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -381,77 +364,6 @@ class _AccentGlow extends StatelessWidget {
   }
 }
 
-class _OnboardingSlide extends StatelessWidget {
-  const _OnboardingSlide(
-      {required this.icon, required this.title, required this.description});
-
-  final IconData icon;
-  final String title;
-  final String description;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Space.xxxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 132,
-            height: 132,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.accent.withValues(
-                  alpha: scheme.brightness == Brightness.dark ? 0.16 : 0.1),
-            ),
-            alignment: Alignment.center,
-            child: Icon(icon, color: AppColors.accent, size: 56),
-          ),
-          const SizedBox(height: Space.xxxl + Space.lg),
-          Text(title,
-              textAlign: TextAlign.center, style: textTheme.headlineSmall),
-          const SizedBox(height: Space.md),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style:
-                textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PageIndicator extends StatelessWidget {
-  const _PageIndicator({required this.count, required this.current});
-  final int count;
-  final int current;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(count, (index) {
-        final active = index == current;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: active ? 22 : 7,
-          height: 7,
-          decoration: BoxDecoration(
-            color: active ? scheme.primary : scheme.outlineVariant,
-            borderRadius: BorderRadius.circular(Radii.pill),
-          ),
-        );
-      }),
-    );
-  }
-}
-
 class _AppMark extends StatelessWidget {
   const _AppMark();
 
@@ -475,7 +387,7 @@ class _AppMark extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimary, size: 30),
         ),
         const SizedBox(height: Space.lg),
-        Text('AulaPro', style: textTheme.headlineSmall),
+        Text(dotenv.env['APP_NAME'] ?? 'Centro Educativo', style: textTheme.headlineSmall),
         const SizedBox(height: Space.xs),
         Text(
           'Tu centro, en el bolsillo',

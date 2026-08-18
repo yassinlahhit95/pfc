@@ -27,7 +27,7 @@ switch ($accion) {
 
     case 'crear_config':
         $nombre = trim($_POST['nombre'] ?? '') ?: 'Nueva configuración';
-        $tipoEducacion = in_array($_POST['tipoEducacion'] ?? '', ['grado_medio', 'grado_superior', 'otro'], true) ? $_POST['tipoEducacion'] : 'otro';
+        $tipoEducacion = in_array($_POST['tipoEducacion'] ?? '', ['grado_basico', 'grado_medio', 'grado_superior', 'colegio', 'otro'], true) ? $_POST['tipoEducacion'] : 'otro';
         $anioAcademico = trim($_POST['anioAcademico'] ?? '') ?: null;
         $id = crearConfigAcademicaVacia($nombre, $tipoEducacion, $anioAcademico);
         echo json_encode($id ? ['ok' => true, 'idConfig' => $id] : ['ok' => false, 'msg' => 'No se pudo crear la configuración.']);
@@ -35,7 +35,7 @@ switch ($accion) {
 
     case 'guardar_general':
         $nombre = trim($_POST['nombre'] ?? '');
-        $tipoEducacion = in_array($_POST['tipoEducacion'] ?? '', ['grado_medio', 'grado_superior', 'otro'], true) ? $_POST['tipoEducacion'] : 'otro';
+        $tipoEducacion = in_array($_POST['tipoEducacion'] ?? '', ['grado_basico', 'grado_medio', 'grado_superior', 'colegio', 'otro'], true) ? $_POST['tipoEducacion'] : 'otro';
         $anioAcademico = trim($_POST['anioAcademico'] ?? '') ?: null;
         if ($nombre === '' || !$idConfig) { echo json_encode(['ok' => false, 'msg' => 'Faltan datos.']); break; }
         echo json_encode(['ok' => actualizarInfoGeneralConfig($idConfig, $nombre, $tipoEducacion, $anioAcademico)]);

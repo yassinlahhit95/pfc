@@ -20,13 +20,13 @@ if (isset($_SESSION['datos_director'])) {
 }
 unset($_SESSION['datos_director']);
 
-$titulo_pagina = "AULAPRO | MODIFICAR DIRECTOR";
+$titulo_pagina = "Modificar Director";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR DIRECTOR</h1>
+    <h1>Modificar Director</h1>
     <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

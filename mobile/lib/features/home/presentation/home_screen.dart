@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
@@ -22,6 +23,8 @@ import '../../inventory/presentation/inventory_screen.dart';
 import '../../payments/presentation/payments_screen.dart';
 import '../../payments/presentation/my_payments_screen.dart';
 import '../../messages/presentation/messages_screen.dart';
+import '../../notifications/data/notifications_repository.dart';
+import '../../notifications/presentation/notifications_screen.dart';
 import '../../planificacion/presentation/planificacion_screen.dart';
 import '../../profile/data/profile_repository.dart';
 import '../../schedule/data/schedule_repository.dart';
@@ -195,7 +198,7 @@ class HomeScreen extends ConsumerWidget {
             t['nav_justificar_sub']!, const StaffJustifyScreen()),
     ];
 
-    final displayName = profileAsync.value?.displayName ?? 'AulaPro';
+    final displayName = profileAsync.value?.displayName ?? dotenv.env['APP_NAME'] ?? 'Centro Educativo';
     // Watch metrics only when needed per role, using .select() to avoid cascading rebuilds
     final attendanceMine = role == UserRole.estudiante
         ? ref.watch(attendanceMineProvider.select((a) => a.value ?? []))
@@ -275,7 +278,7 @@ class HomeScreen extends ConsumerWidget {
       metrics.addAll([
         _MetricCard(
           value: clasesHoyCount.toString(),
-          label: 'Clases Hoy',
+          label: t['clases_hoy'] ?? 'Clases Hoy',
           icon: Icons.schedule_rounded,
           color: const Color(0xFF2563EB),
           onTap: () => Navigator.of(context)
@@ -283,7 +286,7 @@ class HomeScreen extends ConsumerWidget {
         ),
         _MetricCard(
           value: pendingGradesCount.toString(),
-          label: 'Por Corregir',
+          label: t['metric_corregir'] ?? 'Por Corregir',
           icon: Icons.rate_review_rounded,
           color: const Color(0xFFE11D48),
           onTap: () => Navigator.of(context)
@@ -291,7 +294,7 @@ class HomeScreen extends ConsumerWidget {
         ),
         _MetricCard(
           value: tutorCicloAbreviatura,
-          label: 'Aula Tutoría',
+          label: t['metric_tutoria'] ?? 'Aula Tutoría',
           icon: Icons.room_rounded,
           color: const Color(0xFF0D9488),
           onTap: isTutorTeacher
@@ -417,28 +420,14 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: Space.xl),
-                  const _AnimatedEntrance(delayIndex: 1, child: _HeroBanner()),
+                  _AnimatedEntrance(delayIndex: 1, child: _HeroBanner(t: t)),
                   const SizedBox(height: Space.xl),
                   if (metrics.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Space.md),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Acceso Rápido',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87)),
-                          Text('Ver todo',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: Colors.black54)),
-                        ],
-                      ),
+                      child: Text(t['acceso_rapido'] ?? 'Acceso Rápido',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold, color: Colors.black87)),
                     ),
                   const SizedBox(height: Space.md),
                   if (metrics.isNotEmpty)
@@ -486,7 +475,16 @@ class HomeScreen extends ConsumerWidget {
                     child: Padding(
                         padding:
                             const EdgeInsets.symmetric(horizontal: Space.md),
-                        child: SectionLabel(t['section_centro']!)),
+                        // "Ver todo" used to sit next to "Acceso Rápido"
+                        // (the metrics row) implying it expanded the metrics,
+                        // but did nothing. It belongs here instead — right
+                        // above the actual full list of feature options.
+                        child: SectionLabel(t['section_centro']!,
+                            trailing: Text(t['ver_todo'] ?? 'Ver todo',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.black54)))),
                   ),
                   _AnimatedEntrance(
                     delayIndex: 5,
@@ -522,7 +520,7 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _WelcomeHeader extends StatelessWidget {
+class _WelcomeHeader extends ConsumerWidget {
   const _WelcomeHeader(
       {required this.displayName, required this.role, required this.t});
   final String displayName;
@@ -530,34 +528,15 @@ class _WelcomeHeader extends StatelessWidget {
   final Map<String, String> t;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final unreadCount =
+        ref.watch(unreadNotificationsCountProvider).value ?? 0;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Space.md),
       child: Row(
         children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(color: Colors.white, width: 2),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4))
-              ],
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-              style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.accent, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(width: Space.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,28 +547,61 @@ class _WelcomeHeader extends StatelessWidget {
                       color: Colors.black54, fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  displayName.trim().split(' ').take(2).join(' '),
+                  displayName.trim(),
                   style: textTheme.titleLarge?.copyWith(
                       color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
           ),
-          Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4))
-              ],
+          const SizedBox(width: Space.md),
+          Material(
+            color: Colors.white,
+            shape: const CircleBorder(),
+            elevation: 0,
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const NotificationsScreen()));
+              },
+              child: Container(
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4))
+                  ],
+                ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Center(
+                      child: Icon(Icons.notifications_none_rounded,
+                          color: Colors.black87),
+                    ),
+                    if (unreadCount > 0)
+                      Positioned(
+                        right: 6,
+                        top: 6,
+                        child: Container(
+                          width: 9,
+                          height: 9,
+                          decoration: BoxDecoration(
+                            color: AppColors.rojoLight,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
-            child: const Icon(Icons.notifications_none_rounded,
-                color: Colors.black87),
           ),
         ],
       ),
@@ -598,7 +610,8 @@ class _WelcomeHeader extends StatelessWidget {
 }
 
 class _HeroBanner extends StatelessWidget {
-  const _HeroBanner();
+  const _HeroBanner({required this.t});
+  final Map<String, String> t;
 
   @override
   Widget build(BuildContext context) {
@@ -626,12 +639,12 @@ class _HeroBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Ready to Manage? 🌟',
+                Text(t['hero_title'] ?? 'Ready to Manage? 🌟',
                     style: textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF3730A3))),
                 const SizedBox(height: Space.sm),
-                Text('Accede rápidamente a tus reportes y resumen académico.',
+                Text(t['hero_subtitle'] ?? 'Accede rápidamente a tus reportes y resumen académico.',
                     style: textTheme.bodyMedium
                         ?.copyWith(color: const Color(0xFF4F46E5))),
                 const SizedBox(height: Space.md),
@@ -644,8 +657,8 @@ class _HeroBanner extends StatelessWidget {
                         borderRadius: BorderRadius.circular(Radii.pill)),
                     elevation: 0,
                   ),
-                  child: const Text('Ver Horario',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text(t['hero_button'] ?? 'Ver Horario',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),

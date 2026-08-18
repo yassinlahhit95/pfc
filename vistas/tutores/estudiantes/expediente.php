@@ -28,7 +28,7 @@ if (!$esHijo) {
     exit;
 }
 
-$titulo_pagina = 'AulaPro Familias — Expediente Académico';
+$titulo_pagina = 'Aulapro Familias — Expediente Académico';
 $seccion       = 'hijo';
 include __DIR__ . '/../comunes/nav.php';
 

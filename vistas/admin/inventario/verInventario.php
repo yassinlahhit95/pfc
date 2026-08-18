@@ -11,14 +11,14 @@ require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $todosLosArticulos = listarArticulos();
 
-$titulo_pagina = "AULAPRO | INVENTARIO DEL CENTRO";
+$titulo_pagina = "Inventario del Centro";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE DISPOSITIVOS</h1>
+    <h1>Gestión de Dispositivos</h1>
     <button type="button" class="boton-primario" data-nuevo-articulo>
         <i class="fas fa-plus"></i> NUEVO DISPOSITIVO
     </button>

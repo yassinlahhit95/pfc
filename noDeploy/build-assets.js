@@ -58,6 +58,7 @@ const FEATURE_FILES = [
   ['public/css/features/cookie-consent.css', 'css'],
   ['public/css/features/informes.css', 'css'],
   ['public/css/features/landing-builder.css', 'css'],
+  ['public/js/features/landing-builder.js', 'js'],
   ['public/js/features/chat.js', 'js'],
   ['public/js/features/chat-widget.js', 'js'],
   ['public/js/features/mensajes.js', 'js'],

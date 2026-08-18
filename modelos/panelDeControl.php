@@ -119,32 +119,31 @@ function contarTFGsEntregados(): int {
 function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
     $idAdmin = (int)$idAdmin;
 
-    $globalQueries = [
-        'total_estudiantes' => "SELECT COUNT(*) FROM estudiantes WHERE deleted_at IS NULL",
-        'total_profesores' => "SELECT COUNT(*) FROM profesores",
-        'total_tutores' => "SELECT COUNT(*) FROM tutores",
-        'total_directores' => "SELECT COUNT(*) FROM directores",
-        'total_ciclos' => "SELECT COUNT(*) FROM ciclos",
-        'total_modulos' => "SELECT COUNT(*) FROM modulos",
-        'total_retos' => "SELECT COUNT(*) FROM retos",
-        'total_anuncios' => "SELECT COUNT(*) FROM anuncios",
-        'total_inventario' => "SELECT COUNT(*) FROM dispositivos",
-        'total_prestamos' => "SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso'",
-        'total_pagos' => "SELECT COUNT(*) FROM pagos",
-        'total_mensajes' => "SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')",
-        'total_sin_leer' => "SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))",
-        'total_admisiones_pendientes' => "SELECT COUNT(*) FROM pre_matriculas WHERE estado IN ('pendiente', 'revisando')",
-    ];
-
-    $data = Cache::remember('nav_admin_counts_global', 60, function () use ($globalQueries) {
+    $data = Cache::remember('nav_admin_counts_global', 60, function () {
         $con = obtenerConexion();
-        $out = [];
-        foreach ($globalQueries as $key => $sql) {
-            $res = mysqli_query($con, $sql);
-            $row = $res ? mysqli_fetch_row($res) : [0];
-            $out[$key] = (int)($row[0] ?? 0);
-        }
-        return $out;
+        $sql = "SELECT 
+            (SELECT COUNT(*) FROM estudiantes WHERE deleted_at IS NULL) AS total_estudiantes,
+            (SELECT COUNT(*) FROM profesores) AS total_profesores,
+            (SELECT COUNT(*) FROM tutores) AS total_tutores,
+            (SELECT COUNT(*) FROM directores) AS total_directores,
+            (SELECT COUNT(*) FROM ciclos) AS total_ciclos,
+            (SELECT COUNT(*) FROM modulos) AS total_modulos,
+            (SELECT COUNT(*) FROM retos) AS total_retos,
+            (SELECT COUNT(*) FROM anuncios) AS total_anuncios,
+            (SELECT COUNT(*) FROM dispositivos) AS total_inventario,
+            (SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso') AS total_prestamos,
+            (SELECT COUNT(*) FROM pagos) AS total_pagos,
+            (SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')) AS total_mensajes,
+            (SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))) AS total_sin_leer,
+            (SELECT COUNT(*) FROM pre_matriculas WHERE estado IN ('pendiente', 'revisando')) AS total_admisiones_pendientes";
+        $res = mysqli_query($con, $sql);
+        $row = $res ? mysqli_fetch_assoc($res) : [];
+        return array_map('intval', $row ?: [
+            'total_estudiantes' => 0, 'total_profesores' => 0, 'total_tutores' => 0, 'total_directores' => 0,
+            'total_ciclos' => 0, 'total_modulos' => 0, 'total_retos' => 0, 'total_anuncios' => 0,
+            'total_inventario' => 0, 'total_prestamos' => 0, 'total_pagos' => 0, 'total_mensajes' => 0,
+            'total_sin_leer' => 0, 'total_admisiones_pendientes' => 0
+        ]);
     });
 
     $data['total_chat_no_leidos'] = Cache::remember("nav_admin_chat_no_leidos_{$idAdmin}", 60, function () use ($idAdmin) {

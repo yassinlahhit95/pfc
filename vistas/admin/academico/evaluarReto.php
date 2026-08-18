@@ -22,13 +22,13 @@ if (!$estudiante || !$reto) {
 
 $notaActual = obtenerCalificacionReto($idEstudiante, $idReto);
 
-$titulo_pagina = "AULAPRO | EVALUAR RETO";
+$titulo_pagina = "Evaluar Reto";
 $seccion = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EVALUAR RETO</h1>
+    <h1>Evaluar Reto</h1>
     <a href="calificacionesRetos.php?idReto=<?= (int)$idReto ?>&idCiclo=<?= (int)$idCiclo ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

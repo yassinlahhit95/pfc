@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Módulo no disponible — <?php require_once __DIR__ . '/../include/FeatureGuard.php'; echo Security::escapeHtml(FeatureGuard::getCenterName()); ?></title>
   <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous"></noscript>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Roboto',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0e1f;overflow:hidden}
+    body{font-family: 'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0e1f;overflow:hidden}
     .fondo{position:fixed;inset:0;background:linear-gradient(145deg,#0f0e1f 0%,#1e1b4b 40%,#1e3a5f 72%,#1d4ed8 100%);z-index:0}
     .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.15;pointer-events:none}
     .orb-1{width:400px;height:400px;background:#6366f1;top:-80px;right:-80px}

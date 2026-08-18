@@ -4,13 +4,24 @@ declare(strict_types=1);
 class I18n {
     private static array $translations = [];
     private static string $lang = 'es';
+    private static bool $initialized = false;
 
     public static function init(): void {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        if (self::$initialized) {
+            return;
         }
 
-        if (isset($_SESSION['lang'])) {
+        if (session_status() === PHP_SESSION_NONE) {
+            @session_start();
+        }
+
+        if (isset($_GET['lang']) && in_array($_GET['lang'], ['es', 'en', 'ca', 'eu'], true)) {
+            self::$lang = (string)$_GET['lang'];
+            $_SESSION['lang'] = self::$lang;
+            if (!headers_sent()) {
+                setcookie('lang', self::$lang, time() + (365 * 24 * 60 * 60), '/');
+            }
+        } elseif (isset($_SESSION['lang'])) {
             self::$lang = $_SESSION['lang'];
         } elseif (isset($_COOKIE['lang'])) {
             self::$lang = $_COOKIE['lang'];
@@ -26,13 +37,16 @@ class I18n {
         self::$translations = [
             'es' => [
                 'home' => 'Inicio',
+                'dashboard' => 'Dashboard',
                 'challenges' => 'Retos',
                 'grades' => 'Calificaciones',
                 'my_tfg' => 'Mi TFG',
                 'schedule' => 'Horario',
+                'attendance' => 'Asistencias',
                 'my_attendance' => 'Mis Faltas',
                 'my_fct_diary' => 'Mi Diario FCT',
-                'digital_classroom' => 'Materiales',
+                'digital_classroom' => 'Aula Digital',
+                'materials' => 'Materiales',
                 'resources' => 'Recursos',
                 'favorites' => 'Favoritos',
                 'tasks' => 'Tareas',
@@ -41,6 +55,7 @@ class I18n {
                 'messaging' => 'Mensajería',
                 'chat' => 'Chat',
                 'payments' => 'Pagos',
+                'expenses' => 'Gastos',
                 'events' => 'Eventos',
                 'my_profile' => 'Mi Perfil',
                 'logout' => 'Cerrar Sesión',
@@ -51,6 +66,10 @@ class I18n {
                 'catalan' => 'Catalán',
                 'english' => 'Inglés',
                 'save' => 'Guardar',
+                'cancel' => 'Cancelar',
+                'delete' => 'Eliminar',
+                'edit' => 'Editar',
+                'confirm' => 'Confirmar',
                 'back_to_web' => 'Volver a la web',
                 'personal_data' => 'Datos Personales',
                 'security' => 'Seguridad',
@@ -67,11 +86,25 @@ class I18n {
                 'system_config' => 'Configuración del Centro',
                 'academic_config' => 'Configuración Académica',
                 'admissions' => 'Admisiones',
+                'classrooms' => 'Aulas',
                 'aulas' => 'Aulas',
                 'inventory' => 'Inventario',
+                'loans' => 'Préstamos',
                 'prestamos' => 'Préstamos',
                 'reports' => 'Informes PDF',
+                'justifications' => 'Justificaciones',
+                'justificaciones' => 'Justificaciones',
+                'my_summary' => 'Mi Resumen',
+                'my_children' => 'MIS HIJOS',
+                'students' => 'Estudiantes',
+                'teachers' => 'Profesores',
+                'tutors' => 'Tutores',
+                'secretaries' => 'Secretaría',
+                'cycles' => 'Ciclos Formativos',
+                'modules' => 'Módulos',
+                'companies' => 'Empresas / FCT',
                 'portal' => 'PORTAL',
+                'academic' => 'ACADÉMICO',
                 'management' => 'GESTIÓN',
                 'documents' => 'DOCUMENTOS',
                 'plataforma' => 'PLATAFORMA',
@@ -84,18 +117,40 @@ class I18n {
                 'address' => 'Dirección',
                 'course_cycle' => 'Ciclo Formativo',
                 'edit_profile' => 'Editar mi perfil',
-                'edit' => 'Editar',
                 'profile_info_student' => 'Información de tu cuenta de estudiante',
+                // Login & Auth
+                'login_title' => 'Identificarse',
+                'login_subtitle' => 'Introduce tus datos para acceder a tu panel',
+                'user_or_email' => 'Usuario o correo electrónico',
+                'password' => 'Contraseña',
+                'show' => 'Ver',
+                'hide' => 'Ocultar',
+                'enter_btn' => 'Iniciar Sesión',
+                'forgot_password' => '¿Olvidaste tu contraseña?',
+                'back_to_website' => 'Volver a la web',
+                'continue_with_google' => 'o continuar con Google',
+                'login_hero_title' => 'Plataforma de Gestión Educativa',
+                'login_hero_desc' => 'Gestión académica integral, aula virtual y comunicación institucional en un único ecosistema.',
+                'stats_profiles' => 'Perfiles',
+                'stats_online' => 'Online',
+                'stats_security' => 'Seguro',
+                'welcome' => 'Bienvenido',
+                'good_morning' => 'Buenos días',
+                'good_afternoon' => 'Buenas tardes',
+                'good_evening' => 'Buenas noches',
             ],
             'en' => [
                 'home' => 'Home',
+                'dashboard' => 'Dashboard',
                 'challenges' => 'Challenges',
                 'grades' => 'Grades',
                 'my_tfg' => 'My Thesis',
                 'schedule' => 'Schedule',
+                'attendance' => 'Attendance',
                 'my_attendance' => 'My Attendance',
                 'my_fct_diary' => 'My Internship Diary',
                 'digital_classroom' => 'Digital Classroom',
+                'materials' => 'Materials',
                 'resources' => 'Resources',
                 'favorites' => 'Favorites',
                 'tasks' => 'Tasks',
@@ -104,6 +159,7 @@ class I18n {
                 'messaging' => 'Messaging',
                 'chat' => 'Chat',
                 'payments' => 'Payments',
+                'expenses' => 'Expenses',
                 'events' => 'Events',
                 'my_profile' => 'My Profile',
                 'logout' => 'Log Out',
@@ -114,6 +170,10 @@ class I18n {
                 'catalan' => 'Catalan',
                 'english' => 'English',
                 'save' => 'Save',
+                'cancel' => 'Cancel',
+                'delete' => 'Delete',
+                'edit' => 'Edit',
+                'confirm' => 'Confirm',
                 'back_to_web' => 'Back to Website',
                 'personal_data' => 'Personal Data',
                 'security' => 'Security',
@@ -130,17 +190,25 @@ class I18n {
                 'system_config' => 'School Settings',
                 'academic_config' => 'Academic Settings',
                 'admissions' => 'Admissions',
+                'classrooms' => 'Classrooms',
                 'aulas' => 'Classrooms',
                 'inventory' => 'Inventory',
+                'loans' => 'Loans',
                 'prestamos' => 'Loans',
                 'reports' => 'PDF Reports',
-                'attendance' => 'Attendance',
+                'justifications' => 'Absence Excuses',
                 'justificaciones' => 'Absence Excuses',
                 'my_summary' => 'My Summary',
                 'my_children' => 'MY CHILDREN',
-                'payments_receipts' => 'Payments & Receipts',
-                'messaging_center' => 'Center Messaging',
+                'students' => 'Students',
+                'teachers' => 'Teachers',
+                'tutors' => 'Tutors',
+                'secretaries' => 'Secretariat',
+                'cycles' => 'Vocational Cycles',
+                'modules' => 'Modules',
+                'companies' => 'Companies / Internship',
                 'portal' => 'PORTAL',
+                'academic' => 'ACADEMIC',
                 'management' => 'MANAGEMENT',
                 'documents' => 'DOCUMENTS',
                 'plataforma' => 'PLATFORM',
@@ -153,18 +221,40 @@ class I18n {
                 'address' => 'Address',
                 'course_cycle' => 'Course Cycle',
                 'edit_profile' => 'Edit Profile',
-                'edit' => 'Edit',
                 'profile_info_student' => 'Your student account information',
+                // Login & Auth
+                'login_title' => 'Sign In',
+                'login_subtitle' => 'Enter your credentials to access your portal',
+                'user_or_email' => 'Username or Email',
+                'password' => 'Password',
+                'show' => 'Show',
+                'hide' => 'Hide',
+                'enter_btn' => 'Log In',
+                'forgot_password' => 'Forgot your password?',
+                'back_to_website' => 'Back to website',
+                'continue_with_google' => 'or continue with Google',
+                'login_hero_title' => 'Educational Management Platform',
+                'login_hero_desc' => 'Comprehensive academic management, virtual classroom, and institutional communication in a single ecosystem.',
+                'stats_profiles' => 'Profiles',
+                'stats_online' => 'Online',
+                'stats_security' => 'Secure',
+                'welcome' => 'Welcome',
+                'good_morning' => 'Good morning',
+                'good_afternoon' => 'Good afternoon',
+                'good_evening' => 'Good evening',
             ],
             'ca' => [
                 'home' => 'Inici',
+                'dashboard' => 'Tauler',
                 'challenges' => 'Reptes',
                 'grades' => 'Qualificacions',
                 'my_tfg' => 'El meu TFG',
                 'schedule' => 'Horari',
+                'attendance' => 'Assistències',
                 'my_attendance' => 'Les meves Faltes',
                 'my_fct_diary' => 'Diari FCT',
-                'digital_classroom' => 'Materiales',
+                'digital_classroom' => 'Aula Digital',
+                'materials' => 'Materials',
                 'resources' => 'Recursos',
                 'favorites' => 'Preferits',
                 'tasks' => 'Tasques',
@@ -173,6 +263,7 @@ class I18n {
                 'messaging' => 'Missatgeria',
                 'chat' => 'Xat',
                 'payments' => 'Pagaments',
+                'expenses' => 'Despeses',
                 'events' => 'Esdeveniments',
                 'my_profile' => 'El meu Perfil',
                 'logout' => 'Tancar Sessió',
@@ -183,6 +274,10 @@ class I18n {
                 'catalan' => 'Català',
                 'english' => 'Anglès',
                 'save' => 'Desar',
+                'cancel' => 'Cancel·lar',
+                'delete' => 'Eliminar',
+                'edit' => 'Editar',
+                'confirm' => 'Confirmar',
                 'back_to_web' => 'Tornar a la web',
                 'personal_data' => 'Dades Personals',
                 'security' => 'Seguretat',
@@ -199,17 +294,25 @@ class I18n {
                 'system_config' => 'Configuració del Centre',
                 'academic_config' => 'Configuració Acadèmica',
                 'admissions' => 'Admissions',
+                'classrooms' => 'Aules',
                 'aulas' => 'Aules',
                 'inventory' => 'Inventari',
+                'loans' => 'Préstecs',
                 'prestamos' => 'Préstecs',
                 'reports' => 'Informes PDF',
-                'attendance' => 'Asistències',
+                'justifications' => 'Justificacions',
                 'justificaciones' => 'Justificacions',
                 'my_summary' => 'El meu Resum',
                 'my_children' => 'ELS MEUS FILLS',
-                'payments_receipts' => 'Pagaments i Rebuts',
-                'messaging_center' => 'Missatgeria del Centre',
+                'students' => 'Estudiants',
+                'teachers' => 'Professors',
+                'tutors' => 'Tutors',
+                'secretaries' => 'Secretaria',
+                'cycles' => 'Cicles Formatius',
+                'modules' => 'Mòduls',
+                'companies' => 'Empreses / FCT',
                 'portal' => 'PORTAL',
+                'academic' => 'ACADÈMIC',
                 'management' => 'GESTIÓ',
                 'documents' => 'DOCUMENTS',
                 'plataforma' => 'PLATAFORMA',
@@ -222,18 +325,40 @@ class I18n {
                 'address' => 'Adreça',
                 'course_cycle' => 'Cicle Formatiu',
                 'edit_profile' => 'Editar el meu perfil',
-                'edit' => 'Editar',
                 'profile_info_student' => 'Informació del teu compte d\'estudiant',
+                // Login & Auth
+                'login_title' => 'Identificar-se',
+                'login_subtitle' => 'Introdueix les teves dades per accedir al sistema',
+                'user_or_email' => 'Usuari o correu electrònic',
+                'password' => 'Contrasenya',
+                'show' => 'Veure',
+                'hide' => 'Amagar',
+                'enter_btn' => 'Iniciar Sessió',
+                'forgot_password' => 'Has oblidat la contrasenya?',
+                'back_to_website' => 'Tornar a la web',
+                'continue_with_google' => 'o continuar amb Google',
+                'login_hero_title' => 'Plataforma de Gestió Educativa',
+                'login_hero_desc' => 'Gestió acadèmica integral, aula virtual i comunicació institucional en un únic ecosistema.',
+                'stats_profiles' => 'Perfils',
+                'stats_online' => 'En línia',
+                'stats_security' => 'Segur',
+                'welcome' => 'Benvingut',
+                'good_morning' => 'Bon dia',
+                'good_afternoon' => 'Bona tarda',
+                'good_evening' => 'Bona nit',
             ],
             'eu' => [
                 'home' => 'Hasiera',
+                'dashboard' => 'Aginte-panela',
                 'challenges' => 'Erronkak',
                 'grades' => 'Kalifikazioak',
                 'my_tfg' => 'Nire Gradu Amaierako Lana',
                 'schedule' => 'Ordutegia',
+                'attendance' => 'Asistentzia',
                 'my_attendance' => 'Nire Hutsegiteak',
                 'my_fct_diary' => 'Lantokiko Prestakuntza Egunkaria',
                 'digital_classroom' => 'Gela Digitala',
+                'materials' => 'Materialak',
                 'resources' => 'Baliabideak',
                 'favorites' => 'Gogokoak',
                 'tasks' => 'Lanak',
@@ -242,6 +367,7 @@ class I18n {
                 'messaging' => 'Mezularitza',
                 'chat' => 'Txata',
                 'payments' => 'Ordainketak',
+                'expenses' => 'Gastuak',
                 'events' => 'Ekitaldiak',
                 'my_profile' => 'Nire Profila',
                 'logout' => 'Saioa Itxi',
@@ -252,6 +378,10 @@ class I18n {
                 'catalan' => 'Katalana',
                 'english' => 'Ingelesa',
                 'save' => 'Gorde',
+                'cancel' => 'Utzi',
+                'delete' => 'Ezabatu',
+                'edit' => 'Aldatu',
+                'confirm' => 'Berretsi',
                 'back_to_web' => 'Webgunera itzuli',
                 'personal_data' => 'Datu Pertsonalak',
                 'security' => 'Segurtasuna',
@@ -268,17 +398,25 @@ class I18n {
                 'system_config' => 'Zentroaren Ezarpenak',
                 'academic_config' => 'Ezarpen Akademikoak',
                 'admissions' => 'Onarpenak',
+                'classrooms' => 'Gelak',
                 'aulas' => 'Gelak',
                 'inventory' => 'Inbentarioa',
+                'loans' => 'Maileguak',
                 'prestamos' => 'Maileguak',
                 'reports' => 'PDF Txostenak',
-                'attendance' => 'Asistentzia',
+                'justifications' => 'Hutsegiteak Justifikatzea',
                 'justificaciones' => 'Hutsegiteak Justifikatzea',
                 'my_summary' => 'Nire Laburpena',
                 'my_children' => 'NIRE SEME-ALABAK',
-                'payments_receipts' => 'Ordainketak eta Ordainagiriak',
-                'messaging_center' => 'Zentroaren Mezularitza',
+                'students' => 'Ikasleak',
+                'teachers' => 'Irakasleak',
+                'tutors' => 'Tutoreak',
+                'secretaries' => 'Idazkaritza',
+                'cycles' => 'Heziketa Zikloak',
+                'modules' => 'Moduluak',
+                'companies' => 'Enpresak / Lantokiko Prestakuntza',
                 'portal' => 'PORTALA',
+                'academic' => 'AKADEMIKOA',
                 'management' => 'KUDEAKETA',
                 'documents' => 'DOKUMENTUAK',
                 'plataforma' => 'PLATAFORMA',
@@ -291,32 +429,67 @@ class I18n {
                 'address' => 'Helbidea',
                 'course_cycle' => 'Ikasketa Zikloa',
                 'edit_profile' => 'Nire profila aldatu',
-                'edit' => 'Aldatu',
                 'profile_info_student' => 'Zure ikasle kontuaren informazioa',
+                // Login & Auth
+                'login_title' => 'Hasi saioa',
+                'login_subtitle' => 'Sartu zure datuak sisteman sartzeko',
+                'user_or_email' => 'Erabiltzailea edo e-posta',
+                'password' => 'Pasahitza',
+                'show' => 'Ikusi',
+                'hide' => 'Ezkutatu',
+                'enter_btn' => 'Saioa Hasi',
+                'forgot_password' => 'Pasahitza ahaztu duzu?',
+                'back_to_website' => 'Webgunera itzuli',
+                'continue_with_google' => 'edo jarraitu Google-rekin',
+                'login_hero_title' => 'Hezkuntza Kudeaketa Plataforma',
+                'login_hero_desc' => 'Kudeaketa akademiko integrala, gela birtuala eta erakundearen komunikazioa ekosistema bakarrean.',
+                'stats_profiles' => 'Profilak',
+                'stats_online' => 'Online',
+                'stats_security' => 'Segurua',
+                'welcome' => 'Ongi etorri',
+                'good_morning' => 'Egun on',
+                'good_afternoon' => 'Arratsalde on',
+                'good_evening' => 'Gabon',
             ],
         ];
+
+        self::$initialized = true;
     }
 
     public static function getLang(): string {
+        if (!self::$initialized) {
+            self::init();
+        }
         return self::$lang;
     }
 
     public static function setLang(string $lang): void {
         if (in_array($lang, ['es', 'en', 'ca', 'eu'], true)) {
             self::$lang = $lang;
+            if (session_status() === PHP_SESSION_NONE) {
+                @session_start();
+            }
             $_SESSION['lang'] = $lang;
-            setcookie('lang', $lang, time() + (365 * 24 * 60 * 60), '/');
+            if (!headers_sent()) {
+                setcookie('lang', $lang, time() + (365 * 24 * 60 * 60), '/');
+            }
         }
     }
 
     public static function translate(string $key, string $default = ''): string {
-        if (empty(self::$translations)) {
+        if (!self::$initialized) {
             self::init();
         }
-        return self::$translations[self::$lang][$key] ?? ($default ?: $key);
+        return self::$translations[self::$lang][$key] ?? ($default !== '' ? $default : $key);
     }
 }
 
-function __(string $key, string $default = ''): string {
-    return I18n::translate($key, $default);
+// Global helper function
+if (!function_exists('__')) {
+    function __(string $key, string $default = ''): string {
+        return I18n::translate($key, $default);
+    }
 }
+
+// Auto-initialize on file include
+I18n::init();

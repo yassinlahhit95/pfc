@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/error_modal.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/inventory_repository.dart';
 
 class DeviceFormScreen extends ConsumerStatefulWidget {
@@ -136,8 +137,10 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     return Scaffold(
       appBar: AppBar(
           title: Text(widget.device == null
-              ? 'Añadir Dispositivo'
-              : 'Editar Dispositivo')),
+              ? (ref.watch(translationsProvider)['title_anadir_dispositivo'] ??
+                  'Añadir Dispositivo')
+              : (ref.watch(translationsProvider)['title_editar_dispositivo'] ??
+                  'Editar Dispositivo'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(Space.xl),
         child: Column(

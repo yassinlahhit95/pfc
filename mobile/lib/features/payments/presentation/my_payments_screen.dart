@@ -10,6 +10,7 @@ import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/photo_picker_sheet.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/payments_repository.dart';
 
 const _estadoComprobanteLabels = {
@@ -34,9 +35,10 @@ class MyPaymentsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(sessionControllerProvider).value?.role;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mis pagos')),
+      appBar: AppBar(title: Text(t['title_mis_pagos'] ?? 'Mis pagos')),
       body: role == UserRole.tutor ? const _TutorView() : const _StudentView(),
     );
   }

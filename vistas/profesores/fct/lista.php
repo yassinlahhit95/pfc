@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../../modelos/fct.php";
 $idProfesor = (int)$_SESSION['idProfesor'];
 $fcts = listarFCTPorProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | FCT";
+$titulo_pagina = "FCT";
 $seccionActual   = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

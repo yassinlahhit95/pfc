@@ -25,13 +25,13 @@ if (!empty($idCicloFiltro)) {
 $datos = $_SESSION['datos_prestamo'] ?? [];
 unset($_SESSION['datos_prestamo']);
 
-$titulo_pagina = "AULAPRO | NUEVO PRÉSTAMO";
+$titulo_pagina = "Nuevo Préstamo";
 $seccion = 'prestamos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>REGISTRAR NUEVO PRÉSTAMO</h1>
+    <h1>Registrar Nuevo Préstamo</h1>
     <a href="gestionarPrestamos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

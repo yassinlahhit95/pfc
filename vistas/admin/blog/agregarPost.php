@@ -16,7 +16,7 @@ unset($_SESSION['datos_post']);
 $categorias = listarCategoriasBlog();
 $blogRolBase = 'admin';
 
-$titulo_pagina = "AULAPRO | NUEVA ENTRADA DEL BLOG";
+$titulo_pagina = "Nueva Entrada del Blog";
 $seccion = 'blog';
 include_once __DIR__ . "/../comunes/nav.php";
 require __DIR__ . '/../../comunes/blog/_agregarPost.php';

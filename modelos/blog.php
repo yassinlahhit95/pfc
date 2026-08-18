@@ -105,7 +105,7 @@ function listarCategoriasBlog() {
 
 function listarTodosLosPosts() {
     $con = obtenerConexion();
-    $res = mysqli_query($con, "SELECT * FROM blog_posts ORDER BY idPost DESC");
+    $res = mysqli_query($con, "SELECT * FROM blog_posts ORDER BY idPost ASC");
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     return $lista;

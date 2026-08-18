@@ -24,7 +24,7 @@ $secret = $_SESSION['mfa_setup_secret'];
 
 $usuario = ($actor['getFn'])($actor['id']);
 $label   = $usuario[$actor['emailField']] ?? ($actor['sessionKey'] . '#' . $actor['id']);
-$uri     = Totp::provisioningUri($secret, $label, 'AulaPro');
+$uri     = Totp::provisioningUri($secret, $label, FeatureGuard::getCenterName());
 
 $qrDataUri = (new Builder())
     ->build(writer: new SvgWriter(), data: $uri, size: 220, margin: 6)
@@ -40,7 +40,7 @@ $esObligatorio = !empty($_SESSION['mfa_setup_required']);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Configurar verificación en dos pasos — AulaPro</title>
+<title>Configurar verificación en dos pasos — <?php require_once __DIR__ . '/../../include/FeatureGuard.php'; echo htmlspecialchars(FeatureGuard::getCenterName()); ?></title>
 <style>
   :root { --primary:#4f46e5; --primary-strong:#3730a3; }
   * { box-sizing:border-box; }

@@ -14,7 +14,7 @@ $ciclos = listarTodosLosCiclos();
 $idCicloSeleccionado = (int)($_GET['idCiclo'] ?? ($ciclos[0]['idCiclo'] ?? 0));
 $fcts = $idCicloSeleccionado ? listarFCTPorCiclo($idCicloSeleccionado) : [];
 
-$titulo_pagina = "AULAPRO | FCT";
+$titulo_pagina = "FCT";
 $seccion = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

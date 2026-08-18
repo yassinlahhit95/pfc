@@ -36,7 +36,7 @@ $cAlumnos  = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor
 $cProfes   = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'profesor'));
 $cEnviados = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'admin'));
 
-$titulo_pagina = "AULAPRO | Mensajería";
+$titulo_pagina = "Mensajería";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

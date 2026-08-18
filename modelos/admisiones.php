@@ -76,7 +76,7 @@ function listarPreMatriculas($estado = null) {
     if ($estado) {
         $sql .= " WHERE p.estado = ?";
     }
-    $sql .= " ORDER BY p.fechaSolicitud DESC";
+    $sql .= " ORDER BY p.idPreMatricula ASC";
     $stmt = mysqli_prepare($con, $sql);
     if ($estado) {
         mysqli_stmt_bind_param($stmt, "s", $estado);

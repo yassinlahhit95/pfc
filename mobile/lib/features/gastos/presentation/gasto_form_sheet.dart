@@ -121,8 +121,9 @@ Future<bool> showGastoFormSheet(
                         source: ImageSource.gallery,
                         imageQuality: 70,
                         maxWidth: 800);
-                    if (picked != null)
+                    if (picked != null) {
                       setSheetState(() => archivo = File(picked.path));
+                    }
                   },
                 ),
               const SizedBox(height: Space.xl),

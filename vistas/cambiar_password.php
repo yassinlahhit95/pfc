@@ -52,7 +52,7 @@ $csrf = Security::generateCSRFToken();
 </head>
 <body>
   <form class="card" method="POST" action="../controladores/auth/cambiar_password.php" autocomplete="off">
-    <div class="brand"><img src="../public/imagenes/aulapro.png" alt="AulaPro"> Aula<b>Pro</b></div>
+    <div class="brand"><img src="../public/imagenes/aulapro.png" alt="<?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?>"> <?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?></div>
     <h1>Cambia tu contraseña</h1>
     <p class="sub">Por tu seguridad, establece una contraseña nueva y personal.</p>
 

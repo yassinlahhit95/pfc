@@ -28,7 +28,7 @@ $listaCiclos = listarTodosLosCiclos();
 $todosLosCursos = listarTodosLosCursosAcademicos();
 $listaNiveles = listarNiveles();
 
-$titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
+$titulo_pagina = "Modificar Estudiante";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -173,10 +173,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var listaDeCiclos = <?= json_encode($listaCiclos) ?>;
-var todosCursos = <?= json_encode($todosLosCursos) ?>;
-var anioEstudioActual = <?= json_encode($estudiante['anioEstudio'] ?? '') ?>;
-var idGrupoActual = <?= json_encode($estudiante['idGrupo'] ?? '') ?>;
+var listaDeCiclos = <?= Security::jsonEncodeSafe($listaCiclos) ?>;
+var todosCursos = <?= Security::jsonEncodeSafe($todosLosCursos) ?>;
+var anioEstudioActual = <?= Security::jsonEncodeSafe($estudiante['anioEstudio'] ?? '') ?>;
+var idGrupoActual = <?= Security::jsonEncodeSafe($estudiante['idGrupo'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivelNombre = $('#curso').val();

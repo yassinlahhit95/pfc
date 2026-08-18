@@ -41,20 +41,20 @@ if ($datosReto) {
     }
 }
 
-$tituloDelPagina = "AULAPRO | EDITAR RETO";
+$titulo_pagina = "Editar Reto";
 $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR RETO</h1>
+    <h1>Editar Reto</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($exito): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');
+    if (window.Toast) Toast.show(<?= Security::jsonEncodeSafe($exito) ?>, 'success');
 });
 </script>
 <?php endif; ?>

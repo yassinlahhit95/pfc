@@ -1783,6 +1783,7 @@ CREATE TABLE `fp_empresas` (
   `persona_contacto` varchar(255) DEFAULT NULL,
   `telefono` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `activo` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`idEmpresa`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -2359,6 +2360,27 @@ LOCK TABLES `niveles` WRITE;
 INSERT INTO `niveles` VALUES (1,'Grado Superior'),(2,'Grado Medio'),(3,'Grado Básico'),(4,'Colegio (Primaria/ESO/Bachillerato)');
 /*!40000 ALTER TABLE `niveles` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `notificaciones`
+--
+
+DROP TABLE IF EXISTS `notificaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notificaciones` (
+  `idNotificacion` int NOT NULL AUTO_INCREMENT,
+  `idUsuario` int NOT NULL,
+  `tipoUsuario` enum('director','profesor','secretaria','estudiante','tutor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mensaje` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `leido` tinyint(1) NOT NULL DEFAULT '0',
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idNotificacion`),
+  KEY `idx_notif_usr` (`idUsuario`,`tipoUsuario`,`leido`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `notificaciones_recordatorios`

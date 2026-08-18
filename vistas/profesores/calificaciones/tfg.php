@@ -14,7 +14,7 @@ $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
 $misCiclos = listarCiclosDeProfesor($idProfesor);
 $listaEvaluacion = listarEvaluacionTFGporProfesor($idProfesor, $idCicloElegido);
 
-$tituloDelPagina = "AULAPRO | EVALUACIÓN TFG";
+$titulo_pagina = "Evaluación TFG";
 $seccionActual = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-calificaciones-tfg-prof">
             <thead>
                 <tr>
                     <th>Estudiante</th>
@@ -110,3 +110,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-calificaciones-tfg-prof', 15);
+});
+</script>

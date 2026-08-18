@@ -4,26 +4,9 @@
 // Crea su tabla automáticamente la primera vez.
 class RateLimiter {
 
-    // ══════════════════════════════════════════════════════════════════════
-    // TABLA
-    // ══════════════════════════════════════════════════════════════════════
+    // rate_limits ya está garantizada por noDeploy/database.sql — sin
+    // CREATE TABLE IF NOT EXISTS en cada request.
 
-    private static $ensured = false;
-
-    private static function ensureTable($con): void {
-        if (self::$ensured) return;
-        @mysqli_query($con, "CREATE TABLE IF NOT EXISTS rate_limits (
-            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-            scope VARCHAR(64) NOT NULL,
-            ip VARCHAR(45) NOT NULL,
-            hits INT UNSIGNED NOT NULL DEFAULT 0,
-            window_start INT UNSIGNED NOT NULL,
-            blocked_until INT UNSIGNED NULL,
-            PRIMARY KEY (id),
-            UNIQUE KEY uq_scope_ip (scope, ip)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        self::$ensured = true;
-    }
 
     // ══════════════════════════════════════════════════════════════════════
     // IP DEL CLIENTE
@@ -41,20 +24,37 @@ class RateLimiter {
         return substr($ip, 0, 45);
     }
 
-    // Rangos IPv4 de Cloudflare — actualizar periódicamente desde https://www.cloudflare.com/ips/.
+    // Rangos IPv4 e IPv6 de Cloudflare — actualizar periódicamente desde https://www.cloudflare.com/ips/.
     private static function isCloudflareIp(string $ip): bool {
         $cfRanges = [
             '173.245.48.0/20','103.21.244.0/22','103.22.200.0/22','103.31.4.0/22',
             '141.101.64.0/18','108.162.192.0/18','190.93.240.0/20','188.114.96.0/20',
             '197.234.240.0/22','198.41.128.0/17','162.158.0.0/15','104.16.0.0/13',
             '104.24.0.0/14','172.64.0.0/13','131.0.72.0/22',
+            '2400:cb00::/32','2606:4700::/32','2803:f800::/32','2405:b500::/32',
+            '2405:8100::/32','2a06:98c0::/29','2c0f:f248::/32'
         ];
-        $ipLong = ip2long($ip);
-        if ($ipLong === false) return false;
+
+        $ipBin = @inet_pton($ip);
+        if ($ipBin === false) return false;
+        $ipLen = strlen($ipBin);
+
         foreach ($cfRanges as $range) {
-            [$net, $bits] = explode('/', $range);
-            $mask = ~((1 << (32 - (int)$bits)) - 1);
-            if ((ip2long($net) & $mask) === ($ipLong & $mask)) return true;
+            $parts = explode('/', $range);
+            $net = $parts[0];
+            $bits = isset($parts[1]) ? (int)$parts[1] : ($ipLen === 4 ? 32 : 128);
+            
+            $netBin = @inet_pton($net);
+            if ($netBin === false || strlen($netBin) !== $ipLen) continue;
+
+            $mask = str_repeat(chr(255), $bits >> 3);
+            $rem = $bits & 7;
+            if ($rem > 0) {
+                $mask .= chr(255 & (255 << (8 - $rem)));
+            }
+            $mask = str_pad($mask, $ipLen, chr(0));
+
+            if (($ipBin & $mask) === ($netBin & $mask)) return true;
         }
         return false;
     }
@@ -67,7 +67,7 @@ class RateLimiter {
     public static function allow($con, string $scope, int $maxHits = 20,
                                  int $windowSeconds = 300, int $blockSeconds = 900): bool {
         if (!$con) return true; // fail-open solo si no hay DB (evita romper el sitio)
-        self::ensureTable($con);
+
 
         $ip  = self::clientIp();
         $now = time();
@@ -94,7 +94,9 @@ class RateLimiter {
                 return false;
             }
 
-            if ($now - (int)$row['window_start'] > $windowSeconds) {
+            // Si el periodo de bloqueo acaba de expirar, o si la ventana de tiempo ha expirado
+            // de forma natural, reseteamos los hits a 1 y comenzamos una nueva ventana.
+            if (!empty($row['blocked_until']) || ($now - (int)$row['window_start'] > $windowSeconds)) {
                 $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = 1, window_start = ?, blocked_until = NULL WHERE scope = ? AND ip = ?");
                 mysqli_stmt_bind_param($upd, "iss", $now, $scope, $ip);
                 mysqli_stmt_execute($upd);

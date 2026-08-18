@@ -18,7 +18,7 @@ if (empty($idEstudiante)) {
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 $listaPagos = listarPagosPorEstudiante($idEstudiante);
 
-$titulo_pagina = "AULAPRO | HISTORIAL DE PAGOS";
+$titulo_pagina = "Historial de Pagos";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-historial-pagos-admin">
             <thead>
                 <tr>
                     <th>Fecha</th>
@@ -59,4 +59,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-historial-pagos-admin', 15);
+});
+</script>
 

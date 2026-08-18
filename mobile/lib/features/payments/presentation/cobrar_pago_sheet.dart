@@ -109,12 +109,13 @@ Future<bool> showCobrarPagoSheet(
                         if (val == 'mensual') {
                           nextDate = DateTime(
                               nextDate.year, nextDate.month + 1, nextDate.day);
-                        } else if (val == 'trimestral')
+                        } else if (val == 'trimestral') {
                           nextDate = DateTime(
                               nextDate.year, nextDate.month + 3, nextDate.day);
-                        else if (val == 'semestral')
+                        } else if (val == 'semestral') {
                           nextDate = DateTime(
                               nextDate.year, nextDate.month + 6, nextDate.day);
+                        }
                         proximoPagoController.text =
                             DateFormat('yyyy-MM-dd').format(nextDate);
                       }

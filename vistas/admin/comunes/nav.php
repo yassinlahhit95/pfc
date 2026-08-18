@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/I18n.php";
 require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
@@ -52,11 +53,11 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title><?= Security::escapeHtml($titulo_pagina ?? FeatureGuard::getCenterName() . ' Admin') ?></title>
+  <title><?= Security::escapeHtml(FeatureGuard::getCenterName() . (isset($titulo_pagina) && !empty($titulo_pagina) ? ' | ' . $titulo_pagina : '')) ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
   <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
   <?php else: ?>
@@ -67,9 +68,10 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
   <link rel="stylesheet" href="../../../public/css/features/onboarding-tour.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/onboarding-tour.css') ?>" />
   <?php endif; ?>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" /></noscript>
   <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
-  <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
   <script defer src="../../../public/js/core/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/aula-digital.js') ?>"></script>
   <script defer src="../../../public/js/core/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/menu-contextual.js') ?>"></script>
@@ -94,10 +96,15 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       } catch (e) {}
     </script>
     <?php $navBrandSubtitle = 'Campus Suite'; include __DIR__ . '/../../comunes/nav_brand.php'; ?>
-    <nav class="sidebar-nav-scroll" id="sidebar-nav">
+    <?php
+    $__lang = class_exists('I18n') ? I18n::getLang() : 'es';
+    $__sidebarHtml = Cache::remember('admin_sidebar_html_' . $__lang, 86400, function() {
+        ob_start();
+        ?>
+<nav class="sidebar-nav-scroll" id="sidebar-nav">
 
       <!-- Dashboard -->
-      <a href="../inicio/dashboard.php" class="nav-item<?= _nav_active_admin('inicio') ?>">
+      <a href="../inicio/dashboard.php" data-section="inicio" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>
         <span class="nav-label">Dashboard</span>
       </a>
@@ -105,99 +112,99 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       <!-- ACADÉMICO -->
       <span class="nav-section-title">ACADÉMICO</span>
 
-      <a href="../estudiantes/verEstudiantes.php" data-tour="estudiantes" class="nav-item<?= _nav_active_admin('estudiantes') ?>">
+      <a href="../estudiantes/verEstudiantes.php" data-tour="estudiantes" data-section="estudiantes" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Estudiantes</span>
       </a>
 
-      <a href="../ciclos/verCiclos.php" class="nav-item<?= _nav_active_admin('ciclos') ?>">
+      <a href="../ciclos/verCiclos.php" data-section="ciclos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
         <span class="nav-label">Ciclos Formativos</span>
       </a>
 
-      <a href="../modulos/verModulos.php" class="nav-item<?= _nav_active_admin('modulos') ?>">
+      <a href="../modulos/verModulos.php" data-section="modulos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg></span>
         <span class="nav-label">Módulos</span>
       </a>
 
-      <a href="../fp_dual/verEmpresas.php" class="nav-item<?= _nav_active_admin('fp_dual') ?>">
+      <a href="../fp_dual/verEmpresas.php" data-section="fp_dual" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span>
         <span class="nav-label">FP Dual</span>
       </a>
-      <a href="../retos/verRetos.php" class="nav-item<?= _nav_active_admin('retos') ?>">
+      <a href="../retos/verRetos.php" data-section="retos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
         <span class="nav-label">Retos</span>
       </a>
       <div class="nav-flyout-wrap">
-        <button type="button" class="nav-item nav-flyout-btn<?= $notasFlyoutActivo ? ' active' : '' ?>" aria-haspopup="true" aria-expanded="false">
+        <button type="button" data-flyout="notas" class="nav-item nav-flyout-btn" aria-haspopup="true" aria-expanded="false">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
           <span class="nav-label">Notas</span>
           <span class="nav-flyout-caret"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
         <div class="nav-flyout-menu">
-          <a href="../academico/calificacionesModulos.php" class="nav-flyout-item<?= _nav_active_admin('notas_modulos') ?>"><i class="fas fa-chart-simple"></i> Notas Módulos</a>
-          <a href="../academico/calificacionesRetos.php" class="nav-flyout-item<?= _nav_active_admin('notas_retos') ?>"><i class="fas fa-trophy"></i> Notas Retos</a>
-          <a href="../academico/calificacionesTFG.php" class="nav-flyout-item<?= _nav_active_admin('notas_tfg') ?>"><i class="fas fa-graduation-cap"></i> Notas TFG</a>
-          <a href="../academico/resultadosFinales.php" class="nav-flyout-item<?= _nav_active_admin('resultados_modulos') ?>"><i class="fas fa-flag-checkered"></i> Resultados Finales</a>
+          <a href="../academico/calificacionesModulos.php" data-section="notas_modulos" class="nav-flyout-item"><i class="fas fa-chart-simple"></i> Notas Módulos</a>
+          <a href="../academico/calificacionesRetos.php" data-section="notas_retos" class="nav-flyout-item"><i class="fas fa-trophy"></i> Notas Retos</a>
+          <a href="../academico/calificacionesTFG.php" data-section="notas_tfg" class="nav-flyout-item"><i class="fas fa-graduation-cap"></i> Notas TFG</a>
+          <a href="../academico/resultadosFinales.php" data-section="resultados_modulos" class="nav-flyout-item"><i class="fas fa-flag-checkered"></i> Resultados Finales</a>
         </div>
       </div>
 
-      <a href="../fct/lista.php" class="nav-item<?= _nav_active_admin('fct') ?>">
+      <a href="../fct/lista.php" data-section="fct" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
         <span class="nav-label">FCT</span>
       </a>
-      <a href="../academico/configuracionAcademica.php" class="nav-item<?= _nav_active_admin('configuracion_academica') ?>">
+      <a href="../academico/configuracionAcademica.php" data-section="configuracion_academica" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <span class="nav-label">Configuración Académica</span>
       </a>
 
-      <a href="../academico/regionalExporters.php" class="nav-item<?= _nav_active_admin('regional_exporters') ?>">
+      <a href="../academico/regionalExporters.php" data-section="regional_exporters" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         <span class="nav-label">Gestión Regional (Euskadi)</span>
       </a>
 
-      <a href="../academico/gestionarGrupos.php" class="nav-item<?= _nav_active_admin('gestionar_grupos') ?>">
+      <a href="../academico/gestionarGrupos.php" data-section="gestionar_grupos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Aulas / Grupos</span>
       </a>
 
-      <a href="../horario/horario.php" class="nav-item<?= _nav_active_admin('horario') ?>">
+      <a href="../horario/horario.php" data-section="horario" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label">Cuadro Horario</span>
       </a>
-      <a href="../asistencias/verAsistencias.php" class="nav-item<?= _nav_active_admin('asistencias') ?>">
+      <a href="../asistencias/verAsistencias.php" data-section="asistencias" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <span class="nav-label"><?= __('attendance', 'Asistencias') ?></span>
       </a>
 
-      <a href="../asistencias/justificaciones.php" class="nav-item<?= _nav_active_admin('justificaciones') ?>">
+      <a href="../asistencias/justificaciones.php" data-section="justificaciones" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
         <span class="nav-label"><?= __('justificaciones', 'Justificaciones') ?></span>
       </a>
 
-      <a href="../admisiones/listado.php" class="nav-item<?= _nav_active_admin('admisiones') ?>">
+      <a href="../admisiones/listado.php" data-section="admisiones" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
         <span class="nav-label">Admisiones</span>
       </a>
       <!-- PERSONAL -->
       <span class="nav-section-title">PERSONAL</span>
 
-      <a href="../directores/verDirectores.php" class="nav-item<?= _nav_active_admin('directores') ?>">
+      <a href="../directores/verDirectores.php" data-section="directores" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
         <span class="nav-label">Directores</span>
       </a>
 
-      <a href="../profesores/verProfesores.php" class="nav-item<?= _nav_active_admin('profesores') ?>">
+      <a href="../profesores/verProfesores.php" data-section="profesores" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Profesores</span>
       </a>
 
-      <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_admin('tutores') ?>">
+      <a href="../tutores/verTutores.php" data-section="tutores" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Sistema Parental</span>
       </a>
 
-      <a href="../secretarias/verSecretarias.php" class="nav-item<?= _nav_active_admin('secretarias') ?>">
+      <a href="../secretarias/verSecretarias.php" data-section="secretarias" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11v4M10 13h4"/></svg></span>
         <span class="nav-label">Secretarias</span>
       </a>
@@ -205,50 +212,50 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       <!-- COMUNICACIÓN -->
       <span class="nav-section-title">COMUNICACIÓN</span>
 
-      <a href="../anuncios/gestionAnuncios.php" class="nav-item<?= _nav_active_admin('anuncios') ?>">
+      <a href="../anuncios/gestionAnuncios.php" data-section="anuncios" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label">Avisos</span>
       </a>
-      <a href="../mensajes/lista.php" class="nav-item<?= _nav_active_admin('reclamaciones') ?>">
+      <a href="../mensajes/lista.php" data-section="reclamaciones" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
         <span class="nav-label">Mensajeria</span>
       </a>
-      <a href="../chat/index.php" class="nav-item<?= _nav_active_admin('chat') ?>">
+      <a href="../chat/index.php" data-section="chat" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
       </a>
-      <a href="../eventos/gestionEventos.php" class="nav-item<?= _nav_active_admin('eventos') ?>">
+      <a href="../eventos/gestionEventos.php" data-section="eventos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label">Eventos</span>
       </a>
-      <a href="../planificacion/planificacion.php" class="nav-item<?= _nav_active_admin('planificacion') ?>">
+      <a href="../planificacion/planificacion.php" data-section="planificacion" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <span class="nav-label">Planificación</span>
       </a>
       <!-- FINANZAS -->
       <span class="nav-section-title">FINANZAS</span>
 
-      <a href="../pagos/verPagosGeneral.php" data-tour="pagos" class="nav-item<?= _nav_active_admin('pagos') ?>">
+      <a href="../pagos/verPagosGeneral.php" data-tour="pagos" data-section="pagos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
       </a>
-      <a href="../gastos/verGastos.php" class="nav-item<?= _nav_active_admin('gastos') ?>">
+      <a href="../gastos/verGastos.php" data-section="gastos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
         <span class="nav-label">Gastos</span>
       </a>
       <!-- RECURSOS -->
       <span class="nav-section-title">RECURSOS</span>
 
-      <a href="../inventario/verInventario.php" class="nav-item<?= _nav_active_admin('inventario') ?>">
+      <a href="../inventario/verInventario.php" data-section="inventario" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
         <span class="nav-label">Inventario</span>
       </a>
 
-      <a href="../inventario/gestionarPrestamos.php" class="nav-item<?= _nav_active_admin('prestamos') ?>">
+      <a href="../inventario/gestionarPrestamos.php" data-section="prestamos" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span>
         <span class="nav-label">Préstamos</span>
       </a>
-      <a href="../aulas/gestionAulas.php" class="nav-item<?= _nav_active_admin('aulas') ?>">
+      <a href="../aulas/gestionAulas.php" data-section="aulas" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></span>
         <span class="nav-label">Aulas</span>
       </a>
@@ -256,7 +263,7 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       <!-- DOCUMENTOS -->
       <span class="nav-section-title">DOCUMENTOS</span>
 
-      <a href="../informes/informes.php" class="nav-item<?= _nav_active_admin('informes') ?>">
+      <a href="../informes/informes.php" data-section="informes" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg></span>
         <span class="nav-label">Informes PDF</span>
       </a>
@@ -264,37 +271,57 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       <span class="nav-section-title">PLATAFORMA</span>
 
       <div class="nav-flyout-wrap">
-        <button type="button" class="nav-item nav-flyout-btn<?= $configFlyoutActivo ? ' active' : '' ?>" aria-haspopup="true" aria-expanded="false">
+        <button type="button" data-flyout="config" class="nav-item nav-flyout-btn" aria-haspopup="true" aria-expanded="false">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span>
           <span class="nav-label">Configuración</span>
           <span class="nav-flyout-caret"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
         <div class="nav-flyout-menu">
-          <a href="../landing/builder.php" class="nav-flyout-item<?= _nav_active_admin('landing') ?>"><i class="fas fa-earth-americas"></i> Página Web</a>
-          <a href="../blog/gestionBlog.php" class="nav-flyout-item<?= _nav_active_admin('blog') ?>"><i class="fas fa-newspaper"></i> Blog</a>
-          <a href="../ofertaCiclos/gestion.php" class="nav-flyout-item<?= _nav_active_admin('ofertaCiclos') ?>"><i class="fas fa-layer-group"></i> Catálogo de ciclos</a>
-          <a href="../rgpd/index.php" class="nav-flyout-item<?= _nav_active_admin('rgpd') ?>"><i class="fas fa-shield-halved"></i> RGPD</a>
-          <a href="../saas/estado.php" class="nav-flyout-item<?= _nav_active_admin('saas_estado') ?>"><i class="fas fa-server"></i> Estado SaaS</a>
+          <a href="../landing/builder.php" data-section="landing" class="nav-flyout-item"><i class="fas fa-earth-americas"></i> Página Web</a>
+          <a href="../blog/gestionBlog.php" data-section="blog" class="nav-flyout-item"><i class="fas fa-newspaper"></i> Blog</a>
+          <a href="../ofertaCiclos/gestion.php" data-section="ofertaCiclos" class="nav-flyout-item"><i class="fas fa-layer-group"></i> Catálogo de ciclos</a>
+          <a href="../rgpd/index.php" data-section="rgpd" class="nav-flyout-item"><i class="fas fa-shield-halved"></i> RGPD</a>
+          <a href="../saas/estado.php" data-section="saas_estado" class="nav-flyout-item"><i class="fas fa-server"></i> Estado SaaS</a>
         </div>
       </div>
 
-      <a href="../configuracion/configuracion.php" data-tour="configuracion" class="nav-item<?= _nav_active_admin('configuracion') ?>">
+      <a href="../configuracion/configuracion.php" data-tour="configuracion" data-section="configuracion" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <span class="nav-label">Configuración del Centro</span>
       </a>
 
     </nav>
+        <?php
+        return ob_get_clean();
+    });
+
+    // Inyectar clase activa según la sección actual
+    $__sec = $seccion ?? '';
+    if ($__sec) {
+        $__sidebarHtml = str_replace('data-section="' . $__sec . '" class="nav-item"', 'data-section="' . $__sec . '" class="nav-item active"', $__sidebarHtml);
+        $__sidebarHtml = str_replace('data-section="' . $__sec . '" class="nav-flyout-item"', 'data-section="' . $__sec . '" class="nav-flyout-item active"', $__sidebarHtml);
+    }
+    
+    if (!empty($notasFlyoutActivo)) {
+        $__sidebarHtml = str_replace('data-flyout="notas" class="nav-item nav-flyout-btn"', 'data-flyout="notas" class="nav-item nav-flyout-btn active"', $__sidebarHtml);
+    }
+    if (!empty($configFlyoutActivo)) {
+        $__sidebarHtml = str_replace('data-flyout="config" class="nav-item nav-flyout-btn"', 'data-flyout="config" class="nav-item nav-flyout-btn active"', $__sidebarHtml);
+    }
+
+    echo $__sidebarHtml;
+    ?>
 
     <nav class="sidebar-bottom-nav">
-      <a href="../../ayuda.php" class="nav-item<?= ($seccion ?? '') === 'ayuda' ? ' active' : '' ?>">
+      <a href="/vistas/ayuda.php" class="nav-item<?= ($seccion ?? '') === 'ayuda' ? ' active' : '' ?>">
         <span class="nav-ico"><i class="fas fa-question-circle" style="font-size:1.15rem;"></i></span>
         <span class="nav-label"><?= __('help_center', 'Centro de Ayuda') ?></span>
       </a>
-      <a href="../directores/verDetallesDirectores.php?id=<?= (int)$_SESSION['idAdmin'] ?>" class="nav-item">
+      <a href="/vistas/admin/directores/verDetallesDirectores.php?id=<?= (int)$_SESSION['idAdmin'] ?>" class="nav-item">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
         <span class="nav-label"><?= __('my_profile', 'Mi Perfil') ?></span>
       </a>
-      <a href="../../../controladores/logout.php" class="nav-item nav-item-logout">
+      <a href="/controladores/logout.php" class="nav-item nav-item-logout">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></span>
         <span class="nav-label"><?= __('logout', 'Cerrar Sesión') ?></span>
       </a>
@@ -454,7 +481,7 @@ $configFlyoutActivo = in_array($seccion, ['landing', 'blog', 'ofertaCiclos', 'rg
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
         completeUrl: 'controladores/comunes/tour/completar.php',
-        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        csrfToken: <?= Security::jsonEncodeSafe(Security::generateCSRFToken()) ?>,
         steps: [
           { selector: '[data-tour="estudiantes"]', title: 'Estudiantes', text: 'Gestiona la base de datos de alumnos, expedientes y matrículas.', placement: 'right' },
           { selector: '[data-tour="pagos"]', title: 'Finanzas y Pagos', text: 'Realiza un seguimiento de los recibos de matrículas, facturación y estados de cuenta.', placement: 'right' },

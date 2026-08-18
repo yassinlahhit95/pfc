@@ -22,13 +22,13 @@ if (!$estudiante || !$reto) {
 
 $notaActual = obtenerCalificacionReto($idEstudiante, $idReto);
 
-$tituloDelPagina = "AULAPRO | EVALUAR RETO";
+$titulo_pagina = "Evaluar Reto";
 $seccionActual = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EVALUAR RETO</h1>
+    <h1>Evaluar Reto</h1>
     <a href="calificacionesRetos.php?idReto=<?= Security::escapeHtml($idReto) ?>&idCiclo=<?= Security::escapeHtml($idCiclo) ?>" class="boton-secundario">VOLVER</a>
 </div>
 

@@ -35,7 +35,7 @@ foreach ($todosLosCiclos as $cicloItem) {
     }
 }
 
-$titulo_pagina = "AULAPRO | MODIFICAR MÓDULO";
+$titulo_pagina = "Modificar Módulo";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -126,9 +126,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($todosLosCiclos) ?>;
-var todosCursos = <?= json_encode($todosLosCursos) ?>;
-var cursoAnioActual = <?= json_encode($modulo['cursoAnio'] ?? '') ?>;
+var todosCiclos = <?= Security::jsonEncodeSafe($todosLosCiclos) ?>;
+var todosCursos = <?= Security::jsonEncodeSafe($todosLosCursos) ?>;
+var cursoAnioActual = <?= Security::jsonEncodeSafe($modulo['cursoAnio'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivelNombre = $('#nivel').val();

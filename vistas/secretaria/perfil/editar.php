@@ -12,13 +12,13 @@ unset($_SESSION['datos_perfil']);
 
 $valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $secretaria[$k] ?? '');
 
-$titulo_pagina = "AULAPRO | EDITAR PERFIL";
+$titulo_pagina = "Editar Perfil";
 $seccion = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR PERFIL</h1>
+    <h1>Editar Perfil</h1>
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

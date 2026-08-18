@@ -24,13 +24,13 @@ if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_c
 
 $listaEvaluacion = listarEvaluacionTFG($idCicloElegido ?: null);
 
-$titulo_pagina = "AULAPRO | NOTAS TFG";
+$titulo_pagina = "Notas TFG";
 $seccion = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>CALIFICACIONES</h1>
+    <h1>Calificaciones</h1>
 </div>
 
 <div class="dashboard-grid" style="margin-bottom:24px;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));">
@@ -96,7 +96,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-tfg-secretaria">
             <thead>
                 <tr>
                     <th>Estudiante</th>
@@ -160,3 +160,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-tfg-secretaria', 15);
+});
+</script>

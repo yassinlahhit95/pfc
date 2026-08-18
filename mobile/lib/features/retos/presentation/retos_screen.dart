@@ -7,6 +7,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/retos_repository.dart';
 
 class RetosScreen extends ConsumerWidget {
@@ -17,9 +18,10 @@ class RetosScreen extends ConsumerWidget {
     final retosAsync = ref.watch(retosProvider);
     final isProfesor = ref.watch(sessionControllerProvider).value?.role ==
         UserRole.profesor;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mis Retos')),
+      appBar: AppBar(title: Text(t['title_mis_retos'] ?? 'Mis Retos')),
       body: AsyncView<List<Reto>>(
         value: retosAsync,
         onRetry: () => ref.invalidate(retosProvider),

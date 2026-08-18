@@ -21,7 +21,7 @@
 
     <section class="legal-section" id="objetivo">
         <h2><i class="fas fa-bullseye"></i> 1. Objetivo y Alcance</h2>
-        <p>La presente <strong>Política de Gestión</strong> describe los compromisos de calidad, seguridad y continuidad de la plataforma <strong>AulaPro</strong> — sistema de gestión escolar proporcionado a centros educativos.</p>
+        <p>La presente <strong>Política de Gestión</strong> describe los compromisos de calidad, seguridad y continuidad de la plataforma <strong><?= htmlspecialchars(FeatureGuard::getCenterName()) ?></strong> — sistema de gestión escolar proporcionado a centros educativos.</p>
     </section>
 
     <section class="legal-section" id="sla">
@@ -48,7 +48,7 @@
 
     <section class="legal-section" id="seguridad">
         <h2><i class="fas fa-shield-alt"></i> 3. Seguridad de la Información</h2>
-        <p>AulaPro implementa medidas de seguridad avanzadas: control de accesos mediante hash bcrypt, doble factor de autenticación (2FA) para roles altos, geobloqueo de IP internacionales para administradores, cookies seguras, protocolo HTTPS/TLS, consultas preparadas SQL para evitar inyecciones, prevención de XSS y CSRF.</p>
+        <p><?= htmlspecialchars(FeatureGuard::getCenterName()) ?> implementa medidas de seguridad avanzadas: control de accesos mediante hash bcrypt, doble factor de autenticación (2FA) para roles altos, geobloqueo de IP internacionales para administradores, cookies seguras, protocolo HTTPS/TLS, consultas preparadas SQL para evitar inyecciones, prevención de XSS y CSRF.</p>
     </section>
 
     <section class="legal-section" id="datos">
@@ -68,7 +68,7 @@
 
     <section class="legal-section" id="responsabilidades">
         <h2><i class="fas fa-handshake"></i> 7. Responsabilidades</h2>
-        <p>AulaPro asume la responsabilidad técnica y del cifrado de datos; el centro educativo asume la gestión responsable de cuentas, contraseñas y permisos del personal.</p>
+        <p><?= htmlspecialchars(FeatureGuard::getCenterName()) ?> asume la responsabilidad técnica y del cifrado de datos; el centro educativo asume la gestión responsable de cuentas, contraseñas y permisos del personal.</p>
     </section>
 
     <section class="legal-section" id="mejora">

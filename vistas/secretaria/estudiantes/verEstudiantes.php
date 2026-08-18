@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/grupos.php";
 
-$titulo_pagina = "AULAPRO | LISTADO DE ESTUDIANTES";
+$titulo_pagina = "Listado de Estudiantes";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -18,9 +18,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <div>
-        <h1>LISTADO DE ESTUDIANTES</h1>
+        <h1>Listado de Estudiantes</h1>
     </div>
-    <div class="acciones-pagina" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <div class="acciones-pagina">
         <a href="papelera.php" class="boton-secundario">
             <i class="fas fa-trash-alt"></i> PAPELERA
         </a>
@@ -122,7 +122,7 @@ if ($resCursosUnicos) {
         </div>
         <div class="campo relleno" style="margin-top: 15px;">
             <label for="inputFiltroNombre">BUSCAR POR NOMBRE:</label>
-            <input type="text" id="inputFiltroNombre" placeholder="Buscar..." oninput="debounceAplicarFiltros()" style="width: 100%;">
+            <input type="search" id="inputFiltroNombre" placeholder="Buscar..." oninput="debounceAplicarFiltros()" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="width: 100%;">
         </div>
     </div>
 </div>

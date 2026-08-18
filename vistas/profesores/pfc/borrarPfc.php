@@ -8,7 +8,7 @@ if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {
 }
 $registro = obtenerTFGporEstudiante($idEstudiante);
 if (!$registro) { header("Location: lista.php"); exit; }
-$tituloDelPagina = 'AULAPRO | CONFIRMAR ELIMINACIÓN';
+$titulo_pagina = 'Confirmar Eliminación';
 $seccionActual = '';
 include __DIR__ . '/../comunes/nav.php';
 ?>

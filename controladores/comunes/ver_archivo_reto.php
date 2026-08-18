@@ -34,7 +34,9 @@ if (!empty($_SESSION['idAdmin'])) {
     $autorizado = true;
 } elseif (!empty($_SESSION['idProfesor'])) {
     $retosProf = listarRetosDeProfesor($_SESSION['idProfesor']);
-    $autorizado = in_array($idReto, array_column($retosProf, 'idReto'));
+    $retosCiclo = (!empty($_SESSION['esTutor']) && !empty($_SESSION['idCicloTutor'])) ? listarRetosPorCiclo((int)$_SESSION['idCicloTutor']) : [];
+    $idsPermitidos = array_merge(array_column($retosProf, 'idReto'), array_column($retosCiclo, 'idReto'));
+    $autorizado = in_array($idReto, $idsPermitidos);
 } elseif (!empty($_SESSION['idEstudiante'])) {
     require_once __DIR__ . "/../../modelos/estudiantes.php";
     $est = obtenerEstudiantePorId($_SESSION['idEstudiante']);

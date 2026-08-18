@@ -30,10 +30,10 @@ $renderTarjetas = function () use ($items, $preview) {
             <h3><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
             <div class="lp-equipo-back-scroll">
               <?php if (!empty($item['bio'])): ?>
-              <p class="lp-equipo-bio"<?= landing_lb_field($preview, "items.$i.bio", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['bio'])) ?></p>
+              <p class="lp-equipo-bio"<?= landing_lb_field($preview, "items.$i.bio", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['bio'] ?? '')) ?></p>
               <?php endif; ?>
             </div>
-            <a href="#" class="lp-badge"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="lp-badge" aria-label="Perfil de LinkedIn de <?= Security::escapeHtml($item['nombre'] ?? 'miembro del equipo') ?>"><i class="fab fa-linkedin-in"></i></a>
           </div>
         </div>
       </article>
@@ -47,7 +47,7 @@ $renderTarjetas = function () use ($items, $preview) {
       <div>
         <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
         <?php if (!empty($contenido['subtitulo'])): ?>
-        <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+        <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'] ?? '')) ?></p>
         <?php endif; ?>
       </div>
       <?php if ($esCarrusel): ?>

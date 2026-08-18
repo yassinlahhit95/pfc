@@ -75,7 +75,7 @@ foreach ($asistenciasRaw as $registro) {
     }
 }
 
-$tituloDelPagina = 'AulaPro — Panel de Control';
+$titulo_pagina = 'Panel de Control';
 $seccionActual   = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -102,8 +102,8 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 </section>
 
 <!-- Progreso de Tareas (Aula Digital) -->
-<div class="panel task-progress-panel" style="margin-top:24px; border-left:4px solid var(--azul);">
-  <div style="position:relative; width:80px; height:80px;">
+<div class="panel task-progress-panel" style="margin-top:24px; border:1px solid var(--border); border-radius:14px; display:flex; align-items:center; gap:22px; padding:20px 24px; background:var(--surface);">
+  <div style="position:relative; width:76px; height:76px; flex-shrink:0;">
     <svg viewBox="0 0 36 36" style="width:100%; height:100%;">
       <!-- Background Circle -->
       <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" style="stroke:var(--border-2);" stroke-width="3.5" />
@@ -410,9 +410,9 @@ foreach ($califRetos as $califReto) {
     new Chart(document.getElementById('chartModulos'), {
         type: 'bar',
         data: {
-            labels:   <?= json_encode($chartLabels, JSON_UNESCAPED_UNICODE) ?>,
-            datasets: [{ data: <?= json_encode($chartNotas) ?>,
-                         backgroundColor: <?= json_encode($chartColores) ?>,
+            labels:   <?= Security::jsonEncodeSafe($chartLabels) ?>,
+            datasets: [{ data: <?= Security::jsonEncodeSafe($chartNotas) ?>,
+                         backgroundColor: <?= Security::jsonEncodeSafe($chartColores) ?>,
                          borderRadius: 6, borderSkipped: false }]
         },
         options: optsBase
@@ -423,9 +423,9 @@ foreach ($califRetos as $califReto) {
     new Chart(document.getElementById('chartRetos'), {
         type: 'bar',
         data: {
-            labels:   <?= json_encode($chartRetosLabels, JSON_UNESCAPED_UNICODE) ?>,
-            datasets: [{ data: <?= json_encode($chartRetosNotas) ?>,
-                         backgroundColor: <?= json_encode($chartRetosColores) ?>,
+            labels:   <?= Security::jsonEncodeSafe($chartRetosLabels) ?>,
+            datasets: [{ data: <?= Security::jsonEncodeSafe($chartRetosNotas) ?>,
+                         backgroundColor: <?= Security::jsonEncodeSafe($chartRetosColores) ?>,
                          borderRadius: 6, borderSkipped: false }]
         },
         options: optsBase

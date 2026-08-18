@@ -22,7 +22,7 @@ $listaDeEstudiantes = !empty($idCicloSeleccionado)
     ? listarEstudiantesPorCiclo($idCicloSeleccionado)
     : listarEstudiantesDeProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | Redactar Mensaje";
+$titulo_pagina = "Redactar Mensaje";
 $seccionActual   = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

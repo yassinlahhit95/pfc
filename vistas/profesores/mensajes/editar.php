@@ -17,13 +17,13 @@ if (!$mensaje) {
     exit;
 }
 
-$tituloDelPagina = "AULAPRO | EDITAR MENSAJE";
+$titulo_pagina = "Editar Mensaje";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>DETALLES DEL MENSAJE</h1>
+    <h1>Detalles del Mensaje</h1>
     <a href="../../../vistas/profesores/mensajes/lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

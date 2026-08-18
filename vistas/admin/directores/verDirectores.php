@@ -9,13 +9,13 @@ require_once __DIR__ . "/../../../modelos/directores.php";
 
 $todosLosDirectores = listarDirectores();
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE DIRECTORES";
+$titulo_pagina = "Gestión de Directores";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>DIRECTORES DE CICLO</h1>
+    <h1>Directores de Ciclo</h1>
     <a href="agregarDirectores.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO DIRECTOR
     </a>

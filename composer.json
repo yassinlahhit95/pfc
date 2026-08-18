@@ -11,9 +11,5 @@
             "php": "8.3.0"
         },
         "platform-check": false
-    },
-    "scripts": {
-        "post-install-cmd": ["php noDeploy/generar_htaccess_vendor.php", "php noDeploy/install-check.php"],
-        "post-update-cmd": ["php noDeploy/generar_htaccess_vendor.php", "php noDeploy/install-check.php"]
     }
 }

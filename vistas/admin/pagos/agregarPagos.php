@@ -44,13 +44,13 @@ $esDespuesDeJunio = false;
 $datosPago = $_SESSION['datos_pago'] ?? [];
 unset($_SESSION['datos_pago']);
 
-$titulo_pagina = "AULAPRO | REGISTRAR PAGO";
+$titulo_pagina = "Registrar Pago";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>REGISTRAR NUEVO PAGO</h1>
+    <h1>Registrar Nuevo Pago</h1>
     <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

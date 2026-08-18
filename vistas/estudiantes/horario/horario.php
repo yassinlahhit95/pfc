@@ -18,7 +18,7 @@ $ciclo           = $idCicloHorario ? obtenerCicloPorId($idCicloHorario) : null;
 $horarioCeldas = $idCicloHorario ? listarHorarioPorCiclo($idCicloHorario) : [];
 $puedeEditar   = false;
 
-$tituloDelPagina = "AULAPRO | MI HORARIO";
+$titulo_pagina = "Mi Horario";
 $seccionActual = 'horario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/horario-admin.css') ?>">
 
 <div class="cabecera">
-    <h1>MI HORARIO</h1>
+    <h1>Mi Horario</h1>
     <?php if ($ciclo) { ?>
         <span class="texto-dirigido"><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></span>
     <?php } ?>

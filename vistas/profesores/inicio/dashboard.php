@@ -42,7 +42,7 @@ foreach ($listaMensajes as $mensaje) {
     }
 }
 
-$tituloDelPagina = 'AulaPro — Panel de Control';
+$titulo_pagina = 'Panel de Control';
 $seccionActual   = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 

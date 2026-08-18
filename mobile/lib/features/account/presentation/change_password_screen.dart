@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/error_modal.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/account_repository.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
@@ -71,8 +72,10 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Cambiar contraseña')),
+      appBar: AppBar(
+          title: Text(t['title_cambiar_password'] ?? 'Cambiar contraseña')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(Space.xl),

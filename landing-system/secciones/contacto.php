@@ -17,7 +17,7 @@ if (!$mostrarFormulario && !$mostrarMapa) {
     <div class="lp-sec-cabecera lp-anim">
       <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['texto'])): ?>
-      <p<?= landing_lb_field($preview, 'texto', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['texto'])) ?></p>
+      <p<?= landing_lb_field($preview, 'texto', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['texto'] ?? '')) ?></p>
       <?php endif; ?>
     </div>
 
@@ -68,7 +68,7 @@ if (!$mostrarFormulario && !$mostrarMapa) {
             <i class="fas fa-clock"></i>
             <div>
               <strong>Horario</strong>
-              <span<?= landing_lb_field($preview, 'textoHorario', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['textoHorario'])) ?></span>
+              <span<?= landing_lb_field($preview, 'textoHorario', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['textoHorario'] ?? '')) ?></span>
             </div>
           </div>
           <?php endif; ?>

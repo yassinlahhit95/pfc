@@ -16,20 +16,20 @@ $retos = ($esTutor && $idCicloTutor)
     ? listarRetosPorCiclo($idCicloTutor)
     : listarRetosDeProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | RETOS";
+$titulo_pagina = "Retos";
 $seccionActual   = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE RETOS</h1>
+    <h1>Gestión de Retos</h1>
     <a href="agregar.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVO RETO</a>
 </div>
 
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-retos-profesores">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -106,3 +106,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-retos-profesores', 15);
+});
+</script>

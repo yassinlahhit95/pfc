@@ -53,6 +53,14 @@ try {
         throw new RuntimeException('modulo_inexistente');
     }
 
+    $idCiclo = intval($modulo['idCiclo']);
+    $misModulos = listarModulosDeProfesor($idProfesor);
+    $esTutorCiclo = (!empty($_SESSION['esTutor']) && !empty($_SESSION['idCicloTutor']) && $_SESSION['idCicloTutor'] == $idCiclo);
+    if (!in_array($idModulo, array_column($misModulos, 'idModulo')) && !$esTutorCiclo) {
+        $_SESSION['errores'] = "No tienes permiso para gestionar recursos de este módulo.";
+        throw new RuntimeException('modulo_no_autorizado');
+    }
+
     $destino = "../../../vistas/profesores/aula/recursos.php?id=$idModulo";
     if ($idCarpeta) $destino .= "&carpeta=$idCarpeta";
 

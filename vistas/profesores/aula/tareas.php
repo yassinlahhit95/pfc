@@ -29,7 +29,7 @@ $mostrarForm = $tareaEditar || isset($_GET['nueva']) || !empty($datos);
 
 $tareas = $idModuloSeleccionado ? listarTareasPorModuloProfesorAula($idModuloSeleccionado) : [];
 
-$tituloDelPagina = 'AULAPRO | TAREAS DEL AULA';
+$titulo_pagina = 'Tareas del Aula';
 $seccionActual   = 'aula_tareas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

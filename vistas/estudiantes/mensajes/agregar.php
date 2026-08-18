@@ -16,7 +16,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $idEstudiante    = (int)$_SESSION['idEstudiante'];
 $listaProfesores = listarProfesoresConModulosParaEstudiante($idEstudiante);
 
-$tituloDelPagina = "AULAPRO | Nuevo Mensaje";
+$titulo_pagina = "Nuevo Mensaje";
 $seccionActual   = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

@@ -59,11 +59,11 @@ foreach ($archivosPaginados as $arch) {
     else $archivosSueltos[] = $arch;
 }
 
-$tituloDelPagina = "AULAPRO | " . strtoupper($modulo['nombreModulo']);
-$seccionActual   = 'aula_sesiones';
-$breadcrumbSectionUrl = 'recursos.php';
-$breadcrumbExtra = [ ['label' => $modulo['nombreModulo'], 'url' => null] ];
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "" . Strtoupper($Modulo['Nombremodulo']);
+$Seccionactual   = 'Aula_Sesiones';
+$Breadcrumbsectionurl = 'Recursos.php';
+$Breadcrumbextra = [ ['Label' => $Modulo['Nombremodulo'], 'Url' => Null] ];
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <!-- VARIABLES GLOBALES PARA ANALYTICS Y TEMAS -->

@@ -34,7 +34,7 @@ if ($datosSesion) {
     $modulosMarcados = listarIdsModulosDeProfesor($idProfesor);
 }
 
-$titulo_pagina = "AULAPRO | MODIFICAR PROFESOR";
+$titulo_pagina = "Modificar Profesor";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

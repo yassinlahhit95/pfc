@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/auth/session.dart';
 import '../../../core/widgets/error_modal.dart';
+import '../../../core/i18n/translations.dart';
 import '../../profile/data/profile_repository.dart';
 import '../data/account_repository.dart';
 
@@ -89,9 +90,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final fields = _editableFields[widget.role] ?? {};
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Editar perfil')),
+      appBar: AppBar(title: Text(t['title_editar_perfil'] ?? 'Editar perfil')),
       body: SafeArea(
         child: fields.isEmpty
             ? const Center(

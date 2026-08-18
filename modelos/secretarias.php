@@ -53,7 +53,7 @@ function actualizarPasswordSecretaria($id, $password) {
 
 function listarTodasLasSecretarias(): array {
     $con = obtenerConexion();
-    $res = mysqli_query($con, "SELECT * FROM secretarias ORDER BY nombreSecretaria ASC");
+    $res = mysqli_query($con, "SELECT * FROM secretarias ORDER BY idSecretaria ASC");
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     return $lista;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Política de Privacidad | AulaPro</title>
+    <title>Política de Privacidad | <?php require_once __DIR__ . '/../../include/FeatureGuard.php'; echo htmlspecialchars(FeatureGuard::getCenterName()); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <style>
         body { font-family: sans-serif; line-height: 1.6; padding: 40px; background: #f8fafc; }
@@ -19,13 +19,13 @@
     <div class="legal-container">
         <h1>Política de Privacidad</h1>
         <p><em>Última actualización: junio de 2026</em></p>
-        <p>En <strong>AulaPro</strong>, nos comprometemos con la protección de sus datos personales conforme al <strong>Reglamento (UE) 2016/679 (RGPD)</strong> y a la <strong>Ley Orgánica 3/2018 (LOPDGDD)</strong>.</p>
+        <p>En <strong><?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?></strong>, nos comprometemos con la protección de sus datos personales conforme al <strong>Reglamento (UE) 2016/679 (RGPD)</strong> y a la <strong>Ley Orgánica 3/2018 (LOPDGDD)</strong>.</p>
 
         <h2>1. Responsable del Tratamiento</h2>
-        <p>El <strong>responsable del tratamiento</strong> es el centro educativo que utiliza la plataforma AulaPro. Para cualquier consulta o ejercicio de derechos, diríjase a la secretaría del centro o a sus canales de contacto oficiales.</p>
+        <p>El <strong>responsable del tratamiento</strong> es el centro educativo que utiliza la plataforma <?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?>. Para cualquier consulta o ejercicio de derechos, diríjase a la secretaría del centro o a sus canales de contacto oficiales.</p>
 
         <h2>2. Encargado del Tratamiento</h2>
-        <p><strong>AulaPro</strong> actúa como encargado del tratamiento en nombre del centro educativo. El acceso y uso de los datos se rige por el correspondiente Acuerdo de Encargado del Tratamiento (DPA) suscrito entre el centro y AulaPro.</p>
+        <p><strong><?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?></strong> actúa como encargado del tratamiento en nombre del centro educativo. El acceso y uso de los datos se rige por el correspondiente Acuerdo de Encargado del Tratamiento (DPA) suscrito entre el centro y <?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?>.</p>
 
         <h2>3. Finalidad del Tratamiento</h2>
         <ul>
@@ -91,7 +91,7 @@
         <p>No se utilizan cookies de publicidad ni de rastreo de terceros.</p>
 
         <h2>11. Seguridad de los Datos</h2>
-        <p>AulaPro aplica medidas técnicas y organizativas adecuadas para garantizar la seguridad de los datos, incluyendo: cifrado de contraseñas con bcrypt (coste 12), protección CSRF, control de acceso por roles, limitación de intentos de inicio de sesión, registros de auditoría y comunicaciones cifradas por TLS.</p>
+        <p><?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?> aplica medidas técnicas y organizativas adecuadas para garantizar la seguridad de los datos, incluyendo: cifrado de contraseñas con bcrypt (coste 12), protección CSRF, control de acceso por roles, limitación de intentos de inicio de sesión, registros de auditoría y comunicaciones cifradas por TLS.</p>
         <p>En caso de violación de seguridad que afecte a sus datos, el centro educativo notificará a la AEPD en un plazo máximo de <strong>72 horas</strong> (Art. 33 RGPD) y, si el riesgo es elevado, a los afectados sin dilación indebida (Art. 34 RGPD).</p>
 
         <div class="mt-5 pt-3 border-top text-center">

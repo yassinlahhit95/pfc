@@ -8,6 +8,7 @@ $idProfesor = $_SESSION['idProfesor'];
 require_once __DIR__ . "/../../../modelos/aula.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+if ($isAjax) { header('Content-Type: application/json'); }
 
 if (!Security::validateCSRFToken(null, false)) {
     if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'Solicitud inválida']); exit; }

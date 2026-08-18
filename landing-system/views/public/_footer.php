@@ -150,10 +150,10 @@ if (!empty($cfg['telefonoCentro'])) {
 </a>
 <?php endif; ?>
 
-<script src="/landing-system/assets/js/landing.js"></script>
+<script src="<?= AssetMin::urlAbs(__DIR__ . '/../../..', '/landing-system/assets/js/landing.js') ?>"></script>
 
 <link rel="stylesheet" href="<?= AssetMin::urlAbs(__DIR__ . '/../../..', '/public/css/features/cookie-consent.css') ?>">
-<script src="/public/js/core/cookie-consent.js"></script>
+<script src="<?= AssetMin::urlAbs(__DIR__ . '/../../..', '/public/js/core/cookie-consent.js') ?>"></script>
 <script>
   document.addEventListener('click', function (e) {
     var link = e.target.closest('#cookie-prefs-link');

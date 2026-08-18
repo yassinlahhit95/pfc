@@ -60,7 +60,7 @@ foreach ($tareas as $tarea) {
     }
 }
 
-$tituloDelPagina = 'AULAPRO | TAREAS';
+$titulo_pagina = 'Tareas';
 $seccionActual = 'aula_tareas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

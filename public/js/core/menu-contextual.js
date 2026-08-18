@@ -43,4 +43,5 @@
     if (!e.target.closest('.recurso-menu')) cerrarMenus();
   });
   window.addEventListener('resize', cerrarMenus);
+  window.addEventListener('scroll', cerrarMenus, { passive: true });
 })();

@@ -58,9 +58,9 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $COLORES = ['#0ea5e9','#6366f1','#8b5cf6','#ec4899','#ef4444','#f59e0b','#22c55e','#14b8a6','#64748b'];
 $ICONOS  = ['fa-folder','fa-book','fa-code','fa-file-lines','fa-flask','fa-laptop-code','fa-database','fa-paint-brush','fa-calculator','fa-globe'];
 
-$tituloDelPagina = "AULAPRO | RECURSOS · " . strtoupper($modulo['nombreModulo']);
-$seccionActual   = 'aula_recursos';
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "Recursos · " . Strtoupper($Modulo['Nombremodulo']);
+$Seccionactual   = 'Aula_Recursos';
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <div class="cabecera">
@@ -107,7 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     if (window.Toast) {
-        Toast.show(<?= json_encode($exito) ?>, "success");
+        Toast.show(<?= Security::jsonEncodeSafe($exito) ?>, "success");
     }
 });
 </script>
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     if (window.Toast) {
-        Toast.show(<?= json_encode($errores) ?>, "error");
+        Toast.show(<?= Security::jsonEncodeSafe($errores) ?>, "error");
     }
 });
 </script>
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <a class="recurso-menu-item" href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($carpeta['idCarpeta']) ?>"><i class="fas fa-folder-open"></i> Abrir</a>
         <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($carpeta['idCarpeta']) ?>')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> Copiar enlace</button>
         <?php if ($carpeta['idProfesor'] == $idProfesor): ?>
-        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.editarCarpeta(<?= Security::escapeHtml($carpeta['idCarpeta']) ?>, <?= Security::escapeHtml(json_encode($carpeta['nombre'])) ?>, '<?= Security::escapeHtml($carpeta['color']) ?>', '<?= Security::escapeHtml($carpeta['icono']) ?>')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Renombrar / Editar</button>
+        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.editarCarpeta(<?= Security::escapeHtml($carpeta['idCarpeta']) ?>, <?= Security::escapeHtml(Security::jsonEncodeSafe($carpeta['nombre'])) ?>, '<?= Security::escapeHtml($carpeta['color']) ?>', '<?= Security::escapeHtml($carpeta['icono']) ?>')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Renombrar / Editar</button>
         <button type="button" class="recurso-menu-item" onclick="AulaRecursos.pin('carpeta', <?= Security::escapeHtml($carpeta['idCarpeta']) ?>, this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin"><path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg> <span class="recurso-pin-label"><?= $carpeta['fijado'] ? 'Quitar fijado' : 'Fijar' ?></span></button>
         <div class="recurso-menu-sep"></div>
 <form method="POST" action="../../../controladores/profesores/aula/borrarCarpeta.php" style="margin:0">
@@ -168,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 <?php elseif (!empty($archivos)): ?>
+<div class="contenedor-tabla">
 <table class="recurso-lista">
   <thead>
     <tr><th>Nombre</th><th>Fecha</th><th>Profesor</th><th>Tamaño</th><th style="text-align:right;">Acciones</th></tr>
@@ -194,13 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
           <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
           <div class="recurso-menu">
             <?php if ($previa): ?>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl ) ?>&modo=ver', <?= Security::escapeHtml(json_encode($archivo['nombreOriginal'])) ?>, '<?= Security::escapeHtml($archivo['extension'] ) ?>')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> Ver</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl ) ?>&modo=ver', <?= Security::escapeHtml(Security::jsonEncodeSafe($archivo['nombreOriginal'])) ?>, '<?= Security::escapeHtml($archivo['extension'] ) ?>')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> Ver</button>
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl ) ?>&modo=descarga"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl ) ?>&modo=ver')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> Copiar enlace</button>
             <?php if ($esMio): ?>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.renombrar(<?= Security::escapeHtml($archivo['idArchivo'] ) ?>, <?= Security::escapeHtml(json_encode(pathinfo($archivo['nombreOriginal'], PATHINFO_FILENAME))) ?>)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path><path d="m15 5 4 4"></path></svg> Renombrar</button>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.nuevaVersion(<?= Security::escapeHtml($archivo['idArchivo'] ) ?>, <?= Security::escapeHtml(json_encode($archivo['nombreOriginal'])) ?>)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Editar</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.renombrar(<?= Security::escapeHtml($archivo['idArchivo'] ) ?>, <?= Security::escapeHtml(Security::jsonEncodeSafe(pathinfo($archivo['nombreOriginal'], PATHINFO_FILENAME))) ?>)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path><path d="m15 5 4 4"></path></svg> Renombrar</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.nuevaVersion(<?= Security::escapeHtml($archivo['idArchivo'] ) ?>, <?= Security::escapeHtml(Security::jsonEncodeSafe($archivo['nombreOriginal'])) ?>)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Editar</button>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.mover(<?= Security::escapeHtml($archivo['idArchivo'] ) ?>)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-tree"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg> Mover</button>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.pin('archivo', <?= Security::escapeHtml($archivo['idArchivo'] ) ?>, this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin"><path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg> <span class="recurso-pin-label"><?= Security::escapeHtml($archivo['fijado'] ? 'Quitar fijado' : 'Fijar') ?></span></button>
             <div class="recurso-menu-sep"></div>
@@ -219,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <?php endforeach; ?>
   </tbody>
 </table>
+</div>
 <?php endif; ?>
 
 <!-- ════════════ MODALES ════════════ -->

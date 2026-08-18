@@ -162,5 +162,6 @@ mobile/build/
 mobile/.gradle/
 mobile/local.properties
 
-# APK releases (old builds — keep only public/downloads/aulapro-app.apk for deployment)
+# APK releases
+*.apk
 noDeploy/apk_releases/*.apk

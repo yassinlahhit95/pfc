@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/events_repository.dart';
 
 class AddEventScreen extends ConsumerStatefulWidget {
@@ -127,9 +128,13 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.eventToEdit != null;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? 'Editar Evento' : 'Nuevo Evento')),
+      appBar: AppBar(
+          title: Text(isEditing
+              ? (t['title_editar_evento'] ?? 'Editar Evento')
+              : (t['title_nuevo_evento'] ?? 'Nuevo Evento'))),
       body: _isSaving
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

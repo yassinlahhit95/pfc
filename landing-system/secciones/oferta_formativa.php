@@ -7,7 +7,7 @@
 // no se rellena, el botón sigue usando botonUrl o el enlace general de siempre.
 $items          = $contenido['items'] ?? [];
 $prematriculaOn = FeatureGuard::check('feature_prematricula');
-$botonTexto     = $contenido['botonTexto'] ?: 'Solicitar plaza';
+$botonTexto     = ($contenido['botonTexto'] ?? '') ?: 'Solicitar plaza';
 $variante       = $contenido['variante'] ?? 'grid';
 $columnas       = in_array($contenido['columnas'] ?? 'cols-4', ['cols-3', 'cols-4'], true) ? $contenido['columnas'] : 'cols-4';
 $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#contacto';
@@ -17,7 +17,7 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
     <div class="lp-sec-cabecera">
       <h2<?= landing_lb_field($preview, 'titulo') ?>><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['subtitulo'])): ?>
-      <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'])) ?></p>
+      <p<?= landing_lb_field($preview, 'subtitulo', 'textarea') ?>><?= nl2br(Security::escapeHtml($contenido['subtitulo'] ?? '')) ?></p>
       <?php endif; ?>
     </div>
 
@@ -42,7 +42,7 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
           <?php endif; ?>
           <h3<?= landing_lb_field($preview, "items.$i.titulo") ?>><?= Security::escapeHtml($item['titulo'] ?? '') ?></h3>
           <?php if (!empty($item['texto'])): ?>
-          <p class="lp-ciclo-texto"<?= landing_lb_field($preview, "items.$i.texto", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['texto'])) ?></p>
+          <p class="lp-ciclo-texto"<?= landing_lb_field($preview, "items.$i.texto", 'textarea') ?>><?= nl2br(Security::escapeHtml($item['texto'] ?? '')) ?></p>
           <?php endif; ?>
           <?php if (!empty($item['precio'])): ?>
           <p class="lp-ciclo-precio"<?= landing_lb_field($preview, "items.$i.precio") ?>><?= Security::escapeHtml($item['precio']) ?></p>
@@ -79,5 +79,5 @@ foreach ($items as $item) {
 }
 if ($cursosSchema):
 ?>
-<script type="application/ld+json"><?= json_encode(['@context' => 'https://schema.org', '@graph' => $cursosSchema], JSON_UNESCAPED_UNICODE) ?></script>
+<script type="application/ld+json"><?= Security::jsonEncodeSafe(['@context' => 'https://schema.org', '@graph' => $cursosSchema]) ?></script>
 <?php endif; ?>

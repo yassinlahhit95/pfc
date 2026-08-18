@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/announcements/presentation/announcements_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
@@ -10,16 +10,19 @@ import '../../features/grades/presentation/grades_screen.dart';
 import '../auth/auth_state.dart';
 import 'home_shell.dart';
 
-/// Bridges Riverpod's sessionControllerProvider and onboardingCompletedProvider
+part 'app_router.g.dart';
+
+/// Bridges Riverpod's sessionControllerProvider and onboardingCompletedControllerProvider
 /// to go_router's refreshListenable so navigation reacts to auth and onboarding state changes.
 class _RouterRefreshNotifier extends ChangeNotifier {
   _RouterRefreshNotifier(Ref ref) {
     ref.listen(sessionControllerProvider, (_, __) => notifyListeners());
-    ref.listen(onboardingCompletedProvider, (_, __) => notifyListeners());
+    ref.listen(onboardingCompletedControllerProvider, (_, __) => notifyListeners());
   }
 }
 
-final routerProvider = Provider<GoRouter>((ref) {
+@Riverpod(keepAlive: true)
+GoRouter router(Ref ref) {
   final notifier = _RouterRefreshNotifier(ref);
   ref.onDispose(notifier.dispose);
 
@@ -28,7 +31,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: notifier,
     redirect: (context, state) {
       final sessionAsync = ref.read(sessionControllerProvider);
-      final onboardingAsync = ref.read(onboardingCompletedProvider);
+      final onboardingAsync = ref.read(onboardingCompletedControllerProvider);
 
       if (sessionAsync.isLoading || onboardingAsync.isLoading) {
         return null; // stay on splash
@@ -79,4 +82,4 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (context, state) => const AnnouncementsScreen()),
     ],
   );
-});
+}

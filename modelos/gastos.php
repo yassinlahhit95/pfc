@@ -101,7 +101,7 @@ function listarGastos($anyo = null, $idCategoria = null, $idCiclo = null) {
             LEFT JOIN directores d ON g.creadoPorRol = 'director' AND g.creadoPorId = d.idDirector
             LEFT JOIN secretarias s ON g.creadoPorRol = 'secretaria' AND g.creadoPorId = s.idSecretaria
             WHERE " . implode(' AND ', $where) . "
-            ORDER BY g.fecha DESC, g.idGasto DESC";
+            ORDER BY g.idGasto ASC";
 
     $stmt = mysqli_prepare($con, $sql);
     if ($params) {

@@ -26,13 +26,13 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
 $modulos = listarModulosDeProfesor($idProfesor);
 $csrfToken = Security::generateCSRFToken();
 
-$tituloDelPagina = 'AULAPRO | EDITAR SESIÓN VIVA';
+$titulo_pagina = 'Editar Sesión Viva';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR SESIÓN VIVA</h1>
+    <h1>Editar Sesión Viva</h1>
     <p class="subtitulo-encabezado">Modifica los detalles de tu sesión</p>
 </div>
 

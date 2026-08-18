@@ -11,7 +11,7 @@ $admisiones = listarPreMatriculas();
 $pendientes = array_filter($admisiones, fn($adm) => in_array($adm['estado'], ['pendiente','revisando']));
 $admitidos  = array_filter($admisiones, fn($adm) => $adm['estado'] === 'aceptada');
 
-$titulo_pagina = 'AULAPRO | ADMISIONES';
+$titulo_pagina = 'Admisiones';
 $seccion = 'admisiones';
 include __DIR__ . '/../comunes/nav.php';
 ?>

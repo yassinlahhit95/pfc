@@ -20,19 +20,8 @@ function descifrarFilaEstudiante(?array $fila): ?array {
     return _descifrarFilaEstudiante($fila);
 }
 
-// ── Auto-migración: columnas de borrado lógico (soft-delete) ─────────
-(function() {
-    $con = obtenerConexion();
-    $cols = [];
-    $r = mysqli_query($con, "SHOW COLUMNS FROM estudiantes");
-    while ($f = mysqli_fetch_assoc($r)) $cols[] = $f['Field'];
-    if (!in_array('eliminado', $cols)) {
-        mysqli_query($con, "ALTER TABLE estudiantes ADD COLUMN eliminado TINYINT(1) NOT NULL DEFAULT 0");
-    }
-    if (!in_array('fecha_eliminacion', $cols)) {
-        mysqli_query($con, "ALTER TABLE estudiantes ADD COLUMN fecha_eliminacion DATETIME NULL DEFAULT NULL");
-    }
-})();
+// ── Columnas de borrado lógico garantizadas por noDeploy/database.sql ──
+
 
 // ══════════════════════════════════════════════════════════════════════
 // CONSULTAS

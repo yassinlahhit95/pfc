@@ -13,7 +13,7 @@ unset($_SESSION['datos_ciclo']);
 
 $rolBase = 'secretaria';
 
-$titulo_pagina = "AULAPRO | NUEVO CICLO";
+$titulo_pagina = "Nuevo Ciclo";
 $seccion = 'ofertaCiclos';
 include_once __DIR__ . "/../comunes/nav.php";
 require __DIR__ . '/../../comunes/ofertaCiclos/_agregar.php';

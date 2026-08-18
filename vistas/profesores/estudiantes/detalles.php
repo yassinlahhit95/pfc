@@ -18,13 +18,13 @@ if (!$estudiante) {
     exit;
 }
 
-$tituloDelPagina = "AULAPRO | DETALLES DEL ESTUDIANTE";
+$titulo_pagina = "Detalles del Estudiante";
 $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>FICHA DE ESTUDIANTE</h1>
+    <h1>Ficha de Estudiante</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

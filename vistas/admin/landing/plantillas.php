@@ -17,7 +17,7 @@ if (empty($landingCfg['plantilla'])) {
 }
 $plantillas = landing_plantillas();
 
-$titulo_pagina = "AULAPRO | PLANTILLAS DE LA WEB";
+$titulo_pagina = "Plantillas de la Web";
 $seccion       = 'landing';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>

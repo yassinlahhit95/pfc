@@ -22,12 +22,14 @@ $msg = $messages[$code] ?? $messages[404];
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?php require_once __DIR__ . '/../include/FeatureGuard.php'; echo Security::escapeHtml(FeatureGuard::getCenterName()); ?></title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous"></noscript>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'Roboto',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;overflow:hidden;}
+        body{font-family: 'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;overflow:hidden;}
         .fondo{position:fixed;inset:0;background:linear-gradient(145deg,#0f0e1f 0%,#1e1b4b 40%,#2d2a80 72%,#4338ca 100%);z-index:0;}
         .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.15;pointer-events:none;}
         .orb-1{width:500px;height:500px;background:#6366f1;top:-100px;right:-100px;}
@@ -50,7 +52,7 @@ $msg = $messages[$code] ?? $messages[404];
     <div class="grid"></div>
 </div>
 <div class="tarjeta">
-    <img src="/public/imagenes/aulapro.jpeg" alt="AulaPro" class="logo"
+    <img src="/public/imagenes/aulapro.jpeg" alt="<?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?>" class="logo"
          onerror="this.style.display='none'">
     <div class="icono"><i class="fas <?= $msg['icono'] ?>"></i></div>
     <p class="titulo"><?= $msg['titulo'] ?></p>

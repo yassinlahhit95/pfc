@@ -17,14 +17,14 @@ unset($_SESSION['datos_profesor']);
 $ciclosMarcados = $datos['ciclos'] ?? [];
 $modulosMarcados = $datos['modulos'] ?? [];
 
-$titulo_pagina = "AULAPRO | AGREGAR PROFESOR";
+$titulo_pagina = "Agregar Profesor";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>NUEVO PROFESOR</h1>
+        <h1>Nuevo Profesor</h1>
     </div>
     <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER

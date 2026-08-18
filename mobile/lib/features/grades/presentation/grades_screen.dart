@@ -8,6 +8,7 @@ import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/grades_repository.dart';
 
 class GradesScreen extends ConsumerWidget {
@@ -17,9 +18,10 @@ class GradesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gradesAsync = ref.watch(gradesProvider);
     final role = ref.watch(sessionControllerProvider).value?.role;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notas')),
+      appBar: AppBar(title: Text(t['nav_notas'] ?? 'Notas')),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(gradesProvider),
         child: AsyncView<Map<String, dynamic>>(

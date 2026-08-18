@@ -20,9 +20,10 @@ class Security {
         // Enviar cabeceras de seguridad globales
         if (!headers_sent()) {
             header('X-Frame-Options: SAMEORIGIN');
-            header('X-XSS-Protection: 1; mode=block');
+            header('X-XSS-Protection: 0'); // OWASP/MDN modern standard (superseded by CSP)
             header('X-Content-Type-Options: nosniff');
             header('Referrer-Policy: strict-origin-when-cross-origin');
+            header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
             header('Content-Security-Policy: ' . self::buildCsp());
         }
 
@@ -85,7 +86,7 @@ class Security {
         return implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com https://accounts.google.com",
-            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
+            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://accounts.google.com",
             "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com",
             "img-src {$imgHosts}",
             // Sin media-src, este directive cae a default-src 'self' — bloqueaba
@@ -571,6 +572,16 @@ class Security {
 
     public static function escapeHtml($value) {
         return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * Serializa a JSON de forma segura para incrustar en JavaScript / HTML.
+     * Escapa caracteres <, >, &, ', y " para prevenir inyecciones XSS.
+     */
+    public static function jsonEncodeSafe($value) {
+        $flags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE;
+        $json = json_encode($value, $flags);
+        return $json === false ? 'null' : $json;
     }
 }
 

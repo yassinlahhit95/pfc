@@ -78,9 +78,12 @@ class ClassroomFile {
   final bool esFavorito;
 
   String get humanSize {
-    if (tamanio < 1024) return '$tamanio B';
-    if (tamanio < 1024 * 1024)
+    if (tamanio < 1024) {
+      return '$tamanio B';
+    }
+    if (tamanio < 1024 * 1024) {
       return '${(tamanio / 1024).toStringAsFixed(1)} KB';
+    }
     return '${(tamanio / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 }
@@ -293,6 +296,99 @@ class ClassroomRepository {
     return data['publicado'] == 1;
   }
 
+  Future<void> createTask({
+    required int idModulo,
+    required String titulo,
+    String descripcion = '',
+    bool publicado = true,
+    String? filePath,
+    String? fileName,
+  }) {
+    return _client.post('/classroom.php',
+        query: {'action': 'create-task'},
+        data: FormData.fromMap({
+          'idModulo': idModulo,
+          'titulo': titulo,
+          'descripcion': descripcion,
+          'publicado': publicado ? '1' : '',
+          if (filePath != null)
+            'archivoAdjunto':
+                MultipartFile.fromFileSync(filePath, filename: fileName),
+        }));
+  }
+
+  Future<void> updateTask({
+    required int idTarea,
+    required String titulo,
+    String descripcion = '',
+    bool publicado = true,
+    String? filePath,
+    String? fileName,
+  }) {
+    return _client.post('/classroom.php',
+        query: {'action': 'update-task'},
+        data: FormData.fromMap({
+          'idTarea': idTarea,
+          'titulo': titulo,
+          'descripcion': descripcion,
+          'publicado': publicado ? '1' : '',
+          if (filePath != null)
+            'archivoAdjunto':
+                MultipartFile.fromFileSync(filePath, filename: fileName),
+        }));
+  }
+
+  Future<void> deleteTask(int idTarea) {
+    return _client.post('/classroom.php',
+        data: {'idTarea': idTarea}, query: {'action': 'delete-task'});
+  }
+
+  Future<int> createFolder({
+    required int idModulo,
+    required String nombre,
+    int? idPadre,
+    String color = '#0ea5e9',
+    String icono = 'fa-folder',
+  }) async {
+    final data = await _client.post('/classroom.php',
+        query: {'action': 'create-folder'},
+        data: {
+          'idModulo': idModulo,
+          'nombre': nombre,
+          if (idPadre != null) 'idPadre': idPadre,
+          'color': color,
+          'icono': icono,
+        });
+    return data['idCarpeta'] as int;
+  }
+
+  Future<void> deleteFolder(int idCarpeta) {
+    return _client.post('/classroom.php',
+        data: {'idCarpeta': idCarpeta}, query: {'action': 'delete-folder'});
+  }
+
+  Future<void> uploadFile({
+    required int idModulo,
+    int? idCarpeta,
+    String titulo = '',
+    required String filePath,
+    required String fileName,
+  }) {
+    return _client.post('/classroom.php',
+        query: {'action': 'upload-file'},
+        data: FormData.fromMap({
+          'idModulo': idModulo,
+          if (idCarpeta != null) 'idCarpeta': idCarpeta,
+          'titulo': titulo,
+          'archivo': MultipartFile.fromFileSync(filePath, filename: fileName),
+        }));
+  }
+
+  Future<void> deleteFile(int idArchivo) {
+    return _client.post('/classroom.php',
+        data: {'idArchivo': idArchivo}, query: {'action': 'delete-file'});
+  }
+
   Future<List<ClassroomFile>> fetchFavorites() async {
     try {
       final data =
@@ -328,9 +424,15 @@ class ClassroomRepository {
   /// Same idea as [downloadUrl] but for the estudiante's own submitted file
   /// (kind: 'entrega') or the profesor's corrected file sent back (kind:
   /// 'correccion') — a different storage path, see api/v1/classroom.php.
-  String submissionFileUrl(int idTarea, {required String kind}) {
+  /// [idEstudiante] is required when staff (profesor/director/secretaria)
+  /// fetch a specific student's file — the estudiante's own request never
+  /// needs it, the API already scopes it to the caller's own uid.
+  String submissionFileUrl(int idTarea,
+      {required String kind, int? idEstudiante}) {
     final token = _ref.read(sessionControllerProvider).value?.token ?? '';
-    return '$apiBaseUrl/api/v1/classroom.php?action=download&kind=$kind&id=$idTarea&token=$token';
+    final estudianteParam =
+        idEstudiante != null ? '&idEstudiante=$idEstudiante' : '';
+    return '$apiBaseUrl/api/v1/classroom.php?action=download&kind=$kind&id=$idTarea&token=$token$estudianteParam';
   }
 
   /// The profesor's own attachment on the task itself (aula_tareas.archivoAdjunto),

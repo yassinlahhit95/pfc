@@ -14,6 +14,7 @@ import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
 import '../data/inventory_repository.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/i18n/translations.dart';
 import 'device_form_screen.dart';
 
 class InventoryScreen extends StatelessWidget {
@@ -25,7 +26,11 @@ class InventoryScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Inventario'),
+          title: Consumer(
+            builder: (context, ref, _) => Text(
+                ref.watch(translationsProvider)['nav_inventario'] ??
+                    'Inventario'),
+          ),
           bottom: const TabBar(tabs: [
             Tab(text: 'Dispositivos'),
             Tab(text: 'Préstamos'),

@@ -30,9 +30,9 @@ if ($esTutor && $idCicloTutor) {
 }
 if (!$ciclo) { header("Location: index.php"); exit; }
 
-$tituloDelPagina = "AULAPRO | " . strtoupper($ciclo['nombreCiclo']);
-$seccionActual   = 'aula_recursos';
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "" . Strtoupper($Ciclo['Nombreciclo']);
+$Seccionactual   = 'Aula_Recursos';
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <div class="recurso-breadcrumb">

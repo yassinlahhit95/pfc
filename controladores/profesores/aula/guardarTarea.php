@@ -37,9 +37,12 @@ if (!$idModulo)             $errores[] = "El módulo es obligatorio.";
 if ($titulo === '')         $errores[] = "El título es obligatorio.";
 if (mb_strlen($titulo) > 150) $errores[] = "El título no puede superar los 150 caracteres.";
 
-// El profesor solo puede gestionar tareas de módulos que imparte
+// El profesor puede gestionar tareas de módulos que imparte o de ciclos que tutoriza
+$moduloInfo = obtenerModuloPorId($idModulo);
+$idCicloMod = $moduloInfo['idCiclo'] ?? 0;
 $misModulos = listarModulosDeProfesor($idProfesor);
-if (!in_array($idModulo, array_column($misModulos, 'idModulo'))) {
+$esTutorCiclo = (!empty($_SESSION['esTutor']) && !empty($_SESSION['idCicloTutor']) && $_SESSION['idCicloTutor'] == $idCicloMod);
+if (!in_array($idModulo, array_column($misModulos, 'idModulo')) && !$esTutorCiclo) {
     $_SESSION['errores'] = "No tienes permiso para gestionar tareas de este módulo.";
     header("Location: ../../../vistas/profesores/aula/tareas.php");
     exit;

@@ -19,14 +19,14 @@ $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? '';
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$tituloDelPagina = 'AULAPRO | AULA DIGITAL';
+$titulo_pagina = 'Aula Digital';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>AULA DIGITAL</h1>
+        <h1>Aula Digital</h1>
         <p class="subtitulo-encabezado">Gestiona tus sesiones en vivo y conecta con tus estudiantes</p>
     </div>
     <a href="crear.php" class="boton-primario">

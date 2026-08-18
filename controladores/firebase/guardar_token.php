@@ -17,7 +17,7 @@ header('Content-Type: application/json');
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
     exit;
 }

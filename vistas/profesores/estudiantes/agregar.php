@@ -20,13 +20,13 @@ if ($esTutor && $idCicloTutor) {
 
 $datos = $_SESSION['datos_estudiante'] ?? [];
 
-$tituloDelPagina = "AULAPRO | NUEVO ESTUDIANTE";
+$titulo_pagina = "Nuevo Estudiante";
 $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO ESTUDIANTE</h1>
+    <h1>Nuevo Estudiante</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -106,7 +106,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($misCiclos) ?>;
+var todosCiclos = <?= Security::jsonEncodeSafe($misCiclos) ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();

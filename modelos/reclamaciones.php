@@ -19,7 +19,7 @@ function listarTodosLosMensajes(int $limite = 200, int $offset = 0) {
               AND ((r.emisor_rol = 'estudiante' AND r.idProfesor IS NULL)
                OR (r.emisor_rol = 'profesor' AND r.idEstudiante IS NULL)
                OR (r.emisor_rol = 'admin'))
-            ORDER BY r.idReclamacion DESC
+            ORDER BY r.idReclamacion ASC
             LIMIT ? OFFSET ?";
 
     $stmt = mysqli_prepare($con, $sql);
@@ -95,7 +95,7 @@ function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion,
 
 function listarMensajesDeEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, p.nombreProfesor FROM reclamaciones r LEFT JOIN profesores p ON r.idProfesor = p.idProfesor WHERE r.idEstudiante = ? AND r.id_parent IS NULL ORDER BY r.idReclamacion DESC";
+    $sql = "SELECT r.*, p.nombreProfesor FROM reclamaciones r LEFT JOIN profesores p ON r.idProfesor = p.idProfesor WHERE r.idEstudiante = ? AND r.id_parent IS NULL ORDER BY r.idReclamacion ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
@@ -112,7 +112,7 @@ function listarMensajesParaProfesor($idProfesor) {
     $con = obtenerConexion();
     // Incluye tanto reclamaciones dirigidas a este profesor (emitidas por un estudiante)
     // como las que el propio profesor envió a admin — ambas quedan con idProfesor = $idProfesor.
-    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.id_parent IS NULL AND r.idProfesor = ? ORDER BY r.idReclamacion DESC";
+    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.id_parent IS NULL AND r.idProfesor = ? ORDER BY r.idReclamacion ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);

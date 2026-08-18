@@ -18,7 +18,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
     $mapaCicloNivel[$cicloFiltro['idCiclo']] = $cicloFiltro['idNivel'];
 }
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE RETOS";
+$titulo_pagina = "Gestión de Retos";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

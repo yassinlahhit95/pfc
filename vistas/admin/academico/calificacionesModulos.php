@@ -28,7 +28,7 @@ if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_c
 $listaModulos     = !empty($idCicloElegido)  ? listarModulosPorCiclo($idCicloElegido)          : [];
 $listaEstudiantes = !empty($idModuloElegido) ? listarCalificacionesPorModulo($idModuloElegido) : [];
 
-$titulo_pagina = "AULAPRO | NOTAS DE MÓDULOS";
+$titulo_pagina = "Notas de Módulos";
 $seccion = 'notas_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -110,7 +110,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </style>
 
 <div class="cabecera">
-    <h1>CALIFICACIONES POR MÓDULO</h1>
+    <h1>Calificaciones por Módulo</h1>
 </div>
 
 <div class="panel">
@@ -206,7 +206,7 @@ function filtrarModulosPorCurso() {
             <input type="hidden" name="idModulo" value="<?= Security::escapeHtml($idModuloElegido) ?>">
             <input type="hidden" name="idCiclo"  value="<?= Security::escapeHtml($idCicloElegido) ?>">
             <div class="contenedor-tabla">
-                <table class="tabla-datos">
+                <table class="tabla-datos" id="tabla-calificaciones-modulos">
                     <thead>
                         <tr>
                             <th>Estudiante</th>

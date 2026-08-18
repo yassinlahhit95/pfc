@@ -40,13 +40,13 @@ if ($totalCalificadas > 0) {
 $exito   = $_SESSION['exito'] ?? null;   unset($_SESSION['exito']);
 $errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
 
-$tituloDelPagina = 'AULAPRO | MIS ENTREGAS';
+$titulo_pagina = 'Mis Entregas';
 $seccionActual = 'aula_entregas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MIS ENTREGAS</h1>
+    <h1>Mis Entregas</h1>
     <p class="subtitulo-encabezado">Historial y calificaciones de tus entregas</p>
 </div>
 

@@ -13,7 +13,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 $listaEstudiantes = listarEstudiantes();
 $listaCiclos      = listarTodosLosCiclos();
 
-$titulo_pagina = "AULAPRO | AGREGAR FAMILIAR";
+$titulo_pagina = "Agregar Familiar";
 $seccion = 'tutores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

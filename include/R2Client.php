@@ -397,7 +397,7 @@ final class R2Client {
     // ya que aquí no hay control de acceso ni riesgo de expiración. Si el
     // nombre está vacío, devuelve '' (nada que mostrar).
     public static function imagenUrl(string $rutaLocalAbsoluta, string $urlLocal, string $r2Key): string {
-        if ($urlLocal === '') return '';
+        if ($urlLocal === '' || trim($r2Key) === '' || trim(basename($r2Key)) === '') return '';
         if (is_file($rutaLocalAbsoluta)) return $urlLocal;
         try {
             return self::publicUrl($r2Key);
@@ -412,6 +412,7 @@ final class R2Client {
     // contenido real y no una URL). Solo para contenido ya servido vía
     // publicUrl() — nunca para documentos protegidos. Devuelve '' si falla.
     public static function fetchPublicBytes(string $r2Key): string {
+        if (trim($r2Key) === '' || trim(basename($r2Key)) === '') return '';
         $url = self::publicUrl($r2Key);
         $h = curl_init();
         curl_setopt($h, CURLOPT_URL, $url);
@@ -430,7 +431,7 @@ final class R2Client {
     // de renderizar, en vez de redirigir desde un controlador aparte. Si el
     // nombre está vacío, devuelve '' (nada que enlazar).
     public static function documentoUrl(string $rutaLocalAbsoluta, string $urlLocal, string $r2Key, int $expirySeconds = 300): string {
-        if ($urlLocal === '') return '';
+        if ($urlLocal === '' || trim($r2Key) === '' || trim(basename($r2Key)) === '') return '';
         if (is_file($rutaLocalAbsoluta)) return $urlLocal;
         try {
             return self::presignedGetUrl($r2Key, $expirySeconds);

@@ -16,13 +16,13 @@ if (!$anuncio) {
     exit;
 }
 
-$titulo_pagina = "AULAPRO | DETALLES DEL ANUNCIO";
+$titulo_pagina = "Detalles del Anuncio";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>DETALLES DEL ANUNCIO</h1>
+    <h1>Detalles del Anuncio</h1>
     <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

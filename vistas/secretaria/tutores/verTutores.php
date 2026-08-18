@@ -10,13 +10,13 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 $listaTutores = listarTodosLosTutores();
 $hijosPorTutor = listarHijosPorTutores(array_column($listaTutores, 'idTutor'));
 
-$titulo_pagina = "AULAPRO | SISTEMA PARENTAL";
+$titulo_pagina = "Sistema Parental";
 $seccion = 'tutores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>SISTEMA PARENTAL</h1>
+    <h1>Sistema Parental</h1>
     <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;">
         <span class="texto-suave small"><?= count($listaTutores) ?> familias registradas</span>
     </div>

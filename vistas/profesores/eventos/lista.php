@@ -11,19 +11,19 @@ $idProfesor = $_SESSION['idProfesor'] ?? '';
 require_once __DIR__ . "/../../../modelos/eventos.php";
 $eventos = listarEventosProximos();
 
-$tituloDelPagina = "AULAPRO | CALENDARIO DE EVENTOS";
+$titulo_pagina = "Calendario de Eventos";
 $seccionActual = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>PROXIMOS EVENTOS DEL CENTRO</h1>
+    <h1>Proximos Eventos del Centro</h1>
 </div>
 
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-eventos-prof">
             <thead>
                 <tr>
                     <th>Fecha</th>
@@ -54,3 +54,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-eventos-prof', 15);
+});
+</script>

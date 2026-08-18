@@ -24,13 +24,13 @@ $nombreCiclo = $datosEstudiante['nombreCiclo'] ?? 'SIN ASIGNAR';
 
 $retos = ($idCiclo > 0) ? listarRetosPorCiclo($idCiclo) : [];
 
-$tituloDelPagina = "AULAPRO | MIS RETOS";
+$titulo_pagina = "Mis Retos";
 $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MIS RETOS</h1>
+    <h1>Mis Retos</h1>
     <p class="subtitulo-encabezado">Retos asignados a tu ciclo: <?= Security::escapeHtml($nombreCiclo) ?></p>
 </div>
 
@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
     
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-retos-estudiantes">
             <thead>
                 <tr>
                     <th>Nombre del Reto</th>
@@ -101,3 +101,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-retos-estudiantes', 15);
+});
+</script>

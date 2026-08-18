@@ -57,7 +57,7 @@ if ($mensaje['emisor_rol'] === 'admin') {
     $toName   = ''; $toRtag = 'rtag-admin'; $toRlabel = 'Dirección';
 }
 
-$titulo_pagina = "AULAPRO | Mensaje";
+$titulo_pagina = "Mensaje";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             }
         ?>
         <button type="button" class="ibtn ibtn-primary"
-                onclick="if(window.ChatWidget)ChatWidget.startWith(<?= Security::escapeHtml(json_encode($chatTargetRol)) ?>,<?= $chatTargetId ?>,<?= Security::escapeHtml(json_encode($chatTargetName)) ?>)">
+                onclick="if(window.ChatWidget)ChatWidget.startWith(<?= Security::escapeHtml(Security::jsonEncodeSafe($chatTargetRol)) ?>,<?= $chatTargetId ?>,<?= Security::escapeHtml(Security::jsonEncodeSafe($chatTargetName)) ?>)">
             <i class="fas fa-comments"></i> Chat en vivo
         </button>
         <?php endif; ?>

@@ -65,9 +65,7 @@ $fuentesTitularesPorTema = [
     'universidad'   => '', // reutiliza Plus Jakarta Sans, ya cargada
 ];
 $fuenteTitulares = $fuentesTitularesPorTema[$tema] ?? 'family=Sora:wght@400;600;700;800';
-$googleFontsUrl = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800'
-    . ($fuenteTitulares !== '' ? '&' . $fuenteTitulares : '')
-    . '&display=swap';
+$googleFontsUrl = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap';
 
 // Datos estructurados EducationalOrganization — Google recomienda incluir
 // esta marca en todas las páginas del sitio, no solo en la home.
@@ -120,13 +118,14 @@ if (!empty($cfg['direccionCentro']) || !empty($cfg['ciudadCentro'])) {
 <?php if (!$preview): ?>
 <link rel="canonical" href="<?= Security::escapeHtml($_urlActual) ?>">
 <?php endif; ?>
-<script type="application/ld+json"><?= json_encode($orgSchema, JSON_UNESCAPED_UNICODE) ?></script>
+<script type="application/ld+json"><?= Security::jsonEncodeSafe($orgSchema) ?></script>
 <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="<?= Security::escapeHtml($googleFontsUrl) ?>" rel="stylesheet">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous"></noscript>
 <link rel="stylesheet" href="/landing-system/temas/base.css">
 <link rel="stylesheet" href="/landing-system/temas/tema-<?= Security::escapeHtml($tema) ?>.css">
 <style>:root{--lp-acento:<?= Security::escapeHtml($acento) ?>;}</style>

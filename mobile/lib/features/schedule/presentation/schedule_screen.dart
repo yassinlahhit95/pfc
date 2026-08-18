@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/schedule_repository.dart';
 
 // Canonical order — the API returns whatever order the DB happens to give,
@@ -41,9 +42,10 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final scheduleAsync = ref.watch(scheduleProvider);
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Horario')),
+      appBar: AppBar(title: Text(t['nav_horario'] ?? 'Horario')),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(scheduleProvider),
         child: AsyncView<List<ScheduleSlot>>(

@@ -24,13 +24,13 @@ usort($todasLasSesiones, function($a, $b) {
     return strtotime($b['fechaSesion'] . ' ' . $b['horaSesion']) - strtotime($a['fechaSesion'] . ' ' . $a['horaSesion']);
 });
 
-$tituloDelPagina = 'AULAPRO | AULA DIGITAL';
+$titulo_pagina = 'Aula Digital';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>AULA DIGITAL</h1>
+    <h1>Aula Digital</h1>
     <p class="subtitulo-encabezado">Accede a las clases en vivo y gestiona tu aprendizaje</p>
 </div>
 
@@ -40,8 +40,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <p>No hay sesiones vivas programadas en tus módulos.</p>
     </div>
 <?php } else { ?>
-    <div class="tabla-responsiva">
-        <table class="tabla-contenido">
+    <div class="contenedor-tabla">
+        <table class="tabla-contenido tabla-datos">
             <thead>
                 <tr>
                     <th>MÓDULO</th>
@@ -79,7 +79,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <div><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?></div>
                         <span class="texto-pequeno texto-suave"><?= Security::escapeHtml($detalleEstado ) ?></span>
                     </td>
-                    <td><?= Security::escapeHtml($estado ) ?></td>
+                    <td><?= $estado ?></td>
                     <td>
                         <?php if ($ahora >= $fechaSesion && $ahora <= $fechaSesion + 3600) { ?>
                             <a href="<?= Security::escapeHtml($sesion['enlaceReunion']) ?>" target="_blank" class="boton-primario btn-pequeno" title="Acceder a la sesión">

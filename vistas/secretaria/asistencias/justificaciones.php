@@ -20,7 +20,7 @@ $justificaciones = listarTodasLasJustificaciones($idProfesorFilter ?: null, $est
 $profesores      = listarTodosLosProfesores();
 $estudiantes     = listarTodosLosEstudiantes();
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE AUSENCIAS";
+$titulo_pagina = "Gestión de Ausencias";
 $seccion       = "justificaciones";
 require_once __DIR__ . "/../comunes/nav.php";
 

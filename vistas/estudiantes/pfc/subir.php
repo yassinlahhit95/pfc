@@ -17,7 +17,7 @@ $notaTFG = obtenerCalificacionTFG($idEstudiante);
 $cfg = obtenerConfiguracionCentro();
 $entregaAbierta = (bool)($cfg['feature_subida_tfg'] ?? 1);
 
-$tituloDelPagina = "AULAPRO | MI TFG";
+$titulo_pagina = "Mi TFG";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

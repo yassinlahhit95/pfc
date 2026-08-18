@@ -16,7 +16,7 @@ $csrf = Security::generateCSRFToken();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Verificación en dos pasos — AulaPro</title>
+<title>Verificación en dos pasos — <?php require_once __DIR__ . '/../../include/FeatureGuard.php'; echo htmlspecialchars(FeatureGuard::getCenterName()); ?></title>
 <style>
   :root { --primary:#4f46e5; --primary-strong:#3730a3; }
   * { box-sizing:border-box; }

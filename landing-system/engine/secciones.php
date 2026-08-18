@@ -190,7 +190,7 @@ function landing_tipos(): array {
                 'titulo' => 'Una experiencia educativa única',
                 'subtitulo' => 'Descubre en este vídeo cómo preparamos a nuestros estudiantes para los retos profesionales del futuro.',
                 'parrafo' => 'Nuestras instalaciones cuentan con tecnología de vanguardia y espacios diseñados para el aprendizaje práctico y colaborativo.',
-                'videoUrl' => 'https://videos.pexels.com/video-files/8198511/8198511-hd_1920_1080_25fps.mp4',
+                'videoUrl' => '/public/videos/demo.mp4',
                 'posterUrl' => 'https://images.unsplash.com/photo-1758270705290-62b6294dd044?w=1200&q=80&auto=format&fit=crop',
                 'botonTexto' => 'Visitar instalaciones', 'botonUrl' => '#instalaciones',
             ],

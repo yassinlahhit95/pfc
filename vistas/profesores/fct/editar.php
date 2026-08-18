@@ -33,7 +33,7 @@ unset($_SESSION['datos_fct']);
 
 $empresas = listarEmpresas();
 
-$tituloDelPagina = "AULAPRO | EDITAR FCT";
+$titulo_pagina = "Editar FCT";
 $seccionActual   = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

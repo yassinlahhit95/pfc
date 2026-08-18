@@ -11,13 +11,13 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $todosLosAnuncios = listarTodosLosAnuncios();
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE ANUNCIOS";
+$titulo_pagina = "Gestión de Anuncios";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>ANUNCIOS DEL SISTEMA</h1>
+    <h1>Anuncios del Sistema</h1>
     <button type="button" class="boton-primario" onclick="document.getElementById('modal-nuevo-anuncio').style.display='flex'">
         <i class="fas fa-plus"></i> NUEVO ANUNCIO
     </button>

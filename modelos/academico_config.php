@@ -149,7 +149,7 @@ function crearConfigAcademicaVacia(string $nombre, string $tipoEducacion, ?strin
             $obl = $type[3];
             $ori = $type[4];
             $ord = $type[5];
-            mysqli_stmt_bind_param($stmt, "isdiss", $cfg, $nom, $pes, $obl, $ori, $ord);
+            mysqli_stmt_bind_param($stmt, "isdisi", $cfg, $nom, $pes, $obl, $ori, $ord);
             if (!mysqli_stmt_execute($stmt)) {
                 throw new \RuntimeException("Failed to create assessment type: " . mysqli_error($con));
             }

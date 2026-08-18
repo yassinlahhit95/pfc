@@ -9,6 +9,7 @@ import '../../../core/widgets/password_confirmation_dialog.dart';
 import '../../../core/utils/debounce.dart';
 import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/students_repository.dart';
 import 'add_student_screen.dart';
 import 'family_screen.dart';
@@ -112,18 +113,19 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
     final canManage = session?.role == UserRole.director ||
         session?.role == UserRole.secretaria;
     final filters = ref.watch(studentsFiltersProvider);
-    final studentsAsync = ref.watch(studentsProvider(
-      (
-        cicloId: filters.ciclo,
-        nivelId: filters.nivel,
-        status: filters.estado,
-        query: filters.q,
-      ),
-    ));
+    // A center can have 400+ students — never fetch/show the unfiltered
+    // full roster on open. At least one filter (including a typed search)
+    // must be chosen first; only then do we watch (and therefore fetch) the
+    // provider at all.
+    final hasActiveFilter = filters.ciclo != null ||
+        filters.nivel != null ||
+        (filters.estado?.isNotEmpty ?? false) ||
+        (filters.q?.isNotEmpty ?? false);
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Estudiantes'),
+        title: Text(t['nav_alumnos'] ?? 'Estudiantes'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -173,36 +175,74 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
             ),
           ),
           Expanded(
-            child: AsyncView<({List<Student> students, int total})>(
-              value: studentsAsync,
-              onRetry: () => ref.invalidate(studentsProvider),
-              data: (context, data) {
-                if (data.students.isEmpty) {
-                  return const EmptyState(
-                      icon: Icons.people_outlined,
-                      title: 'Sin alumnos registrados');
-                }
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.separated(
-                        controller: _scrollController,
-                        itemCount: data.students.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(height: Space.sm),
-                        itemBuilder: (context, index) {
-                          final student = data.students[index];
-                          return _StudentCard(student: student);
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+            child: !hasActiveFilter
+                ? _NoFilterPrompt(onPickFilter: () => _showFiltersSheet(context))
+                : _StudentsList(
+                    filters: filters,
+                    scrollController: _scrollController,
+                  ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _NoFilterPrompt extends StatelessWidget {
+  const _NoFilterPrompt({required this.onPickFilter});
+  final VoidCallback onPickFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    return EmptyState(
+      icon: Icons.filter_alt_outlined,
+      title: 'Elige un filtro para ver alumnos',
+      description:
+          'El centro puede tener cientos de estudiantes — busca por nombre o filtra por ciclo/nivel antes de cargar la lista.',
+      actionText: 'Elegir filtro',
+      onAction: onPickFilter,
+    );
+  }
+}
+
+/// Only mounted (and therefore only watches/fetches studentsProvider) once
+/// a filter is actually active — see the hasActiveFilter guard in
+/// _StudentsScreenState.build().
+class _StudentsList extends ConsumerWidget {
+  const _StudentsList({required this.filters, required this.scrollController});
+  final StudentsFilters filters;
+  final ScrollController scrollController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final studentsAsync = ref.watch(studentsProvider(
+      (
+        cicloId: filters.ciclo,
+        nivelId: filters.nivel,
+        status: filters.estado,
+        query: filters.q,
+      ),
+    ));
+
+    return AsyncView<({List<Student> students, int total})>(
+      value: studentsAsync,
+      onRetry: () => ref.invalidate(studentsProvider),
+      data: (context, data) {
+        if (data.students.isEmpty) {
+          return const EmptyState(
+              icon: Icons.people_outlined,
+              title: 'Sin alumnos para estos filtros');
+        }
+        return ListView.separated(
+          controller: scrollController,
+          itemCount: data.students.length,
+          separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+          itemBuilder: (context, index) {
+            final student = data.students[index];
+            return _StudentCard(student: student);
+          },
+        );
+      },
     );
   }
 }

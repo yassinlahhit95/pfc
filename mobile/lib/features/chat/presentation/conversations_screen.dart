@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/chat_repository.dart';
 import 'chat_detail_screen.dart';
 import 'new_chat_screen.dart';
@@ -74,9 +75,10 @@ class _ConversationsScreenState extends ConsumerState<ConversationsScreen>
     });
 
     final conversationsAsync = ref.watch(chatConversationsProvider);
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
+      appBar: AppBar(title: Text(t['nav_chat'] ?? 'Chat')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const NewChatScreen()),

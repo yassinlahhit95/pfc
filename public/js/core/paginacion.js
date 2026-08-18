@@ -58,18 +58,18 @@ function _renderControles(tablaId, pagina, total, totalFilas, inicio, fin) {
     if (total <= 1) { $ct.html(info); return; }
 
     var pg = '<div class="pag-pages">';
-    pg += '<button class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina - 1) + ')"' + (pagina === 1 ? ' disabled' : '') + '><i class="fas fa-chevron-left"></i></button>';
+    pg += '<button type="button" class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina - 1) + ')"' + (pagina === 1 ? ' disabled' : '') + ' aria-label="Página anterior"><i class="fas fa-chevron-left"></i></button>';
 
     var nums = _buildPageNumbers(pagina, total);
     $.each(nums, function(_, pageNum) {
         if (pageNum === '...') {
             pg += '<span class="pag-ellipsis">…</span>';
         } else {
-            pg += '<button class="pag-btn' + (pageNum === pagina ? ' activo' : '') + '" onclick="irAPagina(\'' + tablaId + '\',' + pageNum + ')">' + pageNum + '</button>';
+            pg += '<button type="button" class="pag-btn' + (pageNum === pagina ? ' activo' : '') + '" onclick="irAPagina(\'' + tablaId + '\',' + pageNum + ')">' + pageNum + '</button>';
         }
     });
 
-    pg += '<button class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina + 1) + ')"' + (pagina === total ? ' disabled' : '') + '><i class="fas fa-chevron-right"></i></button>';
+    pg += '<button type="button" class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina + 1) + ')"' + (pagina === total ? ' disabled' : '') + ' aria-label="Página siguiente"><i class="fas fa-chevron-right"></i></button>';
     pg += '</div>';
 
     $ct.html(info + pg);

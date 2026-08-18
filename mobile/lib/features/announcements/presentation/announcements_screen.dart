@@ -9,6 +9,7 @@ import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/announcements_repository.dart';
 
 class AnnouncementsScreen extends ConsumerStatefulWidget {
@@ -35,9 +36,10 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
     final announcementsAsync = ref.watch(announcementsProvider);
     final role = ref.watch(sessionControllerProvider).value?.role;
     final canCreate = role == UserRole.director || role == UserRole.secretaria;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Anuncios')),
+      appBar: AppBar(title: Text(t['nav_anuncios'] ?? 'Anuncios')),
       floatingActionButton: canCreate
           ? FloatingActionButton.extended(
               onPressed: () async {

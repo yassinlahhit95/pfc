@@ -5,7 +5,7 @@ import '../../../core/auth/auth_state.dart';
 import '../../../core/auth/session.dart';
 import '../data/auth_repository.dart';
 
-/// Drives the login form: AsyncValue<void> gives the screen loading/error
+/// Drives the login form: `AsyncValue<void>` gives the screen loading/error
 /// state for free, and success is signalled by sessionControllerProvider
 /// transitioning to a non-null Session (app_router reacts to that).
 class LoginController extends AsyncNotifier<void> {

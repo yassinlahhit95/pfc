@@ -18,7 +18,7 @@ if (!$aula) {
 $datos = $_SESSION['datos_aula'] ?? $aula;
 unset($_SESSION['datos_aula']);
 
-$titulo_pagina = "AULAPRO | EDITAR AULA";
+$titulo_pagina = "Editar Aula";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

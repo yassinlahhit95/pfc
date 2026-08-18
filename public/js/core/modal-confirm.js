@@ -52,6 +52,11 @@
         margin: -8px 0 0 -8px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
         border-radius: 50%; animation: modal-spin 0.8s linear infinite;
     }
+    [data-theme="dark"] .modal-confirm-dialog { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; }
+    [data-theme="dark"] .modal-confirm-header h3 { color: #f8fafc; }
+    [data-theme="dark"] .modal-confirm-body p { color: #cbd5e1; }
+    [data-theme="dark"] #modal-confirm-btn-cancel { background: #334155; color: #e2e8f0; }
+    [data-theme="dark"] #modal-confirm-btn-cancel:hover { background: #475569; color: #fff; }
     @keyframes modal-spin { to { transform: rotate(360deg); } }
     </style>
     `;

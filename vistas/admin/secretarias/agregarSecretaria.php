@@ -7,13 +7,13 @@ $errores = $_SESSION['errores'] ?? null;
 $datos   = $_SESSION['datos_secretaria'] ?? [];
 unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_secretaria']);
 
-$titulo_pagina = 'AULAPRO | NUEVA SECRETARIA';
+$titulo_pagina = 'Nueva Secretaria';
 $seccion = 'secretarias';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
-    <h1>NUEVA SECRETARIA</h1>
+    <h1>Nueva Secretaria</h1>
     <a href="verSecretarias.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER
     </a>

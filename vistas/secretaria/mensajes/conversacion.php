@@ -17,13 +17,12 @@ if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) {
     exit;
 }
 
-$titulo_pagina = 'Chat con ' . ($conv['other_nombre'] ?? '');
+$titulo_pagina = 'Chat Con ' . ($Conv['Other_Nombre'] ?? '');
 
-function avaClassConv($rol) {
-    return $rol === 'admin' ? 'ava-admin' : ($rol === 'profesor' ? 'ava-profesor' : 'ava-alumno');
+Function Avaclassconv($Rol) {    Return $Rol === 'Admin' ? 'Ava-Admin' : ($Rol === 'Profesor' ? 'Ava-Profesor' : 'Ava-Alumno');
 }
 
-require_once __DIR__ . '/../comunes/nav.php';
+Require_Once __Dir__ . '/../Comunes/Nav.php';
 ?>
 <link rel="stylesheet" href="../../../public/css/features/chat.css">
 

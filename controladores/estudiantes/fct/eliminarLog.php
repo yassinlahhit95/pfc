@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/StudentGuard.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

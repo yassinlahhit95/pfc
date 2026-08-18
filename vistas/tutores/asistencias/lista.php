@@ -35,8 +35,8 @@ foreach ($asistencias as $a) {
     }
 }
 
-$titulo_pagina = 'AulaPro Familias — Faltas de ' . $estudiante['nombreEstudiante'];
-$seccion       = 'hijo';
+$titulo_pagina = 'Aulapro Familias — Faltas de ' . $Estudiante['Nombreestudiante'];
+$Seccion       = 'Hijo';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 

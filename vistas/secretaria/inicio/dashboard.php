@@ -46,7 +46,7 @@ $con = obtenerConexion(); // reutilizado más abajo para las estadísticas finan
 require_once __DIR__ . "/../../../include/dashboard_helpers.php";
 $saludo = saludoHorario();
 
-$titulo_pagina = 'AulaPro — Secretaría';
+$titulo_pagina = 'Secretaría';
 $seccion = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 ?>
@@ -219,18 +219,27 @@ if ($rVencidos) {
     <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px;">
         <i class="fas fa-wallet" style="color:var(--verde);"></i> Panel Financiero y Pagos
     </h2>
-    <div style="display:flex; gap:16px; margin-bottom:24px;">
-        <div style="flex:1; background:var(--verde-suave); border-left:4px solid var(--verde); padding:16px; border-radius:8px;">
-            <div style="font-size:0.8rem; font-weight:700; color:var(--verde-ink); text-transform:uppercase;">Al Día</div>
-            <div style="font-size:1.5rem; font-weight:700; color:var(--verde-ink);"><?= (int)$statsPagos['al_dia'] ?> estudiantes</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:24px;">
+        <div style="background:var(--surface-2); border:1px solid var(--border); padding:18px 20px; border-radius:12px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px;">Al Día</span>
+                <span class="badge badge-verde" style="font-size:0.75rem;"><i class="fas fa-check"></i> Pagado</span>
+            </div>
+            <div style="font-size:1.6rem; font-weight:800; color:var(--verde);"><?= (int)$statsPagos['al_dia'] ?> <small style="font-size:0.85rem; font-weight:500; color:var(--dim);">estudiantes</small></div>
         </div>
-        <div style="flex:1; background:var(--naranja-suave); border-left:4px solid var(--naranja); padding:16px; border-radius:8px;">
-            <div style="font-size:0.8rem; font-weight:700; color:var(--naranja-ink); text-transform:uppercase;">Próximo a Vencer</div>
-            <div style="font-size:1.5rem; font-weight:700; color:var(--naranja-ink);"><?= (int)$statsPagos['proximo'] ?> estudiantes</div>
+        <div style="background:var(--surface-2); border:1px solid var(--border); padding:18px 20px; border-radius:12px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px;">Próximo a Vencer</span>
+                <span class="badge badge-ambar" style="font-size:0.75rem;"><i class="fas fa-clock"></i> Pendiente</span>
+            </div>
+            <div style="font-size:1.6rem; font-weight:800; color:var(--naranja);"><?= (int)$statsPagos['proximo'] ?> <small style="font-size:0.85rem; font-weight:500; color:var(--dim);">estudiantes</small></div>
         </div>
-        <div style="flex:1; background:var(--rojo-suave); border-left:4px solid var(--rojo); padding:16px; border-radius:8px;">
-            <div style="font-size:0.8rem; font-weight:700; color:var(--rojo-ink); text-transform:uppercase;">Vencidos (Bloqueados)</div>
-            <div style="font-size:1.5rem; font-weight:700; color:var(--rojo-ink);"><?= (int)$statsPagos['vencido'] ?> estudiantes</div>
+        <div style="background:var(--surface-2); border:1px solid var(--border); padding:18px 20px; border-radius:12px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px;">Vencidos</span>
+                <span class="badge badge-rojo" style="font-size:0.75rem;"><i class="fas fa-exclamation-circle"></i> Bloqueado</span>
+            </div>
+            <div style="font-size:1.6rem; font-weight:800; color:var(--rojo);"><?= (int)$statsPagos['vencido'] ?> <small style="font-size:0.85rem; font-weight:500; color:var(--dim);">estudiantes</small></div>
         </div>
     </div>
     

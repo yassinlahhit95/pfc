@@ -76,8 +76,8 @@ if ($__err_str || $__ok):
 ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    <?php if ($__err_str): ?>if (window.Toast) Toast.show(<?= json_encode($__err_str) ?>, 'error');<?php endif; ?>
-    <?php if ($__ok): ?>if (window.Toast) Toast.show(<?= json_encode($__ok) ?>, 'success');<?php endif; ?>
+    <?php if ($__err_str): ?>if (window.Toast) Toast.show(<?= Security::jsonEncodeSafe($__err_str) ?>, 'error');<?php endif; ?>
+    <?php if ($__ok): ?>if (window.Toast) Toast.show(<?= Security::jsonEncodeSafe($__ok) ?>, 'success');<?php endif; ?>
 });
 </script>
 <?php endif; ?>

@@ -19,7 +19,7 @@ $badgesVisibilidad = [
 <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/calendario.css') ?>">
 
 <div class="cabecera">
-    <h1>CALENDARIO DE ACTIVIDADES</h1>
+    <h1>Calendario de Actividades</h1>
     <button type="button" class="boton-primario" data-nuevo-evento>
         <i class="fas fa-plus"></i> CREAR EVENTO
     </button>

@@ -36,13 +36,13 @@ if ($idCicloElegido) {
     $datosFinales = listarResultadosFinalesCiclo($idCicloElegido);
 }
 
-$tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
+$titulo_pagina = strtoupper("Resultados Finales - Portal Profesores");
 $seccionActual   = 'resultados_finales';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>RESULTADOS FINALES DE MIS ALUMNOS</h1>
+    <h1>Resultados Finales de Mis Alumnos</h1>
     <p class="subtitulo-encabezado">Nota definitiva por módulo (mejor de convocatoria ordinaria y extraordinaria)</p>
 </div>
 

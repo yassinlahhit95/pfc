@@ -14,8 +14,8 @@ function handlePost(): array {
         return ['ok' => false, 'msg' => 'Host, usuario y nombre de base de datos son obligatorios.'];
     }
 
-    // Validate host (alphanumeric, dots, hyphens, max 255 chars)
-    if (strlen($host) > 255 || !preg_match('/^[a-zA-Z0-9.\-]+$/', $host)) {
+    // Validate host (alphanumeric, dots, hyphens, colons for port, max 255 chars)
+    if (strlen($host) > 255 || !preg_match('/^[a-zA-Z0-9.\-:]+$/', $host)) {
         return ['ok' => false, 'msg' => 'El host contiene caracteres inválidos.'];
     }
 

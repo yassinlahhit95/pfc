@@ -45,7 +45,7 @@ class ReportService {
         // aún no ha llegado), así el visor de PDF nunca muestra "AulaPro Report"
         // en vez del centro que lo emite.
         $this->mpdf->SetTitle('Informe');
-        $this->mpdf->SetAuthor('AulaPro');
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'Centro Educativo');
     }
 
     // ══════════════════════════════════════════════════════════════════════
@@ -54,7 +54,7 @@ class ReportService {
 
     public function generateBoletines($cfg, $ciclo, $estudiantes, $baseUrl = '') {
         $this->mpdf->SetTitle('Boletín de calificaciones — ' . ($cfg['nombreCentro'] ?? ''));
-        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? $cfg['nombreCentro'] ?? 'Centro Educativo');
         $first = true;
         foreach ($estudiantes as $estudiante) {
             if (!$first) $this->mpdf->AddPage();
@@ -71,7 +71,7 @@ class ReportService {
 
     public function generateListado($cfg, $ciclo, $estudiantes) {
         $this->mpdf->SetTitle('Listado de alumnado — ' . ($cfg['nombreCentro'] ?? ''));
-        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? $cfg['nombreCentro'] ?? 'Centro Educativo');
         $this->mpdf->AddPage('L');
         ob_start();
         include __DIR__ . '/../templates/pdf/listado.php';
@@ -82,7 +82,7 @@ class ReportService {
 
     public function generateHorario($cfg, $ciclo, $celdas, $franjas, $dias) {
         $this->mpdf->SetTitle('Horario — ' . ($cfg['nombreCentro'] ?? ''));
-        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? $cfg['nombreCentro'] ?? 'Centro Educativo');
         // Apaisado con margen superior extra para la cabecera de 3 filas (acento + logos + banda de info)
         $this->mpdf->AddPage('L', '', '', '', '', '', 56, 20, 4, 3);
         ob_start();

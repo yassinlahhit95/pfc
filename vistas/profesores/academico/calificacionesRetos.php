@@ -40,7 +40,7 @@ if ($idCicloElegido && $idRetoElegido) {
     $listaEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 }
 
-$tituloDelPagina = "AULAPRO | NOTAS RETOS";
+$titulo_pagina = "Notas Retos";
 $seccionActual   = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </style>
 
 <div class="cabecera">
-    <h1>EVALUACIÓN DE RETOS</h1>
+    <h1>Evaluación de Retos</h1>
 </div>
 
 <div class="panel">

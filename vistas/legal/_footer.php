@@ -15,7 +15,7 @@
             <a href="#" id="cookie-prefs-link">Preferencias de Cookies</a>
         </nav>
         <div class="legal-foot-bot">
-            <span>© <?= date('Y') ?> AulaPro · Todos los derechos reservados · Hecho en España</span>
+            <span>© <?= date('Y') ?> <?= Security::escapeHtml($nombreCentro ?? 'AulaPro') ?> · Todos los derechos reservados · Hecho en España</span>
             <button id="btn-top" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">
                 <i class="fas fa-chevron-up"></i>
             </button>

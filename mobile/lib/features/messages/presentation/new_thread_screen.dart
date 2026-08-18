@@ -7,6 +7,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/premium.dart';
 import '../../chat/data/chat_repository.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/messages_repository.dart';
 
 class NewThreadScreen extends ConsumerStatefulWidget {
@@ -109,7 +110,9 @@ class _NewThreadScreenState extends ConsumerState<NewThreadScreen> {
     if (_selectedContact != null) {
       final c = _selectedContact!;
       return Scaffold(
-        appBar: AppBar(title: const Text('Nuevo mensaje')),
+        appBar: AppBar(
+            title: Text(ref.watch(translationsProvider)['title_nuevo_mensaje'] ??
+                'Nuevo mensaje')),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(Space.xl),
           child: Column(

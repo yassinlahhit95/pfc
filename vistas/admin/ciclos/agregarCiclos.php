@@ -19,14 +19,14 @@ $profesoresElegidos = $datos['profesores'] ?? [];
 $mapaProfesoresElegidos = [];
 foreach ($profesoresElegidos as $idProfesor) { $mapaProfesoresElegidos[$idProfesor] = true; }
 
-$titulo_pagina = "AULAPRO | AGREGAR CICLO";
+$titulo_pagina = "Agregar Ciclo";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>AGREGAR CICLO</h1>
+        <h1>Agregar Ciclo</h1>
         <p class="subtitulo-encabezado">Defina un nuevo programa formativo y asigne recursos</p>
     </div>
     <a href="verCiclos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>

@@ -1,16 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../auth/auth_state.dart';
 import 'api_exception.dart';
 
-/// Base URL for api/v1/*.php. Override per environment, e.g.:
-///   flutter run --dart-define=API_BASE_URL=http://10.0.2.2
-/// (Android emulator reaches the host machine's Laragon via 10.0.2.2, not
-/// pfc.test/localhost.) Defaults to the production domain.
-const _defaultBaseUrl = 'https://aulapro.yassin.agency';
-const String apiBaseUrl =
-    String.fromEnvironment('API_BASE_URL', defaultValue: _defaultBaseUrl);
+part 'api_client.g.dart';
+
+/// Base URL for api/v1/*.php. Override via .env
+final String apiBaseUrl = dotenv.env['API_BASE_URL'] ?? 'https://aulapro.yassin.agency';
 
 /// Thin wrapper around a single Dio instance shared by every feature
 /// repository. Endpoints are hit at their literal filenames under
@@ -112,4 +110,7 @@ class ApiClient {
       call(() => dio.delete(path, data: data, queryParameters: query));
 }
 
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient(ref));
+@Riverpod(keepAlive: true)
+ApiClient apiClient(Ref ref) {
+  return ApiClient(ref);
+}

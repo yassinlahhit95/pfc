@@ -38,7 +38,7 @@ if ($idModuloElegido) {
     $listaEstudiantes = listarCalificacionesPorModulo($idModuloElegido);
 }
 
-$tituloDelPagina = "AULAPRO | NOTAS DE MÓDULOS";
+$titulo_pagina = "Notas de Módulos";
 $seccionActual   = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -77,7 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </style>
 
 <div class="cabecera">
-    <h1>CALIFICACIONES POR MÓDULO</h1>
+    <h1>Calificaciones por Módulo</h1>
 </div>
 
 <div class="panel">

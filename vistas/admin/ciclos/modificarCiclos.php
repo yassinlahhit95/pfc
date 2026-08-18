@@ -29,7 +29,7 @@ if ($datosSesion) {
     $profesoresMarcados = $datosSesion['profesores'] ?? [];
 }
 
-$titulo_pagina = "AULAPRO | MODIFICAR CICLO";
+$titulo_pagina = "Modificar Ciclo";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

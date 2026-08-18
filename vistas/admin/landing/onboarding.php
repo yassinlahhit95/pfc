@@ -17,12 +17,12 @@ $csrfToken = Security::generateCSRFToken();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title>Configuración de su Centro — AulaPro</title>
+    <title>Configuración de su Centro — <?php require_once __DIR__ . '/../../../include/FeatureGuard.php'; echo htmlspecialchars(FeatureGuard::getCenterName()); ?></title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
     <link rel="stylesheet" href="../../../public/css/dashboard.css">
 
@@ -367,7 +367,7 @@ $csrfToken = Security::generateCSRFToken();
             <div class="ob-hero-icon">
                 <i class="fas fa-crown"></i>
             </div>
-            <h1 class="ob-title">¡Le damos la bienvenida a AulaPro!</h1>
+            <h1 class="ob-title">¡Le damos la bienvenida a <?= htmlspecialchars(FeatureGuard::getCenterName()) ?>!</h1>
             <p class="ob-desc">
                 Le agradecemos profundamente haber depositado su confianza en nuestro producto para la gestión de su institución educativa. 
                 Hemos preparado este asistente de lujo para configurar la imagen pública y plantilla de su centro en menos de dos minutos.
@@ -496,7 +496,7 @@ $csrfToken = Security::generateCSRFToken();
             <h2 class="ob-title">¡Todo listo y configurado!</h2>
             <p class="ob-desc">
                 La plantilla de su centro ha sido aplicada correctamente y el portal de preinscripción está listo para recibir admisiones. 
-                Le deseamos el mayor de los éxitos en esta nueva etapa académica junto a AulaPro.
+                Le deseamos el mayor de los éxitos en esta nueva etapa académica junto a <?= htmlspecialchars(FeatureGuard::getCenterName()) ?>.
             </p>
             <div class="ob-actions">
                 <a href="builder.php" class="ob-btn-primary">

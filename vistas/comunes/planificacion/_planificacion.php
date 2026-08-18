@@ -9,7 +9,7 @@ $completadas = array_filter($tareas, fn($t) => (int)$t['completada']);
 ?>
 
 <div class="cabecera">
-    <h1>PLANIFICACIÓN DEL CENTRO</h1>
+    <h1>Planificación del Centro</h1>
     <p class="subtitulo-encabezado">Cuaderno compartido entre dirección y secretaría — lo que el centro tiene pendiente hacer.</p>
 </div>
 

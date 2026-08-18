@@ -19,7 +19,7 @@ if (!$estudiante) {
 
 $calificacion = obtenerCalificacionTFG($idEstudiante);
 
-$tituloDelPagina = "AULAPRO | EVALUAR TFG";
+$titulo_pagina = "Evaluar TFG";
 $seccionActual   = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

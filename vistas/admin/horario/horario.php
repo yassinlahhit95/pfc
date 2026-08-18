@@ -51,13 +51,13 @@ $freeStarts = array_values(array_filter($todosSlots, fn($slot) => $slot < '21:00
 
 $aulasParaJs = array_map(fn($aula) => ['id' => (int)$aula['idAula'], 'codigo' => $aula['codigoAula']], $aulasDisponibles);
 
-$titulo_pagina = "AULAPRO | CUADRO HORARIO";
+$titulo_pagina = "Cuadro Horario";
 $seccion = 'horario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>CUADRO HORARIO</h1>
+    <h1>Cuadro Horario</h1>
     <form method="GET" class="horario-selector-form">
         <label for="nivel">Nivel:</label>
         <select name="nivel" id="nivel" onchange="this.form.submit()">
@@ -191,8 +191,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-window.HORARIO_AULAS     = <?= json_encode($aulasParaJs, JSON_UNESCAPED_UNICODE) ?>;
-window.HORARIO_END_SLOTS = <?= json_encode($endSlots) ?>;
+window.HORARIO_AULAS     = <?= Security::jsonEncodeSafe($aulasParaJs) ?>;
+window.HORARIO_END_SLOTS = <?= Security::jsonEncodeSafe($endSlots) ?>;
 </script>
 <script src="<?= AssetMin::url(__DIR__, '../../../public/js/features/horario.js') ?>"></script>
 <?php include '../comunes/footer.php'; ?>

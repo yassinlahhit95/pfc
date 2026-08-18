@@ -6,7 +6,7 @@ require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $eventos = listarEventosProximos();
 
-$titulo_pagina = 'AulaPro Familias — Eventos del Centro';
+$titulo_pagina = 'Aulapro Familias — Eventos del Centro';
 $seccion       = 'eventos';
 include __DIR__ . '/../comunes/nav.php';
 ?>
@@ -17,7 +17,7 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-eventos-tutores">
             <thead>
                 <tr>
                     <th>Fecha</th>
@@ -47,3 +47,8 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-eventos-tutores', 15);
+});
+</script>

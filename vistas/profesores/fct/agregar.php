@@ -18,13 +18,13 @@ $idProfesor = (int)$_SESSION['idProfesor'];
 $estudiantes = listarEstudiantesDeProfesor($idProfesor);
 $empresas = listarEmpresas();
 
-$tituloDelPagina = "AULAPRO | NUEVA FCT";
+$titulo_pagina = "Nueva FCT";
 $seccionActual   = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVA FCT</h1>
+    <h1>Nueva FCT</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

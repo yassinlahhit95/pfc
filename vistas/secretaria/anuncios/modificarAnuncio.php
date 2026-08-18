@@ -17,13 +17,13 @@ unset($_SESSION['datos_anuncio']);
 
 $valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $anuncio[$k] ?? '');
 
-$titulo_pagina = "AULAPRO | EDITAR ANUNCIO";
+$titulo_pagina = "Editar Anuncio";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR ANUNCIO</h1>
+    <h1>Editar Anuncio</h1>
     <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

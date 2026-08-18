@@ -6,7 +6,7 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $listaAnuncios = listarAnunciosPorRol('tutores');
 
-$titulo_pagina = 'AulaPro Familias — Anuncios del Centro';
+$titulo_pagina = 'Aulapro Familias — Anuncios del Centro';
 $seccion       = 'anuncios';
 include __DIR__ . '/../comunes/nav.php';
 ?>

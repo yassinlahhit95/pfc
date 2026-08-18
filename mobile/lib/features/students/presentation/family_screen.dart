@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/password_confirmation_dialog.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/family_repository.dart';
 import 'tutor_form_sheet.dart';
 
@@ -14,10 +15,11 @@ class FamilyScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final familyAsync = ref.watch(studentFamilyProvider(idEstudiante));
     final scheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Familiares'),
+        title: Text(t['title_familiares'] ?? 'Familiares'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

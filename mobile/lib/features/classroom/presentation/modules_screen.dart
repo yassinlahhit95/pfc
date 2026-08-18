@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/filter_bar.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/classroom_repository.dart';
 import 'module_detail_screen.dart';
 
@@ -22,9 +23,10 @@ class _ModulesScreenState extends ConsumerState<ModulesScreen> {
   Widget build(BuildContext context) {
     final modulesAsync = ref.watch(classroomModulesProvider);
     final scheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Materiales')),
+      appBar: AppBar(title: Text(t['nav_aula'] ?? 'Materiales')),
       body: AsyncView<List<ClassroomModule>>(
         value: modulesAsync,
         onRetry: () => ref.invalidate(classroomModulesProvider),

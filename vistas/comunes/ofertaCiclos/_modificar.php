@@ -14,7 +14,7 @@ $imagenPortadaUrl = !empty($ciclo['imagen']) ? R2Client::imagenUrl(
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR CICLO</h1>
+    <h1>Modificar Ciclo</h1>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <?php if ((int)$ciclo['publicado'] === 1) { ?>
         <a href="/vistas/ciclos.php?ciclo=<?= Security::escapeHtml($ciclo['slug']) ?>" target="_blank" rel="noopener" class="boton-secundario">
@@ -168,6 +168,6 @@ iniciarEditorBlog({
     fileInputId: 'editor-imagen-input',
     uploadUrl: '../../../controladores/<?= $rolBase ?>/ofertaCiclos/subir_imagen_contenido.php',
     csrfToken: document.querySelector('[name=csrf_token]').value,
-    initialContent: <?= json_encode($ciclo['descripcion']) ?>
+    initialContent: <?= Security::jsonEncodeSafe($ciclo['descripcion']) ?>
 });
 </script>

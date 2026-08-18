@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/StudentGuard.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/cola_emails.php";
 require_once __DIR__ . "/../../../config/Config.php";

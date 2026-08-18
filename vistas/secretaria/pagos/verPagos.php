@@ -28,7 +28,7 @@ $listaPagos = $idCicloFiltro ? listarPagosFiltrados($idCicloFiltro) : listarTodo
 // siempre muestra todos los vencidos reales (último pago por estudiante).
 $listaPendientes = listarPagosPendientes();
 
-$titulo_pagina = 'AULAPRO | PAGOS';
+$titulo_pagina = 'Pagos';
 $seccion = 'pagos';
 include __DIR__ . '/../comunes/nav.php';
 
@@ -44,7 +44,7 @@ function _comprobanteUrlWeb(string $archivo): string {
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE PAGOS</h1>
+    <h1>Gestión de Pagos</h1>
     <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <button type="button" class="boton-secundario" onclick="$('#modal-pendientes').addClass('modal-abierto').removeClass('modal-cerrando')"
                 style="border-color:var(--danger); color:var(--danger); display:inline-flex; align-items:center; gap:8px;">

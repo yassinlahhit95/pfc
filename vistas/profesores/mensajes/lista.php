@@ -32,7 +32,7 @@ $cNuevos  = (int)$totalSinLeer;
 $cAlumnos = count(array_filter($todos, fn($mensaje) => $mensaje['emisor_rol'] === 'estudiante'));
 $cEnv     = count(array_filter($todos, fn($mensaje) => $mensaje['emisor_rol'] === 'profesor'));
 
-$tituloDelPagina = "AULAPRO | Buzón de Mensajes";
+$titulo_pagina = "Buzón de Mensajes";
 $seccionActual   = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

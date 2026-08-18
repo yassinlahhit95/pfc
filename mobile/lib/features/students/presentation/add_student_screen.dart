@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../attendance/presentation/center_attendance_screen.dart'
     show lookupsProvider;
+import '../../../core/i18n/translations.dart';
 import '../data/students_repository.dart';
 
 class AddStudentScreen extends ConsumerStatefulWidget {
@@ -130,9 +131,10 @@ class _AddStudentScreenState extends ConsumerState<AddStudentScreen> {
       }
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -142,10 +144,13 @@ class _AddStudentScreenState extends ConsumerState<AddStudentScreen> {
   Widget build(BuildContext context) {
     final isEditing = widget.student != null;
     final lookupsAsync = ref.watch(lookupsProvider);
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(isEditing ? 'Editar Estudiante' : 'Nuevo Estudiante')),
+          title: Text(isEditing
+              ? (t['title_editar_estudiante'] ?? 'Editar Estudiante')
+              : (t['title_nuevo_estudiante'] ?? 'Nuevo Estudiante'))),
       body: lookupsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => const Center(child: Text('Error cargando datos')),

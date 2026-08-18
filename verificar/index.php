@@ -181,7 +181,7 @@ if (!empty($cfg['logoCentro'])) {
     <?php endif; ?>
 
     <div class="footer-note">
-        <?= htmlspecialchars($cfg['nombreCentro']) ?> &mdash; Sistema AulaPro
+        <?= htmlspecialchars($cfg['nombreCentro']) ?> &mdash; Sistema <?= htmlspecialchars($cfg["nombreCentro"] ?? "") ?>
     </div>
 </div>
 </body>

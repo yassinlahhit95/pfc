@@ -59,7 +59,7 @@ $eventos       = listarEventosProximos();
 $recordatoriosPendientes = obtenerNotificacionesNoLeidas((int)$_SESSION['idAdmin'], 'director', 5);
 $estudiantesPendientes = listarEstudiantesConPagosPendientes();
 
-$titulo_pagina = 'AulaPro — Panel de Control';
+$titulo_pagina = 'Panel de Control';
 $seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 
@@ -99,13 +99,13 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 </section>
 
 <?php if (empty($landingCfg['plantilla'])): ?>
-<div class="panel" style="background: linear-gradient(135deg, var(--accent) 0%, #312e81 100%); color: white; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; padding: 20px 24px; box-shadow: 0 10px 25px rgba(79,70,229,0.3);">
+<div class="panel" style="background: linear-gradient(135deg, var(--accent) 0%, #1e1b4b 100%); color: white; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-radius: 14px; padding: 22px 28px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
     <div>
-        <h3 style="color: white; margin-top: 0; display: flex; align-items: center; gap: 8px;"><i class="fas fa-magic"></i> ¡Bienvenido a AulaPro!</h3>
-        <p style="color: rgba(255,255,255,0.85); margin-bottom: 0;">Parece que es su primera vez aquí. Le recomendamos configurar la identidad y plantilla de su centro educativo.</p>
+        <h3 style="color: white; margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.15rem;"><i class="fas fa-palette" style="color: #93c5fd;"></i> Personalización del Centro Educativo</h3>
+        <p style="color: rgba(255,255,255,0.85); margin-bottom: 0; font-size: 0.92rem;">Configure la identidad visual, colores y la plantilla pública del centro educativo.</p>
     </div>
-    <a href="../landing/onboarding.php" class="boton-primario" style="background: white; color: var(--accent); white-space: nowrap;">
-        Configurar estilo y plantillas
+    <a href="../landing/onboarding.php" class="boton-primario" style="background: white; color: var(--accent); font-weight: 700; white-space: nowrap;">
+        Configurar estilo y plantilla
     </a>
 </div>
 <?php endif; ?>
@@ -472,83 +472,201 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 <!-- Modal evento (para calendar widget CRUD) -->
 <?php include __DIR__ . '/../../comunes/eventos/_modal_evento.php'; ?>
 
-<!-- Announcements + Events panels -->
+<!-- Announcements + Events + Reminders panels with Interactive Pagination -->
 <div class="dash-panels">
-  <div class="dash-panel">
+
+  <!-- Panel: Anuncios con Paginación -->
+  <div class="dash-panel" id="dash-panel-anuncios">
     <div class="dash-panel-head">
-      <h3>Anuncios</h3>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i class="fas fa-bullhorn" style="color:var(--accent);"></i>
+        <h3>Anuncios</h3>
+        <?php if (!empty($listaAnuncios)): ?>
+        <span class="badge badge-azul" style="font-size:0.75rem;"><?= count($listaAnuncios) ?></span>
+        <?php endif; ?>
+      </div>
       <a href="../anuncios/gestionAnuncios.php">Ver todos</a>
     </div>
     <div class="dash-panel-body">
-      <?php if (!empty($listaAnuncios)) {
-        $contador = 0;
-        foreach ($listaAnuncios as $anuncio) {
-          if ($contador >= 4) break; ?>
-          <div class="ann-item">
+      <?php if (!empty($listaAnuncios)): ?>
+        <div class="dash-widget-items" id="dash-anuncios-lista">
+          <?php foreach ($listaAnuncios as $idx => $anuncio): ?>
+          <div class="ann-item dash-pag-item" data-item-idx="<?= $idx ?>">
             <div class="ann-item-head">
               <span class="ann-item-title"><?= Security::escapeHtml($anuncio['titulo']) ?></span>
               <span class="ann-item-date"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
             </div>
             <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['mensaje']), 0, 120)) ?>…</p>
-            <span class="ann-item-tag"><?= Security::escapeHtml(strtoupper($anuncio['dirigidoA'])) ?></span>
+            <span class="ann-item-tag"><i class="fas fa-users" style="margin-right:3px;"></i> <?= Security::escapeHtml(strtoupper($anuncio['dirigidoA'])) ?></span>
           </div>
-      <?php $contador++; } } else { ?>
+          <?php endforeach; ?>
+        </div>
+        <div class="dash-widget-paginacion" id="dash-anuncios-pag">
+          <button type="button" class="dash-pag-btn prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+          <span class="dash-pag-info">Pág. <b class="cur">1</b> de <span class="tot">1</span></span>
+          <button type="button" class="dash-pag-btn next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      <?php else: ?>
         <p class="empty-state">No hay anuncios activos por ahora.</p>
-      <?php } ?>
+      <?php endif; ?>
     </div>
   </div>
 
-  <div class="dash-panel">
+  <!-- Panel: Próximos Eventos con Paginación -->
+  <div class="dash-panel" id="dash-panel-eventos">
     <div class="dash-panel-head">
-      <h3>Próximos Eventos</h3>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i class="fas fa-calendar-day" style="color:var(--accent);"></i>
+        <h3>Próximos Eventos</h3>
+        <?php if (!empty($eventos)): ?>
+        <span class="badge badge-verde" style="font-size:0.75rem;"><?= count($eventos) ?></span>
+        <?php endif; ?>
+      </div>
       <a href="../eventos/gestionEventos.php">Ver todos</a>
     </div>
     <div class="dash-panel-body">
-      <?php if (!empty($eventos)) {
-        $contador = 0;
-        foreach ($eventos as $evento) {
-          if ($contador >= 4) break;
-          $dia = date('d', strtotime($evento['fechaEvento']));
-          $mes = strtoupper(date('M', strtotime($evento['fechaEvento']))); ?>
-          <div class="evt-item">
+      <?php if (!empty($eventos)): ?>
+        <div class="dash-widget-items" id="dash-eventos-lista">
+          <?php foreach ($eventos as $idx => $evento):
+            $dia = date('d', strtotime($evento['fechaEvento']));
+            $mes = strtoupper(date('M', strtotime($evento['fechaEvento']))); ?>
+          <div class="evt-item dash-pag-item" data-item-idx="<?= $idx ?>">
             <div class="evt-date-box">
               <span class="evt-day"><?= $dia ?></span>
               <span class="evt-mon"><?= $mes ?></span>
             </div>
             <div class="evt-info">
               <span class="evt-title"><?= Security::escapeHtml($evento['tituloEvento']) ?></span>
-              <span class="evt-meta"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h · <?= Security::escapeHtml($evento['ubicacionEvento']) ?></span>
+              <span class="evt-meta"><i class="fas fa-clock" style="margin-right:3px;"></i> <?= date('H:i', strtotime($evento['horaEvento'])) ?>h · <i class="fas fa-location-dot" style="margin-left:4px;margin-right:2px;"></i> <?= Security::escapeHtml($evento['ubicacionEvento'] ?: 'Campus') ?></span>
             </div>
           </div>
-      <?php $contador++; } } else { ?>
+          <?php endforeach; ?>
+        </div>
+        <div class="dash-widget-paginacion" id="dash-eventos-pag">
+          <button type="button" class="dash-pag-btn prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+          <span class="dash-pag-info">Pág. <b class="cur">1</b> de <span class="tot">1</span></span>
+          <button type="button" class="dash-pag-btn next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      <?php else: ?>
         <p class="empty-state">No hay eventos próximos programados.</p>
-      <?php } ?>
+      <?php endif; ?>
     </div>
   </div>
 
-  <!-- Panel: Recordatorios de eventos (notificaciones_recordatorios) -->
-  <div class="dash-panel">
+  <!-- Panel: Recordatorios con Paginación -->
+  <div class="dash-panel" id="dash-panel-recordatorios">
     <div class="dash-panel-head">
-      <h3>Recordatorios <span id="notif-badge" class="texto-estado rojo" style="display:inline-block;" hidden></span></h3>
-      <a href="../eventos/gestionEventos.php">Ver todos los recordatorios</a>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i class="fas fa-bell" style="color:var(--naranja);"></i>
+        <h3>Recordatorios</h3>
+        <span id="notif-badge" class="badge badge-rojo" style="display:inline-block; font-size:0.75rem;" <?= empty($recordatoriosPendientes) ? 'hidden' : '' ?>><?= count($recordatoriosPendientes) ?></span>
+      </div>
+      <a href="../eventos/gestionEventos.php">Ver todos</a>
     </div>
     <div class="dash-panel-body">
       <div id="lista-notificaciones" class="recordatorios-widget-lista">
-        <?php if (empty($recordatoriosPendientes)) { ?>
-          <p class="empty-state">No hay recordatorios pendientes.</p>
-        <?php } else { foreach ($recordatoriosPendientes as $rec) { ?>
-          <div class="recordatorio-item" data-id="<?= (int)$rec['idNotificacion'] ?>">
-            <div class="recordatorio-item-info">
-              <span class="recordatorio-item-titulo"><?= Security::escapeHtml($rec['tituloEvento']) ?></span>
-              <span class="recordatorio-item-fecha"><?= Security::escapeHtml(date('d/m/Y', strtotime($rec['fechaEvento']))) ?><?= $rec['horaEvento'] ? ' ' . Security::escapeHtml(date('H:i', strtotime($rec['horaEvento']))) : '' ?></span>
+        <?php if (!empty($recordatoriosPendientes)): ?>
+          <div class="dash-widget-items" id="dash-recordatorios-lista">
+            <?php foreach ($recordatoriosPendientes as $idx => $rec): ?>
+            <div class="recordatorio-item dash-pag-item" data-id="<?= (int)$rec['idNotificacion'] ?>" data-item-idx="<?= $idx ?>">
+              <div class="recordatorio-item-info">
+                <span class="recordatorio-item-titulo"><?= Security::escapeHtml($rec['tituloEvento']) ?></span>
+                <span class="recordatorio-item-fecha"><i class="fas fa-clock"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($rec['fechaEvento']))) ?><?= $rec['horaEvento'] ? ' ' . Security::escapeHtml(date('H:i', strtotime($rec['horaEvento']))) : '' ?></span>
+              </div>
+              <button type="button" class="recordatorio-item-marcar" data-marcar-leido="<?= (int)$rec['idNotificacion'] ?>">Marcar leído</button>
             </div>
-            <button type="button" class="recordatorio-item-marcar" data-marcar-leido="<?= (int)$rec['idNotificacion'] ?>">Marcar leído</button>
+            <?php endforeach; ?>
           </div>
-        <?php } } ?>
+          <div class="dash-widget-paginacion" id="dash-recordatorios-pag">
+            <button type="button" class="dash-pag-btn prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+            <span class="dash-pag-info">Pág. <b class="cur">1</b> de <span class="tot">1</span></span>
+            <button type="button" class="dash-pag-btn next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        <?php else: ?>
+          <p class="empty-state">No hay recordatorios pendientes.</p>
+        <?php endif; ?>
       </div>
     </div>
   </div>
+
 </div>
+
+<style>
+/* ── Estilos de Paginación de Widgets del Dashboard ── */
+.dash-widget-paginacion {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border);
+    font-size: 11.5px; color: var(--dim);
+}
+.dash-pag-btn {
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 6px; width: 26px; height: 26px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .15s ease;
+}
+.dash-pag-btn:hover:not(:disabled) {
+    background: var(--surface); border-color: var(--accent); color: var(--accent);
+}
+.dash-pag-btn:disabled { opacity: .4; cursor: not-allowed; }
+.dash-pag-info b { color: var(--text); }
+</style>
+
+<script>
+// Paginación interactiva para widgets del dashboard (3 elementos por página)
+function iniciarPaginacionWidget(listId, pagId, porPagina) {
+    var $list = document.getElementById(listId);
+    var $pag  = document.getElementById(pagId);
+    if (!$list || !$pag) return;
+
+    var porPag = porPagina || 3;
+    var items = $list.querySelectorAll('.dash-pag-item');
+    var total = items.length;
+    var totalPaginas = Math.ceil(total / porPag);
+    var paginaActual = 1;
+
+    if (total <= porPag) {
+        $pag.style.display = 'none';
+        return;
+    }
+
+    var $prev = $pag.querySelector('.prev');
+    var $next = $pag.querySelector('.next');
+    var $cur  = $pag.querySelector('.cur');
+    var $tot  = $pag.querySelector('.tot');
+
+    if ($tot) $tot.textContent = totalPaginas;
+
+    function render() {
+        var start = (paginaActual - 1) * porPag;
+        var end = start + porPag;
+        items.forEach(function (it, idx) {
+            it.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
+        if ($cur) $cur.textContent = paginaActual;
+        if ($prev) $prev.disabled = (paginaActual <= 1);
+        if ($next) $next.disabled = (paginaActual >= totalPaginas);
+    }
+
+    if ($prev) {
+        $prev.addEventListener('click', function () {
+            if (paginaActual > 1) { paginaActual--; render(); }
+        });
+    }
+    if ($next) {
+        $next.addEventListener('click', function () {
+            if (paginaActual < totalPaginas) { paginaActual++; render(); }
+        });
+    }
+
+    render();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    iniciarPaginacionWidget('dash-anuncios-lista', 'dash-anuncios-pag', 3);
+    iniciarPaginacionWidget('dash-eventos-lista', 'dash-eventos-pag', 3);
+    iniciarPaginacionWidget('dash-recordatorios-lista', 'dash-recordatorios-pag', 3);
+});
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
 <script>

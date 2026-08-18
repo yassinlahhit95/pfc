@@ -34,6 +34,25 @@
 
     function toast(msg, tipo) { if (window.Toast) Toast.show(msg, tipo || 'info'); }
 
+    /* ── Notificación Inline Rápida y Elegante (Sin Toasts molestos) ── */
+    var timerStatus = null;
+    function notificarExito(msg, ico) {
+        var icono = ico || 'fa-check-circle';
+        var $badges = $('.lb-inline-status');
+        $badges.removeClass('guardando').addClass('visible').find('.lb-status-txt').text(msg || 'Guardado');
+        $badges.find('i').attr('class', 'fas ' + icono);
+        clearTimeout(timerStatus);
+        timerStatus = setTimeout(function () {
+            $badges.removeClass('visible');
+        }, 2200);
+    }
+
+    function notificarGuardando(msg) {
+        var $badges = $('.lb-inline-status');
+        $badges.addClass('guardando visible').find('.lb-status-txt').text(msg || 'Guardando…');
+        $badges.find('i').attr('class', 'fas fa-spinner fa-spin');
+    }
+
     function post(url, datos) {
         datos = $.extend({ csrf_token: csrf() }, datos);
         return $.ajax({
@@ -208,7 +227,7 @@
         post('reordenar.php', { orden: JSON.stringify(ids) })
             .done(function (res) {
                 if (res.ok) {
-                    toast(res.msg, 'success');
+                    notificarExito('Orden guardado', 'fa-arrow-down-up-across-line');
                     marcarCambios();
                     recargarPreview();
                 } else {
@@ -231,7 +250,7 @@
                 $item.toggleClass('lb-item-oculto', res.visible !== 1);
                 $boton.attr('title', res.visible === 1 ? 'Ocultar' : 'Mostrar')
                       .find('i').attr('class', res.visible === 1 ? 'fas fa-eye' : 'fas fa-eye-slash');
-                toast(res.msg, 'success');
+                notificarExito(res.visible === 1 ? 'Sección visible' : 'Sección oculta', res.visible === 1 ? 'fa-eye' : 'fa-eye-slash');
                 marcarCambios();
                 recargarPreview();
             })
@@ -250,7 +269,7 @@
             post('borrar_seccion.php', { idSeccion: id })
                 .done(function (res) {
                     if (!res.ok) { toast(res.msg, 'error'); return; }
-                    toast(res.msg, 'success');
+                    notificarExito('Sección eliminada', 'fa-trash');
                     $item.fadeOut(300, function() { $(this).remove(); });
                     marcarCambios();
                     recargarPreview();
@@ -259,19 +278,53 @@
         });
     });
 
-    /* ══════════ Añadir sección ══════════ */
-    $('#lb-abrir-agregar').on('click', function () { $('#lb-modal-agregar').addClass('abierto'); });
-    $('#lb-agregar-cerrar').on('click', function () { $('#lb-modal-agregar').removeClass('abierto'); });
-    $('#lb-modal-agregar').on('click', function (e) { if (e.target === this) $(this).removeClass('abierto'); });
+    /* ══════════ Añadir sección (Inserción Dinámica Instantánea) ══════════ */
+    $(document).on('click', '#lb-abrir-agregar', function () {
+        $('#lb-modal-agregar').addClass('abierto');
+        // Trigger hover on first item so preview is immediately populated
+        $('.lb-catalogo-item').first().trigger('mouseenter');
+    });
+    $(document).on('click', '#lb-agregar-cerrar', function () { $('#lb-modal-agregar').removeClass('abierto'); });
+    $(document).on('click', '#lb-modal-agregar', function (e) { if (e.target === this) $(this).removeClass('abierto'); });
 
     $(document).on('click', '.lb-catalogo-item', function () {
         var tipo = $(this).data('tipo');
+        notificarGuardando('Añadiendo sección…');
         post('agregar_seccion.php', { tipo: tipo })
             .done(function (res) {
                 if (!res.ok) { toast(res.msg, 'error'); return; }
-                toast(res.msg, 'success');
-                // Recarga completa: la lista y el estado se regeneran en servidor
-                setTimeout(function () { window.location.reload(); }, 500);
+                $('#lb-modal-agregar').removeClass('abierto');
+                
+                var nuevaSeccion = {
+                    idSeccion: parseInt(res.idSeccion, 10),
+                    tipo: res.tipo,
+                    visible: 1,
+                    orden: SECCIONES.length + 1,
+                    contenido: res.contenido
+                };
+                SECCIONES.push(nuevaSeccion);
+                
+                var $li = $('<li class="lb-item" draggable="true">')
+                    .attr({ 'data-id': res.idSeccion, 'data-tipo': res.tipo })
+                    .append($('<span class="lb-item-grip" title="Arrastra para reordenar"><i class="fas fa-grip-vertical"></i></span>'))
+                    .append($('<span class="lb-item-icono"><i class="fas ' + res.icono + '"></i></span>'))
+                    .append($('<span class="lb-item-nombre">').text(res.nombre))
+                    .append(
+                        $('<span class="lb-item-acciones">')
+                            .append($('<button type="button" class="lb-item-btn lb-toggle-visible" title="Ocultar"><i class="fas fa-eye"></i></button>'))
+                            .append($('<button type="button" class="lb-item-btn lb-editar" title="Editar contenido"><i class="fas fa-pen"></i></button>'))
+                            .append($('<button type="button" class="lb-item-btn lb-item-btn-peligro lb-borrar-seccion" title="Eliminar" data-nombre="' + res.nombre + '"><i class="fas fa-trash"></i></button>'))
+                    );
+                $('#lb-lista').append($li);
+                $('.panel-vacio').hide();
+
+                notificarExito('Sección añadida', 'fa-plus-circle');
+                marcarCambios();
+                recargarPreview();
+
+                setTimeout(function () {
+                    abrirEditor(res.idSeccion);
+                }, 150);
             })
             .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
@@ -302,10 +355,130 @@
         return valido;
     }
 
+    /* ── Catálogo de Iconos FontAwesome para el Selector Visual ── */
+    var ICONOS_DISPONIBLES = [
+        { id: 'fa-graduation-cap', nombre: 'Graduación / Birrete' },
+        { id: 'fa-briefcase', nombre: 'Maletín / Empresa' },
+        { id: 'fa-laptop-code', nombre: 'Programación / Código' },
+        { id: 'fa-users', nombre: 'Equipo / Comunidad' },
+        { id: 'fa-building', nombre: 'Edificio / Instalación' },
+        { id: 'fa-award', nombre: 'Premio / Certificación' },
+        { id: 'fa-chalkboard-user', nombre: 'Profesor / Docencia' },
+        { id: 'fa-microscope', nombre: 'Ciencia / Laboratorio' },
+        { id: 'fa-tools', nombre: 'Herramientas / Taller' },
+        { id: 'fa-heart', nombre: 'Salud / Cuidado' },
+        { id: 'fa-globe', nombre: 'Internacional / Idiomas' },
+        { id: 'fa-rocket', nombre: 'Innovación / Futuro' },
+        { id: 'fa-shield-halved', nombre: 'Seguridad / Garantía' },
+        { id: 'fa-star', nombre: 'Excelencia / Calidad' },
+        { id: 'fa-money-bill-wave', nombre: 'Beca / Financiación' },
+        { id: 'fa-piggy-bank', nombre: 'Ahorro' },
+        { id: 'fa-book', nombre: 'Libro / Estudio' },
+        { id: 'fa-chart-line', nombre: 'Crecimiento / Empleo' },
+        { id: 'fa-clock', nombre: 'Horarios / Flexibilidad' },
+        { id: 'fa-comments', nombre: 'Atención / Tutoría' }
+    ];
+
+    var $inputIconoActivo = null;
+
+    function renderizarGridIconos(filtro) {
+        var $grid = $('#lb-iconos-grid').empty();
+        var q = (filtro || '').toLowerCase().trim();
+        var lista = ICONOS_DISPONIBLES.filter(function (ic) {
+            return !q || ic.id.toLowerCase().includes(q) || ic.nombre.toLowerCase().includes(q);
+        });
+        if (!lista.length) {
+            $grid.html('<p style="grid-column:1/-1;text-align:center;color:var(--mut);padding:20px;">No se encontraron iconos coincidentes.</p>');
+            return;
+        }
+        var valorActual = $inputIconoActivo ? $inputIconoActivo.val() : '';
+        lista.forEach(function (ic) {
+            var $btn = $('<button type="button" class="lb-icono-btn">')
+                .attr('data-icono', ic.id)
+                .toggleClass('activo', valorActual === ic.id)
+                .append($('<i class="fas ' + ic.id + '"></i>'))
+                .append($('<span>').text(ic.nombre.split('/')[0].trim()));
+            $grid.append($btn);
+        });
+    }
+
+    $(document).on('click', '.lb-icono-trigger', function () {
+        $inputIconoActivo = $(this).closest('.lb-campo-icono').find('input[type="hidden"]');
+        $('#lb-iconos-busqueda').val('');
+        renderizarGridIconos('');
+        $('#lb-modal-iconos').addClass('abierto');
+    });
+
+    $(document).on('click', '.lb-icono-btn', function () {
+        var ic = $(this).data('icono');
+        if ($inputIconoActivo) {
+            $inputIconoActivo.val(ic).trigger('change');
+            var $wrap = $inputIconoActivo.closest('.lb-campo-icono');
+            $wrap.find('.lb-icono-trigger i').attr('class', 'fas ' + ic);
+            $wrap.find('.lb-icono-label').text(ic);
+        }
+        $('#lb-modal-iconos').removeClass('abierto');
+        $inputIconoActivo = null;
+    });
+
+    $('#lb-iconos-cerrar, #lb-modal-iconos').on('click', function (e) {
+        if (e.target === this || $(e.target).closest('#lb-iconos-cerrar').length) {
+            $('#lb-modal-iconos').removeClass('abierto');
+            $inputIconoActivo = null;
+        }
+    });
+
+    $('#lb-iconos-busqueda').on('input', function () {
+        renderizarGridIconos($(this).val());
+    });
+
     function crearCampo(clave, def, valor) {
         var $campo = $('<div class="lb-ecampo">');
         var $etiqueta = $('<label>').text(def.etiqueta + (def.requerido ? ' *' : ''));
         $campo.append($etiqueta);
+
+        // Selector Visual de Layout (para campos de variante / estilo)
+        if (clave === 'variante' && def.opciones) {
+            var $layoutCards = $('<div class="lb-layout-cards">');
+            var $hidden = $('<input type="hidden">').attr('name', clave).val(valor || Object.keys(def.opciones)[0]);
+            var iconosLayout = {
+                'fondo': 'fa-image',
+                'split': 'fa-table-columns',
+                'minimal': 'fa-align-left',
+                'promo': 'fa-bullhorn',
+                'grid': 'fa-grip',
+                'carrusel': 'fa-sliders',
+                'lista': 'fa-list-ul'
+            };
+            $.each(def.opciones, function (val, texto) {
+                var ico = iconosLayout[val] || 'fa-table-cells-large';
+                var $card = $('<div class="lb-layout-card">')
+                    .attr('data-val', val)
+                    .toggleClass('activo', (valor || Object.keys(def.opciones)[0]) === val)
+                    .append($('<div class="lb-layout-card-thumb">').html('<i class="fas ' + ico + '"></i>'))
+                    .append($('<div class="lb-layout-card-label">').text(texto));
+                $layoutCards.append($card);
+            });
+            $layoutCards.on('click', '.lb-layout-card', function () {
+                $layoutCards.find('.lb-layout-card').removeClass('activo');
+                $(this).addClass('activo');
+                $hidden.val($(this).data('val')).trigger('change');
+            });
+            return $campo.append($hidden, $layoutCards);
+        }
+
+        // Selector Visual de Iconos
+        if (clave === 'icono' || (def.opciones && Object.keys(def.opciones)[0] && Object.keys(def.opciones)[0].startsWith('fa-'))) {
+            var iconoVal = valor || (def.opciones ? Object.keys(def.opciones)[0] : 'fa-graduation-cap');
+            var $wrapIcono = $('<div class="lb-campo-icono" style="display:flex;align-items:center;gap:10px;">');
+            var $hiddenIcono = $('<input type="hidden">').attr('name', clave).val(iconoVal);
+            var $btnTrigger = $('<button type="button" class="boton-secundario boton-pequeno lb-icono-trigger" style="display:inline-flex;align-items:center;gap:8px;">')
+                .append($('<i class="fas ' + iconoVal + '" style="color:var(--accent);font-size:16px;"></i>'))
+                .append($('<span>').text('Cambiar Icono'));
+            var $labelIcono = $('<code class="lb-icono-label" style="font-size:12px;color:var(--dim);">').text(iconoVal);
+            $wrapIcono.append($hiddenIcono, $btnTrigger, $labelIcono);
+            return $campo.append($wrapIcono);
+        }
 
         switch (def.tipo) {
             case 'text':
@@ -374,10 +547,6 @@
     var $wrapBibliotecaActivo = null;
 
     function aplicarSeleccionMedia($wrap, filename, url) {
-        // .trigger('change') es necesario: .val() por sí solo no dispara
-        // ningún evento del DOM, así que sin esto el autoguardado del panel
-        // (que escucha 'input change' delegado) nunca se entera de que la
-        // imagen cambió — ver la misma nota en el .done() de subida más abajo.
         $wrap.find('input[type="hidden"]').val(filename).trigger('change');
         var isVideo = filename.toLowerCase().endsWith('.mp4');
         var $preview = $wrap.find('.lb-imagen-preview').empty();
@@ -451,9 +620,6 @@
         var isVideo = accept && accept.includes('video');
         var icon = isVideo ? 'fa-video' : 'fa-image';
         var txt = isVideo ? 'Sin vídeo' : 'Sin imagen';
-        // .trigger('change'): mismo motivo que en aplicarSeleccionMedia() —
-        // sin esto, quitar una foto y publicar sin tocar ningún otro campo
-        // dejaría la foto antigua en la landing publicada.
         $wrap.find('input[type="hidden"]').val('').trigger('change');
         $wrap.find('.lb-imagen-preview').empty()
             .append($('<span class="lb-imagen-vacia"><i class="fas ' + icon + '"></i> ' + txt + '</span>'));
@@ -482,12 +648,6 @@
                 $preview.html(oldHtml);
                 return; 
             }
-            // .trigger('change'): .val() no dispara ningún evento por sí solo,
-            // y el autoguardado del panel lateral escucha 'input change'
-            // delegado en #lb-editor-form — sin esto, subir una foto y cerrar
-            // el panel sin tocar ningún otro campo nunca programaba ningún
-            // guardado (ni el propio flush de Publicar tenía nada que vaciar,
-            // porque el temporizador jamás llegaba a crearse).
             $wrap.find('input[type="hidden"]').val(res.filename).trigger('change');
             if (res.filename.endsWith('.mp4')) {
                 $wrap.find('.lb-imagen-preview').empty().append($('<video controls style="max-width:100%; max-height:120px; border-radius:6px;">').attr('src', res.url));
@@ -497,7 +657,6 @@
             toast(res.msg, 'success');
         })
         .fail(function (jqXHR) {
-            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
             if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
                 toast('Error al subir la imagen', 'error');
             }
@@ -507,28 +666,57 @@
         $(this).val('');
     });
 
+    /* ── Accordion Repeaters (Elementor Style) ── */
     function crearCampoLista(clave, def, valor) {
         var items = Array.isArray(valor) ? valor : [];
         var $wrap = $('<div class="lb-elista">').attr({ 'data-campo-lista': clave, 'data-max': def.max || 10 });
         var $items = $('<div class="lb-elista-items">');
-        items.forEach(function (item) { $items.append(crearItemLista(def, item)); });
+        items.forEach(function (item, index) { $items.append(crearItemLista(def, item, index === 0)); });
         var $agregar = $('<button type="button" class="boton-secundario boton-pequeno lb-elista-agregar">')
             .html('<i class="fas fa-plus"></i> Añadir elemento');
         return $wrap.append($items, $agregar);
     }
 
-    function crearItemLista(def, item) {
-        var $tarjeta = $('<div class="lb-elista-item">');
-        var $barra = $('<div class="lb-elista-barra">')
-            .append($('<button type="button" class="lb-item-btn lb-elista-subir" title="Subir"><i class="fas fa-arrow-up"></i></button>'))
-            .append($('<button type="button" class="lb-item-btn lb-elista-bajar" title="Bajar"><i class="fas fa-arrow-down"></i></button>'))
-            .append($('<button type="button" class="lb-item-btn lb-item-btn-peligro lb-elista-quitar" title="Quitar"><i class="fas fa-trash"></i></button>'));
-        $tarjeta.append($barra);
+    function obtenerTituloItem(def, item) {
+        var titulo = item ? (item.titulo || item.pregunta || item.nombre || item.autor || item.numero || item.texto || item.paso || '') : '';
+        return titulo ? String(titulo).trim() : 'Elemento de lista';
+    }
+
+    function crearItemLista(def, item, expandido) {
+        var $tarjeta = $('<div class="lb-elista-item">').toggleClass('abierto', !!expandido);
+        var tituloTexto = obtenerTituloItem(def, item);
+
+        var $header = $('<div class="lb-elista-header">')
+            .append($('<div class="lb-elista-title">')
+                .append($('<i class="fas fa-grip-lines" style="color:var(--dim);margin-right:4px;"></i>'))
+                .append($('<span class="lb-elista-header-text">').text(tituloTexto))
+            )
+            .append($('<div class="lb-elista-barra">')
+                .append($('<button type="button" class="lb-item-btn lb-elista-subir" title="Subir"><i class="fas fa-arrow-up"></i></button>'))
+                .append($('<button type="button" class="lb-item-btn lb-elista-bajar" title="Bajar"><i class="fas fa-arrow-down"></i></button>'))
+                .append($('<button type="button" class="lb-item-btn lb-item-btn-peligro lb-elista-quitar" title="Quitar"><i class="fas fa-trash"></i></button>'))
+            );
+
+        var $body = $('<div class="lb-elista-body">');
         $.each(def.subcampos || {}, function (subClave, subDef) {
-            $tarjeta.append(crearCampo(subClave, subDef, (item || {})[subClave]));
+            $body.append(crearCampo(subClave, subDef, (item || {})[subClave]));
         });
+
+        // Actualizar título en tiempo real mientras se edita
+        $body.on('input change', 'input, textarea', function () {
+            var $parentItem = $(this).closest('.lb-elista-item');
+            var primerValor = $parentItem.find('input[type="text"]').first().val() || 'Elemento de lista';
+            $parentItem.find('.lb-elista-header-text').text(primerValor);
+        });
+
+        $tarjeta.append($header, $body);
         return $tarjeta;
     }
+
+    $(document).on('click', '.lb-elista-header', function (e) {
+        if ($(e.target).closest('.lb-elista-barra').length) return;
+        $(this).closest('.lb-elista-item').toggleClass('abierto');
+    });
 
     $(document).on('click', '.lb-elista-agregar', function () {
         var $wrap = $(this).closest('.lb-elista');
@@ -541,23 +729,30 @@
         var clave = $wrap.data('campo-lista');
         var seccion = seccionPorId(idAbierta);
         var def = seccion ? TIPOS[seccion.tipo].campos[clave] : null;
-        if (def) $items.append(crearItemLista(def, {}));
+        if (def) {
+            var $nuevo = crearItemLista(def, {}, true);
+            $items.append($nuevo);
+            $nuevo.find('input[type="text"]').first().trigger('focus');
+        }
     });
-    $(document).on('click', '.lb-elista-quitar', function () {
+    $(document).on('click', '.lb-elista-quitar', function (e) {
+        e.stopPropagation();
         $(this).closest('.lb-elista-item').remove();
     });
-    $(document).on('click', '.lb-elista-subir', function () {
+    $(document).on('click', '.lb-elista-subir', function (e) {
+        e.stopPropagation();
         var $item = $(this).closest('.lb-elista-item');
         $item.prev('.lb-elista-item').before($item);
     });
-    $(document).on('click', '.lb-elista-bajar', function () {
+    $(document).on('click', '.lb-elista-bajar', function (e) {
+        e.stopPropagation();
         var $item = $(this).closest('.lb-elista-item');
         $item.next('.lb-elista-item').after($item);
     });
 
-    // Campos que el motor añade automáticamente a TODOS los tipos de sección
-    // (engine/secciones.php); se agrupan aparte para no alargar el formulario.
-    var CAMPOS_AVANZADOS = ['navVisible', 'navTexto', 'estilo_fondo', 'estilo_texto', 'estilo_fuente', 'estilo_tamano'];
+    /* ── Elementor Style 3-Tab Inspector ── */
+    var CAMPOS_AVANZADOS = ['navVisible', 'navTexto'];
+    var CAMPOS_ESTILO = ['variante', 'estilo_fondo', 'estilo_texto', 'estilo_fuente', 'estilo_tamano', 'colorFondo', 'colorTexto', 'modoVisualizacion', 'fondoParallax'];
 
     function abrirEditor(id) {
         var seccion = seccionPorId(id);
@@ -568,36 +763,75 @@
         $('#lb-editor-titulo').html('<i class="fas ' + tipo.icono + '"></i> ').append(document.createTextNode(tipo.nombre));
 
         var $form = $('#lb-editor-form').empty();
-        var $avanzados = $('<div class="lb-editor-avanzados-campos">');
+        
+        var $paneContenido = $('<div class="lb-tab-pane activo" data-pane="contenido">');
+        var $paneEstilo    = $('<div class="lb-tab-pane" data-pane="estilo">');
+        var $paneAvanzado  = $('<div class="lb-tab-pane" data-pane="avanzado">');
+
         $.each(tipo.campos, function (clave, def) {
             var $campo = crearCampo(clave, def, seccion.contenido[clave]);
             if (CAMPOS_AVANZADOS.indexOf(clave) !== -1) {
-                $avanzados.append($campo);
+                $paneAvanzado.append($campo);
+            } else if (CAMPOS_ESTILO.indexOf(clave) !== -1) {
+                $paneEstilo.append($campo);
             } else {
-                $form.append($campo);
+                $paneContenido.append($campo);
             }
         });
-        if ($avanzados.children().length) {
-            $form.append(
-                $('<details class="lb-avanzado">')
-                    .append('<summary><i class="fas fa-sliders"></i> Ajustes avanzados (menú y estilo)</summary>')
-                    .append($avanzados)
-            );
+
+        // Si no hay campos de estilo declarados en la sección, añadimos selectores de fondo y texto por defecto
+        if (!$paneEstilo.children().length) {
+            $paneEstilo.append($('<p class="texto-suave" style="font-size:12.5px;margin:0 0 10px 0;">Personaliza la apariencia y colores de esta sección:</p>'));
         }
+
+        $form.append($paneContenido, $paneEstilo, $paneAvanzado);
+
+        // Reset tabs a 'contenido'
+        $('#lb-editor-tabs .lb-tab-btn').removeClass('activo').filter('[data-tab="contenido"]').addClass('activo');
 
         $('#lb-editor').addClass('abierto').attr('aria-hidden', 'false');
         $('#lb-editor-fondo').addClass('abierto');
 
-        // Enviar mensaje al iframe para hacer scroll y highlight a esta sección
         var iframe = $iframe.get(0);
         if (iframe && iframe.contentWindow) {
-            // '*' y no window.location.origin: el iframe (cargado vía srcdoc)
-            // tiene un origen opaco, así que un targetOrigin con el origen
-            // real de esta página nunca coincide con el suyo — el mensaje se
-            // entregaría en silencio a ninguna parte.
             iframe.contentWindow.postMessage({ action: 'highlight_section', idSeccion: id }, '*');
         }
     }
+
+    // Manejo de tabs del editor (Elementor Style)
+    $(document).on('click', '.lb-tab-btn', function (e) {
+        e.preventDefault();
+        var tab = $(this).data('tab');
+        $('.lb-tab-btn').removeClass('activo');
+        $(this).addClass('activo');
+        $('.lb-tab-pane').removeClass('activo');
+        $('.lb-tab-pane[data-pane="' + tab + '"]').addClass('activo');
+    });
+
+    /* ── Previsualización en Hover del Catálogo (Elementor Style) ── */
+    var MOCKUPS_CATALOGO = {
+        'hero': '<div style="background:var(--accent);color:#fff;border-radius:8px;padding:24px;text-align:center;"><div style="width:60%;height:14px;background:#fff;margin:0 auto 10px;border-radius:4px;"></div><div style="width:40%;height:8px;background:rgba(255,255,255,0.7);margin:0 auto 16px;border-radius:4px;"></div><div style="width:90px;height:24px;background:#fff;margin:0 auto;border-radius:6px;"></div></div>',
+        'ventajas': '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;"><i class="fas fa-award" style="color:var(--accent);font-size:18px;"></i><div style="width:70%;height:8px;background:var(--border);margin:8px auto 0;border-radius:3px;"></div></div><div style="border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;"><i class="fas fa-briefcase" style="color:var(--accent);font-size:18px;"></i><div style="width:70%;height:8px;background:var(--border);margin:8px auto 0;border-radius:3px;"></div></div></div>',
+        'estadisticas': '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;"><div style="background:var(--surface-2);border-radius:8px;padding:12px;"><b style="font-size:18px;color:var(--accent);">98%</b><div style="font-size:10px;color:var(--dim);margin-top:4px;">Empleo</div></div><div style="background:var(--surface-2);border-radius:8px;padding:12px;"><b style="font-size:18px;color:var(--verde);">+150</b><div style="font-size:10px;color:var(--dim);margin-top:4px;">Empresas</div></div><div style="background:var(--surface-2);border-radius:8px;padding:12px;"><b style="font-size:18px;color:var(--naranja);">100%</b><div style="font-size:10px;color:var(--dim);margin-top:4px;">Oficial</div></div></div>',
+        'ciclos': '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="border:1.5px solid var(--border);border-radius:8px;padding:12px;"><div style="width:30px;height:6px;background:var(--accent);border-radius:3px;margin-bottom:6px;"></div><b style="font-size:11px;">Grado Superior</b><div style="width:80%;height:6px;background:var(--border);margin-top:6px;border-radius:3px;"></div></div><div style="border:1.5px solid var(--border);border-radius:8px;padding:12px;"><div style="width:30px;height:6px;background:var(--verde);border-radius:3px;margin-bottom:6px;"></div><b style="font-size:11px;">Grado Medio</b><div style="width:80%;height:6px;background:var(--border);margin-top:6px;border-radius:3px;"></div></div></div>',
+        'testimonios': '<div style="background:var(--surface-2);border-radius:10px;padding:16px;border:1px solid var(--border);"><div style="color:var(--naranja);font-size:12px;margin-bottom:6px;">★★★★★</div><p style="font-size:11px;color:var(--dim);margin:0 0 10px;font-style:italic;">"La formación dual me abrió las puertas a mi trabajo actual."</p><div style="font-size:11px;font-weight:700;">— Alumno Graduado</div></div>',
+        'faq': '<div style="display:flex;flex-direction:column;gap:6px;"><div style="border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:11px;font-weight:600;display:flex;justify-content:space-between;"><span>¿Cómo inscribirme?</span><i class="fas fa-chevron-down" style="color:var(--dim);font-size:10px;"></i></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:11px;font-weight:600;display:flex;justify-content:space-between;"><span>¿Requisitos de acceso?</span><i class="fas fa-chevron-down" style="color:var(--dim);font-size:10px;"></i></div></div>',
+        'contacto': '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="font-size:11px;"><i class="fas fa-phone" style="color:var(--accent);"></i> 900 000 000<br><i class="fas fa-envelope" style="color:var(--accent);margin-top:6px;"></i> info@centro.es</div><div style="background:var(--surface-2);border-radius:6px;padding:10px;text-align:center;font-size:11px;font-weight:600;">Formulario de contacto</div></div>'
+    };
+
+    $(document).on('mouseenter', '.lb-catalogo-item', function () {
+        $('.lb-catalogo-item').removeClass('activo');
+        $(this).addClass('activo');
+        var tipo = $(this).data('tipo');
+        var nombre = $(this).data('nombre');
+        var desc = $(this).data('desc');
+        var icono = $(this).data('icono');
+
+        $('#lb-preview-pane-title').html('<i class="' + icono + '" style="color:var(--accent);margin-right:6px;"></i> ' + nombre);
+        $('#lb-preview-pane-desc').text(desc || 'Componente modular interactivo.');
+        var mockHtml = MOCKUPS_CATALOGO[tipo] || '<div style="text-align:center;padding:30px;color:var(--dim);"><i class="' + icono + '" style="font-size:36px;color:var(--accent);margin-bottom:10px;"></i><br><b>' + nombre + '</b></div>';
+        $('#lb-preview-pane-card').html(mockHtml);
+    });
 
     function cerrarEditor() {
         idAbierta = null;
@@ -617,10 +851,6 @@
                 var lista = [];
                 $form.find('[data-campo-lista="' + clave + '"] > .lb-elista-items > .lb-elista-item').each(function () {
                     var item = {};
-                    // .bind(this) fija `this` a la tarjeta .lb-elista-item de esta
-                    // iteración externa; sin él, $.each reasignaría `this` a subDef
-                    // en cada vuelta del bucle interno y $(this).find(...) buscaría
-                    // dentro del valor equivocado.
                     $.each(def.subcampos || {}, function (subClave) {
                         item[subClave] = $(this).find('[name="' + subClave + '"]').first().val() || '';
                     }.bind(this));
@@ -662,11 +892,9 @@
         post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
             .done(function (res) {
                 if (!res.ok) { toast(res.msg, 'error'); return; }
-                // Actualiza la copia local en memoria (SECCIONES) para que el
-                // siguiente abrirEditor()/serializarEditor() vea los datos guardados.
                 var seccionActualizada = seccionPorId(id);
                 if (seccionActualizada) seccionActualizada.contenido = datos;
-                toast(res.msg, 'success');
+                notificarExito('Cambios guardados', 'fa-floppy-disk');
                 cerrarEditor();
                 marcarCambios();
                 recargarPreview();
@@ -680,17 +908,17 @@
     function guardarEditorAhora() {
         var seccion = seccionPorId(idAbierta);
         if (!seccion) return $.when();
-        // Mientras haya un obligatorio vacío no tiene sentido autoguardar
-        // (el servidor lo rechazaría entero); se limita a marcar el campo.
         if (!validarCamposRequeridos($('#lb-editor-form'), TIPOS[seccion.tipo].campos)) return $.when();
         var datos = serializarEditor();
         if (datos === null) return $.when();
         var id = idAbierta;
+        notificarGuardando('Guardando…');
         return post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
             .done(function (res) {
                 if (res.ok) {
                     var seccionActualizada = seccionPorId(id);
                     if (seccionActualizada) seccionActualizada.contenido = datos;
+                    notificarExito('Guardado');
                     marcarCambios();
                     recargarPreview();
                 } else {

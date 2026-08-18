@@ -11,7 +11,7 @@ $idModuloElegido = (int)($_GET['idModulo'] ?? 0);
 $listaModulos     = $idCicloElegido  ? listarModulosPorCiclo($idCicloElegido)          : [];
 $listaEstudiantes = $idModuloElegido ? listarCalificacionesPorModulo($idModuloElegido) : [];
 
-$titulo_pagina = "AULAPRO | CALIFICACIONES";
+$titulo_pagina = "Calificaciones";
 $seccion = 'calificaciones';
 ?>
 <style media="print">
@@ -21,7 +21,7 @@ $seccion = 'calificaciones';
 <?php include_once __DIR__ . "/../comunes/nav.php"; ?>
 
 <div class="cabecera">
-    <h1>CALIFICACIONES</h1>
+    <h1>Calificaciones</h1>
     <?php if ($idModuloElegido): ?>
     <button onclick="window.print()" class="boton-secundario">
         <i class="fas fa-print"></i> Imprimir

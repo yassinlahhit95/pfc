@@ -14,7 +14,7 @@ function filtrarTabla(inputId, tablaId) {
         }
     });
 
-    if (typeof resetearPaginacion === 'function' && _paginaciones && _paginaciones[tablaId]) {
+    if (typeof resetearPaginacion === 'function' && typeof _paginaciones !== 'undefined' && _paginaciones && _paginaciones[tablaId]) {
         resetearPaginacion(tablaId);
     }
 }

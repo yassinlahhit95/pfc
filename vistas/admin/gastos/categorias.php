@@ -12,14 +12,14 @@ require_once __DIR__ . "/../../../modelos/gastos.php";
 $categorias = listarCategorias();
 $gastosPorCategoria = contarGastosPorCategorias(array_column($categorias, 'idCategoria'));
 
-$titulo_pagina = "AULAPRO | CATEGORÍAS DE GASTO";
+$titulo_pagina = "Categorías de Gasto";
 $seccion = 'gastos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>CATEGORÍAS DE GASTO</h1>
+        <h1>Categorías de Gasto</h1>
         <p class="subtitulo-encabezado">Define las categorías y sus presupuestos anuales</p>
     </div>
     <div class="acciones-pagina">

@@ -11,13 +11,13 @@ $aulas = listarAulas();
 
 $tiposLegibles = ['teoria' => 'Teoría', 'laboratorio' => 'Laboratorio', 'taller' => 'Taller', 'otro' => 'Otro'];
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE AULAS";
+$titulo_pagina = "Gestión de Aulas";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>AULAS</h1>
+    <h1>Aulas</h1>
     <div class="botones-accion">
         <a href="ocupacionAula.php" class="boton-secundario"><i class="fas fa-table"></i> OCUPACIÓN POR AULA</a>
         <a href="agregarAula.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVA AULA</a>

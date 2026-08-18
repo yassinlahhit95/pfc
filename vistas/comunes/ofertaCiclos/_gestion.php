@@ -7,7 +7,7 @@
 ?>
 
 <div class="cabecera">
-    <h1>CATÁLOGO DE CICLOS</h1>
+    <h1>Catálogo de Ciclos</h1>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <a href="/vistas/ciclos.php" target="_blank" rel="noopener" class="boton-secundario">
             <i class="fas fa-arrow-up-right-from-square"></i> VER CATÁLOGO PÚBLICO

@@ -21,7 +21,7 @@ $exito   = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? '';
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$tituloDelPagina = "AULAPRO | PAPELERA";
+$titulo_pagina = "Papelera";
 $seccionActual   = 'aula_recursos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -61,6 +61,7 @@ function botonesPapelera($tipo, $id, $idModulo) {
 
   <?php if (!empty($papelera['carpetas'])): ?>
   <h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);">Carpetas</h3>
+  <div class="contenedor-tabla">
   <table class="recurso-lista">
     <thead><tr><th>Nombre</th><th>Eliminada</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>
@@ -73,10 +74,12 @@ function botonesPapelera($tipo, $id, $idModulo) {
       <?php endforeach; ?>
     </tbody>
   </table>
+  </div>
   <?php endif; ?>
 
   <?php if (!empty($papelera['archivos'])): ?>
   <h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);">Archivos</h3>
+  <div class="contenedor-tabla">
   <table class="recurso-lista">
     <thead><tr><th>Nombre</th><th>Carpeta</th><th>Eliminado</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>
@@ -91,6 +94,7 @@ function botonesPapelera($tipo, $id, $idModulo) {
       <?php endforeach; ?>
     </tbody>
   </table>
+  </div>
   <?php endif; ?>
 
 <?php endif; ?>

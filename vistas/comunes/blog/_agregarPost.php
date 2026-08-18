@@ -8,7 +8,7 @@
 ?>
 
 <div class="cabecera">
-    <h1>NUEVA ENTRADA</h1>
+    <h1>Nueva Entrada</h1>
     <a href="gestionBlog.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -141,6 +141,6 @@ iniciarEditorBlog({
     fileInputId: 'editor-imagen-input',
     uploadUrl: '../../../controladores/<?= $blogRolBase ?>/blog/subir_imagen_contenido.php',
     csrfToken: document.querySelector('[name=csrf_token]').value,
-    initialContent: <?= json_encode($datos['contenido'] ?? '') ?>
+    initialContent: <?= Security::jsonEncodeSafe($datos['contenido'] ?? '') ?>
 });
 </script>

@@ -659,6 +659,8 @@ function generarDatosBoletinCiclo($idCiclo) {
         }
     }
 
+    $fctPorEstudiante = obtenerNotasFCTEscala10PorCiclo((int)$idCiclo, $metodoFCT);
+
     foreach ($estudiantes as &$est) {
         $est['nota_tfg'] = $tfgMap[$est['idEstudiante']] ?? null;
         $resultado = $resultadosPorEstudiante[$est['idEstudiante']] ?? null;
@@ -669,7 +671,7 @@ function generarDatosBoletinCiclo($idCiclo) {
             $detallesPorModulo[$detalleModulo['idModulo']] = $detalleModulo;
         }
 
-        $fct = obtenerNotaFCTEscala10((int)$est['idEstudiante'], (int)$idCiclo, $metodoFCT);
+        $fct = $fctPorEstudiante[$est['idEstudiante']] ?? ['huboNota' => false, 'media' => 0.0];
         $est['nota_fct'] = $fct['huboNota'] ? $fct['media'] : null;
 
         $est['modulos'] = [];

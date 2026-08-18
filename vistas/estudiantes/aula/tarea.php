@@ -22,14 +22,12 @@ $comentarios = $entrega ? listarComentariosPorEntregaAula($entrega['idEntrega'])
 
 $gravEstHash = md5(strtolower(trim($estudiante['emailEstudiante'] ?? '')));
 
-$tituloDelPagina = "AULAPRO | " . mb_strtoupper($tarea['titulo'], 'UTF-8');
-$seccionActual   = 'aula_sesiones';
-$breadcrumbSectionUrl = 'recursos.php';
-$breadcrumbExtra = [
-    ['label' => $tarea['nombreModulo'], 'url' => 'modulo.php?id=' . (int)$tarea['idModulo']],
-    ['label' => $tarea['titulo'], 'url' => null],
+$titulo_pagina = "" . Mb_Strtoupper($Tarea['Titulo'], 'Utf-8');
+$Seccionactual   = 'Aula_Sesiones';
+$Breadcrumbsectionurl = 'Recursos.php';
+$Breadcrumbextra = [    ['Label' => $Tarea['Nombremodulo'], 'Url' => 'Modulo.php?Id=' . (Int)$Tarea['Idmodulo']],    ['Label' => $Tarea['Titulo'], 'Url' => Null],
 ];
-include_once __DIR__ . "/../comunes/nav.php";
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 
@@ -151,8 +149,15 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
   <?php endif; ?>
   <?php if ($entrega['archivoEntrega']): ?>
+  <?php
+  $entregaUrl = R2Client::documentoUrl(
+      __DIR__ . '/../../../public/uploads/aula/entregas/' . $entrega['archivoEntrega'],
+      '../../../public/uploads/aula/entregas/' . $entrega['archivoEntrega'],
+      'aula/entregas/' . $entrega['archivoEntrega']
+  );
+  ?>
   <div style="margin-bottom:16px;">
-    <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($entrega['archivoEntrega']) ?>"
+    <a href="<?= Security::escapeHtml($entregaUrl) ?>"
        target="_blank" class="boton-secundario btn-pequeno" style="display:inline-flex;">
       <i class="fas fa-paperclip"></i> Mi archivo entregado
     </a>
@@ -172,8 +177,14 @@ include_once __DIR__ . "/../comunes/nav.php";
           <p style="font-size:0.8rem;color:var(--text);margin-top:2px;"><?= Security::escapeHtml(substr($version['respuesta'],0,100)) . (strlen($version['respuesta'])>100?'…':'') ?></p>
           <?php endif; ?>
         </div>
-        <?php if ($version['archivoEntrega']): ?>
-        <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($version['archivoEntrega']) ?>"
+        <?php if ($version['archivoEntrega']):
+          $versionUrl = R2Client::documentoUrl(
+              __DIR__ . '/../../../public/uploads/aula/entregas/' . $version['archivoEntrega'],
+              '../../../public/uploads/aula/entregas/' . $version['archivoEntrega'],
+              'aula/entregas/' . $version['archivoEntrega']
+          );
+        ?>
+        <a href="<?= Security::escapeHtml($versionUrl) ?>"
            target="_blank" class="btn-accion btn-ver" title="Ver v<?= Security::escapeHtml($version['version']) ?>"><i class="fas fa-eye"></i></a>
         <?php endif; ?>
       </div>

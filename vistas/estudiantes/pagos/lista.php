@@ -30,14 +30,14 @@ $pagosFiltrados = array_filter($listaMisPagos, function($pago) use ($cursoSelecc
 });
 $datosEstadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
 
-$tituloDelPagina = "AULAPRO | MIS PAGOS";
+$titulo_pagina = "Mis Pagos";
 $seccionActual = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-end;">
     <div>
-        <h1>MIS PAGOS</h1>
+        <h1>Mis Pagos</h1>
         <p class="subtitulo-encabezado">Consulta tu historial de pagos y estado financiero</p>
     </div>
     <div class="filtro-curso">
@@ -79,11 +79,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="titulo-tarjeta">
-        <h3>HISTORIAL DE PAGOS</h3>
+        <h3>Historial de Pagos</h3>
     </div>
     
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-mis-pagos">
             <thead>
                 <tr>
                     <th>FECHA</th>
@@ -124,3 +124,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-mis-pagos', 15);
+});
+</script>

@@ -3,7 +3,7 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/rgpd.php";
 
-$titulo_pagina = "Cumplimiento RGPD";
+$titulo_pagina = "Cumplimiento Rgpd";
 $seccion       = "rgpd";
 
 $exito   = $_SESSION['exito']   ?? null;

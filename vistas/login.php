@@ -3,6 +3,8 @@ require_once __DIR__ . '/../modelos/conectar.php';
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../include/BotGuard.php';
 require_once __DIR__ . '/../include/AssetMin.php';
+require_once __DIR__ . '/../include/FeatureGuard.php';
+require_once __DIR__ . '/../include/I18n.php';
 Security::initSession();
 
 if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard.php");      exit; }
@@ -19,17 +21,19 @@ unset($_SESSION['errores'], $_SESSION['datos_login'], $_SESSION['reset_ok']);
 // Generar token CSRF
 $csrfToken = Security::generateCSRFToken();
 $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
+$currentLang = I18n::getLang();
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?= Security::escapeHtml($currentLang) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Acceso — <?php require_once __DIR__ . '/../include/FeatureGuard.php'; echo Security::escapeHtml(FeatureGuard::getCenterName()); ?></title>
+    <title><?= Security::escapeHtml(__('login_title', 'Acceso')) ?> — <?= Security::escapeHtml(FeatureGuard::getCenterName()) ?></title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../public/css/features/login.css') ?>">
     <?php if ($googleClientId) { ?>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -38,15 +42,15 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
             display: flex;
             align-items: center;
             text-align: center;
-            margin: 24px 0 16px;
-            color: #94a3b8;
-            font-size: 0.875rem;
+            margin: 20px 0 16px;
+            color: var(--lp-text-muted);
+            font-size: 0.85rem;
         }
         .google-login-separator::before,
         .google-login-separator::after {
             content: '';
             flex: 1;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--lp-input-border);
         }
         .google-login-separator:not(:empty)::before {
             margin-right: .75em;
@@ -58,7 +62,7 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         .google-login-btn-container > div {
             width: 100% !important;
@@ -70,6 +74,18 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
 
 <div class="login-page">
 
+    <!-- Topbar: Multi-Language Selector -->
+    <div class="login-topbar">
+        <form action="../controladores/cambiar_idioma.php" method="POST" id="formLoginLang" style="margin:0;">
+            <select name="lang" class="login-lang-select" onchange="document.getElementById('formLoginLang').submit();" aria-label="<?= Security::escapeHtml(__('language', 'Idioma')) ?>">
+                <option value="es" <?= $currentLang === 'es' ? 'selected' : '' ?>>🇪🇸 <?= Security::escapeHtml(__('spanish', 'Español')) ?></option>
+                <option value="en" <?= $currentLang === 'en' ? 'selected' : '' ?>>🇬🇧 <?= Security::escapeHtml(__('english', 'English')) ?></option>
+                <option value="ca" <?= $currentLang === 'ca' ? 'selected' : '' ?>>🏴 <?= Security::escapeHtml(__('catalan', 'Català')) ?></option>
+                <option value="eu" <?= $currentLang === 'eu' ? 'selected' : '' ?>>🏴 <?= Security::escapeHtml(__('basque', 'Euskara')) ?></option>
+            </select>
+        </form>
+    </div>
+
     <div class="panel-izquierdo">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -77,13 +93,14 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
 
         <div class="panel-contenido">
             <div class="panel-logo">
-                <img src="../public/imagenes/aulapro.png" alt="Logo">
+                <img src="../public/imagenes/aulapro.png" alt="<?= Security::escapeHtml(FeatureGuard::getCenterName()) ?> Logo">
             </div>
-            <h1 class="panel-titulo">Plataforma de <span>Gestión Escolar</span></h1>
-            <p class="panel-desc">Proyecto para la gestión de alumnos, profesores, notas y administración general del centro educativo.</p>
+            <h1 class="panel-titulo"><?= Security::escapeHtml(__('login_hero_title', 'Plataforma de Gestión Educativa')) ?></h1>
+            <p class="panel-desc"><?= Security::escapeHtml(__('login_hero_desc', 'Gestión académica integral, aula virtual y comunicación institucional en un único ecosistema.')) ?></p>
             <div class="panel-stats">
-                <div class="stat"><strong>3</strong><span>Perfiles</span></div>
-                <div class="stat"><strong>100%</strong><span>Online</span></div>
+                <div class="stat"><strong>5</strong><span><?= Security::escapeHtml(__('stats_profiles', 'Perfiles')) ?></span></div>
+                <div class="stat"><strong>100%</strong><span><?= Security::escapeHtml(__('stats_online', 'Online')) ?></span></div>
+                <div class="stat"><strong>256-bit</strong><span><?= Security::escapeHtml(__('stats_security', 'Seguro')) ?></span></div>
             </div>
         </div>
     </div>
@@ -92,16 +109,20 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
         <div class="form-contenedor">
 
             <div class="form-cabecera">
-                <h2>Identificarse</h2>
-                <p>Introduce tus datos para entrar al sistema</p>
+                <h2><?= Security::escapeHtml(__('login_title', 'Identificarse')) ?></h2>
+                <p><?= Security::escapeHtml(__('login_subtitle', 'Introduce tus datos para acceder a tu panel')) ?></p>
             </div>
 
             <?php if ($exito) { ?>
-            <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($exito) ?></div>
+            <div class="error-alerta" style="background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3);color:#34d399;">
+                <i class="fas fa-check-circle"></i>
+                <span><?= Security::escapeHtml($exito) ?></span>
+            </div>
             <?php } ?>
             <?php if ($errores) { ?>
             <div class="error-alerta">
-                <?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?>
+                <i class="fas fa-triangle-exclamation"></i>
+                <span><?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?></span>
             </div>
             <?php } ?>
 
@@ -111,25 +132,25 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
                 <?= BotGuard::renderFields() ?>
 
                 <div class="campo-grupo">
-                    <label>Usuario / Email</label>
-                    <input type="text" name="usuario" placeholder="ejemplo@correo.com" value="<?= Security::escapeHtml($datos['usuario'] ?? $_GET['u'] ?? '') ?>" autofocus>
+                    <label for="campo_usuario"><?= Security::escapeHtml(__('user_or_email', 'Usuario o correo electrónico')) ?></label>
+                    <input type="text" id="campo_usuario" name="usuario" placeholder="ejemplo@correo.com" value="<?= Security::escapeHtml($datos['usuario'] ?? $_GET['u'] ?? '') ?>" autofocus required>
                 </div>
 
                 <div class="campo-grupo">
-                    <label>Contraseña</label>
+                    <label for="pass_field"><?= Security::escapeHtml(__('password', 'Contraseña')) ?></label>
                     <div class="campo-password">
-                        <input type="password" id="pass_field" name="contrasena" placeholder="********" autocomplete="new-password">
-                        <button type="button" id="btn_ver" class="ojo-boton">
-                            Ver
+                        <input type="password" id="pass_field" name="contrasena" placeholder="••••••••" autocomplete="current-password" required>
+                        <button type="button" id="btn_ver" class="ojo-boton" aria-label="<?= Security::escapeHtml(__('show', 'Ver')) ?>">
+                            <i class="fas fa-eye" id="icono_ojo"></i>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" name="enviar" class="boton-acceso">Entrar</button>
+                <button type="submit" name="enviar" class="boton-acceso"><?= Security::escapeHtml(__('enter_btn', 'Iniciar Sesión')) ?></button>
 
                 <?php if ($googleClientId) { ?>
                 <div class="google-login-separator">
-                    <span>o continuar con</span>
+                    <span><?= Security::escapeHtml(__('continue_with_google', 'o continuar con Google')) ?></span>
                 </div>
 
                 <div class="google-login-btn-container">
@@ -147,14 +168,17 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
                          data-text="signin_with"
                          data-size="large"
                          data-logo_alignment="left"
-                         data-width="380">
+                         data-width="400">
                     </div>
                 </div>
                 <?php } ?>
 
-                <a href="auth/solicitar_reset.php" style="display:block;text-align:center;margin-top:12px;font-size:.875rem;color:var(--dim);">¿Olvidaste tu contraseña?</a>
+                <a href="auth/solicitar_reset.php" class="enlace-reset"><?= Security::escapeHtml(__('forgot_password', '¿Olvidaste tu contraseña?')) ?></a>
 
-                <a href="../index.php" class="enlace-volver">Volver a la web</a>
+                <a href="../index.php" class="enlace-volver">
+                    <i class="fas fa-arrow-left"></i>
+                    <span><?= Security::escapeHtml(__('back_to_website', 'Volver a la web')) ?></span>
+                </a>
 
             </form>
         </div>
@@ -166,7 +190,7 @@ $googleClientId = Config::getInstance()->get('GOOGLE_CLIENT_ID', '');
         </form>
         <?php } ?>
 
-        <p class="form-pie">&copy; 2025/2026 AulaPro</p>
+        <p class="form-pie">&copy; <?= date('Y') ?> <?= Security::escapeHtml(FeatureGuard::getCenterName()) ?> </p>
     </div>
 
 </div>
@@ -186,12 +210,13 @@ function handleGoogleCredential(response) {
 $(function() {
     $('#btn_ver').on('click', function() {
         var campo = $('#pass_field');
+        var icono = $('#icono_ojo');
         if (campo.attr('type') === 'password') {
             campo.attr('type', 'text');
-            $(this).text('Ocultar');
+            icono.removeClass('fa-eye').addClass('fa-eye-slash');
         } else {
             campo.attr('type', 'password');
-            $(this).text('Ver');
+            icono.removeClass('fa-eye-slash').addClass('fa-eye');
         }
     });
 });

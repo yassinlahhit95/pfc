@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['comprobante'])) {
     }
 }
 
-$titulo_pagina = 'AulaPro Familias — Pagos y Recibos';
+$titulo_pagina = 'Aulapro Familias — Pagos y Recibos';
 $seccion       = 'pagos';
 include __DIR__ . '/../comunes/nav.php';
 ?>

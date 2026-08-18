@@ -7,7 +7,7 @@
 ?>
 
 <div class="cabecera">
-    <h1>BLOG DEL CENTRO</h1>
+    <h1>Blog del Centro</h1>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <a href="/vistas/blog.php" target="_blank" rel="noopener" class="boton-secundario">
             <i class="fas fa-arrow-up-right-from-square"></i> VER BLOG PÚBLICO

@@ -22,7 +22,7 @@ if (count($partesNombre) > 1) $iniciales .= mb_strtoupper(mb_substr($partesNombr
 $paletaAvatar = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
 $colorAvatar  = $paletaAvatar[ord($iniciales[0]) % count($paletaAvatar)];
 
-$titulo_pagina = "AULAPRO | DETALLES DIRECTOR";
+$titulo_pagina = "Detalles Director";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

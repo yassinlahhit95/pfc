@@ -1,6 +1,6 @@
 <?php
 $seccionActual  = 'chat';
-$tituloDelPagina = 'Chat — Profesor';
+$titulo_pagina = 'Chat — Profesor';
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_chat');

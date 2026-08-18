@@ -12,7 +12,7 @@ $ciclos = listarTodosLosCiclos();
 $configActiva = obtenerConfigAcademicaActiva();
 $idConfig = $configActiva['idConfig'] ?? null;
 
-$titulo_pagina = "AULAPRO | GESTIÓN REGIONAL Y EXPORTADORES";
+$titulo_pagina = "Gestión Regional y Exportadores";
 $seccion = 'regional_exporters';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -160,7 +160,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </select>
             </div>
 
-            <input type="hidden" id="ciclosData" value='<?= json_encode(array_map(function($c) {
+            <input type="hidden" id="ciclosData" value='<?= Security::jsonEncodeSafe(array_map(function($c) {
                 return ['idCiclo' => $c['idCiclo'], 'tipoFormacion' => $c['tipoFormacion'] ?? 'medio'];
             }, $ciclos)) ?>' />
 

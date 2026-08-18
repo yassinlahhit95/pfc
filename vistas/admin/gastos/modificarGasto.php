@@ -22,13 +22,13 @@ if (!$gasto) {
 $categorias = listarCategorias();
 $ciclos     = listarTodosLosCiclos();
 
-$titulo_pagina = "AULAPRO | MODIFICAR GASTO";
+$titulo_pagina = "Modificar Gasto";
 $seccion = 'gastos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR GASTO</h1>
+    <h1>Modificar Gasto</h1>
     <a href="verGastos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

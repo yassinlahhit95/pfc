@@ -24,9 +24,9 @@ $paginaActual = min($paginaActual, max(1, $totalPaginas));
 $offsetAsistencias = ($paginaActual - 1) * $itemsPorPagina;
 $asistencias = array_slice($asistenciasCompleta, $offsetAsistencias, $itemsPorPagina);
 
-$tituloDelPagina = "AULAPRO | Asistencia - " . Security::escapeHtml($sesion['titulo']);
-$seccionActual = 'aula_sesiones';
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "Asistencia - " . Security::escapehtml($Sesion['Titulo']);
+$Seccionactual = 'Aula_Sesiones';
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <nav class="breadcrumb-modern">
@@ -64,6 +64,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </span>
   </div>
   <div class="panel-content-modern">
+    <div class="contenedor-tabla">
     <table style="width:100%;border-collapse:collapse;">
       <thead>
         <tr style="border-bottom:2px solid var(--color-neutral-200);">
@@ -112,6 +113,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
     <!-- PAGINACIÓN -->
     <?php if ($totalPaginas > 1): ?>
     <div style="border-top:1px solid var(--color-neutral-200);padding:var(--space-4) var(--space-5);margin-top:var(--space-3);">

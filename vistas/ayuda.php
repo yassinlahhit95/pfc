@@ -23,13 +23,11 @@ if (!$role) {
 }
 
 require_once __DIR__ . "/../include/I18n.php";
-$tituloDelPagina = "AulaPro | " . __('help_center', 'Centro de Ayuda');
-$titulo_pagina = $tituloDelPagina;
+$titulo_pagina = "" . __('Help_Center', 'Centro de Ayuda');
+$Titulo_Pagina = $Titulo_Pagina;
 
-// Carga la plantilla de navegación correcta según el rol activo
-if ($role === 'admin') {
-    $seccion = 'ayuda';
-    include_once __DIR__ . "/admin/comunes/nav.php";
+// Carga la Plantilla de Navegación Correcta Según el Rol Activo
+If ($Role === 'Admin') {    $Seccion = 'Ayuda';    Include_Once __Dir__ . "/Admin/Comunes/Nav.php";
 } elseif ($role === 'profesor') {
     $seccionActual = 'ayuda';
     include_once __DIR__ . "/profesores/comunes/nav.php";
@@ -306,7 +304,9 @@ $activeFaq = $faqData[$lang] ?? $faqData['es'];
     <div class="panel" style="margin-bottom: 24px;">
         <div style="position:relative;">
             <i class="fas fa-search" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
-            <input type="text" id="faqSearch" placeholder="<?= htmlspecialchars($activeFaq['search_placeholder']) ?>" 
+            <input type="search" id="faqSearch" placeholder="<?= htmlspecialchars($activeFaq['search_placeholder']) ?>" 
+                   autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    style="width:100%; padding:14px 14px 14px 46px; border-radius:12px; border:1.5px solid #e2e8f0; font-size:1rem; outline:none; transition:all 0.3s;" />
         </div>
     </div>

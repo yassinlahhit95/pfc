@@ -40,13 +40,13 @@ if ($datos) {
     $parentescoActual       = $datos['parentesco'] ?? $parentescoActual;
 }
 
-$titulo_pagina = "AULAPRO | EDITAR FAMILIAR";
+$titulo_pagina = "Editar Familiar";
 $seccion = 'tutores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR FAMILIAR</h1>
+    <h1>Editar Familiar</h1>
     <a href="verTutores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER
     </a>

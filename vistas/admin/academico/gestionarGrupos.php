@@ -19,7 +19,7 @@ while ($row = mysqli_fetch_assoc($resCounts)) {
     $counts[(int)$row['idGrupo']] = (int)$row['total'];
 }
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE GRUPOS";
+$titulo_pagina = "Gestión de Grupos";
 $seccion = 'gestionar_grupos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

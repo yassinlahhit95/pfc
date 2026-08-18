@@ -302,14 +302,11 @@ button.breadcrumb-item:hover {
 
 .contenedor-tabla {
   background: transparent;
-  overflow: visible;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: none;
   margin-top: 10px;
   width: 100%;
-}
-
-@media (width <= 992px) {
-  .contenedor-tabla { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 .tabla-datos {

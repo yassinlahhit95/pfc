@@ -22,7 +22,7 @@ $categorias = listarCategoriasBlog();
 $fechaValor = $post['fechaPublicacion'] ? date('Y-m-d\TH:i', strtotime($post['fechaPublicacion'])) : '';
 $blogRolBase = 'secretaria';
 
-$titulo_pagina = "AULAPRO | MODIFICAR ENTRADA DEL BLOG";
+$titulo_pagina = "Modificar Entrada del Blog";
 $seccion = 'blog';
 include_once __DIR__ . "/../comunes/nav.php";
 require __DIR__ . '/../../comunes/blog/_modificarPost.php';

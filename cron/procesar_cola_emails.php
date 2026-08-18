@@ -35,7 +35,7 @@ if (empty($pendientes)) {
             $item['destinatario_email'],
             $item['asunto'],
             $item['html_content'],
-            'CFP - AulaPro | Sistema Académico'
+            $config->get('APP_NAME', 'CFP') . ' | Sistema Académico'
         );
 
         if ($ok) {

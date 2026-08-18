@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/BotGuard.php";
+require_once __DIR__ . "/../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../include/I18n.php";
 require_once __DIR__ . "/../../include/AssetMin.php";
 if (isset($_SESSION['idAdmin']))      { header("Location: ../admin/inicio/dashboard.php");      exit; }
 if (isset($_SESSION['idProfesor']))   { header("Location: ../profesores/inicio/dashboard.php");  exit; }
@@ -14,11 +16,11 @@ unset($_SESSION['reset_ok'], $_SESSION['reset_error']);
 $csrfToken = Security::generateCSRFToken();
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?= Security::escapeHtml(I18n::getLang()) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Recuperar contraseña — AulaPro</title>
+    <title><?= Security::escapeHtml(__('forgot_password', 'Recuperar contraseña')) ?> — <?= Security::escapeHtml(FeatureGuard::getCenterName()) ?></title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../public/css/features/login.css') ?>">
 </head>
@@ -62,10 +64,10 @@ $csrfToken = Security::generateCSRFToken();
                 </div>
                 <button type="submit" class="boton-acceso">Enviar instrucciones</button>
             </form>
-            <a href="../login.php" class="enlace-volver" style="display:block;margin-top:16px;text-align:center;">Volver al inicio de sesión</a>
+            <a href="../login.php" class="enlace-volver" style="display:block;margin-top:16px;text-align:center;"><?= Security::escapeHtml(__('back_to_website', 'Volver al inicio de sesión')) ?></a>
         </div>
 
-        <p class="form-pie">&copy; 2025/2026 AulaPro</p>
+        <p class="form-pie">&copy; <?= date('Y') ?> <?= Security::escapeHtml(FeatureGuard::getCenterName()) ?> </p>
     </div>
 
 </div>

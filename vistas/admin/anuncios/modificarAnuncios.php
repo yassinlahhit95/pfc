@@ -22,13 +22,13 @@ if (isset($_SESSION['datos_anuncio'])) {
 }
 unset($_SESSION['datos_anuncio']);
 
-$titulo_pagina = "AULAPRO | MODIFICAR ANUNCIO";
+$titulo_pagina = "Modificar Anuncio";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR ANUNCIO</h1>
+    <h1>Modificar Anuncio</h1>
     <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

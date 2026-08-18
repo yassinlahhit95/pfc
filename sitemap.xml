@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/modelos/conectar.php';
 require_once __DIR__ . '/include/FeatureGuard.php';
 header('Content-Type: application/xml; charset=utf-8');
-// Base derivada del host de la instancia (cada centro tiene su dominio)
+
 $host = preg_replace('/[^a-z0-9.\-:]/i', '', $_SERVER['HTTP_HOST'] ?? 'localhost');
 $base = 'https://' . $host;
 $today = date('Y-m-d');
-echo '<?xml version="1.0" encoding="UTF-8"?>';
+echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
 ?>
 <urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -16,41 +17,83 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   <url>
     <loc><?= $base ?>/</loc>
     <lastmod><?= $today ?></lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="es-es" href="<?= $base ?>/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="<?= $base ?>/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="<?= $base ?>/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="<?= $base ?>/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ca" href="<?= $base ?>/?lang=ca"/>
+    <xhtml:link rel="alternate" hreflang="eu" href="<?= $base ?>/?lang=eu"/>
+  </url>
+
+  <!-- Blog / Noticias -->
+  <url>
+    <loc><?= $base ?>/vistas/blog.php</loc>
+    <lastmod><?= $today ?></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contacto -->
+  <url>
+    <loc><?= $base ?>/vistas/contacto.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- Páginas legales -->
   <url>
     <loc><?= $base ?>/vistas/legal/aviso-legal.php</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc><?= $base ?>/vistas/legal/politica-de-privacidad.php</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc><?= $base ?>/vistas/legal/politica-de-cookies.php</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc><?= $base ?>/vistas/legal/politica-de-gestion.php</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 
   <?php if (class_exists('FeatureGuard') && FeatureGuard::check('feature_prematricula')): ?>
-  <!-- Pre-matrícula (solo si el módulo está activo) -->
+  <!-- Pre-matrícula y Admisiones -->
   <url>
     <loc><?= $base ?>/vistas/admisiones/pre-matricula.php</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc><?= $base ?>/vistas/admisiones/consultar.php</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
   <?php endif; ?>
+
+  <?php
+  // Artículos publicados del Blog
+  try {
+      $con = obtenerConexion();
+      $res = mysqli_query($con, "SELECT slug, updated_at, created_at FROM blog_posts WHERE publicado = 1 ORDER BY id DESC LIMIT 100");
+      if ($res) {
+          while ($post = mysqli_fetch_assoc($res)) {
+              $postDate = !empty($post['updated_at']) ? date('Y-m-d', strtotime($post['updated_at'])) : date('Y-m-d', strtotime($post['created_at']));
+              $postSlug = urlencode($post['slug']);
+              echo "  <url>\n";
+              echo "    <loc>" . $base . "/vistas/blog.php?slug=" . $postSlug . "</loc>\n";
+              echo "    <lastmod>" . $postDate . "</lastmod>\n";
+              echo "    <changefreq>monthly</changefreq>\n";
+              echo "    <priority>0.7</priority>\n";
+              echo "  </url>\n";
+          }
+      }
+  } catch (Throwable $e) {}
+  ?>
 
 </urlset>

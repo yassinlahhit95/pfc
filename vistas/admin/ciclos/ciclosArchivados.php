@@ -9,14 +9,14 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $ciclosArchivados = listarCiclosArchivados();
 
-$titulo_pagina = "AULAPRO | CICLOS ARCHIVADOS";
+$titulo_pagina = "Ciclos Archivados";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>CICLOS ARCHIVADOS</h1>
+        <h1>Ciclos Archivados</h1>
         <p class="subtitulo-encabezado">Ciclos desactivados — puedes restaurarlos o eliminarlos definitivamente</p>
     </div>
     <a href="verCiclos.php" class="boton-secundario">

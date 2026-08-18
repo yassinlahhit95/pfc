@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../../modelos/fp_dual.php";
 
 $empresas = listarEmpresas();
 
-$titulo_pagina = "AULAPRO | EMPRESAS FP DUAL";
+$titulo_pagina = "Empresas FP Dual";
 $seccion = 'fp_dual';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

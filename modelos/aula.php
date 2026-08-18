@@ -274,11 +274,13 @@ function contarArchivosPorModuloAula($idModulo) {
 function listarTareasPorModuloAula($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT t.*, p.nombreProfesor,
-                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea) AS totalEntregas,
-                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea AND e.estado = 'corregida') AS totalCorregidas
+                   COUNT(e.idEntrega) AS totalEntregas,
+                   SUM(IF(e.estado = 'corregida', 1, 0)) AS totalCorregidas
             FROM aula_tareas t
             JOIN profesores p ON t.idProfesor = p.idProfesor
+            LEFT JOIN aula_entregas e ON e.idTarea = t.idTarea
             WHERE t.idModulo = ? AND t.publicado = 1
+            GROUP BY t.idTarea
             ORDER BY t.fechaCreacion DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -314,11 +316,13 @@ function obtenerTareaPorIdAula($idTarea) {
 function listarTareasPorModuloProfesorAula($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT t.*, p.nombreProfesor,
-                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea) AS totalEntregas,
-                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea AND e.estado = 'corregida') AS totalCorregidas
+                   COUNT(e.idEntrega) AS totalEntregas,
+                   SUM(IF(e.estado = 'corregida', 1, 0)) AS totalCorregidas
             FROM aula_tareas t
             JOIN profesores p ON t.idProfesor = p.idProfesor
+            LEFT JOIN aula_entregas e ON e.idTarea = t.idTarea
             WHERE t.idModulo = ?
+            GROUP BY t.idTarea
             ORDER BY t.fechaCreacion DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -638,15 +642,12 @@ function obtenerTokensFCMPorCicloAula($idCiclo) {
 
 function notificarEstudiantesCicloAula($idCiclo, $tipo, $titulo, $mensaje, $idRef = null, $tipoRef = null) {
     $con = obtenerConexion();
-    $sql = "SELECT idEstudiante FROM estudiantes WHERE idCiclo=? AND eliminado = 0";
+    $sql = "INSERT INTO aula_notificaciones (idUsuario, tipoUsuario, tipo, titulo, mensaje, idReferencia, tipoReferencia)
+            SELECT idEstudiante, 'estudiante', ?, ?, ?, ?, ?
+            FROM estudiantes WHERE idCiclo = ? AND eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_bind_param($stmt, "sssisi", $tipo, $titulo, $mensaje, $idRef, $tipoRef, $idCiclo);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    while ($fila = mysqli_fetch_assoc($res)) {
-        insertarNotificacionAula($fila['idEstudiante'], 'estudiante', $tipo, $titulo, $mensaje, $idRef, $tipoRef);
-    }
-    
 }
 
 // ═══════════════════════════════════════

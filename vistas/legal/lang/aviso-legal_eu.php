@@ -27,7 +27,7 @@
             <li><strong>Telefonoa:</strong> <?= !empty($cfg['telefonoCentro']) ? htmlspecialchars($cfg['telefonoCentro']) : '[Zentroaren telefonoa]' ?></li>
             <li><strong>Helbide elektronikoa:</strong> <?= !empty($emailCentro) ? '<a href="mailto:' . htmlspecialchars($emailCentro) . '">' . htmlspecialchars($emailCentro) . '</a>' : '[Zentroaren e-posta]' ?></li>
             <li><strong>Jarduera nagusia:</strong> Lanbide heziketako eta hezkuntza kudeaketako zentroa.</li>
-            <li><strong>Plataforma teknologikoa:</strong> AulaPro — AulaPro SaaSek garatutako eskola-kudeaketa sistema.</li>
+            <li><strong>Plataforma teknologikoa:</strong> <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> — <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> SaaSek garatutako eskola-kudeaketa sistema.</li>
         </ul>
     </section>
 

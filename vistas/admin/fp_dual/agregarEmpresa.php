@@ -12,13 +12,13 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $datos = $_SESSION['datos_empresa'] ?? [];
 unset($_SESSION['datos_empresa']);
 
-$titulo_pagina = "AULAPRO | AGREGAR EMPRESA DUAL";
+$titulo_pagina = "Agregar Empresa Dual";
 $seccion = 'fp_dual';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>AGREGAR EMPRESA COLABORADORA</h1>
+    <h1>Agregar Empresa Colaboradora</h1>
     <a href="verEmpresas.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

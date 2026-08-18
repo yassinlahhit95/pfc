@@ -28,10 +28,15 @@ function sendEmail($to, $subject, $htmlContent, $senderName = null) {
         return false;
     }
 
+    $senderEmail = $config->get('BREVO_SENDER_EMAIL', 'notas@yassin.agency');
+    if (empty($senderEmail)) {
+        $senderEmail = 'notas@yassin.agency';
+    }
+
     $url = 'https://api.brevo.com/v3/smtp/email';
 
     $payload = [
-        'sender' => ['name' => $senderName, 'email' => 'notas@yassin.agency'],
+        'sender' => ['name' => $senderName, 'email' => $senderEmail],
         'to' => [['email' => $to]],
         'subject' => $subject,
         'htmlContent' => $htmlContent

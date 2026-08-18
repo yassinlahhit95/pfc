@@ -25,7 +25,7 @@ if (!empty($datos)) {
     $reclamacion = $datos + $reclamacion;
 }
 
-$titulo_pagina = "AULAPRO | GESTIONAR MENSAJE";
+$titulo_pagina = "Gestionar Mensaje";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

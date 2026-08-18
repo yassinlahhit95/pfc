@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/planificacion_repository.dart';
 
 // 'YYYY-MM-DD HH:MM:SS' (formato MySQL) -> 'DD/MM/YYYY', igual que la web.
@@ -62,9 +63,11 @@ class PlanificacionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tareasAsync = ref.watch(planificacionListProvider);
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Planificación')),
+      appBar: AppBar(
+          title: Text(t['nav_planificacion'] ?? 'Planificación')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addItem(context, ref),
         child: const Icon(Icons.add),

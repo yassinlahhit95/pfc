@@ -10,13 +10,13 @@ require_once __DIR__ . '/../../../modelos/secretarias.php';
 
 $listaSecretarias = listarTodasLasSecretarias();
 
-$titulo_pagina = 'AULAPRO | SECRETARIAS';
+$titulo_pagina = 'Secretarias';
 $seccion = 'secretarias';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
-    <h1>SECRETARIAS</h1>
+    <h1>Secretarias</h1>
     <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;">
         <span class="texto-suave small"><?= count($listaSecretarias) ?> registradas</span>
         <a href="historialSecretarias.php" class="boton-secundario">
@@ -115,9 +115,13 @@ include_once __DIR__ . '/../comunes/nav.php';
 <?php endif; ?>
 
 <script>
-var _csrfToken = <?= json_encode(Security::generateCSRFToken()) ?>;
+var _csrfToken = <?= Security::jsonEncodeSafe(Security::generateCSRFToken()) ?>;
 
-iniciarPaginacion('tablaSecretarias', 15);
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof iniciarPaginacion === 'function') {
+        iniciarPaginacion('tablaSecretarias', 15);
+    }
+});
 
 document.querySelectorAll('.btn-toggle-activo').forEach(function(btn) {
     btn.addEventListener('click', function() {

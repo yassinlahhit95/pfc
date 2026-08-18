@@ -11,13 +11,13 @@ $idProfesor = $_SESSION['idProfesor'];
 $modulos = listarModulosDeProfesor($idProfesor);
 $csrfToken = Security::generateCSRFToken();
 
-$tituloDelPagina = 'AULAPRO | CREAR SESIÓN VIVA';
+$titulo_pagina = 'Crear Sesión Viva';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>CREAR NUEVA SESIÓN VIVA</h1>
+    <h1>Crear Nueva Sesión Viva</h1>
     <p class="subtitulo-encabezado">Programa una clase en vivo con tus estudiantes</p>
 </div>
 

@@ -9,14 +9,14 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/grupos.php";
 
-$titulo_pagina = "AULAPRO | LISTADO DE ASISTENCIAS";
+$titulo_pagina = "Listado de Asistencias";
 $seccion = 'asistencias';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>REGISTRO DE ASISTENCIAS</h1>
+        <h1>Registro de Asistencias</h1>
     </div>
 </div>
 
@@ -95,7 +95,7 @@ if ($resCursosUnicos) {
 
         <div class="campo relleno" style="margin-top: 15px;">
             <label for="inputFiltroNombre">BUSCAR ESTUDIANTE:</label>
-            <input type="text" id="inputFiltroNombre" placeholder="Buscar..." oninput="debounceAplicarFiltros()" style="width: 100%;">
+            <input type="search" id="inputFiltroNombre" placeholder="Buscar..." oninput="debounceAplicarFiltros()" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="width: 100%;">
         </div>
     </div>
 </div>

@@ -34,7 +34,7 @@ if (!empty($idCicloElegidoParaVer)) {
 // cada centro en Configuración Académica, así que el texto fijo sería falso.
 $motorConfigurableActivo = motorAcademicoActivo();
 
-$titulo_pagina = "AULAPRO | RESULTADOS FINALES";
+$titulo_pagina = "Resultados Finales";
 $seccion = 'resultados_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -66,7 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </style>
 
 <div class="cabecera">
-    <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
+    <h1>Resultados Finales por Estudiante</h1>
     <p class="subtitulo-encabezado"><?= $motorConfigurableActivo
         ? 'Promedio global del ciclo según el motor de calificación configurado'
         : 'Promedio global del ciclo (75% Módulos / 25% Retos)' ?></p>
@@ -129,7 +129,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (!empty($idCicloElegidoParaVer)) { ?>
     <div class="panel margen-arriba">
         <div class="contenedor-tabla">
-            <table class="tabla-datos">
+            <table class="tabla-datos" id="tabla-resultados-finales">
                 <thead>
                     <tr>
                         <th>Estudiante</th>

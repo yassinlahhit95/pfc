@@ -165,7 +165,7 @@ if ($pairing_code === null) {
     }
 }
 
-$titulo_pagina = 'AULAPRO | ESTADO DE LA PLATAFORMA';
+$titulo_pagina = 'Estado de la Plataforma';
 $seccion = 'saas_estado';
 include_once __DIR__ . '/../comunes/nav.php';
 

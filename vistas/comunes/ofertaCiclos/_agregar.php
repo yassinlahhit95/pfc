@@ -32,7 +32,7 @@ $ciclosParaSelector = array_map(function ($ciclo) use ($cursosPorCiclo) {
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO CICLO</h1>
+    <h1>Nuevo Ciclo</h1>
     <a href="gestion.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -212,10 +212,10 @@ iniciarEditorBlog({
     fileInputId: 'editor-imagen-input',
     uploadUrl: '../../../controladores/<?= $rolBase ?>/ofertaCiclos/subir_imagen_contenido.php',
     csrfToken: document.querySelector('[name=csrf_token]').value,
-    initialContent: <?= json_encode($datos['descripcion'] ?? '') ?>
+    initialContent: <?= Security::jsonEncodeSafe($datos['descripcion'] ?? '') ?>
 });
 
-var ocCiclos = <?= json_encode($ciclosParaSelector) ?>;
+var ocCiclos = <?= Security::jsonEncodeSafe($ciclosParaSelector) ?>;
 
 function ocFiltrarCiclos() {
     var nivel = $('#ocFiltroNivel').val();

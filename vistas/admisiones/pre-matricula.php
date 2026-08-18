@@ -145,7 +145,7 @@ require __DIR__ . '/../legal/_header.php';
                             <input type="checkbox" id="aceptoRGPD" required>
                             <label for="aceptoRGPD">He leído y acepto la <a href="/vistas/legal/politica-de-privacidad.php" target="_blank">Política de Privacidad</a> y el tratamiento de mis datos personales.</label>
                         </div>
-                        <p class="politica-note"><strong>Información básica:</strong> AulaPro tratará sus datos para gestionar su pre-matrícula y, en su caso, la formalización de su expediente académico. No se cederán datos a terceros salvo obligación legal. Tiene derecho a acceder, rectificar y suprimir sus datos escribiendo al centro.</p>
+                        <p class="politica-note"><strong>Información básica:</strong> <?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Centro Educativo") ?> tratará sus datos para gestionar su pre-matrícula y, en su caso, la formalización de su expediente académico. No se cederán datos a terceros salvo obligación legal. Tiene derecho a acceder, rectificar y suprimir sus datos escribiendo al centro.</p>
                     </div>
                 </div>
             </div>

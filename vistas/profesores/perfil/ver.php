@@ -12,9 +12,9 @@ $idProfesor = $_SESSION['idProfesor'];
 $profesor = obtenerProfesorPorId($idProfesor);
 
 require_once __DIR__ . "/../../../include/I18n.php";
-$tituloDelPagina = "AULAPRO | " . __('my_profile', 'MI PERFIL');
-$seccionActual = 'perfil';
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "" . __('My_Profile', 'Mi Perfil');
+$Seccionactual = 'Perfil';
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <div class="cabecera">

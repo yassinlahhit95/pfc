@@ -14,13 +14,13 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $idProfesor = $_SESSION['idProfesor'];
 $profesorActual = obtenerProfesorPorId($idProfesor);
 
-$tituloDelPagina = "AULAPRO | EDITAR PERFIL";
+$titulo_pagina = "Editar Perfil";
 $seccionActual = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR MI PERFIL</h1>
+    <h1>Editar Mi Perfil</h1>
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

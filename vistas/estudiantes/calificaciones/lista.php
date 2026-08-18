@@ -16,14 +16,14 @@ $resumen      = obtenerResultadosFinalesEstudiante($idEstudiante);
 $retosNotas   = listarCalificacionesRetoPorEstudiante($idEstudiante);
 $motorConfigurableActivo = motorAcademicoActivo();
 
-$tituloDelPagina = "AULAPRO | MIS CALIFICACIONES";
+$titulo_pagina = "Mis Calificaciones";
 $seccionActual   = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera" style="margin-bottom:30px;">
     <div>
-        <h1>MIS CALIFICACIONES</h1>
+        <h1>Mis Calificaciones</h1>
         <p class="subtitulo-encabezado" style="font-size:1.1rem; opacity:0.8;"><i class="fas fa-graduation-cap"></i> <?= Security::escapeHtml($resumen['nombreCiclo'] ?? '') ?></p>
     </div>
     <?php if (FeatureGuard::check('feature_informes')): ?>
@@ -129,7 +129,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div>
             <h4 style="margin: 0 0 10px 0; color: var(--text-color); border-left: 3px solid var(--accent); padding-left: 10px;">Módulos de <?= $anio ?>º Año</h4>
             <div class="contenedor-tabla">
-                <table class="tabla-datos">
+                <table class="tabla-datos" id="tabla-modulos-anio-<?= $anio ?>">
                     <thead>
                         <tr>
                             <th>Módulo</th>
@@ -179,7 +179,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         
         <div class="contenedor-tabla">
-            <table class="tabla-datos">
+            <table class="tabla-datos" id="tabla-calificaciones-retos-est">
                 <thead>
                     <tr>
                         <th>Reto</th>

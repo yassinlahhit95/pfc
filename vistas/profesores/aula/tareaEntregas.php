@@ -32,8 +32,8 @@ $totalEstudiantes = count($filas);
 $totalEntregadas  = count(array_filter($filas, fn($fila) => !empty($fila['idEntrega'])));
 $totalCorregidas  = count(array_filter($filas, fn($fila) => ($fila['estado'] ?? '') === 'corregida'));
 
-$tituloDelPagina = 'AULAPRO | ENTREGAS — ' . mb_strtoupper($tarea['titulo'], 'UTF-8');
-$seccionActual   = 'aula_tareas';
+$titulo_pagina = 'Entregas — ' . Mb_Strtoupper($Tarea['Titulo'], 'Utf-8');
+$Seccionactual   = 'Aula_Tareas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

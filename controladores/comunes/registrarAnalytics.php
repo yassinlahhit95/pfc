@@ -47,5 +47,6 @@ if (!in_array($accion, $accionesPermitidas)) {
 $ok = registrarAnalytics($idUsuario, $tipoUsuario, $accion, $idModulo, $metadatos);
 
 http_response_code($ok ? 200 : 500);
+header('Content-Type: application/json');
 echo json_encode(['ok' => $ok]);
 exit;

@@ -19,6 +19,15 @@ class Cache
         return Config::getInstance()->get('R2_TENANT_PREFIX', 'default') . ':' . $key;
     }
 
+    // Per-request fallback store when APCu isn't installed. Must be a class
+    // property (not a static local inside remember()) so forget() can reach
+    // and clear the same entries — a function-local static is invisible to
+    // any other method, which made forget() a silent no-op without APCu:
+    // marking something read left the stale cached count in place for the
+    // rest of its TTL, e.g. an "unread notifications" badge not updating
+    // for up to 10s right after the user reads them.
+    private static array $mem = [];
+
     public static function remember(string $key, int $ttlSeconds, callable $compute)
     {
         $key = self::tenantKey($key);
@@ -29,21 +38,22 @@ class Cache
             apcu_store($key, $val, $ttlSeconds);
             return $val;
         }
-        static $mem = [];
         $now = time();
-        if (isset($mem[$key]) && $mem[$key]['expires'] > $now) {
-            return $mem[$key]['value'];
+        if (isset(self::$mem[$key]) && self::$mem[$key]['expires'] > $now) {
+            return self::$mem[$key]['value'];
         }
         $val = $compute();
-        $mem[$key] = ['value' => $val, 'expires' => $now + $ttlSeconds];
+        self::$mem[$key] = ['value' => $val, 'expires' => $now + $ttlSeconds];
         return $val;
     }
 
     public static function forget(string $key): void
     {
+        $key = self::tenantKey($key);
         if (function_exists('apcu_delete')) {
-            apcu_delete(self::tenantKey($key));
+            apcu_delete($key);
         }
+        unset(self::$mem[$key]);
     }
 }
 

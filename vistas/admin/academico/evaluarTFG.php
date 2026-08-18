@@ -18,13 +18,13 @@ if (!$estudiante) {
 
 $calificacion = obtenerCalificacionTFG($idEstudiante);
 
-$titulo_pagina = "AULAPRO | EVALUAR TFG";
+$titulo_pagina = "Evaluar TFG";
 $seccion = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EVALUAR TFG</h1>
+    <h1>Evaluar TFG</h1>
     <a href="calificacionesTFG.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

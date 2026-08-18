@@ -41,7 +41,7 @@ if ($mensaje['emisor_rol'] === 'admin') {
     $toName = ''; $toRtag = 'rtag-admin'; $toRlabel = 'Secretaría';
 }
 
-$titulo_pagina = "AULAPRO | MENSAJE";
+$titulo_pagina = "Mensaje";
 $seccion = 'mensajes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

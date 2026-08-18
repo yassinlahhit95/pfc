@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/planificacion.php";
 $tareas = listarPlanificacion();
 $rolBase = 'admin';
 
-$titulo_pagina = "AULAPRO | PLANIFICACIÓN";
+$titulo_pagina = "Planificación";
 $seccion = 'planificacion';
 include_once __DIR__ . "/../comunes/nav.php";
 

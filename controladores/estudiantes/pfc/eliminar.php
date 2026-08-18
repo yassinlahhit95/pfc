@@ -4,6 +4,7 @@ require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+if ($isAjax) { header('Content-Type: application/json'); }
 
 if (!FeatureGuard::check('feature_subida_tfg')) {
     if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'La entrega del TFG está cerrada en este momento.']); exit; }

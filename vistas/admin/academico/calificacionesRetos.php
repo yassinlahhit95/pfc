@@ -38,13 +38,13 @@ if ($idCicloElegido && $idRetoElegido) {
     }
 }
 
-$titulo_pagina = "AULAPRO | NOTAS RETOS";
+$titulo_pagina = "Notas Retos";
 $seccion = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EVALUACIÓN DE RETOS</h1>
+    <h1>Evaluación de Retos</h1>
 </div>
 
 <div class="panel">
@@ -94,7 +94,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-calificaciones-retos">
             <thead>
                 <tr>
                     <th>Estudiante</th>

@@ -228,7 +228,7 @@ function contarTutores() {
  */
 function listarTodosLosTutores() {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM tutores ORDER BY nombreTutor ASC";
+    $sql = "SELECT * FROM tutores ORDER BY idTutor ASC";
     $res = mysqli_query($con, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) {

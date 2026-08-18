@@ -56,7 +56,7 @@ $hash = hash('sha256', $token);
 $upd  = mysqli_prepare($con, "UPDATE password_resets SET usado=1 WHERE token=? AND usado=0 AND expires_at>NOW()");
 mysqli_stmt_bind_param($upd, 's', $hash);
 mysqli_stmt_execute($upd);
-if (mysqli_stmt_affected_rows($con) === 0) {
+if (mysqli_stmt_affected_rows($upd) === 0) {
     $_SESSION['reset_error'] = "El enlace ha caducado o ya fue usado. Solicita uno nuevo.";
     header("Location: ../../vistas/auth/solicitar_reset.php");
     exit;

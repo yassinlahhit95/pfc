@@ -97,9 +97,11 @@ if (empty($token)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AulaPro | Firma de Diario FCT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="public/css/dashboard.css" />
+    <title><?php require_once __DIR__ . '/include/FeatureGuard.php'; echo htmlspecialchars(FeatureGuard::getCenterName()); ?> | Firma de Diario FCT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="public/css/dashboard.css" />
     <link rel="stylesheet" href="public/css/estilo.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
@@ -228,7 +230,7 @@ if (empty($token)) {
 
 <div class="firma-caja">
     <div class="cabecera-logo">
-        <h1>AulaPro Campus Suite</h1>
+        <h1><?= htmlspecialchars(FeatureGuard::getCenterName() ?? "Campus Suite") ?></h1>
         <p>Firma de Diario de Prácticas FCT / Dual</p>
     </div>
 

@@ -11,7 +11,7 @@ $idProfesor = (int)$_SESSION['idProfesor'];
 $pendientes = listarJustificacionesPendientesPorProfesor($idProfesor);
 $resueltas  = listarJustificacionesResueltasPorProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | JUSTIFICACIONES DE FALTAS";
+$titulo_pagina = "Justificaciones de Faltas";
 $seccionActual   = 'justificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -31,7 +31,7 @@ function _adjuntoJustificacion(array $j): string {
 
 <div class="cabecera">
     <div>
-        <h1>JUSTIFICACIONES DE FALTAS</h1>
+        <h1>Justificaciones de Faltas</h1>
         <p class="subtitulo-encabezado">Faltas justificadas por tus alumnos</p>
     </div>
 </div>

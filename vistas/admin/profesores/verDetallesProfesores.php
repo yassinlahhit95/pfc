@@ -22,7 +22,7 @@ if (count($partesNombre) > 1) $iniciales .= mb_strtoupper(mb_substr($partesNombr
 $paletaAvatar = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
 $colorAvatar  = $paletaAvatar[ord($iniciales[0]) % count($paletaAvatar)];
 
-$titulo_pagina = "AULAPRO | DETALLES PROFESOR";
+$titulo_pagina = "Detalles Profesor";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -173,7 +173,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3><i class="fas fa-user-tie" style="color:var(--accent);margin-right:6px;"></i> Ciclos Tutorizados</h3>
     </div>
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-ciclos-tutorizados">
             <thead>
                 <tr>
                     <th>Nombre del Ciclo</th>
@@ -202,7 +202,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3><i class="fas fa-book-open" style="color:var(--accent);margin-right:6px;"></i> Módulos Impartidos</h3>
     </div>
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-modulos-impartidos">
             <thead>
                 <tr>
                     <th>Módulo</th>

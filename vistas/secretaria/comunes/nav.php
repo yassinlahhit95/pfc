@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/I18n.php";
 require_once __DIR__ . "/../../../include/AssetMin.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
@@ -38,11 +39,11 @@ function _nav_active_sec($check) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title><?= Security::escapeHtml($titulo_pagina ?? FeatureGuard::getCenterName() . ' Secretaría') ?></title>
+  <title><?= Security::escapeHtml(FeatureGuard::getCenterName() . (isset($titulo_pagina) && !empty($titulo_pagina) ? ' | ' . $titulo_pagina : '')) ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<?php $__bundleCss = __DIR__ . '/../../../public/css/bundle.min.css'; ?>
   <?php if (is_file($__bundleCss)): ?>
   <link rel="stylesheet" href="../../../public/css/bundle.min.css?v=<?= filemtime($__bundleCss) ?>" />
   <?php else: ?>
@@ -55,7 +56,7 @@ function _nav_active_sec($check) {
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
   <link rel="stylesheet" href="<?= AssetMin::url(__DIR__, '../../../public/css/features/chat-widget.css') ?>" />
-  <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
   <script defer src="../../../public/js/core/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/aula-digital.js') ?>"></script>
   <script defer src="../../../public/js/core/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/core/menu-contextual.js') ?>"></script>
@@ -328,7 +329,7 @@ function _nav_active_sec($check) {
       window.AULAPRO_TOUR = {
         tourKey: 'primeros_pasos_v1',
         completeUrl: 'controladores/comunes/tour/completar.php',
-        csrfToken: <?= json_encode(Security::generateCSRFToken()) ?>,
+        csrfToken: <?= Security::jsonEncodeSafe(Security::generateCSRFToken()) ?>,
         steps: [
           { selector: '[data-tour="estudiantes"]', title: 'Estudiantes', text: 'Gestiona fichas y matrículas del alumnado.', placement: 'right' },
           { selector: '[data-tour="tutores"]', title: 'Sistema Parental', text: 'Administra las cuentas de las familias vinculadas a cada alumno.', placement: 'right' },

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/history_repository.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
@@ -203,11 +204,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final dateStr = _formatDateToApi(_selectedDate);
     final historyAsync = ref.watch(historyProvider(dateStr));
     final daysList = _getDaysList();
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
-        title: const Text('Historial de Actividad'),
+        title: Text(
+            t['title_historial_actividad'] ?? 'Historial de Actividad'),
       ),
       body: Column(
         children: [

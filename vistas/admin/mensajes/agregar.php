@@ -28,7 +28,7 @@ if ($tipo === 'profesor') {
 $datos = $_SESSION['datos_mensaje'] ?? [];
 unset($_SESSION['datos_mensaje']);
 
-$titulo_pagina = "AULAPRO | Redactar Mensaje";
+$titulo_pagina = "Redactar Mensaje";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

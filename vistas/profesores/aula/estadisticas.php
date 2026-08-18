@@ -26,7 +26,7 @@ if ($idArchivoSel > 0) {
     }
 }
 
-$tituloDelPagina = "AULAPRO | ESTADÍSTICAS";
+$titulo_pagina = "Estadísticas";
 $seccionActual   = 'aula_recursos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -47,6 +47,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p style="margin:0; color: var(--dim); font-size: 0.95rem;">Tus estudiantes todavía no han interactuado con los archivos de este módulo.</p>
   </div>
 <?php else: ?>
+<div class="contenedor-tabla">
 <table class="recurso-lista">
   <thead><tr><th>Recurso</th><th>Vistas</th><th>Descargas</th><th>Última consulta</th><th style="text-align:right;">Control de lectura</th></tr></thead>
   <tbody>
@@ -62,10 +63,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php endforeach; ?>
   </tbody>
 </table>
+</div>
 <?php endif; ?>
 
 <?php if ($archivoSel): ?>
 <h3 style="margin-top:26px;font-size:.95rem;color:var(--dim);"><i class="fas fa-book-open-reader"></i> Detalle por estudiante: <?= Security::escapeHtml($archivoSel['nombreOriginal']) ?></h3>
+<div class="contenedor-tabla">
 <table class="recurso-lista">
   <thead><tr><th>Estudiante</th><th>¿Lo ha visto?</th><th>¿Lo ha descargado?</th></tr></thead>
   <tbody>
@@ -79,6 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php if (empty($lectura)): ?><tr><td colspan="3" style="text-align:center; padding:40px 20px; color:var(--mut);"><i class="fas fa-user-graduate" style="font-size:2rem; margin-bottom:12px; display:block; opacity:0.5;"></i>No hay estudiantes matriculados en este ciclo o no hay datos registrados.</td></tr><?php endif; ?>
   </tbody>
 </table>
+</div>
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

@@ -48,7 +48,7 @@ if ($mensaje['emisor_rol'] === 'estudiante') {
     $toName   = 'Tú'; $toRtag = 'rtag-yo'; $toRlabel = 'Tú';
 }
 
-$tituloDelPagina = "AULAPRO | Detalle Mensaje";
+$titulo_pagina = "Detalle Mensaje";
 $seccionActual   = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

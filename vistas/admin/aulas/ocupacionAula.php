@@ -10,13 +10,13 @@ $ocupacion = $idAula ? listarOcupacionAula($idAula) : [];
 $franjas = obtenerFranjasHorario();
 $dias    = obtenerDiasHorario();
 
-$titulo_pagina = "AULAPRO | OCUPACIÓN POR AULA";
+$titulo_pagina = "Ocupación por Aula";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>OCUPACIÓN POR AULA</h1>
+    <h1>Ocupación por Aula</h1>
     <form method="GET" class="horario-selector-form">
         <label for="aula">Aula:</label>
         <select name="aula" id="aula" onchange="this.form.submit()">

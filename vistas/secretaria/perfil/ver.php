@@ -10,9 +10,9 @@ require_once __DIR__ . "/../../../modelos/secretarias.php";
 $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 
 require_once __DIR__ . "/../../../include/I18n.php";
-$titulo_pagina = "AULAPRO | " . __('my_profile', 'MI PERFIL');
-$seccion = 'perfil';
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "" . __('My_Profile', 'Mi Perfil');
+$Seccion = 'Perfil';
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <div class="cabecera">

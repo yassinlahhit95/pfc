@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../../modelos/niveles.php';
 $ciclos  = listarTodosLosCiclos();
 $niveles = listarNiveles();
 
-$titulo_pagina = "AULAPRO | INFORMES Y DOCUMENTOS";
+$titulo_pagina = "Informes y Documentos";
 $seccion = 'informes';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
@@ -22,7 +22,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <div class="cabecera">
     <div>
-        <h1>INFORMES Y DOCUMENTOS</h1>
+        <h1>Informes y Documentos</h1>
         <p class="subtitulo-encabezado">Genera documentos PDF automáticamente desde los datos del sistema</p>
     </div>
     <a href="../configuracion/configuracion.php" class="boton-secundario">
@@ -33,12 +33,12 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <?php
 // JSON for nivel-cascade JS
-$ciclosJson = json_encode(array_map(fn($ciclo) => [
+$ciclosJson = Security::jsonEncodeSafe(array_map(fn($ciclo) => [
     'id'       => (int)$ciclo['idCiclo'],
     'nombre'   => $ciclo['nombreCiclo'],
     'abrev'    => $ciclo['abreviaturaCiclo'],
     'idNivel'  => (int)$ciclo['idNivel'],
-], $ciclos), JSON_UNESCAPED_UNICODE);
+], $ciclos));
 ?>
 
 <div class="informes-grid">

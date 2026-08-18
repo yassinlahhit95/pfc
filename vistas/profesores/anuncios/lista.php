@@ -11,14 +11,14 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $anuncios = listarAnunciosPorRol('profesores');
 
-$tituloDelPagina = "AULAPRO | ANUNCIOS";
+$titulo_pagina = "Anuncios";
 $seccionActual = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>ANUNCIOS</h1>
+        <h1>Anuncios</h1>
         <p class="subtitulo-encabezado">Comunicados publicados por el centro</p>
     </div>
 </div>

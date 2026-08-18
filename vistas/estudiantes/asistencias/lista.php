@@ -20,14 +20,14 @@ foreach ($asistencias as $a) {
     }
 }
 
-$titulo_pagina   = "AULAPRO | MIS FALTAS DE ASISTENCIA";
+$titulo_pagina = "Mis Faltas de Asistencia";
 $seccionActual   = 'asistencias';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>MIS FALTAS DE ASISTENCIA</h1>
+        <h1>Mis Faltas de Asistencia</h1>
         <p class="subtitulo-encabezado">Consulta tu historial y justifica las faltas o retrasos</p>
     </div>
 </div>

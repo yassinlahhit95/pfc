@@ -20,7 +20,7 @@ $justificaciones = listarTodasLasJustificaciones($idProfesorFilter ?: null, $est
 $profesores      = listarTodosLosProfesores();
 $estudiantes     = listarTodosLosEstudiantes();
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE AUSENCIAS";
+$titulo_pagina = "Gestión de Ausencias";
 $seccion       = "justificaciones";
 require_once __DIR__ . "/../comunes/nav.php";
 
@@ -112,7 +112,7 @@ function _adjuntoJustificacion(array $j): string {
                 <tbody>
                     <?php foreach ($justificaciones as $j): ?>
                         <tr>
-                            <td><?= Security::escapeHtml(date('d/m/Y', strtotime($j['fecha']))) ?></td>
+                            <td><?= !empty($j['fecha']) ? Security::escapeHtml(date('d/m/Y', strtotime((string)$j['fecha']))) : '—' ?></td>
                             <td><b><?= Security::escapeHtml($j['nombreEstudiante']) ?></b></td>
                             <td><?= Security::escapeHtml($j['nombreModulo']) ?></td>
                             <td><?= Security::escapeHtml($j['nombreProfesor'] ?? '—') ?></td>

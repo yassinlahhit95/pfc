@@ -8,6 +8,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/profile_detail_sheet.dart';
 import '../../../core/widgets/password_confirmation_dialog.dart';
 import '../../../core/utils/debounce.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/teachers_repository.dart';
 import 'teacher_form_sheet.dart';
 
@@ -60,10 +61,11 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
     final teachersAsync = ref.watch(
       teachersProvider(_searchQuery.isNotEmpty ? _searchQuery : null),
     );
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profesores'),
+        title: Text(t['nav_profesores'] ?? 'Profesores'),
         // Filter action removed — teachers have no status field; all are active
       ),
       floatingActionButton: canManage

@@ -11,13 +11,13 @@ require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $todosLosPrestamos = listarTodosLosPrestamos();
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE PRÉSTAMOS";
+$titulo_pagina = "Gestión de Préstamos";
 $seccion = 'prestamos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>PRÉSTAMOS DE MATERIAL</h1>
+    <h1>Préstamos de Material</h1>
     <a href="agregarPrestamo.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO PRÉSTAMO
     </a>

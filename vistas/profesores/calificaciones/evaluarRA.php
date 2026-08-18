@@ -20,14 +20,14 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 $resultados = listarRAPorModulo($idModulo);
 
-$tituloDelPagina = "AULAPRO | EVALUAR RA / CE";
+$titulo_pagina = "Evaluar Ra / Ce";
 $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>EVALUAR RESULTADOS DE APRENDIZAJE</h1>
+        <h1>Evaluar Resultados de Aprendizaje</h1>
         <p class="subtitulo-encabezado">Módulo: <b><?= Security::escapeHtml($modulo['nombreModulo']) ?></b></p>
     </div>
     <div class="acciones-pagina">

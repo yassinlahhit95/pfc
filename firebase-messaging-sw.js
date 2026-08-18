@@ -21,14 +21,14 @@ firebase.initializeApp({
 
 var messaging = firebase.messaging();
 
-var ICON = 'https://aulapro.yassin.agency/public/imagenes/aulapro.png';
+var ICON = self.location.origin + '/public/imagenes/aulapro.png';
 
 // Background / closed tab: Firebase does NOT auto-show a notification when
 // the page is not focused — we must call showNotification explicitly.
 messaging.onBackgroundMessage(function(payload) {
   var title = (payload.data && payload.data.title)
     ? payload.data.title
-    : (payload.notification ? payload.notification.title : 'AulaPro');
+    : (payload.notification ? payload.notification.title : payload.data?.centerName || 'Plataforma');
   var body  = (payload.data && payload.data.body)
     ? payload.data.body
     : (payload.notification ? payload.notification.body : '');
@@ -45,12 +45,18 @@ messaging.onBackgroundMessage(function(payload) {
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   var target = (event.notification.data && event.notification.data.url) ? event.notification.data.url : '/';
+  var targetUrl = new URL(target, self.location.origin).href;
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
       for (var i = 0; i < list.length; i++) {
-        if (list[i].url === target) return list[i].focus();
+        if (list[i].url === targetUrl && 'focus' in list[i]) {
+          return list[i].focus();
+        }
       }
-      return clients.openWindow(target);
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
     })
   );
 });

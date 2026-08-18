@@ -49,7 +49,7 @@ $seccionesJs = array_map(fn($fila) => [
     'contenido' => json_decode($fila['contenido'] ?? '{}', true) ?: [],
 ], $borrador);
 
-$titulo_pagina = "AULAPRO | CONSTRUCTOR DE LA WEB";
+$titulo_pagina = "Constructor de la Web";
 $seccion       = 'landing';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
@@ -58,6 +58,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 <div class="cabecera">
     <h1><i class="fas fa-globe"></i> Página web pública</h1>
     <div class="acciones-pagina">
+        <span class="lb-inline-status" id="lb-inline-status"><i class="fas fa-check-circle"></i> <span class="lb-status-txt">Guardado</span></span>
         <span class="texto-estado <?= $estadoClase ?>" id="lb-estado"><?= Security::escapeHtml($estadoTexto) ?></span>
         <a href="plantillas.php" class="boton-secundario"><i class="fas fa-palette"></i> Plantillas</a>
         <a href="../../../" target="_blank" rel="noopener" class="boton-secundario"><i class="fas fa-arrow-up-right-from-square"></i> Ver web</a>
@@ -187,7 +188,15 @@ include_once __DIR__ . '/../comunes/nav.php';
 <aside class="lb-editor" id="lb-editor" aria-hidden="true">
     <div class="lb-editor-cabecera">
         <h3 id="lb-editor-titulo"><i class="fas fa-pen"></i> Editar sección</h3>
-        <button type="button" class="lb-item-btn" id="lb-editor-cerrar" title="Cerrar"><i class="fas fa-xmark"></i></button>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span class="lb-inline-status" id="lb-editor-status"><i class="fas fa-check-circle"></i> <span class="lb-status-txt">Guardado</span></span>
+            <button type="button" class="lb-item-btn" id="lb-editor-cerrar" title="Cerrar"><i class="fas fa-xmark"></i></button>
+        </div>
+    </div>
+    <div class="lb-editor-tabs" id="lb-editor-tabs">
+        <button type="button" class="lb-tab-btn activo" data-tab="contenido"><i class="fas fa-pen-nib"></i> Contenido</button>
+        <button type="button" class="lb-tab-btn" data-tab="estilo"><i class="fas fa-paintbrush"></i> Estilo</button>
+        <button type="button" class="lb-tab-btn" data-tab="avanzado"><i class="fas fa-sliders"></i> Avanzado</button>
     </div>
     <form id="lb-editor-form" class="lb-editor-cuerpo"></form>
     <div class="lb-editor-pie">
@@ -196,25 +205,60 @@ include_once __DIR__ . '/../comunes/nav.php';
     </div>
 </aside>
 
-<!-- ══════════ Modal añadir sección ══════════ -->
+<!-- ══════════ Modal añadir sección (con Previsualización Hover en Directo) ══════════ -->
 <div class="lb-modal" id="lb-modal-agregar">
-    <div class="lb-modal-caja panel">
+    <div class="lb-modal-caja lb-modal-catalogo-wrap panel">
         <div class="lb-panel-titulo">
-            <h3><i class="fas fa-plus"></i> Añadir sección</h3>
+            <h3><i class="fas fa-plus"></i> Catálogo de Secciones</h3>
             <button type="button" class="lb-item-btn" id="lb-agregar-cerrar" title="Cerrar"><i class="fas fa-xmark"></i></button>
         </div>
-        <div class="lb-catalogo">
-            <?php foreach ($tipos as $tipoClave => $tipoInfo): ?>
-            <button type="button" class="lb-catalogo-item" data-tipo="<?= Security::escapeHtml($tipoClave) ?>"
-                    title="<?= Security::escapeHtml($tipoInfo['descripcion'] ?? '') ?>">
-                <i class="fas <?= Security::escapeHtml($tipoInfo['icono']) ?>"></i>
-                <span class="lb-catalogo-nombre"><?= Security::escapeHtml($tipoInfo['nombre']) ?></span>
-                <?php if (!empty($tipoInfo['descripcion'])): ?>
-                <span class="lb-catalogo-desc"><?= Security::escapeHtml($tipoInfo['descripcion']) ?></span>
-                <?php endif; ?>
-            </button>
-            <?php endforeach; ?>
+        <div class="lb-catalogo-dos-col">
+            <div class="lb-catalogo-lista">
+                <?php foreach ($tipos as $tipoClave => $tipoInfo): ?>
+                <button type="button" class="lb-catalogo-item" data-tipo="<?= Security::escapeHtml($tipoClave) ?>"
+                        data-icono="fas <?= Security::escapeHtml($tipoInfo['icono']) ?>"
+                        data-nombre="<?= Security::escapeHtml($tipoInfo['nombre']) ?>"
+                        data-desc="<?= Security::escapeHtml($tipoInfo['descripcion'] ?? '') ?>">
+                    <i class="fas <?= Security::escapeHtml($tipoInfo['icono']) ?>"></i>
+                    <div class="lb-catalogo-texto">
+                        <span class="lb-catalogo-nombre"><?= Security::escapeHtml($tipoInfo['nombre']) ?></span>
+                        <?php if (!empty($tipoInfo['descripcion'])): ?>
+                        <span class="lb-catalogo-desc"><?= Security::escapeHtml($tipoInfo['descripcion']) ?></span>
+                        <?php endif; ?>
+                    </div>
+                </button>
+                <?php endforeach; ?>
+            </div>
+            <div class="lb-catalogo-preview-pane" id="lb-catalogo-preview-pane">
+                <div class="lb-preview-pane-header">
+                    <span class="lb-preview-pane-tag"><i class="fas fa-eye"></i> Vista Previa</span>
+                    <h4 id="lb-preview-pane-title">Pasa el ratón sobre una sección</h4>
+                </div>
+                <p class="lb-preview-pane-desc" id="lb-preview-pane-desc">Descubre el diseño y estructura visual de cada componente antes de insertarlo en la página web.</p>
+                <div class="lb-preview-pane-card" id="lb-preview-pane-card">
+                    <div class="lb-preview-mock-hero">
+                        <div class="lb-mock-bar"></div>
+                        <div class="lb-mock-title"></div>
+                        <div class="lb-mock-sub"></div>
+                        <div class="lb-mock-btn"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+</div>
+
+<!-- ══════════ Modal Selector de Iconos ══════════ -->
+<div class="lb-modal" id="lb-modal-iconos">
+    <div class="lb-modal-caja panel" style="width: 620px; max-width: 95vw;">
+        <div class="lb-panel-titulo">
+            <h3><i class="fas fa-icons"></i> Seleccionar Icono</h3>
+            <button type="button" class="lb-item-btn" id="lb-iconos-cerrar" title="Cerrar"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="lb-iconos-busqueda-wrap">
+            <input type="search" id="lb-iconos-busqueda" placeholder="Buscar icono (ej: graduación, maletín, tecnología...)" class="lb-input-busqueda">
+        </div>
+        <div class="lb-iconos-grid" id="lb-iconos-grid"></div>
     </div>
 </div>
 
@@ -231,10 +275,10 @@ include_once __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
-
 <script>
-window.LANDING_TIPOS     = <?= json_encode($tipos, JSON_UNESCAPED_UNICODE) ?>;
-window.LANDING_SECCIONES = <?= json_encode($seccionesJs, JSON_UNESCAPED_UNICODE) ?>;
+window.LANDING_TIPOS     = <?= Security::jsonEncodeSafe($tipos) ?>;
+window.LANDING_SECCIONES = <?= Security::jsonEncodeSafe($seccionesJs) ?>;
 </script>
-<script src="../../../public/js/features/landing-builder.js?v=<?= filemtime(__DIR__ . '/../../../public/js/features/landing-builder.js') ?>"></script>
+<script src="<?= AssetMin::url(__DIR__, '../../../public/js/features/landing-builder.js') ?>"></script>
+
+<?php include '../comunes/footer.php'; ?>

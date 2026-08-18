@@ -42,7 +42,7 @@ foreach ($diarios as $d) {
     }
 }
 
-$titulo_pagina = "AULAPRO | SEGUIMIENTO DIARIO FCT";
+$titulo_pagina = "Seguimiento Diario FCT";
 $seccion = 'fct';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -90,7 +90,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h2>Registro diario de actividades</h2>
     
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-diario-admin">
             <thead>
                 <tr>
                     <th>Fecha</th>
@@ -132,3 +132,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-diario-admin', 15);
+});
+</script>

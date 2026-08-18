@@ -14,7 +14,7 @@ $imagenPortadaUrl = !empty($post['imagen']) ? R2Client::imagenUrl(
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR ENTRADA</h1>
+    <h1>Modificar Entrada</h1>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <?php if ((int)$post['publicado'] === 1) { ?>
         <a href="/vistas/blog.php?post=<?= Security::escapeHtml($post['slug']) ?>" target="_blank" rel="noopener" class="boton-secundario">
@@ -160,6 +160,6 @@ iniciarEditorBlog({
     fileInputId: 'editor-imagen-input',
     uploadUrl: '../../../controladores/<?= $blogRolBase ?>/blog/subir_imagen_contenido.php',
     csrfToken: document.querySelector('[name=csrf_token]').value,
-    initialContent: <?= json_encode($post['contenido']) ?>
+    initialContent: <?= Security::jsonEncodeSafe($post['contenido']) ?>
 });
 </script>

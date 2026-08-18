@@ -30,13 +30,13 @@ if (!$nota) {
 $estudiantes = listarEstudiantes();
 $modulos = listarModulos();
 
-$tituloDelPagina = "AULAPRO | EDITAR NOTA";
+$titulo_pagina = "Editar Nota";
 $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EDITAR CALIFICACIÓN</h1>
+    <h1>Editar Calificación</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

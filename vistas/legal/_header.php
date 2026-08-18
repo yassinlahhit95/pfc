@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../include/FeatureGuard.php';
 require_once __DIR__ . '/../../include/AssetMin.php';
 require_once __DIR__ . '/../../include/I18n.php';
 $cfg = obtenerConfiguracionCentro();
-$nombreCentro = $cfg['nombreCentro'] ?? 'AulaPro';
+$nombreCentro = $cfg['nombreCentro'] ?? FeatureGuard::getCenterName();
 $emailCentro  = $cfg['emailCentro']  ?? '';
 $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
 ?>
@@ -17,12 +17,12 @@ $prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title><?= htmlspecialchars($legal_titulo ?? 'Información Legal') ?> — AulaPro</title>
+    <title><?= htmlspecialchars($legal_titulo ?? 'Información Legal') ?> — <?= Security::escapeHtml($nombreCentro) ?></title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= AssetMin::urlAbs(__DIR__ . '/../..', '/public/css/features/legal.css') ?>">
     <?php foreach (($extra_css ?? []) as $_css):

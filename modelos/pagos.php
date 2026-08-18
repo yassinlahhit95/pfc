@@ -13,7 +13,7 @@ function listarTodosLosPagos() {
             JOIN niveles n ON c.idNivel = n.idNivel
             STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
             WHERE e.deleted_at IS NULL
-            ORDER BY p.idPago DESC";
+            ORDER BY p.idPago ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -32,7 +32,7 @@ function listarPagosFiltrados($idCiclo) {
             JOIN niveles n ON c.idNivel = n.idNivel
             STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
             WHERE e.idCiclo = ? AND e.deleted_at IS NULL
-            ORDER BY p.idPago DESC";
+            ORDER BY p.idPago ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);

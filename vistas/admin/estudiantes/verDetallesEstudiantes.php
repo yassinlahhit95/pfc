@@ -28,7 +28,7 @@ $colorAvatar  = $paletaAvatar[ord($iniciales[0]) % count($paletaAvatar)];
 $nivelLabel = $estudiante['curso'] === 'Grado Superior' ? 'Grado Superior' : 'Grado Medio';
 $nivelClase = $estudiante['curso'] === 'Grado Superior' ? 'verde' : 'azul';
 
-$titulo_pagina = "AULAPRO | DETALLE DEL ESTUDIANTE";
+$titulo_pagina = "Detalle del Estudiante";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

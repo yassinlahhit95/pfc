@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/debounce.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/events_repository.dart';
 import 'add_event_screen.dart';
 
@@ -51,9 +52,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
       await ref.read(eventsRepositoryProvider).deleteEvent(event.id);
       ref.invalidate(eventsProvider);
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     }
   }
 
@@ -64,9 +66,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     final role = session?.role;
     final isBackOffice =
         role == UserRole.director || role == UserRole.secretaria;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Eventos')),
+      appBar: AppBar(title: Text(t['nav_eventos'] ?? 'Eventos')),
       floatingActionButton: isBackOffice
           ? FloatingActionButton(
               onPressed: () {

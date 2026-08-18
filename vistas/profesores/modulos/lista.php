@@ -14,13 +14,13 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$tituloDelPagina = "AULAPRO | MODULOS";
+$titulo_pagina = "Modulos";
 $seccionActual = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>LISTA DE MÓDULOS</h1>
+    <h1>Lista de Módulos</h1>
     <?php if ($esTutor && $idCicloTutor): ?>
     <a href="agregar.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVO MÓDULO</a>
     <?php endif; ?>

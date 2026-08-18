@@ -201,3 +201,30 @@ Future<void> showErrorAlert(BuildContext context, String message,
     message: message,
   );
 }
+
+/// Consistent success feedback — pairs with [showErrorAlert] so every
+/// create/update/delete action confirms itself the same way, instead of the
+/// mix that existed before (some screens: a plain unstyled default SnackBar;
+/// others: nothing at all). `hideCurrentSnackBar()` also prevents duplicate
+/// stacked snackbars when an action is triggered twice in quick succession.
+void showSuccessSnack(BuildContext context, String message) {
+  final scheme = Theme.of(context).colorScheme;
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: scheme.surface,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Radii.md)),
+      content: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded,
+              color: AppColors.verdeLight, size: 20),
+          const SizedBox(width: Space.sm),
+          Expanded(
+              child: Text(message,
+                  style: TextStyle(color: scheme.onSurface))),
+        ],
+      ),
+    ));
+}

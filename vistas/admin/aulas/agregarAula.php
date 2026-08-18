@@ -9,13 +9,13 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $datos = $_SESSION['datos_aula'] ?? [];
 unset($_SESSION['datos_aula']);
 
-$titulo_pagina = "AULAPRO | NUEVA AULA";
+$titulo_pagina = "Nueva Aula";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVA AULA</h1>
+    <h1>Nueva Aula</h1>
     <a href="gestionAulas.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

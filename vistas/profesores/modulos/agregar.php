@@ -15,13 +15,13 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$tituloDelPagina = "AULAPRO | NUEVO MÓDULO";
+$titulo_pagina = "Nuevo Módulo";
 $seccionActual   = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO MÓDULO</h1>
+    <h1>Nuevo Módulo</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

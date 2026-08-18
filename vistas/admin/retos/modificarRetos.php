@@ -29,13 +29,13 @@ unset($_SESSION['datos_reto']);
 
 $todosLosModulos = listarModulos();
 
-$titulo_pagina = "AULAPRO | MODIFICAR RETO";
+$titulo_pagina = "Modificar Reto";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR RETO</h1>
+    <h1>Modificar Reto</h1>
     <a href="verRetos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

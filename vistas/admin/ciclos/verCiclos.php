@@ -14,13 +14,13 @@ $listaNiveles         = listarNiveles();
 $todosLosProfesores = listarProfesores();
 $profesoresPorCiclo   = listarProfesoresPorCiclos(array_column($todosLosCiclos, 'idCiclo'));
 
-$titulo_pagina = "AULAPRO | CICLOS FORMATIVOS";
+$titulo_pagina = "Ciclos Formativos";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>CICLOS FORMATIVOS</h1>
+    <h1>Ciclos Formativos</h1>
     <div class="acciones-pagina">
         <a href="ciclosArchivados.php" class="boton-secundario">
             <i class="fas fa-archive"></i> Archivados
@@ -93,7 +93,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                        data-asignar-prof-ciclo
                                        data-id="<?= (int)$ciclo['idCiclo'] ?>"
                                        data-nombre="<?= Security::escapeHtml($ciclo['nombreCiclo']) ?>"
-                                       data-prof-ids="<?= Security::escapeHtml(json_encode($idsProfActuales)) ?>">
+                                       data-prof-ids="<?= Security::escapeHtml(Security::jsonEncodeSafe($idsProfActuales)) ?>">
                                         <i class="fas fa-chalkboard-teacher"></i> Asignar Profesores
                                     </a>
                                     <div class="recurso-menu-sep"></div>

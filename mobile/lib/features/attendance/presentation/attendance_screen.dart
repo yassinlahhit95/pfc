@@ -10,6 +10,7 @@ import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
 import '../../../core/widgets/filter_bar.dart';
 import '../../../core/widgets/premium.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/attendance_repository.dart';
 import 'justify_sheet.dart';
 import 'mark_attendance_screen.dart';
@@ -62,10 +63,12 @@ class _AttendanceScreenContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionAsync = ref.watch(sessionControllerProvider);
     final role = sessionAsync.value?.role;
+    final asistenciasTitle =
+        ref.watch(translationsProvider)['nav_asistencias'] ?? 'Asistencias';
 
     if (role == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Asistencias')),
+        appBar: AppBar(title: Text(asistenciasTitle)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -73,7 +76,7 @@ class _AttendanceScreenContent extends ConsumerWidget {
     if (role == UserRole.profesor) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Asistencias'),
+          title: Text(asistenciasTitle),
           elevation: 0,
           backgroundColor: Colors.transparent,
           bottom: PreferredSize(
@@ -173,10 +176,11 @@ class _MyAttendanceListState extends ConsumerState<_MyAttendanceList> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final attendanceAsync = ref.watch(attendanceMineProvider);
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Asistencias'),
+        title: Text(t['nav_asistencias'] ?? 'Asistencias'),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),

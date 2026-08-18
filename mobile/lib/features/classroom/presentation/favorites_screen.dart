@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../../core/widgets/error_modal.dart';
+import '../../../core/i18n/translations.dart';
 import '../data/classroom_repository.dart';
 
 class FavoritesScreen extends ConsumerWidget {
@@ -24,10 +25,11 @@ class FavoritesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favoritesAsync = ref.watch(classroomFavoritesProvider);
     final scheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Archivos favoritos'),
+        title: Text(t['title_favoritos_archivos'] ?? 'Archivos favoritos'),
         elevation: 0,
         backgroundColor: scheme.surface,
       ),
@@ -86,9 +88,7 @@ class FavoritesScreen extends ConsumerWidget {
                           ref.invalidate(classroomFavoritesProvider);
                           ref.invalidate(classroomModulesProvider);
                           if (context.mounted) {
-                            await showErrorAlert(
-                                context, 'Quitado de favoritos',
-                                title: 'Listo');
+                            showSuccessSnack(context, 'Quitado de favoritos.');
                           }
                         } catch (e) {
                           if (context.mounted) {

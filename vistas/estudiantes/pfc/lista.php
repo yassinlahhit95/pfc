@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 $idEstudiante = $_SESSION['idEstudiante'];
 $tfg = obtenerTFGporEstudiante($idEstudiante);
 
-$tituloDelPagina = "AULAPRO | MI TFG";
+$titulo_pagina = "Mi TFG";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 

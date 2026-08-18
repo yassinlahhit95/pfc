@@ -27,7 +27,7 @@
             <li><strong>Phone:</strong> <?= !empty($cfg['telefonoCentro']) ? htmlspecialchars($cfg['telefonoCentro']) : '[Center phone]' ?></li>
             <li><strong>Email:</strong> <?= !empty($emailCentro) ? '<a href="mailto:' . htmlspecialchars($emailCentro) . '">' . htmlspecialchars($emailCentro) . '</a>' : '[Center email]' ?></li>
             <li><strong>Main Activity:</strong> Vocational training and educational management center.</li>
-            <li><strong>Technology Platform:</strong> AulaPro — school management platform developed by AulaPro SaaS.</li>
+            <li><strong>Technology Platform:</strong> <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> — school management platform developed by <?= htmlspecialchars(FeatureGuard::getCenterName()) ?> SaaS.</li>
         </ul>
     </section>
 

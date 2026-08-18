@@ -20,7 +20,7 @@ $idProfesorActual = !empty($profesoresAsignados) ? $profesoresAsignados[0] : 0;
 
 $todosLosProfesores = listarProfesores();
 
-$titulo_pagina = "AULAPRO | ASIGNAR PROFESOR A MÓDULO";
+$titulo_pagina = "Asignar Profesor A Módulo";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

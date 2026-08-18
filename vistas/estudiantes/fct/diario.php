@@ -45,7 +45,7 @@ if ($fct) {
     }
 }
 
-$tituloDelPagina = "AULAPRO | MI DIARIO DE FCT";
+$titulo_pagina = "Mi Diario de FCT";
 $seccionActual = 'fct_diario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -153,7 +153,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="contenedor-tabla">
-                <table class="tabla-datos">
+                <table class="tabla-datos" id="tabla-diario-estudiante">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -207,3 +207,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-diario-estudiante', 15);
+});
+</script>

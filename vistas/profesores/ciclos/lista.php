@@ -11,19 +11,19 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $ciclos = listarCiclosDeProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | MIS CICLOS FORMATIVOS";
+$titulo_pagina = "Mis Ciclos Formativos";
 $seccionActual = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MIS CICLOS FORMATIVOS</h1>
+    <h1>Mis Ciclos Formativos</h1>
 </div>
 
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-mis-ciclos-prof">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -51,3 +51,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarPaginacion('tabla-mis-ciclos-prof', 15);
+});
+</script>

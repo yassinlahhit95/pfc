@@ -27,14 +27,14 @@ $todosLosCursos = listarTodosLosCursosAcademicos();
 // Repopulate: prefer session datos (after validation failure), fall back to DB
 $valorCampo = fn($field) => Security::escapeHtml($datos[$field] ?? $estudiante[$field] ?? '');
 
-$titulo_pagina = 'AULAPRO | EDITAR ESTUDIANTE';
+$titulo_pagina = 'Editar Estudiante';
 $seccion = 'estudiantes';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>EDITAR ESTUDIANTE</h1>
+        <h1>Editar Estudiante</h1>
         <p class="subtitulo-encabezado"><?= Security::escapeHtml(mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8')) ?></p>
     </div>
     <div class="acciones-pagina">
@@ -154,10 +154,10 @@ include __DIR__ . '/../comunes/nav.php';
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
-var listaDeCiclos = <?= json_encode($ciclos) ?>;
+var listaDeCiclos = <?= Security::jsonEncodeSafe($ciclos) ?>;
 var idCicloActual = <?= (int)($datos['idCiclo'] ?? $estudiante['idCiclo'] ?? 0) ?>;
-var todosCursos = <?= json_encode($todosLosCursos) ?>;
-var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? $estudiante['anioEstudio'] ?? '') ?>;
+var todosCursos = <?= Security::jsonEncodeSafe($todosLosCursos) ?>;
+var anioEstudioActual = <?= Security::jsonEncodeSafe($datos['anioEstudio'] ?? $estudiante['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivelNombre = document.getElementById('curso').value;

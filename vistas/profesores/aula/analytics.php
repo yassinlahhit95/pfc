@@ -13,9 +13,9 @@ $resumen = obtenerResumenAnalytics($idModulo, $dias);
 $topArchivos = obtenerTopArchivosPorDescargas($idModulo, 10);
 $topTareas = obtenerTopTareasPorEntregas($idModulo, 10);
 
-$tituloDelPagina = "AULAPRO | Analytics - " . strtoupper($modulo['nombreModulo']);
-$seccionActual = 'aula_sesiones';
-include_once __DIR__ . "/../comunes/nav.php";
+$titulo_pagina = "Analytics - " . Strtoupper($Modulo['Nombremodulo']);
+$Seccionactual = 'Aula_Sesiones';
+Include_Once __Dir__ . "/../Comunes/Nav.php";
 ?>
 
 <!-- BREADCRUMB -->
@@ -116,6 +116,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <i class="fas fa-inbox"></i> Sin datos de descarga
     </p>
     <?php else: ?>
+    <div class="contenedor-tabla">
     <table style="width: 100%; border-collapse: collapse;">
       <thead>
         <tr style="border-bottom: 2px solid var(--color-neutral-200);">
@@ -139,6 +140,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
     <?php endif; ?>
   </div>
 </div>
@@ -159,6 +161,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <i class="fas fa-inbox"></i> Sin datos de entregas
     </p>
     <?php else: ?>
+    <div class="contenedor-tabla">
     <table style="width: 100%; border-collapse: collapse;">
       <thead>
         <tr style="border-bottom: 2px solid var(--color-neutral-200);">
@@ -182,6 +185,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
     <?php endif; ?>
   </div>
 </div>

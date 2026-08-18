@@ -20,13 +20,13 @@ foreach ($tfgs as $tfg) {
     $calificacionesTFG[$tfg['idEstudiante']] = obtenerCalificacionTFG($tfg['idEstudiante']);
 }
 
-$tituloDelPagina = "AULAPRO | GESTION DE TFGS";
+$titulo_pagina = "Gestion de TFGs";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTION DE TFGS ENTREGADOS</h1>
+    <h1>Gestion de TFGs Entregados</h1>
 </div>
 
 <div class="panel margen-abajo">
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tabla-pfc-prof">
             <thead>
                 <tr>
                     <th>Estudiante</th>

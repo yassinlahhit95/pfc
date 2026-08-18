@@ -13,14 +13,14 @@ $totalPaginas   = max(1, (int)ceil($totalHistorial / $porPagina));
 $pagina         = max(1, min($totalPaginas, (int)($_GET['pagina'] ?? 1)));
 $historial      = listarHistorialSecretarias(null, $porPagina, ($pagina - 1) * $porPagina);
 
-$titulo_pagina = 'AULAPRO | HISTORIAL DE SECRETARIAS';
+$titulo_pagina = 'Historial de Secretarias';
 $seccion = 'secretarias'; // Mantener activa la pestaña de secretarias
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>HISTORIAL DE SECRETARIAS</h1>
+        <h1>Historial de Secretarias</h1>
         <p class="subtitulo-encabezado">Registro de las últimas acciones realizadas por el personal de secretaría</p>
     </div>
     <a href="verSecretarias.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver a Secretarias</a>

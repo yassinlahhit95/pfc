@@ -22,14 +22,14 @@ $totalAnyo  = totalGastadoEnAnyo($anyo);
 $totalMes   = totalGastadoEnMes($anyoActual, (int)date('n'));
 $presTotal  = array_sum(array_column($resumen, 'presupuestoAnual'));
 
-$titulo_pagina = 'AULAPRO | GASTOS';
+$titulo_pagina = 'Gastos';
 $seccion = 'gastos';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
     <div>
-        <h1>GASTOS DEL CENTRO</h1>
+        <h1>Gastos del Centro</h1>
         <p class="subtitulo-encabezado">Seguimiento de gastos y presupuesto anual</p>
     </div>
     <div class="acciones-pagina">
